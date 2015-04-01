@@ -13,3 +13,12 @@ target/
 .lvimrc
 /tmp/
 *.log
+
+path.sh
+scons.log?
+CMakeCache.txt
+CPackConfig.cmake
+CPackSourceConfig.cmake
+doxy.config
+CMakeFiles
+sample/build-linux/src
