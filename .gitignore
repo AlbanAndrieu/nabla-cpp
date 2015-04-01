@@ -1,0 +1,15 @@
+.project
+.settings/
+.classpath
+target/
+/build/
+.DS_Store
+.idea/workspace.xml
+*~
+*.swp
+.idea
+*.iml
+.agignore
+.lvimrc
+/tmp/
+*.log
