@@ -10,16 +10,16 @@ class TriangleTest: public CppUnit::TestFixture {
     CPPUNIT_TEST( testEQUILATERAL );
     CPPUNIT_TEST( testISOSCELES );
     CPPUNIT_TEST( testSCALENE );
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp();
-	void tearDown();
+    void setUp();
+    void tearDown();
 
-	void testERROR();
-	void testEQUILATERAL();
-	void testISOSCELES();
-	void testSCALENE();
+    void testERROR();
+    void testEQUILATERAL();
+    void testISOSCELES();
+    void testSCALENE();
 };
 
 #endif  // TRIANGLETEST_H

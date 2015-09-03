@@ -18,27 +18,27 @@ class circular_queueTest: public CppUnit::TestFixture {
     CPPUNIT_TEST( testDequeueTooMany );
     CPPUNIT_TEST( testEnqueueDequeue );
     CPPUNIT_TEST( testEnqueueDequeueThread );
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp();
-	void tearDown();
+    void setUp();
+    void tearDown();
 
-	void testConstructor();
-	void testConstructorWithNegative();
-	void testConstructorWithZero();
-	void testCopyConstructor();
-	void testEnqueue();
-	void testOperatorOutput();
-	void testEnqueueTooMany();
-	void testEnqueueNotEnough();
-	void testDequeue();
-	void testDequeueTooMany();
-	void testEnqueueDequeue();
+    void testConstructor();
+    void testConstructorWithNegative();
+    void testConstructorWithZero();
+    void testCopyConstructor();
+    void testEnqueue();
+    void testOperatorOutput();
+    void testEnqueueTooMany();
+    void testEnqueueNotEnough();
+    void testDequeue();
+    void testDequeueTooMany();
+    void testEnqueueDequeue();
 
-	std::string printTime();
+    std::string printTime();
 
-	void testEnqueueDequeueThread();
+    void testEnqueueDequeueThread();
 };
 
 #endif  // CIRCULAR_QUEUETEST_H
