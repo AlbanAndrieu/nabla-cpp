@@ -12,9 +12,9 @@
 
 class circular_queueThread {
 public:
-	circular_queueThread();
+    circular_queueThread();
 
-	virtual ~circular_queueThread();
+    virtual ~circular_queueThread();
 
     void go();
 
