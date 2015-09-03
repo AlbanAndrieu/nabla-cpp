@@ -15,7 +15,7 @@ rm CMakeCache.txt
 
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE -DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH} ../microsoft
-#-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug 
+#-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
 
 make -B clean install test DoxygenDoc package
@@ -24,3 +24,5 @@ make -B clean install test DoxygenDoc package
 #ctest -D Experimental
 #cd ~/cpp/sample/build-linux/src/test/cpp
 #ctest .. -R circular_queueTest
+cd src/test/cpp/
+ctest --force-new-ctest-process --no-compress-output -T Test || /bin/true

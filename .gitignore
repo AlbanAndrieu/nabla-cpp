@@ -22,3 +22,11 @@ CPackSourceConfig.cmake
 doxy.config
 CMakeFiles
 sample/build-linux/src
+sample/build-linux/.cproject
+sample/build-linux/CTestTestfile.cmake
+sample/build-linux/MICROSOFT-10.02-Linux*
+sample/build-linux/Makefile
+sample/build-linux/_CPack_Packages/
+sample/build-linux/cmake_install.cmake
+sample/build-linux/doc/
+sample/build-linux/install_manifest.txt
