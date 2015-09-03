@@ -18,24 +18,24 @@ SET(CMAKE_COLOR_MAKEFILE ON)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 SET(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
-        
-# AIX                           AIX  
-# BSD/OS                        BSD/OS  
-# FreeBSD                       FreeBSD  
-# HP-UX                         HP-UX  
-# IRIX                          IRIX  
-# Linux                         Linux  
-# NetBSD                        NetBSD  
-# OpenBSD                       OpenBSD  
-# OFS/1 (Digital Unix)          OSF1  
-# SCO OpenServer 5              SCO_SV  
-# SCO UnixWare 7                UnixWare  
-# SCO UnixWare (pre release 7)  UNIX_SV  
-# SCO XENIX                     Xenix  
-# Solaris                       SunOS  
-# SunOS                         SunOS  
-# Tru64                         Tru64  
-# Ultrix                        ULTRIX  
+
+# AIX                           AIX
+# BSD/OS                        BSD/OS
+# FreeBSD                       FreeBSD
+# HP-UX                         HP-UX
+# IRIX                          IRIX
+# Linux                         Linux
+# NetBSD                        NetBSD
+# OpenBSD                       OpenBSD
+# OFS/1 (Digital Unix)          OSF1
+# SCO OpenServer 5              SCO_SV
+# SCO UnixWare 7                UnixWare
+# SCO UnixWare (pre release 7)  UNIX_SV
+# SCO XENIX                     Xenix
+# Solaris                       SunOS
+# SunOS                         SunOS
+# Tru64                         Tru64
+# Ultrix                        ULTRIX
 # cygwin                        CYGWIN_NT-5.1
 # MacOSX                        Darwin
 
@@ -88,7 +88,7 @@ MESSAGE("CMAKE_SYSTEM is ${CMAKE_SYSTEM}")
 
 IF(UNIX)
 
-  MESSAGE(STATUS "UNIX found")  
+  MESSAGE(STATUS "UNIX found")
 
   IF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     MESSAGE(STATUS "Linux found")
@@ -109,7 +109,7 @@ IF(UNIX)
     SET(MACHINE sun4sol)
 
     ADD_DEFINITIONS(-Dsolaris -DSYSV -DSVR4 -DP100 -DDEBUG -DANSI_C -D_POSIX_THREADS -mt -xildoff -DOWTOOLKIT_WARNING_DISABLED)
-    
+
   ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")
     MESSAGE(STATUS "SunOS not found")
   ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")
@@ -117,35 +117,35 @@ IF(UNIX)
   IF("${CMAKE_SYSTEM}" MATCHES "SunOS-5.10")
     MESSAGE(STATUS "SunOS-5.10 found")
     SET(ARCH solaris)
-    SET(MACHINE x86sol)  
-    
+    SET(MACHINE x86sol)
+
   ELSE("${CMAKE_SYSTEM}" MATCHES "SunOS-5.10")
     MESSAGE(STATUS "SunOS-5.10 not found")
-  ENDIF("${CMAKE_SYSTEM}" MATCHES "SunOS-5.10")    
+  ENDIF("${CMAKE_SYSTEM}" MATCHES "SunOS-5.10")
 
   IF(CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN")
     MESSAGE(STATUS "CYGWIN found")
     SET(ARCH cygwin)
-    SET(MACHINE x86Linux)    
+    SET(MACHINE x86Linux)
 
     SET(CYGWIN_HOME "$ENV{CYGWIN_HOME}")
     SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
-    
-    SET(GCC_VERSION 3.4.4)  
-    
+
+    SET(GCC_VERSION 3.4.4)
+
     #For Eclipse to avoid : Unresolved inclusion add this to the include path
     #INCLUDE_DIRECTORIES("${CYGWIN_HOME}/lib/gcc/i686-pc-cygwin/${GCC_VERSION}/include/c++")
     #LINK_DIRECTORIES("${CYGWIN_HOME}/lib/gcc/i686-pc-cygwin/${GCC_VERSION}/debug")
-        
+
     SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
 
     ADD_DEFINITIONS(-Dcygwin -Dlinux -DP100)
     ADD_DEFINITIONS(-DDEBUG -DNOMINMAX)
     ADD_DEFINITIONS(-DEXCEPTION_EXPORTS)
- 
+
   ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN")
     MESSAGE(STATUS "CYGWIN not found")
-  ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN")    
+  ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN")
 
 ELSE(UNIX)
   MESSAGE(STATUS "UNIX not found")
@@ -153,18 +153,18 @@ ENDIF(UNIX)
 
 IF(MINGW)
 
-  MESSAGE(STATUS "MINGW found")    
+  MESSAGE(STATUS "MINGW found")
   SET(ARCH linux)
-  SET(MACHINE x86Linux)    
+  SET(MACHINE x86Linux)
 
   INCLUDE_DIRECTORIES("C:\\cygwin\\usr\\include")
   LINK_DIRECTORIES("C:\\cygwin\\lib")
 
   ADD_DEFINITIONS(-Dlinux -DuseTao -DACE_HAS_EXCEPTIONS -D_TEMPLATES_ENABLE_ -D_REENTRANT -DEffix_Infra_HAS_BOOL)
-    
+
 ELSE(MINGW)
   MESSAGE(STATUS "MINGW not found")
-  
+
 ENDIF(MINGW)
 
 SET(PROJECT_INCLUDE_DIR ${PROJECT_BINARY_DIR}/include)
@@ -180,8 +180,8 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 SET(CORBA_PC_DIR ${PROJECT_BINARY_DIR}/project/corba/${MACHINE}/${PROJECT_BUILD_TYPE})
 
 MESSAGE(STATUS "MACHINE is ${MACHINE}")
-  
-MAKE_DIRECTORY(${PROJECT_INCLUDE_DIR}) 
+
+MAKE_DIRECTORY(${PROJECT_INCLUDE_DIR})
 MAKE_DIRECTORY(${CORBA_PC_DIR})
 
 OPTION(BUILD_SHARED_LIBS "Build PROJECT shared libraries." OFF)
@@ -232,14 +232,14 @@ INCLUDE_DIRECTORIES(${PROJECT_INCLUDE_DIR})
 
 IF(UNIX)
 
-  MESSAGE(STATUS "UNIX found")  
+  MESSAGE(STATUS "UNIX found")
 
   IF(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")
     MESSAGE(STATUS "SunOS found")
 
     SET(TIBCO_VERSION "8.1.2")
     SET(XERCES_VERSION "3_0_1")
-    
+
     #Inclusion de CORBA
     SET(CORBA_VERSION "")
 
@@ -249,28 +249,28 @@ IF(UNIX)
     SET(JAVA_JVM_LIBRARY_DIRECTORIES ${PROJECT_THIRDPARTY_PATH}/j2se/${MACHINE}/jdk1.5/jre/lib/sparc)
 
     SET(JAVA_AWT_LIBRARY ${JAVA_JVM_LIBRARY_DIRECTORIES}/libjawt.so ${JAVA_JVM_LIBRARY_DIRECTORIES}/xawt/libmawt.so)
-    SET(JAVA_JVM_LIBRARY ${JAVA_JVM_LIBRARY_DIRECTORIES}/libjvm.so)    
-    
+    SET(JAVA_JVM_LIBRARY ${JAVA_JVM_LIBRARY_DIRECTORIES}/libjvm.so)
+
   ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")
     MESSAGE(STATUS "SunOS not found")
   ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")
 
   IF("${CMAKE_SYSTEM}" MATCHES "SunOS-5.10")
     MESSAGE(STATUS "SunOS-5.10 found")
-    SET(MACHINE x86sol)  
-    
+    SET(MACHINE x86sol)
+
   ELSE("${CMAKE_SYSTEM}" MATCHES "SunOS-5.10")
     MESSAGE(STATUS "SunOS-5.10 not found")
-  ENDIF("${CMAKE_SYSTEM}" MATCHES "SunOS-5.10")    
+  ENDIF("${CMAKE_SYSTEM}" MATCHES "SunOS-5.10")
 
   IF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     MESSAGE(STATUS "Linux found")
 
     LINK_DIRECTORIES(/usr/lib)
-        
+
     SET(BOOST_OUTPUT_PATH ${PROJECT_BINARY_DIR}/install/${MACHINE}/${PROJECT_BUILD_TYPE}/lib/boost-${BOOST_VERSION})
     LINK_DIRECTORIES(${BOOST_OUTPUT_PATH})
-          
+
     #z boost_thread-gcc-mt intl ncurses
     SET(Boost_LIBRARIES boost_thread-mt boost_system)
 
@@ -279,85 +279,85 @@ IF(UNIX)
     SET(LIBXML_LIBRARY_DIRS xml2)
 
     #LINK_DIRECTORIES(${Gettext_LIBRARY_DIRS})
-  
+
     #Inclusion de CORBA
     #INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers)
     #INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/TAO)
     #INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/TAO/orbsvcs)
-  
-    LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib)        
-    
-    INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/include)    
-        
+
+    LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib)
+
+    INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/include)
+
     LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/lib)
     LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/lib3p)
     LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/dll/debug)
-    
+
     #INCLUDE_DIRECTORIES(${ORACLE_HOME}/app/oracle/product/${ORACLE_VERSION}/server/OCI/include)
     #LINK_DIRECTORIES(${ORACLE_HOME}/app/oracle/product/${ORACLE_VERSION}/server/OCI/lib/MSVC/vc71)
 
     INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/artix30/${MACHINE}/artix/3.0/include)
-    LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/artix30/${MACHINE}/bin)  
-    
+    LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/artix30/${MACHINE}/bin)
+
   ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
     MESSAGE(STATUS "Linux not found")
   ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 
   IF(CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN")
-    MESSAGE(STATUS "CYGWIN found")     
-        
+    MESSAGE(STATUS "CYGWIN found")
+
     #SET(LIB_PREFIX lib)
     #SET(LIB_STATIC_SUFFIX .a)
     #SET(LIB_DYNAMIC_SUFFIX .dll)
-    
+
     LINK_DIRECTORIES(/usr/lib)
-        
+
     SET(BOOST_OUTPUT_PATH ${PROJECT_BINARY_DIR}/install/${MACHINE}/${PROJECT_BUILD_TYPE}/lib/boost-${BOOST_VERSION})
     LINK_DIRECTORIES(${BOOST_OUTPUT_PATH})
-          
+
     #z boost_thread-gcc-mt intl ncurses
     #SET(Boost_LIBRARIES boost_thread-gcc-mt)
     SET(Boost_LIBRARIES boost_thread-gcc34-mt-1_41)
     SET(ZLIB_LIBRARY_DIRS z)
-    SET(Gettext_LIBRARY_DIRS intl ncurses)  
-    #SET(LIBXML_LIBRARY_DIRS LIBXML2_LIBRARIES) 
+    SET(Gettext_LIBRARY_DIRS intl ncurses)
+    #SET(LIBXML_LIBRARY_DIRS LIBXML2_LIBRARIES)
     SET(LIBXML_LIBRARY_DIRS xml2)
 
     #LINK_DIRECTORIES(${Gettext_LIBRARY_DIRS})
-  
+
     #Inclusion de CORBA
     INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers)
     INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/TAO)
     INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/TAO/orbsvcs)
-  
-    LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib)        
-    
-    INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/include)    
-        
+
+    LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib)
+
+    INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/include)
+
     LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/lib)
     LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/lib3p)
     LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/dll/debug)
-    
+
     INCLUDE_DIRECTORIES(${ORACLE_HOME}/app/oracle/product/${ORACLE_VERSION}/server/OCI/include)
     LINK_DIRECTORIES(${ORACLE_HOME}/app/oracle/product/${ORACLE_VERSION}/server/OCI/lib/MSVC/vc71)
-            
+
     #${JAVA_JVM_LIBRARY_DIRECTORIES}/xawt/libmawt.so
     #SET(JAVA_AWT_LIBRARY ${JAVA_JVM_LIBRARY_DIRECTORIES}/jawt.dll)
-    #SET(JAVA_JVM_LIBRARY ${JAVA_JVM_LIBRARY_DIRECTORIES}/jvm.dll)    
+    #SET(JAVA_JVM_LIBRARY ${JAVA_JVM_LIBRARY_DIRECTORIES}/jvm.dll)
 
     INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/artix30/${MACHINE}/artix/3.0/include)
-    LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/artix30/${MACHINE}/bin)  
-                    
-  ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN")  
-  
-  IF(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")  
+    LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/artix30/${MACHINE}/bin)
+
+  ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "CYGWIN")
+
+  IF(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")
 
     LINK_DIRECTORIES(/usr/lib)
 
     SET(LIB_PREFIX lib)
     SET(LIB_STATIC_SUFFIX .a)
     SET(LIB_DYNAMIC_SUFFIX .so)
-      
+
     #QT_USE_FILE
     #SET(QT_INCLUDE_DIR ${TOOLS_ROOT}/qt/${QT_VERSION}/${MACHINE}/opt/include)
     #SET(QT_BINARY_DIR ${TOOLS_ROOT}/qt/${QT_VERSION}/${MACHINE}/opt/bin)
@@ -366,25 +366,25 @@ IF(UNIX)
     #SET(QT_TRANSLATIONS_DIR ${TOOLS_ROOT}/qt/${QT_VERSION}/${MACHINE}/opt/translations)
     #SET(QT_DOC_DIR ${TOOLS_ROOT}/qt/${QT_VERSION}/${MACHINE}/opt/doc)
     #SET(QT_MKSPECS_DIR ${TOOLS_ROOT}/qt/${QT_VERSION}/${MACHINE}/opt/mkspecs)
-  
+
     #INCLUDE(${QT_INCLUDE_DIR})
     #LINK_DIRECTORIES(${QT_LIBRARY_DIR})
-    
+
     #SET(Qt3_FOUND)
-    
+
     #Inclusion de CORBA
     INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH}/corba/tao/${CORBA_VERSION}${MACHINE}/ACE_wrappers)
     INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH}/corba/tao/${CORBA_VERSION}${MACHINE}/ACE_wrappers/TAO)
     INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH}/corba/tao/${CORBA_VERSION}${MACHINE}/ACE_wrappers/TAO/orbsvcs)
-  
+
     LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH}/corba/tao/${CORBA_VERSION}${MACHINE}/lib/${MACHINE}.mt/debug/shared)
     LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH}/corba/tao/${CORBA_VERSION}${MACHINE}/lib/${MACHINE}.mt/gcc/opt/shared)
-  
+
     #Inclusion de BOOST
     SET(Boost_INCLUDE_DIRS ${PROJECT_THIRDPARTY_PATH}/boost/${BOOST_VERSION}/include)
     MESSAGE(STATUS "Boost_INCLUDE_DIRS : ${Boost_INCLUDE_DIRS}")
     SET(Boost_LIBRARY_DIRS ${PROJECT_THIRDPARTY_PATH}/boost/${BOOST_VERSION}/lib/${MACHINE}/debug/shared)
-    MESSAGE(STATUS "Boost_LIBRARY_DIRS : ${Boost_LIBRARY_DIRS}")  
+    MESSAGE(STATUS "Boost_LIBRARY_DIRS : ${Boost_LIBRARY_DIRS}")
     #SET(Boost_FOUND TRUE)
 
     #Inclusion de XERCES
@@ -397,12 +397,12 @@ IF(UNIX)
 
     #Inclusion de LIBXML2
     #INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/libxml2/${XML2_VERSION}/winnt/include)
-    #LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/libxml2/${XML2_VERSION}/winnt/lib)  
+    #LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/libxml2/${XML2_VERSION}/winnt/lib)
 
     #INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/include)
 
-  ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")       
-    
+  ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "SunOS")
+
 ELSE(UNIX)
   MESSAGE(STATUS "UNIX not found")
 ENDIF(UNIX)
@@ -413,7 +413,7 @@ ENDIF(UNIX)
   #Inclusion de TIBCO
   INCLUDE_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tibco/tibrv/${TIBCO_VERSION}/${MACHINE}/include)
   LINK_DIRECTORIES(${PROJECT_THIRDPARTY_PATH_LOCAL}/tibco/tibrv/${TIBCO_VERSION}/${MACHINE}/lib)
-    
+
 IF(CYGWIN)
 
   SET(BASECORBA ${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib/libACE.dll
@@ -522,17 +522,17 @@ IF(CYGWIN)
                 ${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib/libTAO_Utils.dll
                 ${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib/libTAO_Valuetype.dll
                 ${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib/libTAO_ZIOP.dll)
-  
-                #${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib/libUTF16_UCS2.dll  
+
+                #${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib/libUTF16_UCS2.dll
                 #${PROJECT_THIRDPARTY_PATH_LOCAL}/tao/ACE_wrappers/lib/libDynServer.dll
-                  
+
 ELSE(CYGWIN)
 
   SET(BASECORBA ACE ACE_RMCast TAO TAO_BiDirGIOP TAO_DynamicAny TAO_DynamicInterface TAO_IDL_BE TAO_IDL_FE TAO_IFR_Client TAO_IORManip TAO_IORTable TAO_Messaging TAO_PortableServer TAO_RTCORBA TAO_RTPortableServer TAO_SmartProxies TAO_Strategies TAO_TypeCodeFactory TAO_Utils TAO_CosNaming TAO_Codeset)
-                  
+
 ENDIF(CYGWIN)
- 
-#MESSAGE(STATUS "BASECORBA : ${BASECORBA}")  
+
+#MESSAGE(STATUS "BASECORBA : ${BASECORBA}")
 
 IF(CYGWIN)
 
@@ -547,28 +547,28 @@ IF(CYGWIN)
                 ${PROJECT_THIRDPARTY_PATH_LOCAL}/tibco/tibrv/${TIBCO_VERSION}/${MACHINE}/bin/tibrvjsd.dll
                 ${PROJECT_THIRDPARTY_PATH_LOCAL}/tibco/tibrv/${TIBCO_VERSION}/${MACHINE}/bin/tibrvsd.dll
                 ${PROJECT_THIRDPARTY_PATH_LOCAL}/tibco/tibrv/${TIBCO_VERSION}/${MACHINE}/bin/tibrvsdcom.dll)
-                
+
 ELSE(CYGWIN)
-  
+
   SET(BASETIBCO tibrv tibrvcm tibrvcmq tibrvft)
-  
-ENDIF(CYGWIN)   
-      
+
+ENDIF(CYGWIN)
+
 IF(CYGWIN)
 
   SET(BASELIBXML2 ${PROJECT_THIRDPARTY_PATH_LOCAL}/libxml2/${XML2_VERSION}/winnt/lib/libxml2.dll
                   ${PROJECT_THIRDPARTY_PATH_LOCAL}/libxml2/${XML2_VERSION}/winnt/lib/libiconv2.dll)
-                  
+
   SET(BASELIBXML2 ${LIBXML_LIBRARY_DIRS})
-  
+
 ELSE(CYGWIN)
 
   SET(BASELIBXML2 xml2)
 
-ENDIF(CYGWIN)  
+ENDIF(CYGWIN)
 
 IF(CYGWIN)
-        
+
   SET(BASESYBASE ${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/dll/debug/libct.dll
                  ${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/dll/debug/libcobct.dll
                  ${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/dll/debug/libcs.dll
@@ -577,26 +577,26 @@ IF(CYGWIN)
                  ${PROJECT_THIRDPARTY_PATH_LOCAL}/database/sybase/openclient/${SYBASE_SERVER_VERSION}/ESD_${SYBASE_ESD_VERSION}/${MACHINE}/dll/debug/libblk.dll)
 
 ELSE(CYGWIN)
-  
+
   SET(BASESYBASE ct
                  cobct
                  cs
                  sybdb
                  xadtm
-                 blk)  
-  
+                 blk)
+
 ENDIF(CYGWIN)
 
 IF(CYGWIN)
 
   SET(BASEORACLE ${ORACLE_HOME}/app/oracle/product/${ORACLE_VERSION}/server/BIN/oci.dll
                  ${ORACLE_HOME}/app/oracle/product/${ORACLE_VERSION}/server/BIN/ociw32.dll)
-                 
+
 ELSE(CYGWIN)
-  
+
   SET(BASEORACLE oci
-                 ociw32)  
-  
+                 ociw32)
+
 ENDIF(CYGWIN)
 
   SET(BASEXERCES xerces-c)
@@ -638,7 +638,7 @@ ELSE(ZLIB_FOUND)
 ENDIF(ZLIB_FOUND)
 
 #FIND_PACKAGE(
-#	Boost 
+#	Boost
 #	1.31.0
 #	REQUIRED signals
 #)
@@ -687,16 +687,16 @@ IF(FOUND_TAO)
 ELSE(FOUND_TAO)
   MESSAGE(STATUS "TAO not found")
 ENDIF(FOUND_TAO)
-  
+
 IF (MINGW)
   MESSAGE(STATUS "JNI not searched")
 ELSE(MINGW)
   #INCLUDE(FindJNI)
   #MESSAGE(STATUS " JAVA dans ${JAVA_JVM_LIBRARY_DIR} et ${JNI_INCLUDE_DIRS}")
-  
+
   #INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
   #INCLUDE_DIRECTORIES(${JAVA_INCLUDE_PATH})
-  
+
   #LINK_DIRECTORIES(${JNI_LIBRARIES})
 ENDIF(MINGW)
 
