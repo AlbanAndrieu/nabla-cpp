@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rats --version
+#rats --version
 
 reports_directory="rats-reports"
 report_filename="rats-result-SAMPLE"
