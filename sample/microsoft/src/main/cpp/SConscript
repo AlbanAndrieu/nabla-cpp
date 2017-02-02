@@ -8,7 +8,14 @@ localenv = env.Clone()
 #exporting headers
 localenv.Install(os.path.join(localenv['PROJECT_INCLUDE_DIR'],''), Glob('include/*.h')+Glob('include/*.ipp'))
 
+#explicit links
+localenv["LIBS"] = [
+	'boost_thread',
+	'boost_date_time',
+	'boost_system'
+]
+
 #building shared library
-p = localenv.SharedLibrary(os.path.join(localenv['PROJECT_INCLUDE_DIR'],'main_library'), Glob('*.cpp'))
+p = localenv.SharedLibrary(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'main_library'), Glob('*.cpp'))
 
 Default(p)

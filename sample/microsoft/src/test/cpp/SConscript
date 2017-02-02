@@ -10,14 +10,15 @@ localenv.Install(os.path.join(localenv['PROJECT_INCLUDE_DIR'],''), Glob('include
 
 #explicit links
 localenv["LIBS"] = [
-	'boost_thread-mt',
-	'boost_date_time-mt',
+	'boost_thread',
+	'boost_date_time',
+	'boost_system',
 	'cppunit',
 ]
 
 localenv.Append(LIBS=['main_library'], LIBPATH=['#main_library'])
 
 #building shared library
-p = localenv.SharedLibrary(os.path.join(localenv['PROJECT_INCLUDE_DIR'],'test_library'), Glob('*.cpp'))
+p = localenv.SharedLibrary(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'test_library'), Glob('*.cpp'))
 
 Default(p)

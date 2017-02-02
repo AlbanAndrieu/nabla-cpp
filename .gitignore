@@ -1,4 +1,5 @@
 .project
+.cproject
 .settings/
 .classpath
 target/
@@ -9,10 +10,14 @@ target/
 *.swp
 .idea
 *.iml
+*.pyc
+*.o
+*.os
 .agignore
 .lvimrc
 /tmp/
 *.log
+variables.py
 
 path.sh
 scons.log?

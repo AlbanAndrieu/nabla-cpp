@@ -7,7 +7,10 @@ localenv = env.Clone()
 
 #explicit links
 localenv["LIBS"] = [
-	'cppunit',
+	'boost_thread',
+	'boost_date_time',
+	'boost_system',
+	'cppunit',	
 ]
 
 #shared_lib = SConscript('../cpp/SConscript')
