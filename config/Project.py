@@ -22,6 +22,7 @@ def generate(env, **kw):
             env['CXX'] = 'g++-' + env['gcc_version']
         else:
             env['CXX'] = 'g++'
+        env['CXXVERSION'] = env['gcc_version']
         if Arch=='x86Linux':
             env['Suffix64']='64'
             env['output_folder'] = 'opt64'
@@ -49,6 +50,7 @@ def generate(env, **kw):
         else:
             env['java_arch'] = 'sparc'
     print "CC is:", env['CC']
+    print "CXX is:", env['CXX']
 
     if Arch == 'x86Linux':
         env['CCFLAGS'] = [
@@ -62,12 +64,12 @@ def generate(env, **kw):
             '-fPIC',
             '-D_TEMPLATES_ENABLE_',
             '-DACE_HAS_EXCEPTIONS',
-            '-DuseTao'
-            '-include','/usr/include/stdio.h',
-            '-include','/usr/include/stdlib.h',
-            '-include','/usr/include/c++/' + env['gcc_version'] + '/typeinfo',
-            '-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #KRMSParser pour auto_ptr
-            '-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #KASRKCVaRAggregation pour "sort"
+            '-DuseTao',
+            #'-include','/usr/include/stdio.h',
+            #'-include','/usr/include/stdlib.h',
+            #'-include','/usr/include/c++/' + env['gcc_version'] + '/typeinfo',
+            #'-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
+            #'-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
         #Activate for debug purpose (when we integrate kplus and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
@@ -126,7 +128,7 @@ def generate(env, **kw):
             '/nodefaultlib:libcd.lib',
             '/nodefaultlib:libcmtd.lib',
         ]
-        
+
     print "CCCOM is:", env.subst('$CCCOM')
 
 def exists(env):

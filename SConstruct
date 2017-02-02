@@ -26,8 +26,8 @@ vars.AddVariables(
 env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
 
 #print "Platform :", platform.platform()
-#print "machine : ", platform.machine()  
-    
+#print "machine : ", platform.machine()
+
 if Arch in ['x86sol','sun4sol']:
     env = Environment(tools=['suncc', 'sunc++', 'sunlink'])
 #print "ENV PATH :", env['ENV']['PATH']
@@ -54,6 +54,8 @@ Decider('MD5-timestamp')
 env['sandbox'] = Dir("#").srcnode().abspath
 
 print "sandbox :", env['sandbox']
+
+print "CXXVERSION :", env['CXXVERSION']
 
 #
 # Environment extraction
@@ -121,11 +123,11 @@ thePath=os.path.join(LIBRARY_STATIC_OUTPUT_PATH,'shared')
 ProjectMacro.mkdir(thePath)
 LIBRARY_OUTPUT_PATH = Dir(thePath).srcnode().abspath
 
-if env['target'] == 'local':
-  PROJECT_BINARY_DIR = '.'
-else:
-  PROJECT_BINARY_DIR = os.path.abspath(os.path.join(thePath,theOptDbgFolder))
-  VariantDir(os.path.join(PROJECT_BINARY_DIR,'sample'), 'sample', duplicate=0)
+#if env['target'] == 'local':
+#  PROJECT_BINARY_DIR = '.'
+#else:
+#  PROJECT_BINARY_DIR = os.path.abspath(os.path.join(thePath,theOptDbgFolder))
+#  VariantDir(os.path.join(PROJECT_BINARY_DIR,'sample'), 'sample', duplicate=0)
 
 env['LIBRARY_STATIC_OUTPUT_PATH'] = LIBRARY_STATIC_OUTPUT_PATH
 env['LIBRARY_OUTPUT_PATH'] = LIBRARY_OUTPUT_PATH
@@ -259,12 +261,12 @@ Export('env', 'Versions')
 #Sconscript calls
 if not GetOption('help'):
     env.SConscript([
-    		PROJECT_BINARY_DIR+'/sample/microsoft/src/main/cpp/SConscript',
-		PROJECT_BINARY_DIR+'/sample/microsoft/src/main/app/SConscript',
+    		DEV_SOURCE_DIR+'/sample/microsoft/src/main/cpp/SConscript',
+		DEV_SOURCE_DIR+'/sample/microsoft/src/main/app/SConscript',
     ])
 
-SConscript(PROJECT_BINARY_DIR+'/sample/microsoft/src/test/cpp/SConscript')
-SConscript(PROJECT_BINARY_DIR+'/sample/microsoft/src/test/app/SConscript')
+SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/cpp/SConscript')
+SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/app/SConscript')
 
 if 'package' in COMMAND_LINE_TARGETS:
     env.Package( NAME           = 'nabla',
