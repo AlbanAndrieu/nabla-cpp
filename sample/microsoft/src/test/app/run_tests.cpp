@@ -18,8 +18,8 @@
 
 void print_all_tests(CppUnit::Test* t, const char* spacer, std::ostream& os) {
     os << t->getName() << spacer;
-    for (int i=0; i < t->getChildTestCount(); i++) {
-        print_all_tests( t->getChildTestAt(i), spacer, os );
+    for (int i = 0; i < t->getChildTestCount(); i++) {
+        print_all_tests(t->getChildTestAt(i), spacer, os);
     }
 }
 
@@ -29,7 +29,6 @@ int main(int argc, char* argv[]) {
 
     //CppUnit::TestFactoryRegistry& registry = CppUnit::TestFactoryRegistry::getRegistry();
 
-
     // Adds the test to the list of test to run
     CppUnit::TextUi::TestRunner runner;
 
@@ -38,23 +37,23 @@ int main(int argc, char* argv[]) {
     if (argc > 1) {
 
         std::string testName = argv[1];
-        std::cout << "Running "  <<  testName << "." << std::endl;
+        std::cout << "Running " << testName << "." << std::endl;
 
         if (testName.compare("circular_queueTest") == 0) {
-            runner.addTest(circular_queueTest::suite() );
+            runner.addTest(circular_queueTest::suite());
             std::cout << "Test circular_queueTest loaded." << std::endl;
         }
         if (testName.compare("TriangleTest") == 0) {
-            runner.addTest(TriangleTest::suite() );
+            runner.addTest(TriangleTest::suite());
             std::cout << "Test TriangleTest loaded." << std::endl;
         }
         if (testName.compare("cppunitTest") == 0) {
-            runner.addTest(cppunitTest::suite() );
+            runner.addTest(cppunitTest::suite());
             std::cout << "Test cppunitTest loaded." << std::endl;
         }
 
     } else {
-        runner.addTest(circular_queueTest::suite() );
+        runner.addTest(circular_queueTest::suite());
     }
     // Run the tests.
     bool failed = runner.run("", false);

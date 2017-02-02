@@ -6,7 +6,9 @@
 #ifndef TRIANGLE_H_
 #define TRIANGLE_H_
 
-enum TriangleType{SCALENE, ISOSCELES, EQUILATERAL, ERROR };
+enum TriangleType {
+    SCALENE, ISOSCELES, EQUILATERAL, ERROR
+};
 
 class Triangle {
 public:
