@@ -38,7 +38,8 @@ class circular_queue {
     //You must declare it outside of the class.
     //In order for the function to access private (and/or protected) member variables of the class, you should make it a friend of the class
     // See : http://www.functionx.com/cpp/Lesson25.htm
-    friend std::ostream& operator<<(std::ostream& out, const circular_queue& queue);
+    friend std::ostream& operator<<(std::ostream& out,
+            const circular_queue& queue);
 
 private:
     // I usually use boost::shared_array<int> m_queue;
@@ -88,7 +89,8 @@ public:
      *  \throw This constructor throw an exception "Size value must be bigger than 0" if the size is not correct
      *  \throw This constructor throw an exception if it cannot create the array of integer (it can be std::bad_alloc, std::out_of_range, ...)
      */
-    circular_queue(const unsigned int size, const std::string& name = "default");
+    circular_queue(const unsigned int size,
+            const std::string& name = "default");
 
     /*!
      *  \brief The destructor
@@ -141,7 +143,9 @@ public:
      */
     const std::string values() const;
 
-    inline void clear(void) { ui_head = ui_tail = ui_nbElement = 0; }
+    inline void clear(void) {
+        ui_head = ui_tail = ui_nbElement = 0;
+    }
 
     //inline int size(void) const { return (ui_size - 1); }
 

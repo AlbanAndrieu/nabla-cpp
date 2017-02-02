@@ -5,20 +5,20 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class circular_queueTest: public CppUnit::TestFixture {
-    CPPUNIT_TEST_SUITE( circular_queueTest );
-    CPPUNIT_TEST( testConstructor );
-    CPPUNIT_TEST( testConstructorWithNegative );
-    CPPUNIT_TEST( testConstructorWithZero );
-    CPPUNIT_TEST( testCopyConstructor );
-    CPPUNIT_TEST( testEnqueue );
-    CPPUNIT_TEST( testOperatorOutput );
-    CPPUNIT_TEST( testEnqueueTooMany );
-    CPPUNIT_TEST( testEnqueueNotEnough );
-    CPPUNIT_TEST( testDequeue );
-    CPPUNIT_TEST( testDequeueTooMany );
-    CPPUNIT_TEST( testEnqueueDequeue );
-    CPPUNIT_TEST( testEnqueueDequeueThread );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( circular_queueTest );
+    CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testConstructorWithNegative);
+    CPPUNIT_TEST(testConstructorWithZero);
+    CPPUNIT_TEST(testCopyConstructor);
+    CPPUNIT_TEST(testEnqueue);
+    CPPUNIT_TEST(testOperatorOutput);
+    CPPUNIT_TEST(testEnqueueTooMany);
+    CPPUNIT_TEST(testEnqueueNotEnough);
+    CPPUNIT_TEST(testDequeue);
+    CPPUNIT_TEST(testDequeueTooMany);
+    CPPUNIT_TEST(testEnqueueDequeue);
+    CPPUNIT_TEST(testEnqueueDequeueThread);CPPUNIT_TEST_SUITE_END()
+    ;
 
 public:
     void setUp();

@@ -15,7 +15,8 @@
 //! The constructor.
 // Attributes initialization
 circular_queue::circular_queue(const unsigned int size, const std::string& name) :
-    ui_size(DEFAULT_SIZE), s_name(name), m_queue(0), ui_head(0), ui_tail(0), ui_nbElement(0) {
+        ui_size(DEFAULT_SIZE), s_name(name), m_queue(0), ui_head(0), ui_tail(0), ui_nbElement(
+                0) {
 
     std::cout << "Constructor..." << std::endl;
 
@@ -26,8 +27,7 @@ circular_queue::circular_queue(const unsigned int size, const std::string& name)
     ui_size = size;
     try {
         m_queue = new int[ui_size];
-    }
-    catch( ... ) {
+    } catch (...) {
         std::cerr << "Memory allocation failure!" << std::endl;
         throw;
     }
@@ -58,12 +58,12 @@ circular_queue::~circular_queue() {
     //TODO Win32 check if we need to destroy the mutex properly
 }
 
-circular_queue::circular_queue(const circular_queue& copy)
-    : ui_size(copy.ui_size), s_name(copy.s_name), m_queue(new int[copy.ui_size])
-{
+circular_queue::circular_queue(const circular_queue& copy) :
+        ui_size(copy.ui_size), s_name(copy.s_name), m_queue(
+                new int[copy.ui_size]) {
     std::cout << "Copy constructor..." << std::endl;
 
-    std::copy(copy.m_queue, copy.m_queue + copy.ui_size, m_queue);    // #include <algorithm> for std::copy
+    std::copy(copy.m_queue, copy.m_queue + copy.ui_size, m_queue); // #include <algorithm> for std::copy
 }
 
 const std::string& circular_queue::name() const {
@@ -131,7 +131,8 @@ const int circular_queue::dequeue(const bool reset) {
         ui_head = (ui_head + 1) % ui_size;
 
         ui_nbElement--;
-        std::cout << "Next head value is at position : " << ui_head << std::endl;
+        std::cout << "Next head value is at position : " << ui_head
+                << std::endl;
         std::cout << "There is/are : " << ui_nbElement
                 << " remaining element(s)" << std::endl;
     }
@@ -143,13 +144,15 @@ const int circular_queue::dequeue(const bool reset) {
 const std::string circular_queue::values() const {
     std::ostringstream values;
     values << "[";
-    std::cout << "Print value of circular_queue " << s_name << "of " << ui_size << " : " << std::endl;
+    std::cout << "Print value of circular_queue " << s_name << "of " << ui_size
+            << " : " << std::endl;
 
     // Mutex is not necessary has we do not change any values
     //boost::mutex::scoped_lock lock(m_mutex);
     //TODO Win32 WaitForSingleObject(hMutex,INFINITE); // wait for ownership
     for (unsigned int i = 0; i < ui_size; i++) {
-        std::cout << "Value of index " << i << " is " << m_queue[i] << std::endl;
+        std::cout << "Value of index " << i << " is " << m_queue[i]
+                << std::endl;
         if (i != 0) {
             values << "-";
         }
@@ -160,8 +163,7 @@ const std::string circular_queue::values() const {
     return values.str();
 }
 
-std::ostream& operator<<(std::ostream& out, const circular_queue& queue)
-{
+std::ostream& operator<<(std::ostream& out, const circular_queue& queue) {
     out << queue.values();
     return out;
 }
