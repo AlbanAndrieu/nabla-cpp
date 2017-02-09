@@ -1,5 +1,5 @@
-.project
-.cproject
+#.project
+#.cproject
 .settings/
 .classpath
 target/
