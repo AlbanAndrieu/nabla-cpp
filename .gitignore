@@ -13,6 +13,8 @@ target/
 *.pyc
 *.o
 *.os
+*.gcno
+*.tar.gz
 .agignore
 .lvimrc
 /tmp/

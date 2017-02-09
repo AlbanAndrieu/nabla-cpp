@@ -9,8 +9,12 @@ localenv = env.Clone()
 localenv["LIBS"] = [
 	'boost_thread',
 	'boost_date_time',
-	'boost_system'
+	'boost_system',
 ]
+
+#https://o440.wordpress.com/2011/02/25/scons-and-code-coverage/
+localenv.Append(CCFLAGS = ['-fprofile-arcs', '-ftest-coverage'])
+localenv.Append(LIBS = ['gcov'])
 
 #adding OS specific libs
 #localenv['LIBS'].extend(localenv['OSDependentLibs'])

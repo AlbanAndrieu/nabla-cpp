@@ -19,7 +19,7 @@ print "Arch :", Arch
 vars = Variables('variables.py') # you can store your defaults in this file
 vars.AddVariables(
     EnumVariable('opt', 'Set to True to build with opt flags', 'False', ['True', 'False']),
-    ('gcc_version', 'Set gcc version to use', '4.1.2'),
+    ('gcc_version', 'Set gcc version to use', '4.8.4'),
     ('install_path', 'Set install path', 'install'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
 )
