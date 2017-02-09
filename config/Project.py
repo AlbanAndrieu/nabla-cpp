@@ -55,28 +55,34 @@ def generate(env, **kw):
     if Arch == 'x86Linux':
         env['CCFLAGS'] = [
             '-pthread',
-            '-fomit-frame-pointer',
-            '-Wno-deprecated',
-            '-Wno-ctor-dtor-privacy',
+            '-Wall',
+            '-O2',
+            #'-fomit-frame-pointer',
+            #'-Wno-deprecated',
+            #'-Wno-ctor-dtor-privacy',
             '-Dlinux',
-            '-std=gnu++98',
-            '-fstrict-aliasing',
-            '-fPIC',
-            '-D_TEMPLATES_ENABLE_',
+            #'-std=gnu++98',
+            '-std=gnu++11',
+            '-pedantic-errors',
+            #'-fprofile-generate',
+            #'--coverage',
+            #'-fstrict-aliasing',
             '-DACE_HAS_EXCEPTIONS',
             '-DuseTao',
+            #'-fPIC',
+            #'-D_TEMPLATES_ENABLE_',
             #'-include','/usr/include/stdio.h',
             #'-include','/usr/include/stdlib.h',
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/typeinfo',
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
-        #Activate for debug purpose (when we integrate kplus and we have error with symbols resolutions)
+        #Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
         # If not set, -l order on command lines matter for static librairies
-        env['LINKFLAGS'] = [
-            '-Wl,--no-as-needed',
-        ]
+        #env['LINKFLAGS'] = [
+        #    '-Wl,--no-as-needed',
+        #]
     elif Arch in ['x86sol','sun4sol']:
 	env['CCFLAGS'] = [
 	    '-features=no%conststrings,no%localfor',
