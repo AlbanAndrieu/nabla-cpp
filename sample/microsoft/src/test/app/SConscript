@@ -5,20 +5,40 @@ import ProjectMacro
 Import('env')
 localenv = env.Clone()
 
+# Compile in 32 bits
+#localenv.Prepend(CCFLAGS = ['-m32'])
+#localenv.Prepend(LINKFLAGS = ['-m32'])
+
+#shared_lib = SConscript('../cpp/SConscript')
+#localenv.Append( LIBS=[shared_lib] )
+
 #explicit links
 localenv["LIBS"] = [
 	'boost_thread',
 	'boost_date_time',
 	'boost_system',
-	'cppunit',	
+	'cppunit',
 ]
 
-#shared_lib = SConscript('../cpp/SConscript')
-#localenv.Append( LIBS=[shared_lib] )
+#localenv['LINKFLAGS'] = [
+#	'-Wl,--no-as-needed',
+#]
+
+#localenv["CXXFLAGS"] = [
+#    "-std=c++11",
+#    "-Wall",
+#    "-O3",
+#]
+
+#localenv.Append( '-Wl,--no-as-needed -lcppunit' )
 
 #adding OS specific libs
 #localenv['LIBS'].extend(localenv['OSDependentLibs'])
 localenv.Append(LIBS=['test_library'], LIBPATH=['#test_library'])
+
+#localenv.MergeFlags([
+#	'-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
+#])
 
 #building Binary
 p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_tests'), Glob('*.cpp'))

@@ -56,7 +56,7 @@ def generate(env, **kw):
         env['CCFLAGS'] = [
             '-pthread',
             '-Wall',
-            '-O2',
+            '-O3',
             #'-fomit-frame-pointer',
             #'-Wno-deprecated',
             #'-Wno-ctor-dtor-privacy',
@@ -73,6 +73,7 @@ def generate(env, **kw):
             #'-D_TEMPLATES_ENABLE_',
             #'-include','/usr/include/stdio.h',
             #'-include','/usr/include/stdlib.h',
+            #'-include','/usr/include/c++/' + env['gcc_version'] + '/cstring',
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/typeinfo',
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
