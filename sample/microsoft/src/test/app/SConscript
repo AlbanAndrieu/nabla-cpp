@@ -17,12 +17,10 @@ localenv["LIBS"] = [
 	'boost_thread',
 	'boost_date_time',
 	'boost_system',
-	'cppunit',
 ]
 
-#localenv['LINKFLAGS'] = [
-#	'-Wl,--no-as-needed',
-#]
+#https://bugs.launchpad.net/ubuntu/+source/cppunit/+bug/985841
+localenv.Append(LINKFLAGS = "-Wl,--no-as-needed -lcppunit") 
 
 #localenv["CXXFLAGS"] = [
 #    "-std=c++11",
@@ -36,9 +34,9 @@ localenv["LIBS"] = [
 #localenv['LIBS'].extend(localenv['OSDependentLibs'])
 localenv.Append(LIBS=['test_library'], LIBPATH=['#test_library'])
 
-#localenv.MergeFlags([
-#	'-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
-#])
+localenv.MergeFlags([
+	'-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
+])
 
 #building Binary
 p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_tests'), Glob('*.cpp'))

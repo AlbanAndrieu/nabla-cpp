@@ -20,9 +20,9 @@ localenv.Append(LIBS = ['gcov'])
 #localenv['LIBS'].extend(localenv['OSDependentLibs'])
 localenv.Append(LIBS=['main_library'], LIBPATH=['#main_library'])
 
-#localenv.MergeFlags([
-#	'-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
-#])
+localenv.MergeFlags([
+	'-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
+])
 
 #building Binary
 p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_app'), Glob('*.cpp'))

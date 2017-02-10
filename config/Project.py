@@ -55,7 +55,10 @@ def generate(env, **kw):
     if Arch == 'x86Linux':
         env['CCFLAGS'] = [
             '-pthread',
+            '-g',
             '-Wall',
+            #'-Werror',
+            '-ansi',
             '-O3',
             #'-fomit-frame-pointer',
             #'-Wno-deprecated',
@@ -63,6 +66,7 @@ def generate(env, **kw):
             '-Dlinux',
             #'-std=gnu++98',
             '-std=gnu++11',
+            '-pedantic',
             '-pedantic-errors',
             #'-fprofile-generate',
             #'--coverage',
@@ -84,6 +88,8 @@ def generate(env, **kw):
         #env['LINKFLAGS'] = [
         #    '-Wl,--no-as-needed',
         #]
+        env.Append(CORECFLAGS = '-Wextra')
+        env.Append(LINKFLAGS = '-g --coverage')
     elif Arch in ['x86sol','sun4sol']:
 	env['CCFLAGS'] = [
 	    '-features=no%conststrings,no%localfor',
