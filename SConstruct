@@ -84,10 +84,10 @@ print "PROJECT_THIRDPARTY_PATH :", PROJECT_THIRDPARTY_PATH
 PROJECT_JAVA_PATH = ProjectMacro.getEnvVariable('JAVA_HOME', PROJECT_THIRDPARTY_PATH + 'java' + Arch)
 print "PROJECT_JAVA_PATH :", PROJECT_JAVA_PATH
 
-env['cache_path'] = DEV_BINARY_DIR + '/buildcache-' + Arch
+env['cache_path'] = DEV_BINARY_DIR + '/../buildcache-' + Arch
 print "env['cache_path'] :", env['cache_path']
 CacheDir(env['cache_path'])
-SConsignFile(DEV_BINARY_DIR + '/scons-signatures-' + Arch)
+SConsignFile(DEV_BINARY_DIR + '/../scons-signatures-' + Arch)
 
 #registering function to handle builderrors correctly
 ProjectMacro.registerBuildFailuresAtExit()
