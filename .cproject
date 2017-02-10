@@ -42,9 +42,9 @@
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1584192801" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1179380720" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include/linux"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include/linux"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp"/>
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp/target/include/x86Linux"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
 									<listOptionValue builtIn="false" value="/usr/local/include"/>
@@ -159,6 +159,7 @@
 									<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__=(-4931)"/>
 									<listOptionValue builtIn="false" value="__INTPTR_MAX__=9223372036854775807L"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST32_MAX__=4294967295U"/>
+									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201103L"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_RELEASE=3"/>
 									<listOptionValue builtIn="false" value="__DEC32_MIN__=1E-95DF"/>
 									<listOptionValue builtIn="false" value="__INT_FAST32_TYPE__ long=int"/>
@@ -263,7 +264,6 @@
 									<listOptionValue builtIn="false" value="__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8=1"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_ACQ_REL=4"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST8_TYPE__ unsigned=char"/>
-									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201505L"/>
 									<listOptionValue builtIn="false" value="__INT8_C(c)=c"/>
 									<listOptionValue builtIn="false" value="__UINT16_TYPE__ short unsigned=int"/>
 									<listOptionValue builtIn="false" value="__INT64_TYPE__ long=int"/>
@@ -311,9 +311,9 @@
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.255328022" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.575999930" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include/linux"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include/linux"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp"/>
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp/target/include/x86Linux"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
@@ -392,7 +392,6 @@
 									<listOptionValue builtIn="false" value="_STDC_PREDEF_H=1"/>
 									<listOptionValue builtIn="false" value="__DEC64_MAX_EXP__=385"/>
 									<listOptionValue builtIn="false" value="__SIG_ATOMIC_TYPE__=int"/>
-									<listOptionValue builtIn="false" value="unix=1"/>
 									<listOptionValue builtIn="false" value="__DBL_MIN__=((double)2.22507385850720138309e-308L)"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_CONSUME=1"/>
 									<listOptionValue builtIn="false" value="__WCHAR_MIN__ (-__WCHAR_MAX__ -=1)"/>
@@ -425,6 +424,7 @@
 									<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__=(-4931)"/>
 									<listOptionValue builtIn="false" value="__PTRDIFF_TYPE__ long=int"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST32_MAX__=4294967295U"/>
+									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201103L"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_RELEASE=3"/>
 									<listOptionValue builtIn="false" value="__DEC32_MIN__=1E-95DF"/>
 									<listOptionValue builtIn="false" value="__INT_FAST32_TYPE__ long=int"/>
@@ -528,7 +528,7 @@
 									<listOptionValue builtIn="false" value="__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8=1"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_ACQ_REL=4"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST8_TYPE__ unsigned=char"/>
-									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201505L"/>
+									<listOptionValue builtIn="false" value="__STRICT_ANSI__=1"/>
 									<listOptionValue builtIn="false" value="__INT8_C(c)=c"/>
 									<listOptionValue builtIn="false" value="__UINT16_TYPE__ short unsigned=int"/>
 									<listOptionValue builtIn="false" value="__INT64_TYPE__ long=int"/>
@@ -609,9 +609,9 @@
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1236815873" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.197516114" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include/linux"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include/linux"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp"/>
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp/target/include/x86Linux"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
 									<listOptionValue builtIn="false" value="/usr/local/include"/>
@@ -726,6 +726,7 @@
 									<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__=(-4931)"/>
 									<listOptionValue builtIn="false" value="__INTPTR_MAX__=9223372036854775807L"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST32_MAX__=4294967295U"/>
+									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201103L"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_RELEASE=3"/>
 									<listOptionValue builtIn="false" value="__DEC32_MIN__=1E-95DF"/>
 									<listOptionValue builtIn="false" value="__INT_FAST32_TYPE__ long=int"/>
@@ -830,7 +831,6 @@
 									<listOptionValue builtIn="false" value="__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8=1"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_ACQ_REL=4"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST8_TYPE__ unsigned=char"/>
-									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201505L"/>
 									<listOptionValue builtIn="false" value="__INT8_C(c)=c"/>
 									<listOptionValue builtIn="false" value="__UINT16_TYPE__ short unsigned=int"/>
 									<listOptionValue builtIn="false" value="__INT64_TYPE__ long=int"/>
@@ -878,9 +878,9 @@
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.113577838" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.706076582" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include/linux"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include/linux"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp"/>
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp/target/include/x86Linux"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
@@ -959,7 +959,6 @@
 									<listOptionValue builtIn="false" value="_STDC_PREDEF_H=1"/>
 									<listOptionValue builtIn="false" value="__DEC64_MAX_EXP__=385"/>
 									<listOptionValue builtIn="false" value="__SIG_ATOMIC_TYPE__=int"/>
-									<listOptionValue builtIn="false" value="unix=1"/>
 									<listOptionValue builtIn="false" value="__DBL_MIN__=((double)2.22507385850720138309e-308L)"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_CONSUME=1"/>
 									<listOptionValue builtIn="false" value="__WCHAR_MIN__ (-__WCHAR_MAX__ -=1)"/>
@@ -992,6 +991,7 @@
 									<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__=(-4931)"/>
 									<listOptionValue builtIn="false" value="__PTRDIFF_TYPE__ long=int"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST32_MAX__=4294967295U"/>
+									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201103L"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_RELEASE=3"/>
 									<listOptionValue builtIn="false" value="__DEC32_MIN__=1E-95DF"/>
 									<listOptionValue builtIn="false" value="__INT_FAST32_TYPE__ long=int"/>
@@ -1095,7 +1095,7 @@
 									<listOptionValue builtIn="false" value="__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8=1"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_ACQ_REL=4"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST8_TYPE__ unsigned=char"/>
-									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201505L"/>
+									<listOptionValue builtIn="false" value="__STRICT_ANSI__=1"/>
 									<listOptionValue builtIn="false" value="__INT8_C(c)=c"/>
 									<listOptionValue builtIn="false" value="__UINT16_TYPE__ short unsigned=int"/>
 									<listOptionValue builtIn="false" value="__INT64_TYPE__ long=int"/>
@@ -1182,9 +1182,9 @@
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1446414487" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1480556381" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include/linux"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include/linux"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp"/>
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp/target/include/x86Linux"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
 									<listOptionValue builtIn="false" value="/usr/local/include"/>
@@ -1299,6 +1299,7 @@
 									<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__=(-4931)"/>
 									<listOptionValue builtIn="false" value="__INTPTR_MAX__=9223372036854775807L"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST32_MAX__=4294967295U"/>
+									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201103L"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_RELEASE=3"/>
 									<listOptionValue builtIn="false" value="__DEC32_MIN__=1E-95DF"/>
 									<listOptionValue builtIn="false" value="__INT_FAST32_TYPE__ long=int"/>
@@ -1403,7 +1404,6 @@
 									<listOptionValue builtIn="false" value="__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8=1"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_ACQ_REL=4"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST8_TYPE__ unsigned=char"/>
-									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201505L"/>
 									<listOptionValue builtIn="false" value="__INT8_C(c)=c"/>
 									<listOptionValue builtIn="false" value="__UINT16_TYPE__ short unsigned=int"/>
 									<listOptionValue builtIn="false" value="__INT64_TYPE__ long=int"/>
@@ -1451,9 +1451,9 @@
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.1976473480" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.935934107" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include/linux"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include/linux"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp"/>
-									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-oracle/include"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-8-oracle/include"/>
 									<listOptionValue builtIn="false" value="/workspace/users/albandri30/nabla-cpp/target/include/x86Linux"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
@@ -1532,7 +1532,6 @@
 									<listOptionValue builtIn="false" value="_STDC_PREDEF_H=1"/>
 									<listOptionValue builtIn="false" value="__DEC64_MAX_EXP__=385"/>
 									<listOptionValue builtIn="false" value="__SIG_ATOMIC_TYPE__=int"/>
-									<listOptionValue builtIn="false" value="unix=1"/>
 									<listOptionValue builtIn="false" value="__DBL_MIN__=((double)2.22507385850720138309e-308L)"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_CONSUME=1"/>
 									<listOptionValue builtIn="false" value="__WCHAR_MIN__ (-__WCHAR_MAX__ -=1)"/>
@@ -1565,6 +1564,7 @@
 									<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__=(-4931)"/>
 									<listOptionValue builtIn="false" value="__PTRDIFF_TYPE__ long=int"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST32_MAX__=4294967295U"/>
+									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201103L"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_RELEASE=3"/>
 									<listOptionValue builtIn="false" value="__DEC32_MIN__=1E-95DF"/>
 									<listOptionValue builtIn="false" value="__INT_FAST32_TYPE__ long=int"/>
@@ -1668,7 +1668,7 @@
 									<listOptionValue builtIn="false" value="__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8=1"/>
 									<listOptionValue builtIn="false" value="__ATOMIC_ACQ_REL=4"/>
 									<listOptionValue builtIn="false" value="__UINT_LEAST8_TYPE__ unsigned=char"/>
-									<listOptionValue builtIn="false" value="__STDC_ISO_10646__=201505L"/>
+									<listOptionValue builtIn="false" value="__STRICT_ANSI__=1"/>
 									<listOptionValue builtIn="false" value="__INT8_C(c)=c"/>
 									<listOptionValue builtIn="false" value="__UINT16_TYPE__ short unsigned=int"/>
 									<listOptionValue builtIn="false" value="__INT64_TYPE__ long=int"/>
