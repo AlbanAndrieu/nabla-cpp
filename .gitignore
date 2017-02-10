@@ -22,6 +22,7 @@ target/
 *.log
 variables.py
 .pmd
+.pydevproject
 
 path.sh
 scons.log?

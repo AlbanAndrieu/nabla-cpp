@@ -58,6 +58,7 @@
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1547614992" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="useTao"/>
 									<listOptionValue builtIn="false" value="ACE_HAS_EXCEPTIONS"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="linux"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="__FLOAT_WORD_ORDER__=__ORDER_LITTLE_ENDIAN__"/>
@@ -324,6 +325,7 @@
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1923090205" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="useTao"/>
 									<listOptionValue builtIn="false" value="ACE_HAS_EXCEPTIONS"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="linux"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="__FLOAT_WORD_ORDER__=__ORDER_LITTLE_ENDIAN__"/>
@@ -404,6 +406,7 @@
 									<listOptionValue builtIn="false" value="__DECIMAL_DIG__=21"/>
 									<listOptionValue builtIn="false" value="__DEC32_MAX__=9.999999E96DF"/>
 									<listOptionValue builtIn="false" value="__DBL_DECIMAL_DIG__=17"/>
+									<listOptionValue builtIn="false" value="__SSE__=1"/>
 									<listOptionValue builtIn="false" value="__INTMAX_TYPE__ long=int"/>
 									<listOptionValue builtIn="false" value="__GCC_ATOMIC_LLONG_LOCK_FREE=2"/>
 									<listOptionValue builtIn="false" value="__k8__=1"/>
@@ -439,7 +442,7 @@
 									<listOptionValue builtIn="false" value="__DBL_MIN_EXP__=(-1021)"/>
 									<listOptionValue builtIn="false" value="__STDC_NO_THREADS__=1"/>
 									<listOptionValue builtIn="false" value="__FLT_MIN_EXP__=(-125)"/>
-									<listOptionValue builtIn="false" value="__SSE__=1"/>
+									<listOptionValue builtIn="false" value="NDEBUG=1"/>
 									<listOptionValue builtIn="false" value="__UINT32_MAX__=4294967295U"/>
 									<listOptionValue builtIn="false" value="__DBL_MAX__=((double)1.79769313486231570815e+308L)"/>
 									<listOptionValue builtIn="false" value="__INT_FAST16_MAX__=9223372036854775807L"/>
@@ -625,6 +628,7 @@
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.288180285" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="useTao"/>
 									<listOptionValue builtIn="false" value="ACE_HAS_EXCEPTIONS"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="linux"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="__FLOAT_WORD_ORDER__=__ORDER_LITTLE_ENDIAN__"/>
@@ -891,6 +895,7 @@
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1365627240" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="useTao"/>
 									<listOptionValue builtIn="false" value="ACE_HAS_EXCEPTIONS"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="linux"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="__FLOAT_WORD_ORDER__=__ORDER_LITTLE_ENDIAN__"/>
@@ -971,6 +976,7 @@
 									<listOptionValue builtIn="false" value="__DECIMAL_DIG__=21"/>
 									<listOptionValue builtIn="false" value="__DEC32_MAX__=9.999999E96DF"/>
 									<listOptionValue builtIn="false" value="__DBL_DECIMAL_DIG__=17"/>
+									<listOptionValue builtIn="false" value="__SSE__=1"/>
 									<listOptionValue builtIn="false" value="__INTMAX_TYPE__ long=int"/>
 									<listOptionValue builtIn="false" value="__GCC_ATOMIC_LLONG_LOCK_FREE=2"/>
 									<listOptionValue builtIn="false" value="__k8__=1"/>
@@ -1006,7 +1012,7 @@
 									<listOptionValue builtIn="false" value="__DBL_MIN_EXP__=(-1021)"/>
 									<listOptionValue builtIn="false" value="__STDC_NO_THREADS__=1"/>
 									<listOptionValue builtIn="false" value="__FLT_MIN_EXP__=(-125)"/>
-									<listOptionValue builtIn="false" value="__SSE__=1"/>
+									<listOptionValue builtIn="false" value="NDEBUG=1"/>
 									<listOptionValue builtIn="false" value="__UINT32_MAX__=4294967295U"/>
 									<listOptionValue builtIn="false" value="__DBL_MAX__=((double)1.79769313486231570815e+308L)"/>
 									<listOptionValue builtIn="false" value="__INT_FAST16_MAX__=9223372036854775807L"/>
@@ -1198,6 +1204,7 @@
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1780931037" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="useTao"/>
 									<listOptionValue builtIn="false" value="ACE_HAS_EXCEPTIONS"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="linux"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="__FLOAT_WORD_ORDER__=__ORDER_LITTLE_ENDIAN__"/>
@@ -1464,6 +1471,7 @@
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.774594207" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="useTao"/>
 									<listOptionValue builtIn="false" value="ACE_HAS_EXCEPTIONS"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="linux"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="__FLOAT_WORD_ORDER__=__ORDER_LITTLE_ENDIAN__"/>
@@ -1544,6 +1552,7 @@
 									<listOptionValue builtIn="false" value="__DECIMAL_DIG__=21"/>
 									<listOptionValue builtIn="false" value="__DEC32_MAX__=9.999999E96DF"/>
 									<listOptionValue builtIn="false" value="__DBL_DECIMAL_DIG__=17"/>
+									<listOptionValue builtIn="false" value="__SSE__=1"/>
 									<listOptionValue builtIn="false" value="__INTMAX_TYPE__ long=int"/>
 									<listOptionValue builtIn="false" value="__GCC_ATOMIC_LLONG_LOCK_FREE=2"/>
 									<listOptionValue builtIn="false" value="__k8__=1"/>
@@ -1579,7 +1588,7 @@
 									<listOptionValue builtIn="false" value="__DBL_MIN_EXP__=(-1021)"/>
 									<listOptionValue builtIn="false" value="__STDC_NO_THREADS__=1"/>
 									<listOptionValue builtIn="false" value="__FLT_MIN_EXP__=(-125)"/>
-									<listOptionValue builtIn="false" value="__SSE__=1"/>
+									<listOptionValue builtIn="false" value="NDEBUG=1"/>
 									<listOptionValue builtIn="false" value="__UINT32_MAX__=4294967295U"/>
 									<listOptionValue builtIn="false" value="__DBL_MAX__=((double)1.79769313486231570815e+308L)"/>
 									<listOptionValue builtIn="false" value="__INT_FAST16_MAX__=9223372036854775807L"/>
