@@ -14,12 +14,14 @@ target/
 *.o
 *.os
 *.gcno
+*.gcda
 *.tar.gz
 .agignore
 .lvimrc
 /tmp/
 *.log
 variables.py
+.pmd
 
 path.sh
 scons.log?
@@ -27,7 +29,7 @@ CMakeCache.txt
 CPackConfig.cmake
 CPackSourceConfig.cmake
 doxy.config
-CMakeFiles
+sample/build-linux/CMakeFiles
 sample/build-linux/src
 sample/build-linux/.cproject
 sample/build-linux/CTestTestfile.cmake
