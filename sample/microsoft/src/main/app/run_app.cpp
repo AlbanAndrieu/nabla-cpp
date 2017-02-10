@@ -5,6 +5,13 @@ enum TriangleType {
     SCALENE, ISOSCELES, EQUILATERAL, ERROR
 };
 
+/**
+*
+* @param a
+* @param b
+* @param c
+* @return
+*/
 static int triangleType(const int a, const int b, const int c) {
     std::cout << "\t[a : " << a << ", b : " << b << ", c : " << c << "]"
             << std::endl;

@@ -18,12 +18,27 @@ EnsureSConsVersion(2, 1)
 Arch = ProjectMacro.getArch()
 print "Arch :", Arch
 
+Help('''
+Type 'scons' to build and run all the available test cases.
+It will automatically detect your platform and C compiler and
+build appropriately.
+You can modify the behavious using following options:
+CC          Name of C compiler
+CXX         Name of C++ compiler
+CCFLAGS     Flags to pass to the C compiler
+CXXFLAGS    Flags to pass to the C++ compiler
+For example, for a clang build, use:
+scons CC=clang CXX=clang++
+''')
+
 # Command line variables definition
 vars = Variables('variables.py') # you can store your defaults in this file
 vars.AddVariables(
     EnumVariable('opt', 'Set to True to build with opt flags', 'False', ['True', 'False']),
     ('gcc_version', 'Set gcc version to use', '4.8.4'),
     ('install_path', 'Set install path', 'install'),
+    ('CC', 'Set C compiler', 'gcc'),
+    ('CXX', 'Set C++ compiler', 'g++'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
 )
 env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
@@ -34,7 +49,14 @@ env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
 if Arch in ['x86sol','sun4sol']:
     env = Environment(tools=['suncc', 'sunc++', 'sunlink'])
 #print "ENV PATH :", env['ENV']['PATH']
-env = Environment(variables = vars, tools = ['default', 'packaging', 'Project'], toolpath = ['config'])
+env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project'], toolpath = ['config'])
+
+# Allow overriding the compiler with scons CC=???
+if 'CC' in ARGUMENTS: env.Replace(CC = ARGUMENTS['CC'])
+if 'CXX' in ARGUMENTS: env.Replace(CXX = ARGUMENTS['CXX'])
+if 'CCFLAGS' in ARGUMENTS: env.Append(CCFLAGS = ARGUMENTS['CCFLAGS'])
+if 'CXXFLAGS' in ARGUMENTS: env.Append(CXXFLAGS = ARGUMENTS['CXXFLAGS'])
+
 print "ENV TOOLS :", env['TOOLS']
 #print "dump whole env :", env.Dump()
 print "ENV ENV :", env['ENV']
@@ -87,10 +109,11 @@ print "PROJECT_THIRDPARTY_PATH :", PROJECT_THIRDPARTY_PATH
 PROJECT_JAVA_PATH = ProjectMacro.getEnvVariable('JAVA_HOME', PROJECT_THIRDPARTY_PATH + 'java' + Arch)
 print "PROJECT_JAVA_PATH :", PROJECT_JAVA_PATH
 
-env['cache_path'] = DEV_BINARY_DIR + '/../buildcache-' + Arch
+#env['cache_path'] = DEV_BINARY_DIR + '/buildcache-' + Arch
+env['cache_path'] = '../../buildcache-' + Arch
 print "env['cache_path'] :", env['cache_path']
 CacheDir(env['cache_path'])
-SConsignFile(DEV_BINARY_DIR + '/../scons-signatures-' + Arch)
+SConsignFile(DEV_BINARY_DIR + '/scons-signatures-' + Arch)
 
 #registering function to handle builderrors correctly
 ProjectMacro.registerBuildFailuresAtExit()
