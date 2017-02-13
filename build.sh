@@ -2,6 +2,10 @@
 
 scons --version
 
+#TODO
+#sudo nano /proc/sys/kernel/perf_event_paranoid
+#-1
+
 find . -name 'target' -type d | xargs rm -Rf
 find . -name 'CMakeFiles' -type d | xargs rm -Rf
 rm -Rf sample/build-linux/MICROSOFT-10.02-Linux*
