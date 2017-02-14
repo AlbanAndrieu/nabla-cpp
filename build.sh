@@ -2,6 +2,9 @@
 
 scons --version
 
+#sudo apt-get install clang flawfinder cppcheck ggcov gperf doxygen
+#rats
+
 #TODO
 #sudo nano /proc/sys/kernel/perf_event_paranoid
 #-1
@@ -18,3 +21,5 @@ rm -Rf nabla-*
 
 #scons opt=True
 scons target=local gcc_version=5 package 2>&1 > scons.log
+
+hardening-check target/bin/x86Linux/run_app

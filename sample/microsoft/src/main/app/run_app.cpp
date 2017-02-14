@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <iostream>
 
 enum TriangleType {
@@ -31,7 +33,22 @@ static int triangleType(const int a, const int b, const int c) {
     }
 }
 
+// Security issue
+void copy_and_print_srting(const char *str) {
+	char buf[5];
+
+	// TODO buffer overflow
+	strcpy(buf, str);
+	strcpy(buf, "Hello world!");
+	// TODO sprintf
+	printf(buf);
+	printf("\n");
+
+}
+
 int main(int argc, char** argv) {
+
+	copy_and_print_srting(argv[1]);
 
     std::cout << "START test case ERROR" << std::endl;
     if (4 == triangleType(0, 0, 0)) {
@@ -140,4 +157,5 @@ int main(int argc, char** argv) {
     }
     std::cout << "END test case SCALENE" << std::endl;
 
+    exit(EXIT_SUCCESS);
 }
