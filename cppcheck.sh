@@ -10,6 +10,6 @@ fi
 
 cppcheck --enable=all --inconclusive --xml --xml-version=2 sample/microsoft 2> ${report_filename}.xml
 
-cppcheck --enable=all --inconclusive --html sample/microsoft 2> ${report_filename}.html
+#cppcheck --enable=all --inconclusive --html sample/microsoft 2> ${report_filename}.html
 
 mv ${report_filename}* ${reports_directory}
