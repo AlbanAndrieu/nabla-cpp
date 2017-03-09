@@ -20,6 +20,6 @@ rm -Rf nabla-*
 #rm -Rf scons-signatures-*.dblite
 
 #scons opt=True
-scons target=local gcc_version=5 package 2>&1 > scons.log
+~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
 
 hardening-check target/bin/x86Linux/run_app
