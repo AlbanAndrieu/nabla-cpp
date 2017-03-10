@@ -23,3 +23,5 @@ rm -Rf nabla-*
 ~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
 
 hardening-check target/bin/x86Linux/run_app
+
+shellcheck *.sh -f checkstyle > checkstyle-result.xml || true
