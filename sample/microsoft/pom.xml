@@ -6,8 +6,8 @@
   <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Microsoft</name>
-<profiles>
-
+  
+  <profiles>
     <profile>
       <id>RELEASE</id>
       <activation>
@@ -23,7 +23,7 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>cxx-maven-plugin</artifactId>
-              <version>0.0.5-SNAPSHOT</version>
+              <version>0.0.6-SNAPSHOT</version>
             </plugin>
           </plugins>
         </pluginManagement>
@@ -240,7 +240,7 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>cxx-maven-plugin</artifactId>
-              <version>0.0.5-SNAPSHOT</version>
+              <version>0.0.6-SNAPSHOT</version>
             </plugin>
           </plugins>
         </pluginManagement>
@@ -407,7 +407,7 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>cxx-maven-plugin</artifactId>
-              <version>0.0.5-SNAPSHOT</version>
+              <version>0.0.6-SNAPSHOT</version>
             </plugin>
           </plugins>
         </pluginManagement>
@@ -512,7 +512,7 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>cxx-maven-plugin</artifactId>
-              <version>0.0.5-SNAPSHOT</version>
+              <version>0.0.6-SNAPSHOT</version>
             </plugin>
           </plugins>
         </pluginManagement>
@@ -618,7 +618,7 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>cxx-maven-plugin</artifactId>
-              <version>0.0.5-SNAPSHOT</version>
+              <version>0.0.6-SNAPSHOT</version>
             </plugin>
           </plugins>
         </pluginManagement>
