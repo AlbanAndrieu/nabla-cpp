@@ -60,6 +60,7 @@ def generate(env, **kw):
             '-Wall',
             '-D_FORTIFY_SOURCE=2',
             '-fstack-protector',
+            '-fdiagnostics-show-option', #sonar cxx
             '-Wl,-z,relro',
             '-Wformat',
             '-Wformat-security',
