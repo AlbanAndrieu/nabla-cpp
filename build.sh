@@ -1,6 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+#set -xv
 
-scons --version
+red='\e[0;31m'
+green='\e[0;32m'
+NC='\e[0m' # No Color
+
+./step-2-0-0-build-env.sh || exit 1
 
 #sudo apt-get install clang flawfinder cppcheck ggcov gperf doxygen
 #rats
@@ -25,3 +30,5 @@ rm -Rf nabla-*
 hardening-check target/bin/x86Linux/run_app
 
 shellcheck *.sh -f checkstyle > checkstyle-result.xml || true
+
+exit 0
