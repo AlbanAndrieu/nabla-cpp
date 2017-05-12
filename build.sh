@@ -7,7 +7,8 @@ NC='\e[0m' # No Color
 
 ./step-2-0-0-build-env.sh || exit 1
 
-#sudo apt-get install clang flawfinder cppcheck ggcov gperf doxygen
+#TODO check https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis
+#sudo apt-get install clang flawfinder cppcheck ggcov gperf doxygen complexity 
 #rats
 
 #TODO
@@ -28,6 +29,8 @@ rm -Rf nabla-*
 ~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
 
 hardening-check target/bin/x86Linux/run_app
+
+#complexity --histogram --score --thresh=3 `ls sample/microsoft/src/main/*/*.c`
 
 shellcheck *.sh -f checkstyle > checkstyle-result.xml || true
 
