@@ -4,7 +4,7 @@
 
 import os
 import re
-#import platform
+import platform
 
 from config import ProjectMacro
 
@@ -35,6 +35,7 @@ scons CC=clang CXX=clang++
 vars = Variables('variables.py') # you can store your defaults in this file
 vars.AddVariables(
     EnumVariable('opt', 'Set to True to build with opt flags', 'False', ['True', 'False']),
+    EnumVariable('color', 'Set to true to build with colorizer', 'True', ['True', 'False']),
     ('gcc_version', 'Set gcc version to use', '4.8.4'),
     ('install_path', 'Set install path', 'install'),
     ('CC', 'Set C compiler', 'gcc'),
@@ -43,14 +44,30 @@ vars.AddVariables(
 )
 env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
 
-#print "Platform :", platform.platform()
-#print "machine : ", platform.machine()
-
 if Arch in ['x86sol','sun4sol']:
     env = Environment(tools=['suncc', 'sunc++', 'sunlink'])
-#print "ENV PATH :", env['ENV']['PATH']
+
 env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project'], toolpath = ['config'])
 
+system = platform.system()
+machine = platform.machine()
+
+print "Platform :", platform.platform()
+print ("System : ", system)
+print ("Machine : ",machine)
+
+if env['color'] == 'True':
+    from colorizer import colorizer
+    col = colorizer()
+    col.colorize(env)    
+            
+if system == 'Linux' or system == 'CYGWIN_NT-5.1':
+    env['ENV']['TERM'] = os.environ['TERM']
+    env['ENV']['PATH'] = os.environ['PATH']
+    env['ENV']['HOME'] = os.environ['HOME']
+    
+#print "ENV PATH :", env['ENV']['PATH']    
+    
 # Allow overriding the compiler with scons CC=???
 if 'CC' in ARGUMENTS: env.Replace(CC = ARGUMENTS['CC'])
 if 'CXX' in ARGUMENTS: env.Replace(CXX = ARGUMENTS['CXX'])
@@ -261,16 +278,18 @@ env['MORELibs'] = [
 	'xml2',
 ]
 
-# Clean
-Clean('.', 'install')
-
 if 'package' in COMMAND_LINE_TARGETS:
     print "Remove nabla-1.2.3 directory"
     env.Execute("rm -Rf nabla-1.2.3")
 
-# nabla target
-if 'nabla' in COMMAND_LINE_TARGETS:
+# Clean
+Clean('.', 'target')
+
+# remove target
+if 'remove' in COMMAND_LINE_TARGETS:
     #env.Execute("svn status libs|perl -l -ne 'if(s,^\?\s+(.+(?:\.cpp|\.h|\.xml|timestamps|sconsign.dblite|/ddl|/business|ps-make|ps-make.*|ps-private|.*\.vcproj|.*\.bak|.*\.hierarchy|.*\.views|.*\.per|.*\.enum2|.*\.gen))$,$1,){print $_}' | xargs rm -fr")
+    env.Execute("rm -Rf nabla-1.2.3")
+    env.Execute("rm -Rf target")
     SetOption("clean", 1)
 
 #additional libs for link
