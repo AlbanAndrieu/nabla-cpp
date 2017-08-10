@@ -14,20 +14,20 @@
 #  else
 // #    error "foo 2"
 #    define FOO_EXPORT __declspec(dllimport)
-#  endif 
+#  endif
 #else
 // #    error "foo 3"
 #  define FOO_EXPORT
 #endif
 
-#if defined (WIN32) && defined(BUILD_SHARED_LIBS) 
+#if defined (WIN32) && defined(BUILD_SHARED_LIBS)
 #  if defined (bar_EXPORTS)
 // #    error "bar 1"
 #    define BAR_EXPORT __declspec(dllexport)
-#  else  
+#  else
 // #    error "bar 2"
 #    define BAR_EXPORT __declspec(dllimport)
-#  endif 
+#  endif
 #else
 // #    error "bar 3"
 #  define BAR_EXPORT

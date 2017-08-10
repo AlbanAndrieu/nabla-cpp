@@ -8,8 +8,8 @@ scons2dot.py
 ==========================================================================
 
 This is a simple python program meant to vizualize build dependencies.
-It grabs scons_ --tree=all output and converts it to a graphviz_ dot 
-graph. The current version of scons2dot.py is found 
+It grabs scons_ --tree=all output and converts it to a graphviz_ dot
+graph. The current version of scons2dot.py is found
 `here <http://www.cs.virginia.edu/~dww4s/tools/scons2dot/scons2dot.txt>`_
 (HTML `<scons2dot.html>`_).
 
@@ -70,8 +70,8 @@ Using the command::
   scons --tree=all -n | scons2dot.py
 
 Note that scons2dot.py uses the basename of the entry as the label, though
-the entire string is stored in the Node data structure. If the ``--save`` 
-option is used, the dot output is saved to a temp file, dot is invoked, and 
+the entire string is stored in the Node data structure. If the ``--save``
+option is used, the dot output is saved to a temp file, dot is invoked, and
 the resulting file is saved, as specified by ``--outfile``.
 
 Invoke scons2dot.py -h for more info on command options.
@@ -87,7 +87,7 @@ TODO
 :Homepage: http://www.cs.virginia.edu/~dww4s
 :Last doc rebuild: |date|
 :copyright: University of Virginia, 2009
-:license: BSD_ 
+:license: BSD_
 :version: 0.1
 :python version: `2.4 <http://www.python.org/download/releases/2.4.6/>`_
 
@@ -103,7 +103,7 @@ cmd_line_usage = \
 Usage: %prog [options]
 
 %prog reads the output from scons with the --tree=all option, and produces
-dot code that can be used to create a visualization of your build 
+dot code that can be used to create a visualization of your build
 dependencies. The easiest way to use %prog is to pipe the output from scons
 to %prog, and use the --save and --outfile options to store the resulting
 pdf.
@@ -158,13 +158,13 @@ class DotBuilder(object):
         self.ignore_list= kw.get('ignore_list', [])
         self.verbose = bool(kw.get('verbose', True))
         self.ignore_re  = [ re.compile(x) for x in self.ignore_list ]
-        
+
     def dict2attrs(self, attrs):
         """
         Converts a dictionary to a list k="value",...; the format
         used by attributes in dot.
         """
-        return ", ".join(['%s="%s"'%x for 
+        return ", ".join(['%s="%s"'%x for
                           x in attrs.items()])
 
 
@@ -228,7 +228,7 @@ class DotBuilder(object):
         self.fd.write("digraph %s {\n" % self.graph_name)
         attr_strn = self.dict2attrs(self.graph_attrs)
         self.fd.write("graph [%s]\n\n" % attr_strn)
-        
+
     def _print_nodes(self):
         if len(self.node_attrs):
             attr_strn = self.dict2attrs(self.node_attrs)
@@ -239,7 +239,7 @@ class DotBuilder(object):
             attrs = {"label":os.path.basename(node.name)}
             if node in self.trees:
                 attrs["color"] = "red"
-            self.fd.write('\t%s [%s]\n' % 
+            self.fd.write('\t%s [%s]\n' %
                           (node.id, self.dict2attrs(attrs)))
         self.fd.write('\n')
 
@@ -256,7 +256,7 @@ class DotBuilder(object):
 
     def _end_graph(self):
         self.fd.write("\n}\n")
-            
+
 
 class NullFD(object):
     def write(self, strn): pass
@@ -265,7 +265,7 @@ class NullFD(object):
 class SConsForestParser(object):
     """
     A simple class that takes a file-like object and does
-    basic regex scans for lines that appear to be 
+    basic regex scans for lines that appear to be
     """
     L1RE = re.compile(r"^\+-(\S+)")
     LNRE = re.compile(r"^(\s*(\| +)*)\+-(\S+)")
@@ -304,7 +304,7 @@ def mk_node(name):
     global NODE_HASH
     if name in NODE_HASH:
         return NODE_HASH[name]
-    else: 
+    else:
         node = Node(name)
         NODE_HASH[name] = node
         return node
@@ -314,7 +314,7 @@ class Node(object):
     """
     The Node data structure creates a simple ad hoc tree.
     Using mk_node, above limits the Nodes to be unique by name.
-    (I think this could be done with some __new__ magic, but 
+    (I think this could be done with some __new__ magic, but
     I'd have to look it up).
     """
 
@@ -335,10 +335,10 @@ class Node(object):
 
     def __repr__(self):
         return "%s:%d" % (self.name, len(self.children))
-    
 
 
-                    
+
+
 ##########################################################################
 # Script
 ##########################################################################
@@ -355,7 +355,7 @@ def run(args):
                       help="The file to put things not matched as part of the tree, default is stdout.")
     parser.add_option('--save', action="store_true",
                       help='Save the dot file and invoke the dot command, save the resulting file to OUTFILE')
-    parser.add_option('--format', default='pdf', 
+    parser.add_option('--format', default='pdf',
                       help="Format to output when using the --save option, default is pdf. For legal values, see the -T option in dot.")
     parser.add_option('--ignore', default=[], action='append',
                       help='ignore a file pattern (python re)')
@@ -396,7 +396,7 @@ def run(args):
 
     sfp = SConsForestParser(infd, altfd=altfd)
     sfp.process()
-    db  = DotBuilder(sfp.top_level, 
+    db  = DotBuilder(sfp.top_level,
                      dot_fname=opts.outfile,
                      dot_format=opts.format,
                      ignore_list=opts.ignore,
@@ -414,7 +414,7 @@ def run(args):
             outfd = file(opts.outfile, 'w')
         db.fd = outfd
         db.print_graph()
-    
+
 
 if __name__ == "__main__":
     run(sys.argv[1:])

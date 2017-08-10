@@ -130,7 +130,7 @@ def registerIDLBuilders(env, thirdPartyDir,arch):
 	static_obj, shared_obj = SCons.Tool.createObjBuilders( env )
 	static_obj.src_builder.append( idl2many_bld )
 	shared_obj.src_builder.append( idl2many_bld )
-	
+
 	env.Append(BUILDERS={
 		'CorbaIdl' : idl2many_bld,
 		'CorbaGetCCFiles' : idl2cc_bld,
@@ -200,10 +200,10 @@ def getArch():
 	theArch = 'unkown'
 	if thePlatform.startswith('Linux'):
 		theArch = 'x86Linux'
-	elif thePlatform.startswith('Windows'):		
+	elif thePlatform.startswith('Windows'):
 		theArch = 'winnt'
-	elif thePlatform.startswith('CYGWIN'):		
-		theArch = 'cygwin'	
+	elif thePlatform.startswith('CYGWIN'):
+		theArch = 'cygwin'
 	elif thePlatform.startswith('SunOS'):
 		if platform.machine() == 'sun4u':
 			theArch = 'sun4sol'
