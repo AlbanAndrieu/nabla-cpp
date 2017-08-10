@@ -313,6 +313,9 @@ if not GetOption('help'):
 SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/cpp/SConscript')
 SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/app/SConscript')
 
+#if 'debian' in COMMAND_LINE_TARGETS:
+#    SConscript("config/SConscript")
+
 if 'package' in COMMAND_LINE_TARGETS:
     env.Package( NAME           = 'nabla',
                  VERSION        = '1.2.3',

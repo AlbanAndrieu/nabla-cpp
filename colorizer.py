@@ -1,6 +1,6 @@
 #
 # Scons Output Colorizer v0.2
-# Copyright (C) 2008, 2009 Mihail 'IceBreaker' Szabolcs 
+# Copyright (C) 2008, 2009 Mihail 'IceBreaker' Szabolcs
 #
 # e-mail: theicebreaker007@gmail.com
 # web: http://www.szabster.net
@@ -38,7 +38,7 @@ class colorizer:
 	cYellow = '\033[93m'
 	cRed 	= '\033[91m'
 	cEnd 	= '\033[0m'
-	
+
 	# standardized color message class
 	class message:
 		# stores message and creates Scons action
@@ -60,7 +60,7 @@ class colorizer:
 				a = '%s' % (target[0])
 			else:
 				a = '%s' % (source[0])
-				
+
 			d, f = os.path.split(a)
 			e = self.end
 			t = str(self.text)
@@ -71,19 +71,19 @@ class colorizer:
 		# just customize output, no colors
 		if noColors:
 			self.disableColors()
-		
+
 		# C compile messages
 		self.cmpCStaticMsg = self.message("$CCCOM","Compiling",
 											self.cBlue,self.cPurple,self.cYellow,self.cEnd)
 		self.cmpCSharedMsg = self.message("$SHCCCOM","Compiling",
 											self.cBlue,self.cPurple,self.cYellow,self.cEnd)
-											
+
 		# C++ compile messages
 		self.cmpCPPStaticMsg = self.message("$CXXCOM","Compiling",
 											self.cBlue,self.cPurple,self.cYellow,self.cEnd)
 		self.cmpCPPSharedMsg = self.message("$SHCXXCOM","Compiling",
 											self.cBlue,self.cPurple,self.cYellow,self.cEnd)
-											
+
 		# Linking messages
 		self.lnkStaticMsg = self.message("$ARCOM","Linking library",
 											self.cRed,self.cPurple,self.cYellow,self.cEnd,True)
@@ -108,24 +108,24 @@ class colorizer:
 	def colorize(self, env):
 		if not env:
 			return False
-		
+
 		# customize linking ...
 		self.colorizeBuilder(env,'Program');
 		self.colorizeBuilder(env,'Library');
 		self.colorizeBuilder(env,'StaticLibrary');
 		self.colorizeBuilder(env,'SharedLibrary');
 		self.colorizeBuilder(env,'LoadableModule');
-		
+
 		# customize compiling ...
 		self.colorizeObjBuilders(env)
-		
-		return True		
-		
+
+		return True
+
 	# colorize the object builders from any given Scons Environment
 	def colorizeObjBuilders(self, env):
 		if not env:
 			return False
-			
+
 		# Object Builders
 		static_ob, shared_ob = Tool.createObjBuilders(env)
 
@@ -135,20 +135,20 @@ class colorizer:
 		# Set Shared Object actions
 		shared_ob.add_action('.c'	, self.cmpCSharedMsg.getAction()	)
 		shared_ob.add_action('.cpp'	, self.cmpCPPSharedMsg.getAction()	)
-		
+
 		return True
-		
+
 	# colorize any given builder from any given Scons Environment
 	def colorizeBuilder(self, env, builder, text="", target = True, color=""):
 		if not env or not builder:
 			return False
-			
+
 		# set default color to red
 		if not color:
 			color = self.cRed
 
 		action = ""
-		
+
 		# detect and use pre-built actions
 		if builder == 'SharedLibrary' or builder == 'LoadableModule':
 			action = self.lnkSharedMsg.getAction()
@@ -159,12 +159,12 @@ class colorizer:
 		elif text:	# add customized output to any given builder
 			_action = env['BUILDERS'][builder].action
 			action = self.message(_action,text,color,self.cPurple,self.cYellow,self.cEnd,target).getAction()
-			
-		# 1,2,3 action!	
+
+		# 1,2,3 action!
 		if action:
 			try:
 				env['BUILDERS'][builder].action = action
 			except:
 				return False
-				
+
 		return True

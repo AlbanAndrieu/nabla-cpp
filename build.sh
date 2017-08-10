@@ -8,7 +8,7 @@ NC='\e[0m' # No Color
 ./step-2-0-0-build-env.sh || exit 1
 
 #TODO check https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis
-#sudo apt-get install clang flawfinder cppcheck ggcov gperf doxygen complexity 
+#sudo apt-get install clang flawfinder cppcheck ggcov gperf doxygen complexity
 #rats
 
 #TODO

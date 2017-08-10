@@ -56,7 +56,7 @@ def generate(env, **kw):
         env['CCFLAGS'] = [
             '-pthread',
             '-g',
-            #'-Werror',            
+            #'-Werror',
             '-Wall',
             '-D_FORTIFY_SOURCE=2',
             '-fstack-protector',
