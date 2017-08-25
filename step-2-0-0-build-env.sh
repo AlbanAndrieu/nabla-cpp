@@ -30,6 +30,12 @@ echo "ARCH : ${ARCH}"
 echo "WORKSPACE_SUFFIX : ${WORKSPACE_SUFFIX}"
 echo "GIT_BRANCH_NAME : ${GIT_BRANCH_NAME}"
 
+if [ -n "${DRY_RUN}" ]; then
+  echo -e "${green} DRY_RUN is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DRY_RUN, please override ${NC}"
+fi
+
 if [ -z "$PATH" ]; then  
   if [ `uname -s` == "SunOS" ]; then
     echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PATH, use default one ${NC}"
@@ -129,17 +135,41 @@ else
   export GIT_CMD
 fi
 
-if [ -z "$TAR" ]; then
+if [ -n "${TAR}" ]; then
+  echo -e "${green} TAR is defined ${happy_smiley} ${NC}"
+else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TAR, use default one ${NC}"
   if [ `uname -s` == "SunOS" ]; then
     TAR="/usr/sfw/bin/gtar"
+  elif [ `uname -s` == "Darwin" ]; then  
+    TAR="/opt/local/bin/gnutar"  
+  elif [ `uname -s` == "Linux" ]; then
+    TAR="tar"  
   else 
-    TAR="tar"
-  fi  
+    TAR="7z"  
+  fi
   export TAR
 fi
 
-if [ -z "$TIBCO_HOME" ]; then
+if [ -n "${WGET}" ]; then
+  echo -e "${green} WGET is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WGET, use default one ${NC}"
+  if [ `uname -s` == "SunOS" ]; then
+    WGET="/opt/csw/bin/wget"
+  elif [ `uname -s` == "Darwin" ]; then  
+    WGET="/opt/local/bin/wget"  
+  elif [ `uname -s` == "Linux" ]; then
+    WGET="wget"  
+  else 
+    WGET="wget"  
+  fi
+  export WGET
+fi
+
+if [ -n "${TIBCO_HOME}" ]; then
+  echo -e "${green} TIBCO_HOME is defined ${happy_smiley} ${NC}"
+else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBCO_HOME, use default one ${NC}"
   if [ `uname -s` == "Linux" ]; then
     TIBCO_HOME="/opt/tibco"
@@ -149,13 +179,17 @@ if [ -z "$TIBCO_HOME" ]; then
   export TIBCO_HOME
 fi
 
-if [ -z "$TIBRV_VERSION" ]; then
+if [ -n "${TIBRV_VERSION}" ]; then
+  echo -e "${green} TIBRV_VERSION is defined ${happy_smiley} ${NC}"
+else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBRV_VERSION, use default one ${NC}"
   TIBRV_VERSION="8.4"
   export TIBRV_VERSION
 fi
 
-if [ -z "$TIBRV_HOME" ]; then
+if [ -n "${TIBRV_HOME}" ]; then
+  echo -e "${green} TIBRV_HOME is defined ${happy_smiley} ${NC}"
+else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBRV_HOME, use default one ${NC}"
   if [ `uname -s` == "Linux" ]; then
     TIBRV_HOME="${TIBCO_HOME}/tibrv/${TIBRV_VERSION}"
