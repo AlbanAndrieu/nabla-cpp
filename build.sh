@@ -34,4 +34,34 @@ hardening-check target/bin/x86Linux/run_app
 
 shellcheck *.sh -f checkstyle > checkstyle-result.xml || true
 
+
+sourcePath="./sample/microsoft"
+coverageSourcePath="$sourcePath/src/main/app/"
+
+# ------------------------------------------------------------------------
+# Do we have something to do ?
+# ------------------------------------------------------------------------
+gcdacount=$(find $coverageSourcePath -name "*.gcda" | wc -c )
+
+if [ $gcdacount -eq 0 ]
+then 
+    echo "No new LCOV report to generate. Bye."
+    exit 0
+fi
+
+# ------------------------------------------------------------------------
+#cd $sourcePath
+#mkdir coverage
+#cd coverage
+
+# Capture
+lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.info
+
+# Remove useless stuffs
+#lcov --remove coverage.info "/Applications/Xcode.app/*" --output-file coverage.info
+#lcov --remove coverage.info "$coverageSourcePath/*" --output-file coverage.info
+
+# Generate Report
+genhtml coverage.info --title "Nabla during UT" --output-directory "Nabla"
+
 exit 0
