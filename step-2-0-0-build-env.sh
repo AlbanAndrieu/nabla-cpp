@@ -22,8 +22,11 @@ double_arrow='\xC2\xBB'
 head_skull='\xE2\x98\xA0'
 #happy_smiley='\u263A'
 happy_smiley='\xE2\x98\xBA'
+nabla_logo='\xE2\x88\x87'
 
 #========================================= CPP
+
+echo -e "${green} WELCOME ${nabla_logo} ${NC}"
 
 echo -e "${green} HOSTNAME : ${HOSTNAME} ${NC}"
 echo -e "${green} SHELL : ${SHELL} ${NC}"
