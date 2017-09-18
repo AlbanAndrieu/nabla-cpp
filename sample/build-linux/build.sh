@@ -30,10 +30,10 @@ cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_
 #make test_all
 #cd src
 #ctest -D Experimental
-#cd ~/cpp/sample/build-linux/src/test/cpp
+#cd ${WORKSPACE}/sample/build-linux/src/test/cpp
 #ctest .. -R circular_queueTest
 cd src/test/cpp/
-ctest --force-new-ctest-process --no-compress-output -T Test || /bin/true
+ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
 
 #http://clang-analyzer.llvm.org/installation.html
 #http://clang-analyzer.llvm.org/scan-build.html
