@@ -28,14 +28,16 @@ rm -Rf nabla-*
 #rm -Rf scons-signatures-*.dblite
 
 #scons opt=True
+#cd /workspace
+#wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
 ~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
+#/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir bw_output
 
 hardening-check target/bin/x86Linux/run_app
 
 #complexity --histogram --score --thresh=3 `ls sample/microsoft/src/main/*/*.c`
 
 shellcheck *.sh -f checkstyle > checkstyle-result.xml || true
-
 
 sourcePath="./sample/microsoft"
 coverageSourcePath="$sourcePath/src/main/app/"

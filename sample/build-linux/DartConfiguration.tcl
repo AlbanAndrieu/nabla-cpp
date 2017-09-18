@@ -4,14 +4,14 @@
 
 
 # Configuration directories and files
-SourceDirectory: /workspace/users/albandri10/cpp
+SourceDirectory: /workspace/users/albandri30/nabla-cpp/
 BuildDirectory: /target
 
 # Where to place the cost data store
 CostDataFile: 
 
 # Site is something like machine.domain, i.e. pragmatic.crd
-Site: albandri-laptop-misys
+Site: home.nabla.mobi
 
 # Build name is osname-revision-compiler, i.e. Linux-2.4.2-2smp-c++
 BuildName: Linux-c++
