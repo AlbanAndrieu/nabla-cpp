@@ -30,8 +30,8 @@ rm -Rf nabla-*
 #scons opt=True
 #cd /workspace
 #wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
-~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
-#/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir bw_output
+~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${WORKSPACE}/bw-outputs scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
+#/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw_output
 
 hardening-check target/bin/x86Linux/run_app
 
