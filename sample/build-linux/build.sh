@@ -23,7 +23,7 @@ cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_
 #make check-all
 #clang-tidy -dump-config
 
-/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw_output make -B clean install test DoxygenDoc package
+/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs make -B clean install test DoxygenDoc package
 
 #make Experimental
 
