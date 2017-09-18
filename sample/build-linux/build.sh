@@ -19,11 +19,14 @@ cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_
 #-DENABLE_TESTING=true
 
 #http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html
-clang-format -dump-config
+#clang-format -dump-config
 #make check-all
-clang-tidy -dump-config
+#clang-tidy -dump-config
 
-make -B clean install test DoxygenDoc package
+/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir bw_output make -B clean install test DoxygenDoc package
+
+#make Experimental
+
 #make test_all
 #cd src
 #ctest -D Experimental
