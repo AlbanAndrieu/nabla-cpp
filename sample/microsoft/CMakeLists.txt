@@ -20,12 +20,16 @@ MESSAGE( STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
 MESSAGE( STATUS "CMAKE_SOURCE_DIR:         " ${CMAKE_SOURCE_DIR} )
 MESSAGE( STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR} )
 
+# Add coverage options for CI
+IF(COVERAGE)
+	set_target_properties(main_library run_app run_tests PROPERTIES
+						  COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
+						  LINK_FLAGS "-coverage")
+ENDIF(COVERAGE)
+
 # Just process the sub directories
 ADD_SUBDIRECTORY(src)
 
-# Add coverage options for CI
-#if(COVERAGE)
-#	set_target_properties(main_library run_app run_tests PROPERTIES
-#						  COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
-#						  LINK_FLAGS "-coverage")
-#endif(COVERAGE)
+#INCLUDE(CTest)
+#ENABLE_TESTING()
+
