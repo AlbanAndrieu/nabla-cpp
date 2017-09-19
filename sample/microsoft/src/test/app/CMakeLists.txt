@@ -19,3 +19,11 @@ INSTALL(TARGETS run_tests
   ARCHIVE DESTINATION lib)
 
 #INSTALL_PROGRAMS(/bin FILES run_tests)
+
+#INCLUDE(CTest)
+ENABLE_TESTING()
+
+MESSAGE("  ######  adding test ${BUILDNAME}")
+
+# Add a simple test
+ADD_TEST(TEST ${PROJECT_INSTALL_DIR}/bin/run_tests TEST) 
