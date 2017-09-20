@@ -706,7 +706,7 @@ ENDIF(MINGW)
 
 INCLUDE(${PROJECT_SOURCE_DIR}/config/ProjectDoc.cmake)
 
-#INCLUDE(CTest)
+INCLUDE(CTest)
 INCLUDE(${PROJECT_SOURCE_DIR}/config/CTestConfig.cmake)
 
 #ENABLE_TESTING(true)
@@ -717,7 +717,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/config/CTestConfig.cmake)
 ## valgrind
 #FIND_PROGRAM(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
 #use ctest -T memcheck
-#INCLUDE(Dart)
+INCLUDE(Dart)
 #CONFIGURE_FILE(${PROJECT_BINARY_DIR}/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/DartConfiguration.tcl)
 #CONFIGURE_FILE(${PROJECT_BINARY_DIR}/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/src/DartConfiguration.tcl)
 IF(CMAKE_COMPILER_IS_GNUCXX AND NOT BUILD_SHARED_LIBS)

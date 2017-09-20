@@ -5,13 +5,14 @@ red='\e[0;31m'
 green='\e[0;32m'
 NC='\e[0m' # No Color
 
+export PATH=/usr/lib/dart/bin:$PATH
+
 ./step-2-0-0-build-env.sh || exit 1
 
 #clang-format -style=llvm -dump-config > .clang-format
 
 #TODO check https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis
-#sudo apt-get install clang flawfinder cppcheck ggcov gperf doxygen complexity findbugs
-#rats
+#./install.sh
 
 #TODO
 #sudo nano /proc/sys/kernel/perf_event_paranoid
