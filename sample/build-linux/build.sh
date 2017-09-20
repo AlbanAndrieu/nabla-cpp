@@ -14,6 +14,7 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 cd $PROJECT_SRC/sample/build-${ARCH}
 
 rm -f CMakeCache.txt
+rm -f DartConfiguration.tcl
 
 cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
 
@@ -49,7 +50,7 @@ make package
 
 make tests
 
-make Experimental
+#make Experimental
 
 #http://clang-analyzer.llvm.org/installation.html
 #http://clang-analyzer.llvm.org/scan-build.html
