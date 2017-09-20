@@ -1,3 +1,11 @@
+#!/bin/bash
+#set -xv
+
+red='\e[0;31m'
+green='\e[0;32m'
+NC='\e[0m' # No Color
+
+export PATH=/usr/lib/dart/bin:$PATH
 
 echo "WORKSPACE ${WORKSPACE}"
 
@@ -22,7 +30,7 @@ cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
 #-DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ 
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}
-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug ../microsoft
+cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DDART_ROOT=/usr/lib/dart/ ../microsoft
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
 
@@ -60,3 +68,15 @@ make tests
 #Objective C
 #xcodebuild | xcpretty
 #scan-build xcodebuild
+
+#sudo -k checkinstall \
+#--install=no  
+#--pkgsource="https://github.com/AlbanAndrieu/nabla-cpp" \
+#--pkglicense="GPL2" \
+#--deldesc=no \
+#--pkgrelease="SNAPSHOT" \
+#--maintainer="Alban Andrieu \\<alban.andrieu@free.fr\\>" \
+#--requires="libc6 \(\>= 2.4\),libgcc1 \(\>= 1:4.1.1\),libncurses5 \(\>= 5.5-5~\),libstdc++6 \(\>= 4.1.1\),libboost-thread-dev,libboost-date-time-dev,libboost-system-dev" \
+#--pkgname=nabla-microsoft --pkggroup=nabla --pkgversion=1.0.0
+#
+##sudo dpkg -r nabla-microsoft

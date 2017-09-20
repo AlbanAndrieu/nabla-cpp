@@ -20,6 +20,11 @@ MESSAGE( STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
 MESSAGE( STATUS "CMAKE_SOURCE_DIR:         " ${CMAKE_SOURCE_DIR} )
 MESSAGE( STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR} )
 
+SET( CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
+#SET( CTEST_MEMORYCHECK_COMMAND_OPTIONS "--tool=callgrind -v" )
+#SET( CTEST_MEMORYCHECK_COMMAND_OPTIONS, "--trace-children=yes --leak-check=full" )
+#SET(MEMORYCHECK_COMMAND_OPTIONS "--xml=yes --xml-file=test.xml")
+  
 # Add coverage options for CI
 IF(COVERAGE)
 	set_target_properties(main_library run_app run_tests PROPERTIES
@@ -29,7 +34,4 @@ ENDIF(COVERAGE)
 
 # Just process the sub directories
 ADD_SUBDIRECTORY(src)
-
-#INCLUDE(CTest)
-#ENABLE_TESTING()
 
