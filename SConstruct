@@ -9,7 +9,7 @@ import platform
 from config import ProjectMacro
 
 EnsureSConsVersion(2, 1)
-#EnsurePythonVersion(2, 7)
+EnsurePythonVersion(2, 7)
 
 #In Eclipse add to scons
 #gcc_version=5 --cache-disable --warn=no-dependency

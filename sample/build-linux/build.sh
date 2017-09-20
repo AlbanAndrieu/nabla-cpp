@@ -14,6 +14,7 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 cd $PROJECT_SRC/sample/build-${ARCH}
 
 rm -f CMakeCache.txt
+rm -f DartConfiguration.tcl
 
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
 #-DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ 
@@ -34,7 +35,7 @@ cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL
 #ctest -D Experimental
 #cd ${WORKSPACE}/sample/build-linux/src/test/cpp
 #ctest .. -R circular_queueTest
-cd src/test/app/
+#cd src/test/app/
 ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
 
 #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
@@ -45,7 +46,7 @@ make package
 
 make tests
 
-make Experimental
+#make Experimental
 
 #http://clang-analyzer.llvm.org/installation.html
 #http://clang-analyzer.llvm.org/scan-build.html
