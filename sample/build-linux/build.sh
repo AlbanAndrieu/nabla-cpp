@@ -24,7 +24,7 @@ cd $PROJECT_SRC/sample/build-${ARCH}
 rm -f CMakeCache.txt
 rm -f DartConfiguration.tcl
 
-cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
+#cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
 
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
 #-DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ 
@@ -39,8 +39,11 @@ cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL
 #make check-all
 #clang-tidy -dump-config
 
-/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs make -B clean install test DoxygenDoc package
-#~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${WORKSPACE}/bw-outputs make -B clean install DoxygenDoc
+#PROCESSOR=`uname -m`
+PROCESSOR="x86-32"
+
+/workspace/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs make -B clean install test DoxygenDoc package
+#~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs make -B clean install DoxygenDoc
 
 ctest -N
  
