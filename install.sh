@@ -14,6 +14,7 @@ sudo apt-get install gnuplot latex2html biber
 sudo apt-get install zlib1g-dbg
 
 sudo apt install libxml2-dev libxml2-utils
+sudo apt install xsltproc
 #sudo apt-get install xscreensaver
 
 sudo apt-get install checkinstall
