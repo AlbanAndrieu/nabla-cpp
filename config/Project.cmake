@@ -720,7 +720,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/config/CTestConfig.cmake)
 #use ctest -T memcheck
 INCLUDE(Dart)
 #CONFIGURE_FILE(${PROJECT_BINARY_DIR}/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/src/DartConfiguration.tcl)
-CONFIGURE_FILE("${PROJECT_BINARY_DIR}/DartConfiguration.tcl" "${CMAKE_BINARY_DIR}/DartConfiguration.tcl" )
+#CONFIGURE_FILE("${PROJECT_BINARY_DIR}/DartConfiguration.tcl" "${CMAKE_BINARY_DIR}/DartConfiguration.tcl" )
 
 #IF(CMAKE_COMPILER_IS_GNUCXX AND NOT BUILD_SHARED_LIBS)
 #  SET(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")

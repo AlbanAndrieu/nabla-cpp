@@ -102,7 +102,9 @@ make package
 #
 ##sudo dpkg -r nabla-microsoft
 
-echo -e "${green} Reporting : CMake ${NC}"
+echo -e "${green} Reporting : Junit ${NC}"
+
+xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > JUnitTestResults.xml
 
 #http://clang-analyzer.llvm.org/installation.html
 #http://clang-analyzer.llvm.org/scan-build.html
