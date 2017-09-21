@@ -1,11 +1,28 @@
 #!/bin/bash
 #set -xv
 
-red='\e[0;31m'
-green='\e[0;32m'
-NC='\e[0m' # No Color
+bold="\033[01m"
+underline="\033[04m"
+blink="\033[05m"
 
-export PATH=/usr/lib/dart/bin:$PATH
+black="\033[30m"
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+blue="\033[34m"
+magenta="\033[35m"
+cyan="\033[36m"
+ltgray="\033[37m"
+
+NC="\033[0m"
+
+#double_arrow='\u00BB'
+double_arrow='\xC2\xBB'
+#head_skull='\u2620'
+head_skull='\xE2\x98\xA0'
+#happy_smiley='\u263A'
+happy_smiley='\xE2\x98\xBA'
+nabla_logo='\xE2\x88\x87'
 
 ./step-2-0-0-build-env.sh || exit 1
 
@@ -18,15 +35,9 @@ export PATH=/usr/lib/dart/bin:$PATH
 #sudo nano /proc/sys/kernel/perf_event_paranoid
 #-1
 
-find . -name 'target' -type d | xargs rm -Rf
-find . -name 'CMakeFiles' -type d | xargs rm -Rf
-rm -Rf sample/build-linux/MICROSOFT-10.02-Linux*
-rm -Rf sample/build-linux/Makefile
-rm -Rf sample/build-linux/_CPack_Packages/
-rm -Rf nabla-*
-#rm -Rf nabla-*.tar.gz
-#rm -Rf buildcache-*
-#rm -Rf scons-signatures-*.dblite
+./clean.sh
+
+echo -e "${green} Building : scons ${NC}"
 
 #scons opt=True
 #cd /workspace
@@ -34,11 +45,17 @@ rm -Rf nabla-*
 ~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${WORKSPACE}/bw-outputs scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
 #/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs
 
+echo -e "${green} Security : hardening-check ${NC}"
+
 hardening-check target/bin/x86Linux/run_app
 
 #complexity --histogram --score --thresh=3 `ls sample/microsoft/src/main/*/*.c`
 
+echo -e "${green} Quality : shellcheck ${NC}"
+
 shellcheck *.sh -f checkstyle > checkstyle-result.xml || true
+
+echo -e "${green} Quality : Coverage ${NC}"
 
 sourcePath="./sample/microsoft"
 coverageSourcePath="$sourcePath/src/main/app/"

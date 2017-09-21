@@ -4,6 +4,11 @@ ENABLE_LANGUAGE(C)
 
 CMAKE_MINIMUM_REQUIRED(VERSION "2.8")
 
+#SET( CTEST_COST_DATA_FILE "TODO" )
+SET( SITE "home.nabla.mobi" )
+SET( DROP_SITE "home.nabla.mobi:7071" )
+SET( DROP_LOCATION "/CDash/public/submit.php?project=MICROSOFT" )
+
 INCLUDE(${PROJECT_SOURCE_DIR}/../../config/Project.cmake)
 
 SET(EXPORT_FILE microsoft-build.cmake)
