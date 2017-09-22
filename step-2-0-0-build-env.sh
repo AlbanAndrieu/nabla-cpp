@@ -48,13 +48,13 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DRY_RUN, please override ${NC}"
 fi
 
-if [ -z "$PATH" ]; then  
+if [ -z "$PATH" ]; then
   if [ `uname -s` == "SunOS" ]; then
     echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PATH, use default one ${NC}"
     #Please do not enable NFS share on build server.
-    #In case of NFS share issue we will not be able to perform an HF    
-    #/opt/SUNWspro/bin 
-    #mount    
+    #In case of NFS share issue we will not be able to perform an HF
+    #/opt/SUNWspro/bin
+    #mount
     #PATH=/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/ccs/bin:${SUNSTUDIO_HOME}/bin:/usr/sfw/bin:/opt/csw/bin; export PATH
     exit 1
   fi
@@ -62,12 +62,12 @@ fi
 
 if [ -z "$SUNSTUDIO_HOME" ]; then
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SUNSTUDIO_HOME, use default one ${NC}"
-  if [ `uname -s` == "SunOS" ]; then    
+  if [ `uname -s` == "SunOS" ]; then
     #SUNSTUDIO_HOME="/opt/solarisstudio12.3"
     #SUNSTUDIO_HOME="/rms/sunpro/sun-studio-12/SUNWspro"
     SUNSTUDIO_HOME="/opt/SUNWspro"
     export SUNSTUDIO_HOME
-  fi 
+  fi
 fi
 
 if [ `uname -s` == "SunOS" ]; then
@@ -77,7 +77,7 @@ if [ `uname -s` == "SunOS" ]; then
   fi
   export PATH
 fi
-      
+
 if [ -z "$WORKSPACE" ]; then
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
   exit 1
@@ -110,9 +110,9 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : COMPILER, use default one ${NC}"
   if [ `uname -s` == "SunOS" ]; then
     COMPILER="CC"
-  else 
+  else
     COMPILER="gcc"
-  fi  
+  fi
   export COMPILER
 fi
 
@@ -122,9 +122,9 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS, use default one ${NC}"
   if [ `uname -s` == "SunOS" ]; then
     SCONS="/usr/local/bin/scons"
-  else 
+  else
     SCONS="/usr/bin/scons"
-  fi  
+  fi
   export SCONS
 fi
 
@@ -132,12 +132,12 @@ if [ -n "${SCONS_OPTS}" ]; then
   echo -e "${green} SCONS_OPTS is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
-  
+
   if [ `uname -s` == "SunOS" ]; then
-    SCONS_OPTS="-j8 opt=True"    
+    SCONS_OPTS="-j8 opt=True"
   elif [ `uname -s` == "Linux" ]; then
-    SCONS_OPTS="-j32 opt=True"    
-  else 
+    SCONS_OPTS="-j32 opt=True"
+  else
     SCONS_OPTS="-j8 --cache-disable gcc_version=4.1.2 opt=True"
   fi
   #-j32 --cache-disable gcc_version=4.8.5 opt=True
@@ -163,12 +163,14 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TAR, use default one ${NC}"
   if [ `uname -s` == "SunOS" ]; then
     TAR="/usr/sfw/bin/gtar"
-  elif [ `uname -s` == "Darwin" ]; then  
-    TAR="/opt/local/bin/gnutar"  
+  elif [ `uname -s` == "Darwin" ]; then
+    TAR="/opt/local/bin/gnutar"
+  elif [ `uname -s` == "FreeBSD" ]; then
+    TAR="/usr/bin/tar"
   elif [ `uname -s` == "Linux" ]; then
-    TAR="tar"  
-  else 
-    TAR="7z"  
+    TAR="tar"
+  else
+    TAR="7z"
   fi
   export TAR
 fi
@@ -179,12 +181,12 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WGET, use default one ${NC}"
   if [ `uname -s` == "SunOS" ]; then
     WGET="/opt/csw/bin/wget"
-  elif [ `uname -s` == "Darwin" ]; then  
-    WGET="/opt/local/bin/wget"  
+  elif [ `uname -s` == "Darwin" ]; then
+    WGET="/opt/local/bin/wget"
   elif [ `uname -s` == "Linux" ]; then
-    WGET="wget"  
-  else 
-    WGET="wget"  
+    WGET="wget"
+  else
+    WGET="wget"
   fi
   export WGET
 fi
@@ -195,9 +197,9 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBCO_HOME, use default one ${NC}"
   if [ `uname -s` == "Linux" ]; then
     TIBCO_HOME="/opt/tibco"
-  else 
+  else
     TIBCO_HOME=""
-  fi  
+  fi
   export TIBCO_HOME
 fi
 
@@ -217,7 +219,7 @@ else
     TIBRV_HOME="${TIBCO_HOME}/tibrv/${TIBRV_VERSION}"
   else
     TIBRV_HOME=""
-  fi  
+  fi
   export TIBRV_HOME
 fi
 
