@@ -80,3 +80,5 @@ make tests
 #--pkgname=nabla-microsoft --pkggroup=nabla --pkgversion=1.0.0
 #
 ##sudo dpkg -r nabla-microsoft
+
+echo "http://192.168.0.29:7071/CDash/public/user.php"
