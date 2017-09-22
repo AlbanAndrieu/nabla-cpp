@@ -15,12 +15,19 @@ if [ `uname -s` == "SunOS" ]; then
   showrev 2>&1 || true 
   #shorew -p | grep 138411
   cat /etc/release 2>&1 || true
+elif [ `uname -s` == "FreeBSD" ]; then
+  freebsd-version 2>&1 || true 
 elif [ `uname -s` == "Linux" ]; then
   lsb_release 2>&1 || true 
 fi
 echo "========== COMPILER =========="
 ${SCONS} --version 2>&1 || true 
 if [ `uname -s` == "SunOS" ]; then
+  type cc 2>&1 || true
+  cc -V 2>&1 || true
+  type CC 2>&1 || true
+  CC -V 2>&1 || true
+elif [ `uname -s` == "FreeBSD" ]; then 
   type cc 2>&1 || true
   cc -V 2>&1 || true
   type CC 2>&1 || true
