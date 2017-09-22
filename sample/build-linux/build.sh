@@ -76,6 +76,7 @@ ctest -N
 #cd ${WORKSPACE}/sample/build-linux/src/test/cpp
 #ctest .. -R circular_queueTest
 #cd src/test/app/
+#ctest -V -C Debug
 ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
 
 #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
@@ -83,7 +84,7 @@ ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin
 
 #make tests
 
-#make Experimental
+make Experimental
 
 echo -e "${green} Packaging : checkinstall ${NC}"
 
