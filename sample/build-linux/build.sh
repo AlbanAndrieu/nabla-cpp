@@ -91,6 +91,11 @@ echo -e "${green} Packaging : checkinstall ${NC}"
 cd $PROJECT_SRC/sample/build-${ARCH}
 make package
 
+if [ `uname -s` == "Linux" ]; then
+	checkinstall --version
+	
+	sudo dpkg -r nabla-microsoft || true
+	
 #sudo -k checkinstall \
 #--install=no  
 #--pkgsource="https://github.com/AlbanAndrieu/nabla-cpp" \
@@ -101,7 +106,7 @@ make package
 #--requires="libc6 \(\>= 2.4\),libgcc1 \(\>= 1:4.1.1\),libncurses5 \(\>= 5.5-5~\),libstdc++6 \(\>= 4.1.1\),libboost-thread-dev,libboost-date-time-dev,libboost-system-dev" \
 #--pkgname=nabla-microsoft --pkggroup=nabla --pkgversion=1.0.0
 #
-##sudo dpkg -r nabla-microsoft
+fi
 
 echo -e "${green} Reporting : Junit ${NC}"
 
