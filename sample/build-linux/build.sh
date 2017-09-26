@@ -48,10 +48,10 @@ echo -e "${green} CMake ${NC}"
 #cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
 
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
-#-DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ 
+#-DCMAKE_EXPORT_COMPILE_COMMANDS=ON 
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}
-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug ../microsoft
+cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ ../microsoft
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
 
@@ -94,7 +94,7 @@ make package
 if [ `uname -s` == "Linux" ]; then
 	checkinstall --version
 	
-	sudo dpkg -r nabla-microsoft || true
+	#sudo dpkg -r nabla-microsoft || true
 	
 #sudo -k checkinstall \
 #--install=no  
