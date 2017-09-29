@@ -39,4 +39,3 @@ ENDIF(COVERAGE)
 
 # Just process the sub directories
 ADD_SUBDIRECTORY(src)
-
