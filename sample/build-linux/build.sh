@@ -26,6 +26,8 @@ nabla_logo='\xE2\x88\x87'
 
 echo "WORKSPACE ${WORKSPACE}"
 
+#See https://github.com/fffaraz/awesome-cpp#static-code-analysis
+
 #In Hudson
 #Extract trunk/cpp in Google Code (automatic configuration)
 #Batch Windows command : %WORKSPACE%\sample\build-cygwin\cmake.bat
@@ -38,9 +40,16 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
 ../../clean.sh
 
+#cd $PROJECT_SRC/sample/microsoft
+
+#wget https://cppan.org/client/cppan-master-Linux-client.deb
+#sudo dpkg -i cppan-master-Linux-client.deb
+#cppan
+
 cd $PROJECT_SRC/sample/build-${ARCH}
 
 rm -f CMakeCache.txt
+rm -f compile_commands.json
 #rm -f DartConfiguration.tcl
 
 echo -e "${green} CMake ${NC}"
@@ -48,10 +57,13 @@ echo -e "${green} CMake ${NC}"
 #cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
 
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
-#-DCMAKE_EXPORT_COMPILE_COMMANDS=ON 
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}
-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ ../microsoft
+#-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
+#CC="clang"
+#CXX="clang++"
+#-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"  
+cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ ../microsoft
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
 
@@ -68,6 +80,12 @@ PROCESSOR="x86-32"
 /workspace/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs make -B clean install test DoxygenDoc package
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs make -B clean install DoxygenDoc
 
+if [ `uname -s` == "Linux" ]; then
+	echo -e "${green} Checking include : IWYU ${NC}"
+
+	iwyu_tool.py -p .
+fi
+
 echo -e "${green} Testing : CTest ${NC}"
 
 ctest -N
@@ -80,9 +98,24 @@ ctest -N
 ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
 
 #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
-#ctest -T memcheck
+
+if [ `uname -s` == "Linux" ]; then
+	echo -e "${green} Checking memory leak : CTest ${NC}"
+
+	ctest -T memcheck
+fi
 
 #make tests
+
+if [ `uname -s` == "Linux" ]; then
+	echo -e "${green} Fixing include : IWYU ${NC}"
+
+	make clean
+	make -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out
+	fix_includes.py < /tmp/iwyu.out
+fi
+
+echo -e "${green} Experimental : CMake ${NC}"
 
 make Experimental
 
@@ -108,16 +141,20 @@ if [ `uname -s` == "Linux" ]; then
 #
 fi
 
-echo -e "${green} Reporting : Junit ${NC}"
-
 if [ `uname -s` == "Linux" ]; then
+	echo -e "${green} Reporting : Junit ${NC}"
+
 	xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > JUnitTestResults.xml
 fi
 
-#http://clang-analyzer.llvm.org/installation.html
-#http://clang-analyzer.llvm.org/scan-build.html
-#scan-build make
-#scan-view
+if [ `uname -s` == "Linux" ]; then
+	echo -e "${green} Reporting : Clang analyzer ${NC}"
+
+	#http://clang-analyzer.llvm.org/installation.html
+	#http://clang-analyzer.llvm.org/scan-build.html
+	scan-build make
+	#scan-view
+fi
 
 #Objective C
 #xcodebuild | xcpretty
