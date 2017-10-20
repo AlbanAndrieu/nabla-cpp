@@ -9,38 +9,50 @@ echo "$(uname -a)" 2>&1
 echo -e "========== HOSTID =========="
 hostid 2>&1
 echo -e "========== RELEASE =========="
-if [ `uname -s` == "SunOS" ]; then
+if [ "$(uname -s)" == "SunOS" ]; then
   #/usr/sbin/psrinfo -v 2>&1
   isalist 2>&1 || true
   showrev 2>&1 || true 
   #shorew -p | grep 138411
   cat /etc/release 2>&1 || true
-elif [ `uname -s` == "FreeBSD" ]; then
+elif [ "$(uname -s)" == "Darwin" ]; then
+  sw_vers -productVersion 2>&1 || true
+elif [ "$(uname -s)" == "FreeBSD" ]; then
   freebsd-version 2>&1 || true 
-elif [ `uname -s` == "Linux" ]; then
+elif [ "$(uname -s)" == "Linux" ]; then
   lsb_release 2>&1 || true 
 fi
 echo "========== COMPILER =========="
-${SCONS} --version 2>&1 || true 
-if [ `uname -s` == "SunOS" ]; then
+if [ -n "${SCONS}" ]; then
+  "${SCONS}" --version 2>&1 || true
+fi
+if [ "$(uname -s)" == "SunOS" ]; then
   type cc 2>&1 || true
   cc -V 2>&1 || true
   type CC 2>&1 || true
   CC -V 2>&1 || true
-elif [ `uname -s` == "FreeBSD" ]; then 
+elif [ "$(uname -s)" == "FreeBSD" ]; then
   type cc 2>&1 || true
   cc -V 2>&1 || true
   type CC 2>&1 || true
   CC -V 2>&1 || true
-elif [ `uname -s` == "Darwin" ]; then  
+elif [ "$(uname -s)" == "Darwin" ]; then
   xcodebuild -version 2>&1 || true
   port version 2>&1 || true
-elif [ `uname -s` == "Linux" ]; then
+elif [ "$(uname -s)" == "Linux" ]; then
+  gcc --version 2>&1 || true
+  #cpp version
+  clang --version  2>&1 || true
+  #cl
+elif [ "$(uname -s)" == "MINGW64_NT-6.1" || "$(uname -s)" == "CYGWIN_NT-6.1" || "$(uname -s)" == "MSYS_NT-6.1" ]; then
+  echo "========== MINGW/CYGWIN/WINDOWS =========="
+  echo "MSYSTEM : ${MSYSTEM}"
   gcc --version 2>&1 || true
 fi
 
 echo "PATH : ${PATH}" 2>&1
 echo "LD_LIBRARY_PATH : ${LD_LIBRARY_PATH}" 2>&1
+echo "TMPDIR : ${TMPDIR}" 2>&1
 echo "LIBPATH : ${LIBPATH}" 2>&1
 echo "LOCALE : ${LANG}" 2>&1
 echo "========== PERL =========="
@@ -53,13 +65,21 @@ echo "========== ANSIBLE =========="
 ansible --version 2>&1 || true
 ansible-galaxy --version 2>&1 || true
 echo "========== MISC =========="
-${TAR} --version 2>&1 || true
-${GIT_CMD} --version 2>&1 || true
+if [ -n "${TAR}" ]; then
+  "${TAR}" --version 2>&1 || true
+fi
+if [ -n "${GIT_CMD}" ]; then
+  "${GIT_CMD}" --version 2>&1 || true
+fi
 mvn --version 2>&1 || true
 brew --version 2>&1 || true
+echo "MSVC_VERSION : ${MSVC_VERSION}" > jenkins-env
 echo "========== TIBCO =========="
 echo "TIBCO_HOME : ${TIBCO_HOME}" 2>&1
 echo "TIBRV_HOME : ${TIBRV_HOME}" 2>&1
+echo "========== DATABASE =========="
+sqlplus -V 2>&1 || true
+isql --version 2>&1 || true
 
 echo "========== JAVA =========="
 java -version 2>&1 || true
@@ -70,19 +90,19 @@ echo "DISPLAY ${DISPLAY}"
 echo "BUILD_NUMBER: ${BUILD_NUMBER}"
 echo "BUILD_ID: ${BUILD_ID}"
 echo "IS_M2RELEASEBUILD: ${IS_M2RELEASEBUILD}"
-echo IS_M2RELEASEBUILD=${IS_M2RELEASEBUILD} > jenkins-env
+echo IS_M2RELEASEBUILD="${IS_M2RELEASEBUILD}" >> jenkins-env
 echo "========== SERVER =========="
 echo "SERVER_HOST : ${SERVER_HOST}"
-echo SERVER_HOST=${SERVER_HOST} >> jenkins-env
+echo SERVER_HOST="${SERVER_HOST}" >> jenkins-env
 echo "SERVER_CONTEXT: ${SERVER_CONTEXT}"
-echo SERVER_CONTEXT=${SERVER_CONTEXT} >> jenkins-env
+echo SERVER_CONTEXT="${SERVER_CONTEXT}" >> jenkins-env
 echo "SERVER_URL: ${SERVER_URL}"
-echo SERVER_URL=${SERVER_URL} >> jenkins-env
+echo SERVER_URL="${SERVER_URL}" >> jenkins-env
 echo "========== ZAP =========="
 echo "ZAP_PORT : ${ZAP_PORT}"
-echo ZAP_PORT=${ZAP_PORT} >> jenkins-env
+echo ZAP_PORT="${ZAP_PORT}" >> jenkins-env
 echo "ZAPROXY_HOME : ${ZAPROXY_HOME}"
-echo ZAPROXY_HOME=${ZAPROXY_HOME} >> jenkins-env
+echo ZAPROXY_HOME="${ZAPROXY_HOME}" >> jenkins-env
 echo "========== PORT =========="
 echo "TOMCAT_PORT : ${TOMCAT_PORT}"
 echo "JETTY_PORT : ${JETTY_PORT}"
@@ -90,7 +110,7 @@ echo "CARGO_RMI_PORT : ${CARGO_RMI_PORT}"
 
 echo "========== TOOLS =========="
 
-if [ `uname -s` == "Linux" ]; then
+if [ "$(uname -s)" == "Linux" ]; then
   echo "========== BROWSER =========="
   /usr/bin/firefox  -V || true
   /usr/lib/firefox/firefox -V || true
@@ -112,9 +132,6 @@ if [ `uname -s` == "Linux" ]; then
   git config --global --list || true
   svn --version || true
   echo "========== CPP TOOLS =========="
-  #cpp version
-  clang --version || true
-  ps-gen || true
   openssl version || true
   echo "========== TOOLS =========="
   /sbin/ldconfig -p | grep stdc++ || true
@@ -125,5 +142,5 @@ echo "========== ENV =========="
 #env 2>&1
 
 echo SONAR_BRANCH=$(printf '%s' $GIT_BRANCH | cut -d'/' -f 2-) >> jenkins-env
-echo RELEASE_VERSION=${RELEASE_VERSION} >> jenkins-env
-echo MVN_RELEASE_VERSION=${MVN_RELEASE_VERSION} >> jenkins-env
+echo RELEASE_VERSION="${RELEASE_VERSION}" >> jenkins-env
+echo MVN_RELEASE_VERSION="${MVN_RELEASE_VERSION}" >> jenkins-env
