@@ -1,29 +1,6 @@
 #!/bin/bash
 #set -xv
 
-bold="\033[01m"
-underline="\033[04m"
-blink="\033[05m"
-
-black="\033[30m"
-red="\033[31m"
-green="\033[32m"
-yellow="\033[33m"
-blue="\033[34m"
-magenta="\033[35m"
-cyan="\033[36m"
-ltgray="\033[37m"
-
-NC="\033[0m"
-
-#double_arrow='\u00BB'
-double_arrow='\xC2\xBB'
-#head_skull='\u2620'
-head_skull='\xE2\x98\xA0'
-#happy_smiley='\u263A'
-happy_smiley='\xE2\x98\xBA'
-nabla_logo='\xE2\x88\x87'
-
 ./step-2-0-0-build-env.sh || exit 1
 
 #clang-format -style=llvm -dump-config > .clang-format
@@ -42,7 +19,7 @@ echo -e "${green} Building : scons ${NC}"
 #scons opt=True
 #cd /workspace
 #wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
-~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${WORKSPACE}/bw-outputs scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
+~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir "${WORKSPACE}/bw-outputs scons target=local" --cache-disable gcc_version=5 package 2>&1 > scons.log
 #/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs
 
 echo -e "${green} Security : hardening-check ${NC}"
@@ -65,8 +42,7 @@ coverageSourcePath="$sourcePath/src/main/app/"
 # ------------------------------------------------------------------------
 gcdacount=$(find $coverageSourcePath -name "*.gcda" | wc -c )
 
-if [ $gcdacount -eq 0 ]
-then 
+if [ $gcdacount -eq 0 ]; then 
     echo "No new LCOV report to generate. Bye."
     exit 0
 fi
@@ -85,5 +61,12 @@ lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.in
 
 # Generate Report
 genhtml coverage.info --title "Nabla during UT" --output-directory "Nabla"
+
+#xml
+gcovr --branches --xml-pretty -r . 2>&1 > gcovr.xml
+#html
+gcovr --branches -r . --html --html-details -o gcovr-report.html
+
+#gprof exampleapp gmon.out > gprof_output.txt
 
 exit 0

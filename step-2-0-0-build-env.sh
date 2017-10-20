@@ -1,45 +1,24 @@
 #!/bin/bash
 #set -xv
 
-bold="\033[01m"
-underline="\033[04m"
-blink="\033[05m"
+source ./step-0-color.sh
 
-black="\033[30m"
-red="\033[31m"
-green="\033[32m"
-yellow="\033[33m"
-blue="\033[34m"
-magenta="\033[35m"
-cyan="\033[36m"
-ltgray="\033[37m"
+echo -e "${yellow} ${bold} WELCOME ${nabla_logo} ${NC}"
 
-NC="\033[0m"
-
-#double_arrow='\u00BB'
-double_arrow='\xC2\xBB'
-#head_skull='\u2620'
-head_skull='\xE2\x98\xA0'
-#happy_smiley='\u263A'
-happy_smiley='\xE2\x98\xBA'
-nabla_logo='\xE2\x88\x87'
-
-#========================================= CPP
-
-echo -e "${green} WELCOME ${nabla_logo} ${NC}"
-
-echo -e "${green} HOSTNAME : ${HOSTNAME} ${NC}"
-echo -e "${green} SHELL : ${SHELL} ${NC}"
-echo -e "${green} TERM : ${TERM} ${NC}"
-echo -e "${green} HOME : ${HOME} ${NC}"
-echo -e "${green} USER : ${USER} ${NC}"
-echo -e "${green} PATH : ${PATH} ${NC}"
+echo -e "${ltgray} HOSTNAME : ${HOSTNAME} ${NC}"
+echo -e "${cyan} SHELL : ${SHELL} ${NC}"
+echo -e "${cyan} TERM : ${TERM} ${NC}"
+echo -e "${cyan} HOME : ${HOME} ${NC}"
+echo -e "${cyan} USER : ${USER} ${NC}"
+echo -e "${blue} PATH : ${PATH} ${NC}"
 
 echo -e "${green} SCONS : ${SCONS} ${NC}"
 echo -e "${green} SCONS_OPTS : ${SCONS_OPTS} ${NC}"
 echo -e "${green} ARCH : ${ARCH} ${NC}"
 echo -e "${green} WORKSPACE_SUFFIX : ${WORKSPACE_SUFFIX} ${NC}"
 echo -e "${green} GIT_BRANCH_NAME : ${GIT_BRANCH_NAME} ${NC}"
+
+echo -e "${magenta} ${underline}PARAMETERS ${NC}"
 
 #DRY_RUN is used on UAT in order to avoid TAGING or DEPLOYING to production
 if [ -n "${DRY_RUN}" ]; then
@@ -49,7 +28,7 @@ else
 fi
 
 if [ -z "$PATH" ]; then
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PATH, use default one ${NC}"
     #Please do not enable NFS share on build server.
     #In case of NFS share issue we will not be able to perform an HF
@@ -60,9 +39,14 @@ if [ -z "$PATH" ]; then
   fi
 fi
 
+if [ -z "$TMPDIR" ]; then
+    TMPDIR="/var/tmp/"
+    export TMPDIR
+fi
+
 if [ -z "$SUNSTUDIO_HOME" ]; then
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SUNSTUDIO_HOME, use default one ${NC}"
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     #SUNSTUDIO_HOME="/opt/solarisstudio12.3"
     #SUNSTUDIO_HOME="/rms/sunpro/sun-studio-12/SUNWspro"
     SUNSTUDIO_HOME="/opt/SUNWspro"
@@ -70,7 +54,7 @@ if [ -z "$SUNSTUDIO_HOME" ]; then
   fi
 fi
 
-if [ `uname -s` == "SunOS" ]; then
+if [ "$(uname -s)" == "SunOS" ]; then
   PATH=/opt/csw/bin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/ccs/bin:/usr/sfw/bin
   if [[ -d ${SUNSTUDIO_HOME} ]]; then
     PATH=${SUNSTUDIO_HOME}/bin:${PATH}
@@ -108,7 +92,7 @@ if [ -n "${COMPILER}" ]; then
   echo -e "${green} COMPILER is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : COMPILER, use default one ${NC}"
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     COMPILER="CC"
   else
     COMPILER="gcc"
@@ -120,7 +104,7 @@ if [ -n "${SCONS}" ]; then
   echo -e "${green} SCONS is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS, use default one ${NC}"
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     SCONS="/usr/local/bin/scons"
   else
     SCONS="/usr/bin/scons"
@@ -133,9 +117,9 @@ if [ -n "${SCONS_OPTS}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
 
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     SCONS_OPTS="-j8 opt=True"
-  elif [ `uname -s` == "Linux" ]; then
+  elif [ "$(uname -s)" == "Linux" ]; then
     SCONS_OPTS="-j32 opt=True"
   else
     SCONS_OPTS="-j8 --cache-disable gcc_version=4.1.2 opt=True"
@@ -151,7 +135,7 @@ if [ -n "${GIT_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : GIT_CMD, use the default one ${NC}"
   GIT_CMD="/usr/bin/git"
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     GIT_CMD="/usr/local/bin/git"
   fi
   export GIT_CMD
@@ -161,13 +145,13 @@ if [ -n "${TAR}" ]; then
   echo -e "${green} TAR is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TAR, use default one ${NC}"
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     TAR="/usr/sfw/bin/gtar"
-  elif [ `uname -s` == "Darwin" ]; then
+  elif [ "$(uname -s)" == "Darwin" ]; then
     TAR="/opt/local/bin/gnutar"
-  elif [ `uname -s` == "FreeBSD" ]; then
+  elif [ "$(uname -s)" == "FreeBSD" ]; then
     TAR="/usr/bin/tar"
-  elif [ `uname -s` == "Linux" ]; then
+  elif [ "$(uname -s)" == "Linux" ]; then
     TAR="tar"
   else
     TAR="7z"
@@ -179,11 +163,11 @@ if [ -n "${WGET}" ]; then
   echo -e "${green} WGET is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WGET, use default one ${NC}"
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     WGET="/opt/csw/bin/wget"
-  elif [ `uname -s` == "Darwin" ]; then
+  elif [ "$(uname -s)" == "Darwin" ]; then
     WGET="/opt/local/bin/wget"
-  elif [ `uname -s` == "Linux" ]; then
+  elif [ "$(uname -s)" == "Linux" ]; then
     WGET="wget"
   else
     WGET="wget"
@@ -191,11 +175,27 @@ else
   export WGET
 fi
 
+if [ -n "${MD5SUM}" ]; then
+  echo -e "${green} MD5SUM is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MD5SUM, use default one ${NC}"
+  if [ "$(uname -s)" == "SunOS" ]; then
+    MD5SUM="/usr/bin/digest -a md5"
+  elif [ "$(uname -s)" == "Darwin" ]; then
+    MD5SUM="/usr/local/bin/md5sum"
+  elif [ "$(uname -s)" == "Linux" ]; then
+    MD5SUM="md5sum"
+  else
+    MD5SUM="md5sum"
+  fi
+  export MD5SUM
+fi
+
 if [ -n "${TIBCO_HOME}" ]; then
   echo -e "${green} TIBCO_HOME is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBCO_HOME, use default one ${NC}"
-  if [ `uname -s` == "Linux" ]; then
+  if [ "$(uname -s)" == "Linux" ]; then
     TIBCO_HOME="/opt/tibco"
   else
     TIBCO_HOME=""
@@ -215,7 +215,7 @@ if [ -n "${TIBRV_HOME}" ]; then
   echo -e "${green} TIBRV_HOME is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBRV_HOME, use default one ${NC}"
-  if [ `uname -s` == "Linux" ]; then
+  if [ "$(uname -s)" == "Linux" ]; then
     TIBRV_HOME="${TIBCO_HOME}/tibrv/${TIBRV_VERSION}"
   else
     TIBRV_HOME=""
@@ -248,7 +248,7 @@ if [ -n "${JAVA_HOME}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JAVA_HOME, use the default one ${NC}"
   JAVA_HOME=/usr/lib/jvm/java-8-oracle/
-  if [ `uname -s` == "SunOS" ]; then
+  if [ "$(uname -s)" == "SunOS" ]; then
     JAVA_HOME=/usr/jdk/instances/jdk1.8.0_131/
   fi
   if [[ -d /dpool/jdk ]]; then
@@ -257,8 +257,16 @@ else
   export JAVA_HOME
 fi
 
-if [ `uname -s` == "SunOS" ]; then
+if [ "$(uname -s)" == "SunOS" ]; then
   PATH=$JAVA_HOME/bin:$PATH; export PATH
+fi
+
+if [ -n "${TARGET_TAG}" ]; then
+  echo -e "${green} TARGET_TAG is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_TAG, use the default one ${NC}"
+  export TARGET_TAG="LATEST_SUCCESSFULL"
+  #export TARGET_TAG="1.7.0.0_1"
 fi
 
 if [ -n "${RELEASE_VERSION}" ]; then
@@ -432,6 +440,8 @@ ENV_FILENAME="${WORKSPACE}/ENV_${ARCH}_VERSION.TXT"
 
 echo -e "${NC}"
 
-./step-2-0-1-build-env-info.sh > ${ENV_FILENAME}
+./step-2-0-1-build-env-info.sh > "${ENV_FILENAME}"
+
+echo -e "${black} ${blink} DONE ${NC}"
 
 #exit 0

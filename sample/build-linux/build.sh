@@ -67,10 +67,14 @@ cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
 
+echo -e "${green} clang format ${NC}"
+
 #http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html
 #clang-format -dump-config
 #make check-all
 #clang-tidy -dump-config
+
+ln -s $PWD/compile_commands.json ../microsoft/
 
 echo -e "${green} Building : CMake ${NC}"
 
@@ -119,13 +123,21 @@ echo -e "${green} Experimental : CMake ${NC}"
 
 make Experimental
 
-echo -e "${green} Packaging : checkinstall ${NC}"
+echo -e "${green} Packaging : CPack ${NC}"
+
+#cmake --help-module CPackDeb
+#cpack
 
 cd $PROJECT_SRC/sample/build-${ARCH}
 make package
-
-if [ `uname -s` == "Linux" ]; then
-	checkinstall --version
+# To use this:
+# make package
+# sudo dpkg -i MICROSOFT-10.02-Linux.deb
+	
+if [ `uname -s` == "Linux" ]; then		
+	echo -e "${green} Packaging : checkinstall ${NC}"
+	
+	checkinstall --version	
 	
 	#sudo dpkg -r nabla-microsoft || true
 	
@@ -156,9 +168,20 @@ if [ `uname -s` == "Linux" ]; then
 	#scan-view
 fi
 
+echo -e "${green} Reporting : Coverage ${NC}"
+
+find ../.. -name '*.gcda'
+
+#xml
+gcovr --branches --xml-pretty -r .
+#html
+gcovr --branches -r . --html --html-details -o gcovr-report.html
+
 #Objective C
 #xcodebuild | xcpretty
 #scan-build xcodebuild
+
+cmake --graphviz=test.dot .
 
 echo "http://192.168.0.28/cdash/user.php"
 echo "http://maven.nabla.mobi/cpp/microsoft/index.html"
