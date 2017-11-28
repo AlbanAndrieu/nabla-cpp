@@ -16,6 +16,7 @@ ltgray="\033[37m"
 
 NC="\033[0m"
 
+if [ "$(uname -s)" == "Linux" ]; then
 #double_arrow='\u00BB'
 double_arrow='\xC2\xBB'
 #head_skull='\u2620'
@@ -23,5 +24,6 @@ head_skull='\xE2\x98\xA0'
 #happy_smiley='\u263A'
 happy_smiley='\xE2\x98\xBA'
 nabla_logo='\xE2\x88\x87'
+fi
 
 #exit 0
