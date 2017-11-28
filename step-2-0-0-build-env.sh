@@ -17,6 +17,8 @@ echo -e "${green} SCONS_OPTS : ${SCONS_OPTS} ${NC}"
 echo -e "${green} ARCH : ${ARCH} ${NC}"
 echo -e "${green} WORKSPACE_SUFFIX : ${WORKSPACE_SUFFIX} ${NC}"
 echo -e "${green} GIT_BRANCH_NAME : ${GIT_BRANCH_NAME} ${NC}"
+echo -e "${green} GIT_BRANCH : ${GIT_BRANCH} ${NC}"
+echo -e "${green} GIT_COMMIT : ${GIT_COMMIT} ${NC}"
 
 echo -e "${magenta} ${underline}PARAMETERS ${NC}"
 
@@ -60,6 +62,10 @@ if [ "$(uname -s)" == "SunOS" ]; then
     PATH=${SUNSTUDIO_HOME}/bin:${PATH}
   fi
   export PATH
+elif [ "$(uname -s)" == "Linux" ]; then
+  #For RedHat add /usr/sbin
+  PATH=${PATH}:/usr/sbin;
+  export PATH
 fi
 
 if [ -z "$WORKSPACE" ]; then
@@ -68,7 +74,7 @@ if [ -z "$WORKSPACE" ]; then
 fi
 
 #if [ -n "${GIT_BRANCH_NAME}" ]; then
-#  echo "${green} GIT_BRANCH_NAME is defined ${happy_smiley} ${NC}"
+#  echo -e "${green} GIT_BRANCH_NAME is defined ${happy_smiley} ${NC}"
 #else
 #  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : GIT_BRANCH_NAME, use the default one ${NC}"
 #  export GIT_BRANCH_NAME="develop"
@@ -98,6 +104,34 @@ else
     COMPILER="gcc"
   fi
   export COMPILER
+fi
+
+if [ -n "${ANSIBLE_CMD}" ]; then
+  echo -e "${green} ANSIBLE_CMD is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_CMD, use the default one ${NC}"
+  export ANSIBLE_CMD="/usr/local/bin/ansible"
+fi
+
+if [ -n "${ANSIBLE_CMBD_CMD}" ]; then
+  echo -e "${green} ANSIBLE_CMBD_CMD is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_CMBD_CMD, use the default one ${NC}"
+  export ANSIBLE_CMBD_CMD="/usr/local/bin/ansible-cmdb"
+fi
+
+if [ -n "${ANSIBLE_GALAXY_CMD}" ]; then
+  echo -e "${green} ANSIBLE_GALAXY_CMD is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_GALAXY_CMD, use the default one ${NC}"
+  export ANSIBLE_GALAXY_CMD="/usr/local/bin/ansible-galaxy"
+fi
+
+if [ -n "${ANSIBLE_PLAYBOOK_CMD}" ]; then
+  echo -e "${green} ANSIBLE_PLAYBOOK_CMD is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_PLAYBOOK_CMD, use the default one ${NC}"
+  export ANSIBLE_PLAYBOOK_CMD="/usr/local/bin/ansible-playbook"
 fi
 
 if [ -n "${SCONS}" ]; then
@@ -141,6 +175,14 @@ else
   export GIT_CMD
 fi
 
+if [ -n "${GIT_AUTHOR_EMAIL}" ]; then
+  echo -e "${green} GIT_CMD is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : GIT_AUTHOR_EMAIL, use the default one ${NC}"
+  GIT_AUTHOR_EMAIL="alban.andrieu@free.fr"
+  export GIT_AUTHOR_EMAIL
+fi
+
 if [ -n "${TAR}" ]; then
   echo -e "${green} TAR is defined ${happy_smiley} ${NC}"
 else
@@ -153,6 +195,8 @@ else
     TAR="/usr/bin/tar"
   elif [ "$(uname -s)" == "Linux" ]; then
     TAR="tar"
+  elif [ "$(echo $(uname -s) | cut -c 1-7)" == "MSYS_NT" ]; then
+    TAR="zip"
   else
     TAR="7z"
   fi
@@ -168,6 +212,8 @@ else
   elif [ "$(uname -s)" == "Darwin" ]; then
     WGET="/opt/local/bin/wget"
   elif [ "$(uname -s)" == "Linux" ]; then
+    WGET="wget"
+  elif [ "$(echo $(uname -s) | cut -c 1-7)" == "MSYS_NT" ]; then
     WGET="wget"
   else
     WGET="wget"
@@ -185,6 +231,8 @@ else
     MD5SUM="/usr/local/bin/md5sum"
   elif [ "$(uname -s)" == "Linux" ]; then
     MD5SUM="md5sum"
+  elif [ "$(echo $(uname -s) | cut -c 1-7)" == "MSYS_NT" ]; then
+    WGET="md5sum"
   else
     MD5SUM="md5sum"
   fi
@@ -258,15 +306,8 @@ else
 fi
 
 if [ "$(uname -s)" == "SunOS" ]; then
-  PATH=$JAVA_HOME/bin:$PATH; export PATH
-fi
-
-if [ -n "${TARGET_TAG}" ]; then
-  echo -e "${green} TARGET_TAG is defined ${happy_smiley} ${NC}"
-else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_TAG, use the default one ${NC}"
-  export TARGET_TAG="LATEST_SUCCESSFULL"
-  #export TARGET_TAG="1.7.0.0_1"
+  PATH=$JAVA_HOME/bin:$PATH;
+  export PATH
 fi
 
 if [ -n "${RELEASE_VERSION}" ]; then
@@ -298,6 +339,43 @@ if [[ -n "${HTTP_PROTOCOL}" ]]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : HTTP_PROTOCOL, use the default one ${NC}"
   export HTTP_PROTOCOL="https://"
+fi
+
+if [ -n "${TARGET_PROJECT}" ]; then
+  echo -e "${green} TARGET_PROJECT is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_PROJECT, use the default one ${NC}"
+  TARGET_PROJECT="${JOB_NAME}"
+  export TARGET_PROJECT
+fi
+
+if [ -n "${TARGET_TAG}" ]; then
+  echo -e "${green} TARGET_TAG is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_TAG, use the default one ${NC}"
+  export TARGET_TAG="LATEST_SUCCESSFULL"
+  #export TARGET_TAG="1.7.0.0_1"
+fi
+
+if [ -n "${TARGET_SERVER}" ]; then
+  echo -e "${green} TARGET_SERVER is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_SERVER, use the default one ${NC}"
+  export TARGET_SERVER=nabla.freeboxos.fr
+fi
+
+if [ -n "${TARGET_PORT}" ]; then
+  echo -e "${green} TARGET_PORT is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_PORT, use the default one ${NC}"
+  export TARGET_PORT=8280
+fi
+
+if [ -n "${TARGET_URL}" ]; then
+  echo -e "${green} TARGET_URL is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_URL, use the default one ${NC}"
+  export TARGET_URL="visma/"
 fi
 
 if [ -n "${SERVER_HOST}" ]; then
