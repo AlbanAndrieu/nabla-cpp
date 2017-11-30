@@ -5,10 +5,11 @@
 import os
 import re
 import platform
+import time
 
 from config import ProjectMacro
 
-EnsureSConsVersion(2, 1)
+EnsureSConsVersion(2, 3, 5)
 EnsurePythonVersion(2, 7)
 
 #In Eclipse add to scons
@@ -47,7 +48,7 @@ env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
 if Arch in ['x86sol','sun4sol']:
     env = Environment(tools=['suncc', 'sunc++', 'sunlink'])
 
-env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project'], toolpath = ['config'])
+env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project', 'colorizer', 'eclipse'], toolpath = ['config'])
 
 system = platform.system()
 machine = platform.machine()
@@ -56,18 +57,13 @@ print "Platform :", platform.platform()
 print ("System : ", system)
 print ("Machine : ",machine)
 
-if env['color'] == 'True':
-    from colorizer import colorizer
-    col = colorizer()
-    col.colorize(env)    
-            
 if system == 'Linux' or system == 'CYGWIN_NT-5.1':
     env['ENV']['TERM'] = os.environ['TERM']
     env['ENV']['PATH'] = os.environ['PATH']
     env['ENV']['HOME'] = os.environ['HOME']
-    
-#print "ENV PATH :", env['ENV']['PATH']    
-    
+
+#print "ENV PATH :", env['ENV']['PATH']
+
 # Allow overriding the compiler with scons CC=???
 if 'CC' in ARGUMENTS: env.Replace(CC = ARGUMENTS['CC'])
 if 'CXX' in ARGUMENTS: env.Replace(CXX = ARGUMENTS['CXX'])
@@ -98,6 +94,32 @@ env['sandbox'] = Dir("#").srcnode().abspath
 print "sandbox :", env['sandbox']
 
 print "CXXVERSION :", env['CXXVERSION']
+
+# Ensure no warning is added
+def TreatWarningsAsErrors(env): # params: list of archs for which warnings must be treated as errors
+	if Arch in ['x86Linux'] and env['gcc_version'] >= '4.6' and not env['use_clang'] and not env['use_clangsa']:
+		env.Append(CCFLAGS = ['-Werror'])
+		if env['gcc_version'] >= '4.8':
+			env.Append(CCFLAGS = ['-Wno-error=maybe-uninitialized'])
+	elif Arch in ['sun4sol', 'x86sol']:
+		print "Solaris TreatWarningsAsErrors not handled yet"
+	elif Arch in ['winnt', 'win']:
+		print "Windows TreatWarningsAsErrors not handled yet"
+
+# Disable a warning on a given architecture
+# (please, do not abuse of this function and use it with caution)
+def DisableWarning(env, arch, warning): # params: - the architecture on which the warning must be removed
+										#         - the warning to remove
+	if arch in ['x86Linux'] and env['gcc_version'] >= '4.6':
+		env.Append(CCFLAGS = ['-Wno-' + warning])
+	elif arch in ['sun4sol', 'x86sol']:
+		print "Solaris DisableWarning not handled yet"
+	elif arch in ['winnt']:
+		print "Windows DisableWarning not handled yet"
+
+env.AddMethod(DisableWarning, "DisableWarning")
+
+env.AddMethod(TreatWarningsAsErrors, "TreatWarningsAsErrors")
 
 #
 # Environment extraction
@@ -285,12 +307,90 @@ if 'package' in COMMAND_LINE_TARGETS:
 # Clean
 Clean('.', 'target')
 
+# Eclipse IDE management (not suypported any-more)
+if 'Eclipse' in COMMAND_LINE_TARGETS:
+    if env['action'] == 'includes':
+        print 'Regenerate Eclipse project includes'
+        env.AddIncludes2EclipseCProject()
+    elif env['action'] == 'targets':
+        print 'Regenerate Eclipse project SCons build targets'
+        env.AddTargets2EclipseProject(progDirs)
+    elif env['action'] == 'clean_targets':
+        print 'Regenerate Eclipse project SCons build targets'
+        env.AddTargets2EclipseProject({}, True)
+    else:
+        print "Unknown action for 'Eclipse' target"
+    Exit(0)
+    
+# mrproper target
+def mrproper(env, directory=''):
+    scmDataDir = env.Dir('#').path
+    scm = None
+    while not scm:
+        if os.path.exists(scmDataDir+'/.svn'):
+            scm = 'svn'
+        elif os.path.exists(scmDataDir+'/.git'):
+            scm = 'git'
+        else:
+            up = os.path.dirname(scmDataDir)
+            if up != scmDataDir:
+                scmDataDir = up
+            else:
+                print "Looks like this is neither a svn nor a git workspace. I can't mrproper"
+                Exit(1)
+
+    launchDir = env.GetLaunchDir()
+    directory = os.path.join(launchDir, directory)
+    if os.path.exists(directory):
+        print "Clean " + directory
+        if scm == 'git':
+            subprocess.check_call(['git', 'clean', '-fdxq', directory])
+        else:
+            for line in subprocess.check_output(['svn', 'status', '--no-ignore', directory], universal_newlines=True).split('\n'):
+                match = re.match(r'(?:I|\?)\s+(.*)', line)
+                if match:
+                    toRemove = match.group(1)
+                    try:
+                        os.remove(toRemove)
+                    except OSError as e:
+                        if e.errno == errno.EISDIR or e.errno == errno.EPERM: # Is a directory (on Solaris Sparc & x86: EPERM is thrown on directories)
+                            shutil.rmtree(toRemove)
+                        elif e.errno == errno.EACCES: # Permission denied
+                            if (os.path.isdir(toRemove)): # This stupid windows sends a permission denied when trying to delete a dir
+                                import winerror # let's assume we can reach here only on winnt
+                                def onRmtreeError(fct, path, excinfo):
+                                    e = excinfo[1]
+                                    if e.winerror == winerror.ERROR_ACCESS_DENIED:
+                                        os.chmod(path, os.stat(path).st_mode | stat.S_IWRITE)
+                                        os.remove(path)
+                                    else:
+                                        raise e
+                                shutil.rmtree(toRemove, onerror = onRmtreeError)
+                            else:
+                                os.chmod(toRemove, os.stat(toRemove).st_mode | stat.S_IWRITE)
+                                os.remove(toRemove)
+                        else:
+                            raise
+                    except WindowsError as e:
+                        print e.errno
+    else:
+        print "This path does not exist: '%s'" % directory
+
+env.AddMethod(mrproper, "MrProper")
+
 # remove target
 if 'remove' in COMMAND_LINE_TARGETS:
-    #env.Execute("svn status libs|perl -l -ne 'if(s,^\?\s+(.+(?:\.cpp|\.h|\.xml|timestamps|sconsign.dblite|/ddl|/business|ps-make|ps-make.*|ps-private|.*\.vcproj|.*\.bak|.*\.hierarchy|.*\.views|.*\.per|.*\.enum2|.*\.gen))$,$1,){print $_}' | xargs rm -fr")
-    env.Execute("rm -Rf nabla-1.2.3")
-    env.Execute("rm -Rf target")
-    SetOption("clean", 1)
+#	COMMAND_LINE_TARGETS.remove('remove')
+	env.Execute("rm -Rf nabla-1.2.3")
+	env.Execute("rm -Rf target")
+	SetOption("clean", 1)
+	
+	if not COMMAND_LINE_TARGETS:
+		COMMAND_LINE_TARGETS.append("")
+
+	#for target in COMMAND_LINE_TARGETS:
+	#    env.MrProper(target)
+	Exit(0)
 
 #additional libs for link
 env['OSDependentLibs']=[]
@@ -335,3 +435,6 @@ print "DEFAULT_TARGETS", map(str, DEFAULT_TARGETS)
 #os.system('./cpplint.sh')
 
 #TODO : http://v8.googlecode.com/svn/trunk/SConstruct
+
+print "[Timestamp] FINISH SCONS AT %s" % time.strftime('%H:%M:%S')
+    

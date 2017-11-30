@@ -168,3 +168,16 @@ class colorizer:
 				return False
 
 		return True
+
+#------------------------------------------------------------------------------
+# Initialize the colorizer
+#------------------------------------------------------------------------------
+def generate(env, **kw):
+	
+    if env['color'] == 'True':
+        from colorizer import colorizer
+        col = colorizer()
+        col.colorize(env)	
+
+def exists(env):
+    return 1
