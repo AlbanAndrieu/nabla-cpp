@@ -87,8 +87,7 @@ def generate(env, **kw):
             '--coverage',
             #'-fprofile-generate',
             #'-fprofile-arcs',
-            #'-ftest-coverage',            
-            '–disable-shared',
+            #'-ftest-coverage',
             #'-fstrict-aliasing',
             '-DACE_HAS_EXCEPTIONS',
             '-DuseTao',
@@ -160,8 +159,8 @@ def generate(env, **kw):
             '/nodefaultlib:libcd.lib',
             '/nodefaultlib:libcmtd.lib',
         ]
-
-    print "CCCOM is:", env.subst('$CCCOM')
-
+    
+    print "CCCOM is:", env.subst('$CCCOM')    
+    
 def exists(env):
     return 1
