@@ -58,8 +58,6 @@ def generate(env, **kw):
             '-g',
             #'-Werror',
             '-Wall',
-            '-D_FORTIFY_SOURCE=2',
-            '-fstack-protector',
             '-fdiagnostics-show-option', #sonar cxx
             '-Wl,-z,relro',
             '-Wformat',
@@ -100,6 +98,18 @@ def generate(env, **kw):
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
+        if env['gcc_version'] >= '4.6':
+            env['CCFLAGS'] += ['-Werror=return-type'] # not supported yet in gcc 4.1
+		
+        if env['gcc_version'] >= '4.8':
+			env['CCFLAGS'] += [
+				'-D_FORTIFY_SOURCE=2',
+				'-fstack-protector',	
+				'-Wno-error=maybe-uninitialized',
+				'-Wno-unused-local-typedefs',
+                '-Wno-conversion-null',
+                '-Wno-invalid-offsetof',
+            ]
         #Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
         # If not set, -l order on command lines matter for static librairies
