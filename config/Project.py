@@ -9,20 +9,34 @@ def generate(env, **kw):
 
     if Arch in ['x86Linux','cygwin']:
         if not 'gcc_version' in env:
-            env['gcc_version'] = '4.6.3'
+#            env['gcc_version'] = '4.6.3'
+            env['gcc_version'] = subprocess.check_output(['gcc', '-dumpversion'])[:3]
         env['debug_flags'] = '-g'
         env['opt_flags'] = '-O'
         env['ENV']['PATH'] = '/bin:/usr/bin'
         env['ENV']['LD_LIBRARY_PATH'] = ''
-        if os.path.exists("/usr/bin/gcc-" + env['gcc_version']):
-            env['CC'] = 'gcc-' + env['gcc_version']
+        
+        if 'CLANG' in os.environ: # set by scan-build
+            env['ENV'].update(x for x in os.environ.items() if (x[0].startswith('CCC_') or x[0].startswith('CLANG')))
+            env['use_clangsa'] = True
+        if 'use_clangsa' in env and env['use_clangsa']:
+            env['CC']     = os.environ.get('CC')
+            env['CXX']    = os.environ.get('CXX')
+        elif 'use_clang' in env and env['use_clang']:
+            env['CC']     = "clang"
+            env['CXX']    = "clang++"
         else:
-            env['CC'] = 'gcc'
-        if os.path.exists("/usr/bin/g++-" + env['gcc_version']):
-            env['CXX'] = 'g++-' + env['gcc_version']
-        else:
-            env['CXX'] = 'g++'
+            if os.path.exists("/usr/bin/gcc-" + env['gcc_version']):
+                env['CC'] = 'gcc-' + env['gcc_version']
+            else:
+                env['CC'] = 'gcc'
+            if os.path.exists("/usr/bin/g++-" + env['gcc_version']):
+                env['CXX'] = 'g++-' + env['gcc_version']
+            else:
+                env['CXX'] = 'g++'            
+
         env['CXXVERSION'] = env['gcc_version']
+        
         if Arch=='x86Linux':
             env['Suffix64']='64'
             env['output_folder'] = 'opt64'
@@ -31,6 +45,7 @@ def generate(env, **kw):
             env['Suffix64']=''
             env['output_folder'] = 'opt'
             env['java_arch'] = ''
+            
     elif Arch in ['x86sol','sun4sol']:
         env['debug_flags'] = '-g0'
         env['opt_flags'] = '-fast'
@@ -76,16 +91,8 @@ def generate(env, **kw):
             #'-Wno-ctor-dtor-privacy',
             '-Dlinux',
             '-DNDEBUG', #assert
-            #'-std=gnu++98',
-            #'-std=gnu++11',
-            '-std=gnu++0x',
-            '-std=c++0x',
             '-pedantic',
             '-pedantic-errors',
-            '--coverage',
-            #'-fprofile-generate',
-            #'-fprofile-arcs',
-            #'-ftest-coverage',
             #'-fstrict-aliasing',
             '-DACE_HAS_EXCEPTIONS',
             '-DuseTao',
@@ -110,6 +117,14 @@ def generate(env, **kw):
                 '-Wno-conversion-null',
                 '-Wno-invalid-offsetof',
             ]
+            
+        if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
+            env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
+            #'-std=gnu++98',
+            #'-std=gnu++11',
+            #'-std=gnu++0x',
+            #'-std=c++0x',            
+                        
         #Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
         # If not set, -l order on command lines matter for static librairies
@@ -117,7 +132,16 @@ def generate(env, **kw):
         #    '-Wl,--no-as-needed',
         #]
         env.Append(CORECFLAGS = '-Wextra')
-        env.Append(LINKFLAGS = '-g --coverage')
+        if 'use_gcov' in env and env['use_gcov']:
+            #'-fprofile-generate',
+            #'-fprofile-arcs',
+            #'-ftest-coverage',			
+            env['CCFLAGS'] += ['--coverage']
+            
+        if 'use_gcov' in env and env['use_gcov']:
+            env['LINKFLAGS'] += ['-g --coverage']
+                    
+        #env.Append(LINKFLAGS = '-g --coverage')
     elif Arch in ['x86sol','sun4sol']:
 	env['CCFLAGS'] = [
 	    '-features=no%conststrings,no%localfor',

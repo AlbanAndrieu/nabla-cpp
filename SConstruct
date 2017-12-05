@@ -35,10 +35,15 @@ scons CC=clang CXX=clang++
 # Command line variables definition
 vars = Variables('variables.py') # you can store your defaults in this file
 vars.AddVariables(
-    EnumVariable('opt', 'Set to True to build with opt flags', 'False', ['True', 'False']),
+    BoolVariable('opt', 'Set to true to build with opt flags', True),
+    BoolVariable('use_clang', 'On linux only: replace gcc by clang', False),
+    BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
+    BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', False),
+    BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),        
     EnumVariable('color', 'Set to true to build with colorizer', 'True', ['True', 'False']),
     ('gcc_version', 'Set gcc version to use', '4.8.4'),
     ('install_path', 'Set install path', 'install'),
+    ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../../buildcache'),
     ('CC', 'Set C compiler', 'gcc'),
     ('CXX', 'Set C++ compiler', 'g++'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
@@ -48,7 +53,8 @@ env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
 if Arch in ['x86sol','sun4sol']:
     env = Environment(tools=['suncc', 'sunc++', 'sunlink'])
 
-env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project', 'colorizer', 'eclipse'], toolpath = ['config'])
+#'eclipse'
+env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project', 'colorizer'], toolpath = ['config'])
 
 system = platform.system()
 machine = platform.machine()
@@ -149,10 +155,9 @@ PROJECT_JAVA_PATH = ProjectMacro.getEnvVariable('JAVA_HOME', PROJECT_THIRDPARTY_
 print "PROJECT_JAVA_PATH :", PROJECT_JAVA_PATH
 
 #env['cache_path'] = DEV_BINARY_DIR + '/buildcache-' + Arch
-env['cache_path'] = '../../buildcache-' + Arch
 print "env['cache_path'] :", env['cache_path']
-CacheDir(env['cache_path'])
-SConsignFile(DEV_BINARY_DIR + '/scons-signatures-' + Arch)
+CacheDir(env['cache_path']+ Arch)
+SConsignFile(DEV_BINARY_DIR + '/scons-signatures' + Arch)
 
 #registering function to handle builderrors correctly
 ProjectMacro.registerBuildFailuresAtExit()
