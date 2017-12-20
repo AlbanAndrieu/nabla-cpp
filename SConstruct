@@ -3,6 +3,7 @@
 ######################
 
 import os
+import shutil
 import re
 import platform
 import time
@@ -39,11 +40,12 @@ vars.AddVariables(
     BoolVariable('use_clang', 'On linux only: replace gcc by clang', False),
     BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
     BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', False),
-    BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),        
+    BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
     EnumVariable('color', 'Set to true to build with colorizer', 'True', ['True', 'False']),
     ('gcc_version', 'Set gcc version to use', '4.8.4'),
     ('install_path', 'Set install path', 'install'),
     ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../../buildcache'),
+    ('bom', 'bom location of additional 3rdparties.', 'config/test.bom'),
     ('CC', 'Set C compiler', 'gcc'),
     ('CXX', 'Set C++ compiler', 'g++'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
@@ -96,32 +98,33 @@ Decider('MD5-timestamp')
 
 # Paths deduced from sandbox location
 env['sandbox'] = Dir("#").srcnode().abspath
-
 print "sandbox :", env['sandbox']
+if 'WORKSPACE' in os.environ:
+    env['ENV']['WORKSPACE'] = os.environ['WORKSPACE']
 
 print "CXXVERSION :", env['CXXVERSION']
 
 # Ensure no warning is added
 def TreatWarningsAsErrors(env): # params: list of archs for which warnings must be treated as errors
-	if Arch in ['x86Linux'] and env['gcc_version'] >= '4.6' and not env['use_clang'] and not env['use_clangsa']:
-		env.Append(CCFLAGS = ['-Werror'])
-		if env['gcc_version'] >= '4.8':
-			env.Append(CCFLAGS = ['-Wno-error=maybe-uninitialized'])
-	elif Arch in ['sun4sol', 'x86sol']:
-		print "Solaris TreatWarningsAsErrors not handled yet"
-	elif Arch in ['winnt', 'win']:
-		print "Windows TreatWarningsAsErrors not handled yet"
+    if Arch in ['x86Linux'] and env['gcc_version'] >= '4.6' and not env['use_clang'] and not env['use_clangsa']:
+        env.Append(CCFLAGS = ['-Werror'])
+        if env['gcc_version'] >= '4.8':
+            env.Append(CCFLAGS = ['-Wno-error=maybe-uninitialized'])
+    elif Arch in ['sun4sol', 'x86sol']:
+        print "Solaris TreatWarningsAsErrors not handled yet"
+    elif Arch in ['winnt', 'win']:
+        print "Windows TreatWarningsAsErrors not handled yet"
 
 # Disable a warning on a given architecture
 # (please, do not abuse of this function and use it with caution)
 def DisableWarning(env, arch, warning): # params: - the architecture on which the warning must be removed
-										#         - the warning to remove
-	if arch in ['x86Linux'] and env['gcc_version'] >= '4.6':
-		env.Append(CCFLAGS = ['-Wno-' + warning])
-	elif arch in ['sun4sol', 'x86sol']:
-		print "Solaris DisableWarning not handled yet"
-	elif arch in ['winnt']:
-		print "Windows DisableWarning not handled yet"
+                                        #         - the warning to remove
+    if arch in ['x86Linux'] and env['gcc_version'] >= '4.6':
+        env.Append(CCFLAGS = ['-Wno-' + warning])
+    elif arch in ['sun4sol', 'x86sol']:
+        print "Solaris DisableWarning not handled yet"
+    elif arch in ['winnt']:
+        print "Windows DisableWarning not handled yet"
 
 env.AddMethod(DisableWarning, "DisableWarning")
 
@@ -144,9 +147,9 @@ else:
 print "DEV_BINARY_DIR :", DEV_BINARY_DIR
 
 if env['target'] == 'local':
-	PROJECT_THIRDPARTY_PATH = env['sandbox'] + '/thirdparty'
+    PROJECT_THIRDPARTY_PATH = env['sandbox'] + '/thirdparty'
 else:
-	PROJECT_THIRDPARTY_PATH = ProjectMacro.getEnvVariable('PROJECT_THIRDPARTY_PATH','/thirdparty')
+    PROJECT_THIRDPARTY_PATH = ProjectMacro.getEnvVariable('PROJECT_THIRDPARTY_PATH','/thirdparty')
 
 print "PROJECT_THIRDPARTY_PATH :", PROJECT_THIRDPARTY_PATH
 
@@ -163,17 +166,17 @@ SConsignFile(DEV_BINARY_DIR + '/scons-signatures' + Arch)
 ProjectMacro.registerBuildFailuresAtExit()
 
 if env['opt'] == 'True':
-	print "opt mode activated"
-	theOptDbgFolder = 'opt'+env['Suffix64']
-	env.Prepend(CCFLAGS = env['opt_flags'])
-	env.Prepend(CCFLAGS = '-DNDEBUG')
-	if Arch in ['sun4sol','x86sol']:
-		env.Prepend(CCFLAGS = '-xlibmil')
-		env.Prepend(CCFLAGS = '-xlibmopt')
+    print "opt mode activated"
+    theOptDbgFolder = 'opt'+env['Suffix64']
+    env.Prepend(CCFLAGS = env['opt_flags'])
+    env.Prepend(CCFLAGS = '-DNDEBUG')
+    if Arch in ['sun4sol','x86sol']:
+        env.Prepend(CCFLAGS = '-xlibmil')
+        env.Prepend(CCFLAGS = '-xlibmopt')
 else:
-	theOptDbgFolder = 'debug'+env['Suffix64']
-	env.Prepend(CCFLAGS = env['debug_flags'])
-	env.Prepend(CCFLAGS = '-DDEBUG')
+    theOptDbgFolder = 'debug'+env['Suffix64']
+    env.Prepend(CCFLAGS = env['debug_flags'])
+    env.Prepend(CCFLAGS = '-DDEBUG')
 
 #binaries directory
 thePath=os.path.join(DEV_BINARY_DIR,'bin',Arch)
@@ -212,37 +215,37 @@ print "include dir :", PROJECT_INCLUDE_DIR
 env['CPPPATH'] = [
     '.',
 # published headers
-	PROJECT_INCLUDE_DIR,
+    PROJECT_INCLUDE_DIR,
 # 3rd parties
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'cppunit',Arch,'include'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'boost',Arch,'include'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'zlib',Arch,'include'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'xerces',Arch,'include'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'log4cxx',Arch,'include'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'tao',Arch,'ACE_wrappers'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'tao',Arch,'ACE_wrappers','TAO'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'tao',Arch,'ACE_wrappers','TAO','orbsvcs'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'openssl',Arch,'include'),
-	os.path.join(PROJECT_JAVA_PATH,'include'),
-	os.path.join(PROJECT_JAVA_PATH,'include',['linux','solaris'][Arch!='x86Linux']),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'cppunit',Arch,'include'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'boost',Arch,'include'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'zlib',Arch,'include'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'xerces',Arch,'include'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'log4cxx',Arch,'include'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'tao',Arch,'ACE_wrappers'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'tao',Arch,'ACE_wrappers','TAO'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'tao',Arch,'ACE_wrappers','TAO','orbsvcs'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'openssl',Arch,'include'),
+    os.path.join(PROJECT_JAVA_PATH,'include'),
+    os.path.join(PROJECT_JAVA_PATH,'include',['linux','solaris'][Arch!='x86Linux']),
 ]
 
 # -L parameter
 ##############
 env["LIBPATH"]     = [
-	LIBRARY_STATIC_OUTPUT_PATH,
-	LIBRARY_OUTPUT_PATH,
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'boost', Arch, 'lib',['','opt/shared'][Arch!='x86Linux']),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'xerces', Arch, 'lib'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'libxml2', Arch, 'lib'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'tao', Arch, 'ACE_wrappers','lib'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'openssl',Arch,'lib'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'rv', Arch, 'lib'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'apr',Arch,'lib'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'apr-util',Arch,'lib'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'log4cxx', Arch, 'lib'),
-#	os.path.join(PROJECT_THIRDPARTY_PATH,'cppunit',Arch,'lib'),
-	os.path.join(PROJECT_JAVA_PATH, 'jre','lib',env['java_arch'],'server'),
+    LIBRARY_STATIC_OUTPUT_PATH,
+    LIBRARY_OUTPUT_PATH,
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'boost', Arch, 'lib',['','opt/shared'][Arch!='x86Linux']),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'xerces', Arch, 'lib'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'libxml2', Arch, 'lib'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'tao', Arch, 'ACE_wrappers','lib'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'openssl',Arch,'lib'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'rv', Arch, 'lib'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'apr',Arch,'lib'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'apr-util',Arch,'lib'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'log4cxx', Arch, 'lib'),
+#   os.path.join(PROJECT_THIRDPARTY_PATH,'cppunit',Arch,'lib'),
+    os.path.join(PROJECT_JAVA_PATH, 'jre','lib',env['java_arch'],'server'),
 
 # 3rd parties
 ]
@@ -259,27 +262,27 @@ textfile.writelines('export LIBPATH=' + LD_LIBRARY_PATH + '\n')
 textfile.close()
 
 env['TAO'] = [
-	'ACE',
-	'ACE_RMCast',
-	'TAO',
-	'TAO_BiDirGIOP',
-	'TAO_DynamicAny',
-	'TAO_DynamicInterface',
-	'TAO_IDL_BE',
-	'TAO_IDL_FE',
-	'TAO_IFR_Client',
-	'TAO_IORManip',
-	'TAO_IORTable',
-	'TAO_Messaging',
-	'TAO_PortableServer',
-	'TAO_RTCORBA',
-	'TAO_RTPortableServer',
-	'TAO_SmartProxies',
-	'TAO_Strategies',
-	'TAO_TypeCodeFactory',
-	'TAO_Utils',
-	'TAO_CosNaming',
-	'TAO_Codeset',
+    'ACE',
+    'ACE_RMCast',
+    'TAO',
+    'TAO_BiDirGIOP',
+    'TAO_DynamicAny',
+    'TAO_DynamicInterface',
+    'TAO_IDL_BE',
+    'TAO_IDL_FE',
+    'TAO_IFR_Client',
+    'TAO_IORManip',
+    'TAO_IORTable',
+    'TAO_Messaging',
+    'TAO_PortableServer',
+    'TAO_RTCORBA',
+    'TAO_RTPortableServer',
+    'TAO_SmartProxies',
+    'TAO_Strategies',
+    'TAO_TypeCodeFactory',
+    'TAO_Utils',
+    'TAO_CosNaming',
+    'TAO_Codeset',
 ]
 
 #####################################
@@ -294,15 +297,15 @@ Versions = dict([
 
 #### Lists of libs for link
 env['MORELibs'] = [
-#	'Todo1' + Versions['test_1'],
-#	'Todo2' + Versions['test_2'],
-	'tibrv'+env['Suffix64'],
-	'tibrvcm'+env['Suffix64'],
-	'tibrvcmq'+env['Suffix64'],
-	'tibrvft'+env['Suffix64'],
-	'tibrvcpp'+env['Suffix64'],
-	'crypto',
-	'xml2',
+#   'Todo1' + Versions['test_1'],
+#   'Todo2' + Versions['test_2'],
+    'tibrv'+env['Suffix64'],
+    'tibrvcm'+env['Suffix64'],
+    'tibrvcmq'+env['Suffix64'],
+    'tibrvft'+env['Suffix64'],
+    'tibrvcpp'+env['Suffix64'],
+    'crypto',
+    'xml2',
 ]
 
 if 'package' in COMMAND_LINE_TARGETS:
@@ -312,21 +315,8 @@ if 'package' in COMMAND_LINE_TARGETS:
 # Clean
 Clean('.', 'target')
 
-# Eclipse IDE management (not suypported any-more)
-if 'Eclipse' in COMMAND_LINE_TARGETS:
-    if env['action'] == 'includes':
-        print 'Regenerate Eclipse project includes'
-        env.AddIncludes2EclipseCProject()
-    elif env['action'] == 'targets':
-        print 'Regenerate Eclipse project SCons build targets'
-        env.AddTargets2EclipseProject(progDirs)
-    elif env['action'] == 'clean_targets':
-        print 'Regenerate Eclipse project SCons build targets'
-        env.AddTargets2EclipseProject({}, True)
-    else:
-        print "Unknown action for 'Eclipse' target"
-    Exit(0)
-    
+print "sandbox:", env['sandbox']
+
 # mrproper target
 def mrproper(env, directory=''):
     scmDataDir = env.Dir('#').path
@@ -384,23 +374,30 @@ def mrproper(env, directory=''):
 env.AddMethod(mrproper, "MrProper")
 
 # remove target
-if 'remove' in COMMAND_LINE_TARGETS:
-#	COMMAND_LINE_TARGETS.remove('remove')
-	env.Execute("rm -Rf nabla-1.2.3")
-	env.Execute("rm -Rf target")
-	SetOption("clean", 1)
-	
-	if not COMMAND_LINE_TARGETS:
-		COMMAND_LINE_TARGETS.append("")
+if 'clean' in COMMAND_LINE_TARGETS:
+#   COMMAND_LINE_TARGETS.remove('remove')
+    shutil.rmtree(env['sandbox'] + '/3rdparties', ignore_errors=True)
+    shutil.rmtree(env['sandbox'] + '/nabla-1.2.3', ignore_errors=True)
+    shutil.rmtree(env['sandbox'] + '/target', ignore_errors=True)
+    shutil.rmtree(env['sandbox'] + '/install', ignore_errors=True)
+    shutil.rmtree(env['sandbox'] + '/buildcache' + Arch, ignore_errors=True)
+    SetOption("clean", 1)
+    Exit(0)
 
-	#for target in COMMAND_LINE_TARGETS:
-	#    env.MrProper(target)
-	Exit(0)
+if not GetOption('help') and not GetOption('clean'):
+    target_dir = "3rdparties/" + Arch + "/nabla"
+    from config import download3rdparties
+    shutil.rmtree(env['sandbox'] + '/3rdparties/' + Arch + '/nabla', ignore_errors=True)
+
+    print ("./config/download3rdparties.py" + ' --arch ' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir)
+    download3rdparties.download(Arch, 64, '' , 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')
+    
+    Exit(0)
 
 #additional libs for link
 env['OSDependentLibs']=[]
 if Arch in ['x86sol','sun4sol']:
-	env['OSDependentLibs'].extend([ 'posix4','pthread','thread','socket'])
+    env['OSDependentLibs'].extend([ 'posix4','pthread','thread','socket'])
 
 #register the idl builder
 ProjectMacro.registerIDLBuilders(env,PROJECT_THIRDPARTY_PATH,Arch)
@@ -411,8 +408,8 @@ Export('env', 'Versions')
 #Sconscript calls
 if not GetOption('help'):
     env.SConscript([
-    		DEV_SOURCE_DIR+'/sample/microsoft/src/main/cpp/SConscript',
-		DEV_SOURCE_DIR+'/sample/microsoft/src/main/app/SConscript',
+            DEV_SOURCE_DIR+'/sample/microsoft/src/main/cpp/SConscript',
+        DEV_SOURCE_DIR+'/sample/microsoft/src/main/app/SConscript',
     ])
 
 SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/cpp/SConscript')
@@ -442,4 +439,4 @@ print "DEFAULT_TARGETS", map(str, DEFAULT_TARGETS)
 #TODO : http://v8.googlecode.com/svn/trunk/SConstruct
 
 print "[Timestamp] FINISH SCONS AT %s" % time.strftime('%H:%M:%S')
-    
+

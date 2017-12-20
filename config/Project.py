@@ -2,6 +2,8 @@
 import os
 import ProjectMacro
 
+import SCons.Tool.MSCommon.vc
+
 def generate(env, **kw):
     Arch = ProjectMacro.getArch()
 
