@@ -45,7 +45,7 @@ vars.AddVariables(
     ('gcc_version', 'Set gcc version to use', '4.8.4'),
     ('install_path', 'Set install path', 'install'),
     ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../../buildcache'),
-    ('bom', 'bom location of additional 3rdparties.', 'config/test.bom'),
+    ('bom', 'bom location of additional 3rdparties.', ''),
     ('CC', 'Set C compiler', 'gcc'),
     ('CXX', 'Set C++ compiler', 'g++'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
@@ -101,7 +101,9 @@ env['sandbox'] = Dir("#").srcnode().abspath
 print "sandbox :", env['sandbox']
 if 'WORKSPACE' in os.environ:
     env['ENV']['WORKSPACE'] = os.environ['WORKSPACE']
-
+else:
+	env['ENV']['WORKSPACE'] = env['sandbox']
+	
 print "CXXVERSION :", env['CXXVERSION']
 
 # Ensure no warning is added
@@ -375,22 +377,23 @@ env.AddMethod(mrproper, "MrProper")
 
 # remove target
 if 'clean' in COMMAND_LINE_TARGETS:
-#   COMMAND_LINE_TARGETS.remove('remove')
     shutil.rmtree(env['sandbox'] + '/3rdparties', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/nabla-1.2.3', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/target', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/install', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/buildcache' + Arch, ignore_errors=True)
+    env.Execute("rm -Rf " + env['ENV']['WORKSPACE'] + "/download3rdparties-cache* scons-signatures-x86Linux.dblite *.tgz *.zip /tmp/*-kgr-buildinit/")
     SetOption("clean", 1)
     Exit(0)
 
+# Initialize KGR build dependencies
 if not GetOption('help') and not GetOption('clean'):
     target_dir = "3rdparties/" + Arch + "/nabla"
     from config import download3rdparties
     shutil.rmtree(env['sandbox'] + '/3rdparties/' + Arch + '/nabla', ignore_errors=True)
 
     print ("./config/download3rdparties.py" + ' --arch ' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir)
-    download3rdparties.download(Arch, 64, '' , 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')
+    download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')
     
     Exit(0)
 

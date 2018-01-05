@@ -443,12 +443,14 @@ def download(arch, bit, compiler, base_url_old, base_url, bom, third_parties_dir
         os.environ['PATH'] += ';C:\\Program Files (x86)\\GnuWin32\\bin' # for 64 bit Windows
         os.environ['PATH'] += ';C:\\Program Files\\GnuWin32\\bin'       # for 32 bit Windows
 
-    print 'Initializing build dependencies'
-    serials = getSerialList(bom, arch, bit, compiler, serials)
-    for serial in serials:
-        ThirdParty(arch, serial, base_url, base_url_old, sandbox, third_parties_dir).get()
-    writeArchBom(serials)
-    print 'Build dependencies initialized'
+    print 'BOM file: %s - %s'%(sandbox, bom)
+    if bom != '' and bom != sandbox + '/':
+        print 'Initializing build dependencies'
+        serials = getSerialList(bom, arch, bit, compiler, serials)
+        for serial in serials:
+            ThirdParty(arch, serial, base_url, base_url_old, sandbox, third_parties_dir).get()
+        writeArchBom(serials)
+        print 'Build dependencies initialized'
 
 def main(args):
     parser = argparse.ArgumentParser(description='Download and expand third parties defined in a .bom file')
