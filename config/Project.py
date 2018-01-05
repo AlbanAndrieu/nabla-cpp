@@ -127,6 +127,9 @@ def generate(env, **kw):
             #'-std=gnu++0x',
             #'-std=c++0x',            
                         
+        if env['gcc_version'] >= '5.2':
+            env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=0']
+                                
         #Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
         # If not set, -l order on command lines matter for static librairies
