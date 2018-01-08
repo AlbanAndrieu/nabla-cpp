@@ -38,7 +38,8 @@ export PROJECT_TARGET_PATH=${WORKSPACE}/target
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
-../../clean.sh
+cd ../../
+./clean.sh
 
 #cd $PROJECT_SRC/sample/microsoft
 
