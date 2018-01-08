@@ -37,11 +37,11 @@ scons CC=clang CXX=clang++
 vars = Variables('variables.py') # you can store your defaults in this file
 vars.AddVariables(
     BoolVariable('opt', 'Set to true to build with opt flags', True),
-    BoolVariable('use_clang', 'On linux only: replace gcc by clang', False),
+    BoolVariable('use_clang', 'On linux only: replace gcc by clang', True),
     BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
     BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', False),
     BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
-    EnumVariable('color', 'Set to true to build with colorizer', 'True', ['True', 'False']),
+    BoolVariable('color', 'Set to true to build with colorizer', True),
     ('gcc_version', 'Set gcc version to use', '4.8.4'),
     ('install_path', 'Set install path', 'install'),
     ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../../buildcache'),
@@ -54,10 +54,15 @@ env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
 
 if Arch in ['x86sol','sun4sol']:
     env = Environment(tools=['suncc', 'sunc++', 'sunlink'])
-
+    
 #'eclipse'
 env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project', 'colorizer'], toolpath = ['config'])
 
+if env['color']:
+    from colorizer import colorizer
+    col = colorizer()
+    col.colorize(env)
+    
 system = platform.system()
 machine = platform.machine()
 
@@ -381,8 +386,8 @@ if 'clean' in COMMAND_LINE_TARGETS:
     shutil.rmtree(env['sandbox'] + '/nabla-1.2.3', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/target', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/install', ignore_errors=True)
-    shutil.rmtree(env['sandbox'] + '/buildcache' + Arch, ignore_errors=True)
-    env.Execute("rm -Rf " + env['ENV']['WORKSPACE'] + "/download3rdparties-cache* scons-signatures-x86Linux.dblite *.tgz *.zip /tmp/*-kgr-buildinit/")
+    shutil.rmtree(env['ENV']['WORKSPACE'] + '/../buildcache' + Arch, ignore_errors=True)
+    env.Execute("rm -Rf " + env['ENV']['WORKSPACE'] + "/download3rdparties-cache* scons-signatures-x86Linux.dblite *.tgz *.zip /tmp/*-kgr-buildinit/ " + env['ENV']['WORKSPACE'] + '/../buildcache' + Arch)
     SetOption("clean", 1)
     #Exit(0)
 
@@ -393,8 +398,7 @@ if not GetOption('help') and not GetOption('clean'):
     shutil.rmtree(env['sandbox'] + '/3rdparties/' + Arch + '/nabla', ignore_errors=True)
 
     print ("./config/download3rdparties.py" + ' --arch ' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir)
-    download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')
-    
+    download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')    
     #Exit(0)
 
 #additional libs for link

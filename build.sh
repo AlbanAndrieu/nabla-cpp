@@ -16,16 +16,16 @@
 
 echo -e "${green} Building : scons ${NC}"
 
-#scons opt=True
-#cd /workspace
-#wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
-echo -e "${magenta} ~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir \"${WORKSPACE}/bw-outputs\" scons target=local --cache-disable gcc_version=5 package ${NC}"
-~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir "${WORKSPACE}/bw-outputs" scons target=local --cache-disable gcc_version=5 package 2>&1 > scons.log
-#/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs
-
 #AddressSanitizer to sanitize your code!
 export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
 export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
+
+#scons opt=True
+#cd /workspace
+#wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
+echo -e "${magenta} ~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir \"${WORKSPACE}/bw-outputs\" scons target=local --cache-disable gcc_version=5 CC=clang CXX=clang++ color=True package ${NC}"
+~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir "${WORKSPACE}/bw-outputs" scons target=local --cache-disable gcc_version=5 CC=clang CXX=clang++ color=True package 2>&1 > scons.log
+#/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs
 
 echo -e "${green} Security : hardening-check ${NC}"
 

@@ -10,7 +10,32 @@
 #  CPPUNIT_LIBRARY     - The CppUnit library to link against.
 
 FIND_PATH(CPPUNIT_INCLUDE_DIR cppunit/Test.h)
-FIND_LIBRARY(CPPUNIT_LIBRARY NAMES cppunit)
+#FIND_LIBRARY(CPPUNIT_LIBRARY NAMES cppunit)
+
+FIND_LIBRARY(CPPUNIT_LIBRARY_DEBUG NAMES cppunit cppunit_dll cppunitd cppunitd_dll
+             PATHS   ${FOO_PREFIX}/lib
+                     /usr/lib
+                     /usr/lib/x86_64-linux-gnu/
+                     /usr/lib64
+                     /usr/local/lib
+                     /usr/local/lib64
+             PATH_SUFFIXES debug )
+
+FIND_LIBRARY(CPPUNIT_LIBRARY_RELEASE NAMES cppunit cppunit_dll
+             PATHS   ${FOO_PREFIX}/lib
+                     /usr/lib
+                     /usr/lib/x86_64-linux-gnu/
+                     /usr/lib64
+                     /usr/local/lib
+                     /usr/local/lib64
+             PATH_SUFFIXES release )
+
+if(CPPUNIT_LIBRARY_DEBUG AND NOT CPPUNIT_LIBRARY_RELEASE)
+    SET(CPPUNIT_LIBRARY_RELEASE ${CPPUNIT_LIBRARY_DEBUG})
+endif(CPPUNIT_LIBRARY_DEBUG AND NOT CPPUNIT_LIBRARY_RELEASE)
+
+SET(CPPUNIT_LIBRARY debug     ${CPPUNIT_LIBRARY_DEBUG}
+                     optimized ${CPPUNIT_LIBRARY_RELEASE} )
 
 IF (CPPUNIT_INCLUDE_DIR AND CPPUNIT_LIBRARY)
    SET(CPPUNIT_FOUND TRUE)
