@@ -14,13 +14,14 @@ localenv["LIBS"] = [
 
 #https://o440.wordpress.com/2011/02/25/scons-and-code-coverage/
 localenv.Append(CCFLAGS = ['-fprofile-arcs', '-ftest-coverage'])
-localenv.Append(CXXFLAGS = ['-fprofile-arcs', '-ftest-coverage'])
+#localenv.Append(CXXFLAGS = ['-fprofile-arcs', '-ftest-coverage'])
+localenv.Append(LINKFLAGS = ['-lgcov', '--coverage'])
+
+#localenv.Append(LIBS = ['gcov'])
 
 localenv.Append(LINKFLAGS = "-Wl,--no-as-needed")
 #localenv.Append(LINKFLAGS = "-fsanitize=address -lasan")
 localenv.Append(LINKFLAGS = "-fsanitize=address")
-
-localenv.Append(LIBS = ['gcov'])
 
 #adding OS specific libs
 #localenv['LIBS'].extend(localenv['OSDependentLibs'])

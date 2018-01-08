@@ -35,6 +35,8 @@ echo "WORKSPACE ${WORKSPACE}"
 #export PROJECT_TARGET_PATH=/target
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
+#export MAKE=make
+export MAKE=colormake
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
@@ -72,7 +74,7 @@ echo -e "${green} clang format ${NC}"
 
 #http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html
 #clang-format -dump-config
-#make check-all
+#${MAKE} check-all
 #clang-tidy -dump-config
 
 ln -s $PWD/compile_commands.json ../microsoft/
@@ -82,8 +84,8 @@ echo -e "${green} Building : CMake ${NC}"
 #PROCESSOR=`uname -m`
 PROCESSOR="x86-32"
 
-/workspace/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs make -B clean install test DoxygenDoc package
-#~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs make -B clean install DoxygenDoc
+/workspace/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install test DoxygenDoc package
+#~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 
 if [ `uname -s` == "Linux" ]; then
 	echo -e "${green} Checking include : IWYU ${NC}"
@@ -110,19 +112,19 @@ if [ `uname -s` == "Linux" ]; then
 	ctest -T memcheck
 fi
 
-#make tests
+#${MAKE} tests
 
 if [ `uname -s` == "Linux" ]; then
 	echo -e "${green} Fixing include : IWYU ${NC}"
 
-	make clean
-	make -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out
+	${MAKE} clean
+	${MAKE} -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out
 	fix_includes.py < /tmp/iwyu.out
 fi
 
 echo -e "${green} Experimental : CMake ${NC}"
 
-make Experimental
+${MAKE} Experimental
 
 echo -e "${green} Packaging : CPack ${NC}"
 
@@ -130,9 +132,9 @@ echo -e "${green} Packaging : CPack ${NC}"
 #cpack
 
 cd $PROJECT_SRC/sample/build-${ARCH}
-make package
+${MAKE} package
 # To use this:
-# make package
+# ${MAKE} package
 # sudo dpkg -i MICROSOFT-10.02-Linux.deb
 	
 if [ `uname -s` == "Linux" ]; then		

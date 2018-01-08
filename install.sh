@@ -1,6 +1,7 @@
 #!/bin/bash
 #set -xv
 
+sudo apt-get install colormake
 sudo apt-get install cppcheck
 sudo apt-get install rats
 #sudo apt-get install findbugs

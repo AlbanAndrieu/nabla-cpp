@@ -67,8 +67,6 @@ def generate(env, **kw):
             env['java_arch'] = 'i386'
         else:
             env['java_arch'] = 'sparc'
-    print "CC is:", env['CC']
-    print "CXX is:", env['CXX']
 
     if Arch == 'x86Linux':
         env['CCFLAGS'] = [
@@ -108,19 +106,23 @@ def generate(env, **kw):
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
-        
+
+        #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+        if env['gcc_version'] >= '4.9':
+            env['LINKFLAGS'] += ['-fdiagnostics-color=always']
+
         if env['gcc_version'] >= '4.6':
             env['CCFLAGS'] += ['-Werror=return-type'] # not supported yet in gcc 4.1
-        
+
         #if env['gcc_version'] >= '4.6' and not env['use_clang'] and not env['use_clangsa']:
         #    env['CCFLAGS'] += ['-Werror']
-        
+
         #export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
         #export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
-        
-        if env['gcc_version'] >= '4.8':
+
+        if env['use_clang']:
             env['CCFLAGS'] += ['-fsanitize=address']
-            env['LINKFLAGS'] += ['-fsanitize=address']
+            env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
 
         if env['gcc_version'] >= '4.8':
             env['CCFLAGS'] += [
@@ -136,7 +138,7 @@ def generate(env, **kw):
         env['LINKFLAGS'] = [
             '-Wl,--no-as-needed',
         ]
-        
+
         if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
             env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
             #'-std=gnu++98',
@@ -149,17 +151,17 @@ def generate(env, **kw):
 
         #Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
-        
+
         env.Append(CORECFLAGS = '-Wextra')
+
         if 'use_gcov' in env and env['use_gcov']:
             #'-fprofile-generate',
             #'-fprofile-arcs',
             #'-ftest-coverage',
-            env['CCFLAGS'] += ['--coverage']
+            env['CCFLAGS'] += ['-fprofile-arcs', '-ftest-coverage']
+            env['LINKFLAGS'] += ['-lgcov', '--coverage']
+            #env['LINKFLAGS'] += ['-g --coverage']
 
-        if 'use_gcov' in env and env['use_gcov']:
-            env['LINKFLAGS'] += ['-g --coverage']
-        
         #env.Append(LINKFLAGS = '-g --coverage')
     elif Arch in ['x86sol','sun4sol']:
         env['CCFLAGS'] = [
@@ -212,6 +214,8 @@ def generate(env, **kw):
             '/nodefaultlib:libcmtd.lib',
         ]
 
+    print "CC is:", env['CC']
+    print "CXX is:", env['CXX']
     print "CCCOM is:", env.subst('$CCCOM')
 
 def exists(env):

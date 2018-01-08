@@ -21,7 +21,7 @@ localenv["LIBS"] = [
 
 localenv.Append(LINKFLAGS = "-Wl,--no-as-needed")
 #https://bugs.launchpad.net/ubuntu/+source/cppunit/+bug/985841
-localenv.Append(LINKFLAGS = "-lcppunit") 
+localenv.Append(LINKFLAGS = "-lcppunit")
 
 #localenv.Append(LINKFLAGS = "-fsanitize=address -lasan")
 localenv.Append(LINKFLAGS = "-fsanitize=address")
@@ -37,6 +37,8 @@ localenv.Append(LINKFLAGS = "-fsanitize=address")
 #adding OS specific libs
 #localenv['LIBS'].extend(localenv['OSDependentLibs'])
 localenv.Append(LIBS=['test_library'], LIBPATH=['#test_library'])
+
+#localenv.Append(LIBS = ['cppunit'])
 
 localenv.MergeFlags([
 	'-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
