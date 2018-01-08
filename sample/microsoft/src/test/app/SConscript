@@ -19,8 +19,12 @@ localenv["LIBS"] = [
 	'boost_system',
 ]
 
+localenv.Append(LINKFLAGS = "-Wl,--no-as-needed")
 #https://bugs.launchpad.net/ubuntu/+source/cppunit/+bug/985841
-localenv.Append(LINKFLAGS = "-Wl,--no-as-needed -lcppunit") 
+localenv.Append(LINKFLAGS = "-lcppunit") 
+
+#localenv.Append(LINKFLAGS = "-fsanitize=address -lasan")
+localenv.Append(LINKFLAGS = "-fsanitize=address")
 
 #localenv["CXXFLAGS"] = [
 #    "-std=c++11",
