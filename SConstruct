@@ -14,7 +14,7 @@ EnsureSConsVersion(2, 3, 5)
 EnsurePythonVersion(2, 7)
 
 #In Eclipse add to scons
-#gcc_version=5 --cache-disable --warn=no-dependency
+#--cache-disable --warn=no-dependency use_system_thirdparties=True gcc_version=5.4.1 CC=clang CXX=clang++ color=True
 
 # To be retrieved automatically
 Arch = ProjectMacro.getArch()
@@ -398,7 +398,8 @@ if not GetOption('help') and not GetOption('clean'):
     shutil.rmtree(env['sandbox'] + '/3rdparties/' + Arch + '/nabla', ignore_errors=True)
 
     print ("./config/download3rdparties.py" + ' --arch ' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir)
-    download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')    
+    if env['bom'] != '':    
+        download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')    
     #Exit(0)
 
 #additional libs for link
