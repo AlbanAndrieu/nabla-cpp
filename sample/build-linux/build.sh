@@ -70,7 +70,7 @@ cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
 
-echo -e "${green} clang format ${NC}"
+echo -e "${green} Clang format ${NC}"
 
 #http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html
 #clang-format -dump-config
