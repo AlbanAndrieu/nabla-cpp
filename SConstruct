@@ -6,12 +6,17 @@ import os
 import shutil
 import re
 import platform
+import subprocess
 import time
+import SCons
 
 from config import ProjectMacro
 
 EnsureSConsVersion(2, 3, 5)
 EnsurePythonVersion(2, 7)
+
+# Hack to ensure that .svn changes don't trigger rebuild where using DirScanner
+SCons.Scanner.Dir.skip_entry['.svn'] = 1
 
 #In Eclipse add to scons
 #--cache-disable --warn=no-dependency use_system_thirdparties=True gcc_version=5.4.1 CC=clang CXX=clang++ color=True
@@ -37,6 +42,7 @@ scons CC=clang CXX=clang++
 vars = Variables('variables.py') # you can store your defaults in this file
 vars.AddVariables(
     BoolVariable('opt', 'Set to true to build with opt flags', True),
+    BoolVariable('verbose', 'Show compilation commands', True),
     BoolVariable('use_clang', 'On linux only: replace gcc by clang', True),
     BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
     BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', False),
@@ -48,21 +54,18 @@ vars.AddVariables(
     ('bom', 'bom location of additional 3rdparties.', ''),
     ('CC', 'Set C compiler', 'gcc'),
     ('CXX', 'Set C++ compiler', 'g++'),
+    ('version', 'The version of the component you build', '1.0.0'),
+    ('tar', 'tar binary', 'tar'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
 )
 env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
 
 if Arch in ['x86sol','sun4sol']:
     env = Environment(tools=['suncc', 'sunc++', 'sunlink'])
-    
-#'eclipse'
-env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project', 'colorizer'], toolpath = ['config'])
 
-if env['color']:
-    from colorizer import colorizer
-    col = colorizer()
-    col.colorize(env)
-    
+#'eclipse'
+env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
+
 system = platform.system()
 machine = platform.machine()
 
@@ -83,6 +86,18 @@ if 'CXX' in ARGUMENTS: env.Replace(CXX = ARGUMENTS['CXX'])
 if 'CCFLAGS' in ARGUMENTS: env.Append(CCFLAGS = ARGUMENTS['CCFLAGS'])
 if 'CXXFLAGS' in ARGUMENTS: env.Append(CXXFLAGS = ARGUMENTS['CXXFLAGS'])
 
+if not env['verbose']:
+    env['CCCOMSTR']       = "[CC]  $TARGET"
+    env['CXXCOMSTR']      = "[CXX] $TARGET"
+    env['SHCCCOMSTR']     = "[CC]  $TARGET"
+    env['SHCXXCOMSTR']    = "[CXX] $TARGET"
+    env['SHLINKCOMSTR']   = "[LNK] $TARGET"
+    env['ARCOMSTR']       = "[LNK] $TARGET"
+    env['LINKCOMSTR']     = "[LNK] $TARGET"
+    env['RANLIBCOMSTR']   = "[RAN] $TARGET"
+    env['RCCOMSTR']       = "[RC]  $TARGET"
+    env['INSTALLSTR']     = "[INST] $SOURCE -> $TARGET"
+
 print "ENV TOOLS :", env['TOOLS']
 #print "dump whole env :", env.Dump()
 print "ENV ENV :", env['ENV']
@@ -101,6 +116,9 @@ vars.Save('variables.py', env)
 SetOption('max_drift', '1') # We are using a local disk
 Decider('MD5-timestamp')
 
+AddOption('--createtar', action="store_true",
+          help='Trigger the creation of a tar after the build. Must be run with package')
+
 # Paths deduced from sandbox location
 env['sandbox'] = Dir("#").srcnode().abspath
 print "sandbox :", env['sandbox']
@@ -108,7 +126,13 @@ if 'WORKSPACE' in os.environ:
     env['ENV']['WORKSPACE'] = os.environ['WORKSPACE']
 else:
 	env['ENV']['WORKSPACE'] = env['sandbox']
-	
+
+try: # /dev/tty not accessible from jenkins
+    screen = open('/dev/tty', 'w')
+    Progress('$TARGET\r', overwrite=True, file=screen)
+except:
+    pass
+
 print "CXXVERSION :", env['CXXVERSION']
 
 # Ensure no warning is added
@@ -381,7 +405,7 @@ def mrproper(env, directory=''):
 env.AddMethod(mrproper, "MrProper")
 
 # remove target
-if 'clean' in COMMAND_LINE_TARGETS:
+if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
     shutil.rmtree(env['sandbox'] + '/3rdparties', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/nabla-1.2.3', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/target', ignore_errors=True)
@@ -392,14 +416,14 @@ if 'clean' in COMMAND_LINE_TARGETS:
     #Exit(0)
 
 # Initialize KGR build dependencies
-if not GetOption('help') and not GetOption('clean'):
+if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
     target_dir = "3rdparties/" + Arch + "/nabla"
     from config import download3rdparties
     shutil.rmtree(env['sandbox'] + '/3rdparties/' + Arch + '/nabla', ignore_errors=True)
 
     print ("./config/download3rdparties.py" + ' --arch ' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir)
-    if env['bom'] != '':    
-        download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')    
+    if env['bom'] != '':
+        download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')
     #Exit(0)
 
 #additional libs for link
@@ -414,14 +438,57 @@ ProjectMacro.registerIDLBuilders(env,PROJECT_THIRDPARTY_PATH,Arch)
 Export('env', 'Versions')
 
 #Sconscript calls
-if not GetOption('help'):
+if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
     env.SConscript([
-            DEV_SOURCE_DIR+'/sample/microsoft/src/main/cpp/SConscript',
+        DEV_SOURCE_DIR+'/sample/microsoft/src/main/cpp/SConscript',
         DEV_SOURCE_DIR+'/sample/microsoft/src/main/app/SConscript',
     ])
 
 SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/cpp/SConscript')
 SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/app/SConscript')
+
+# post build stuff
+
+def createTar(tar, path, artifact):
+    print 'Create tar ' + artifact
+    command = [tar, '-C', path, '-czf', artifact, '.']
+    print ' '.join(command)
+    subprocess.check_call(command)
+
+def finish(target, source, env):
+    if GetOption('createtar'):
+        import glob
+        name = 'nabla'
+        arch = Arch
+        #if env['legacy_install']:
+        arch = {
+            'x86Linux' : 'x86Linux',
+            'lin'      : 'x86Linux',
+            'x86sol'   : 'x86sol',
+            'sol'      : 'x86sol',
+            'sun4sol'  : 'sun4sol',
+            'solsparc' : 'sun4sol',
+            'winnt'    : 'winnt',
+            'win'      : 'winnt',
+        }[arch]
+        for tgz in glob.glob('%s*_%s.tgz' % (name, arch)):
+            print 'Delete old tar ' + tgz
+            os.remove(tgz)
+        if 'SVN_REVISION' in env['ENV']:
+           rev = 'r%s'%env['ENV']['SVN_REVISION']
+        elif 'GIT_COMMIT'  in env['ENV']:
+           rev = env['ENV']['GIT_COMMIT']
+        else:
+            rev = 'rev'
+        ver = '_%s'%env['version'] if 'version' in env else ''
+        createTar(env['tar'], 'nabla-1.2.3/target/', '%s%s_%s_%s.tgz' % (name, ver, rev, arch))
+
+#finishCommand = env.Command('/finish', None, Action(finish, "Starting post build actions"))
+#BUILD_TARGETS += finishCommand
+#if COMMAND_LINE_TARGETS:
+#    Depends(finishCommand, COMMAND_LINE_TARGETS)
+#else:
+#    Depends(finishCommand, env.GetLaunchDir())
 
 #if 'debian' in COMMAND_LINE_TARGETS:
 #    SConscript("config/SConscript")
@@ -429,14 +496,16 @@ SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/app/SConscript')
 if 'package' in COMMAND_LINE_TARGETS:
     env.Package( NAME           = 'nabla',
                  VERSION        = '1.2.3',
+                 #VERSION        = env['version'],
                  PACKAGEVERSION = 0,
                  PACKAGETYPE    = 'targz',
                  source=[LIBRARY_OUTPUT_PATH, PROJECT_BINARY_DIR],
-                 LICENSE        = 'misys',
+                 LICENSE        = 'GPL',
                  SUMMARY        = 'Nabla (Backend)',
                  DESCRIPTION    = 'Nabla (Backend)',
                  X_RPM_GROUP    = 'Application/nabla',
                  SOURCE_URL     = 'https://home.nabla.mobi/nabla-1.2.3.tar.gz'
+                 #SOURCE_URL     = 'https://home.nabla.mobi/nabla-' + env['version'] + '.tar.gz'
             )
 
 print "DEFAULT_TARGETS", map(str, DEFAULT_TARGETS)

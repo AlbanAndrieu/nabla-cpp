@@ -175,7 +175,7 @@ class colorizer:
 def generate(env, **kw):
 	
     if env['color']:
-        from colorizer import colorizer
+        #from colorizer-V1 import colorizer
         col = colorizer()
         col.colorize(env)	
 
