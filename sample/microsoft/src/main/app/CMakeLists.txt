@@ -7,6 +7,8 @@
 MESSAGE(STATUS "MAIN APP: " ${CMAKE_SOURCE_DIR}/src/main/app )
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/main/cpp/include")
 
+#LINK_LIBRARIES(${CPPUNIT_LIBRARY})
+
 ADD_EXECUTABLE(run_app run_app.cpp)
 
 TARGET_LINK_LIBRARIES(run_app main_library)

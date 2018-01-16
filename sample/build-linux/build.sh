@@ -37,6 +37,12 @@ echo "WORKSPACE ${WORKSPACE}"
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 #export MAKE=make
 export MAKE=colormake
+export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
+export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
+export ENABLE_MEMCHECK=true
+export UNIT_TESTS=true
+export ENABLE_EXPERIMENTAL=true
+export CHECK_FORMATTING=true
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
@@ -63,9 +69,11 @@ echo -e "${green} CMake ${NC}"
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}
 #-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
+#export CC="/usr/bin/gcc"
+#export CXX="/usr/bin/g++"
 export CC="/usr/bin/clang"
 export CXX="/usr/bin/clang++"
-#-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"  
+#-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
@@ -77,6 +85,7 @@ echo -e "${green} Clang format ${NC}"
 #${MAKE} check-all
 #clang-tidy -dump-config
 
+rm ../microsoft/compile_commands.json 
 ln -s $PWD/compile_commands.json ../microsoft/
 
 echo -e "${green} Building : CMake ${NC}"
@@ -88,43 +97,55 @@ PROCESSOR="x86-32"
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 
 if [ `uname -s` == "Linux" ]; then
-	echo -e "${green} Checking include : IWYU ${NC}"
+    echo -e "${green} Checking include : IWYU ${NC}"
 
-	iwyu_tool.py -p .
+    iwyu_tool.py -p .
 fi
 
 echo -e "${green} Testing : CTest ${NC}"
 
-ctest -N
- 
-#ctest -D Experimental
-#cd ${WORKSPACE}/sample/build-linux/src/test/cpp
-#ctest .. -R circular_queueTest
-#cd src/test/app/
-#ctest -V -C Debug
-ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
+if [[ "${UNIT_TESTS}" == "true" ]]; then
 
-#ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
+    if [[ "${ENABLE_MEMCHECK}" == "true" ]]; then
 
-if [ `uname -s` == "Linux" ]; then
-	echo -e "${green} Checking memory leak : CTest ${NC}"
+      if [ `uname -s` == "Linux" ]; then
+         echo -e "${green} Checking memory leak : CTest ${NC}"
 
-	ctest -T memcheck
-fi
+         #ctest -T memcheck
+         ctest --output-on-failure -j2 -N -D ExperimentalMemCheck
+      fi
+
+    else
+      ctest --output-on-failure -j2
+    fi
+
+    #ctest -D Experimental
+    #cd ${WORKSPACE}/sample/build-linux/src/test/cpp
+    #ctest .. -R circular_queueTest
+    #cd src/test/app/
+    #ctest -V -C Debug
+    ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
+
+    #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
 
 #${MAKE} tests
-
-if [ `uname -s` == "Linux" ]; then
-	echo -e "${green} Fixing include : IWYU ${NC}"
-
-	${MAKE} clean
-	${MAKE} -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out
-	fix_includes.py < /tmp/iwyu.out
 fi
 
-echo -e "${green} Experimental : CMake ${NC}"
+if [ `uname -s` == "Linux" ]; then
+    echo -e "${green} Fixing include : IWYU ${NC}"
 
-${MAKE} Experimental
+    ${MAKE} clean
+    ${MAKE} -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out
+    fix_includes.py < /tmp/iwyu.out
+fi
+
+if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
+
+    echo -e "${green} Experimental : CMake ${NC}"
+
+    ${MAKE} Experimental
+    
+fi
 
 echo -e "${green} Packaging : CPack ${NC}"
 
@@ -136,16 +157,16 @@ ${MAKE} package
 # To use this:
 # ${MAKE} package
 # sudo dpkg -i MICROSOFT-10.02-Linux.deb
-	
-if [ `uname -s` == "Linux" ]; then		
-	echo -e "${green} Packaging : checkinstall ${NC}"
-	
-	checkinstall --version	
-	
-	#sudo dpkg -r nabla-microsoft || true
-	
+
+if [ `uname -s` == "Linux" ]; then
+    echo -e "${green} Packaging : checkinstall ${NC}"
+
+    checkinstall --version
+
+    #sudo dpkg -r nabla-microsoft || true
+
 #sudo -k checkinstall \
-#--install=no  
+#--install=no
 #--pkgsource="https://github.com/AlbanAndrieu/nabla-cpp" \
 #--pkglicense="GPL2" \
 #--deldesc=no \
@@ -157,18 +178,18 @@ if [ `uname -s` == "Linux" ]; then
 fi
 
 if [ `uname -s` == "Linux" ]; then
-	echo -e "${green} Reporting : Junit ${NC}"
+    echo -e "${green} Reporting : Junit ${NC}"
 
-	xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > JUnitTestResults.xml
+    xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > JUnitTestResults.xml
 fi
 
 if [ `uname -s` == "Linux" ]; then
-	echo -e "${green} Reporting : Clang analyzer ${NC}"
+    echo -e "${green} Reporting : Clang analyzer ${NC}"
 
-	#http://clang-analyzer.llvm.org/installation.html
-	#http://clang-analyzer.llvm.org/scan-build.html
-	scan-build make
-	#scan-view
+    #http://clang-analyzer.llvm.org/installation.html
+    #http://clang-analyzer.llvm.org/scan-build.html
+    scan-build make
+    #scan-view
 fi
 
 echo -e "${green} Reporting : Coverage ${NC}"
@@ -185,6 +206,18 @@ gcovr --branches -r . --html --html-details -o gcovr-report.html
 #scan-build xcodebuild
 
 cmake --graphviz=test.dot .
+
+if [[ "${CHECK_FORMATTING}" == "true" ]]; then
+     # Find non-ASCII characters in headers
+     hpps=$(find ../.. -name \*\.hpp)
+     cpps=$(find ../.. -name \*\.cpp)
+     pcregrep --color='auto' -n "[\x80-\xFF]" ${hpps} ${cpps}
+     if [[ $? -ne 1 ]]; then exit 1; fi
+     # F001: Source files should not use the '\r' (CR) character
+     # L001: No trailing whitespace at the end of lines
+     # L002: Don't use tab characters
+     find ../.. -name \*\.hpp | vera++ --rule F001 --rule L001 --rule L002 --error
+fi
 
 echo "http://192.168.0.28/cdash/user.php"
 echo "http://maven.nabla.mobi/cpp/microsoft/index.html"
