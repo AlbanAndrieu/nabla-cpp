@@ -167,11 +167,11 @@ IF(UNIX)
     SET(MACHINE x86Linux)
 
     SET(CMAKE_CXX_FLAGS "-Wall -Wextra -pthread")
-    check_cxx_compiler_flag("-Wpedantic" PEDANTIC_SUPPORTED)
-    if(PEDANTIC_SUPPORTED)
-      #LIST(APPEND CMAKE_CXX_FLAGS -Wpedantic)
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic" )
-    endif()
+    #check_cxx_compiler_flag("-Wpedantic" PEDANTIC_SUPPORTED)
+    #if(PEDANTIC_SUPPORTED)
+    #  #LIST(APPEND CMAKE_CXX_FLAGS -Wpedantic)
+    #  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic" )
+    #endif()
     MESSAGE(STATUS, "CXXFLAGS: ${CMAKE_CXX_FLAGS}")
     
     #See https://blog.flameeyes.eu/2008/11/relationship-between-as-needed-and-no-undefined-part-1-what-do-they-do/
