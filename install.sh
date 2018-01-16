@@ -31,4 +31,11 @@ sudo apt-get install iwyu
 sudo apt-get install valgrind gawk kcachegrind valkyrie
 sudo apt-get install perf linux-tools-generic linux-cloud-tools-generic
  
+sudo apt-get install libboost-filesystem-dev
+#Below do not work
+#git clone https://github.com/tomtom-international/cpp-dependencies.git
+#cd cpp-dependencies
+#cmake .
+#make
+ 
 exit 0
