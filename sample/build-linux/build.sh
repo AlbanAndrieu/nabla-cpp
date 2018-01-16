@@ -209,14 +209,14 @@ cmake --graphviz=test.dot .
 
 if [[ "${CHECK_FORMATTING}" == "true" ]]; then
      # Find non-ASCII characters in headers
-     hpps=$(find ../.. -name \*\.hpp)
+     hpps=$(find ../.. -name \*\.(hpp|h))
      cpps=$(find ../.. -name \*\.cpp)
      pcregrep --color='auto' -n "[\x80-\xFF]" ${hpps} ${cpps}
      if [[ $? -ne 1 ]]; then exit 1; fi
      # F001: Source files should not use the '\r' (CR) character
      # L001: No trailing whitespace at the end of lines
      # L002: Don't use tab characters
-     find ../.. -name \*\.hpp | vera++ --rule F001 --rule L001 --rule L002 --error
+     find ../.. -name \*\.(hpp|h) | vera++ --rule F001 --rule L001 --rule L002 --error
 fi
 
 echo "http://192.168.0.28/cdash/user.php"
