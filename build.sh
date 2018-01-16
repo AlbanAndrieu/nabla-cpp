@@ -19,6 +19,7 @@ echo -e "${green} Building : scons ${NC}"
 #AddressSanitizer to sanitize your code!
 export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
 export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
+#export ENABLE_MEMCHECK=true
 
 #scons opt=True
 #cd /workspace

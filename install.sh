@@ -37,5 +37,7 @@ sudo apt-get install libboost-filesystem-dev
 #cd cpp-dependencies
 #cmake .
 #make
+
+sudo apt install vera++
  
 exit 0
