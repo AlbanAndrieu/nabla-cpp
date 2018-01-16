@@ -21,6 +21,11 @@ addons:
     packages:
       - valgrind
       - g++-6
+      - libcppunit-dev
+      - colormake
+      - libxml2-dev 
+      - libxml2-utils
+      - libboost-filesystem-dev
     sources: &sources
       - ubuntu-toolchain-r-test
 
