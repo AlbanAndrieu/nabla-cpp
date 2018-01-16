@@ -24,6 +24,8 @@ head_skull='\xE2\x98\xA0'
 happy_smiley='\xE2\x98\xBA'
 nabla_logo='\xE2\x88\x87'
 
+echo -e "${cyan} ${double_arrow} Environment ${NC}"
+
 echo "WORKSPACE ${WORKSPACE}"
 
 #See https://github.com/fffaraz/awesome-cpp#static-code-analysis
@@ -41,8 +43,9 @@ export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
 export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 export ENABLE_MEMCHECK=true
 export UNIT_TESTS=true
-export ENABLE_EXPERIMENTAL=true
 export CHECK_FORMATTING=true
+export ENABLE_CLANG=true
+export ENABLE_EXPERIMENTAL=true
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
@@ -69,14 +72,24 @@ echo -e "${green} CMake ${NC}"
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}
 #-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
-#export CC="/usr/bin/gcc"
-#export CXX="/usr/bin/g++"
-export CC="/usr/bin/clang"
-export CXX="/usr/bin/clang++"
+
+if [[ "${ENABLE_CLANG}" == "true" ]]; then
+    export CC="/usr/bin/clang"
+    export CXX="/usr/bin/clang++"
+else
+    export CC="/usr/bin/gcc-6"
+    export CXX="/usr/bin/g++-6"
+fi
+
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
+cmake_res=$?
+if [[ $cmake_res -ne 0 ]]; then
+    echo -e "${red} ---> CMake failed : $cmake_res ${NC}"
+    exit 1
+fi
 
 echo -e "${green} Clang format ${NC}"
 
@@ -95,6 +108,11 @@ PROCESSOR="x86-32"
 
 /workspace/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install test DoxygenDoc package
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
+build_res=$?
+if [[ $build_res -ne 0 ]]; then
+    echo -e "${red} ---> Build failed : $build_res ${NC}"
+    exit 1
+fi
 
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Checking include : IWYU ${NC}"
