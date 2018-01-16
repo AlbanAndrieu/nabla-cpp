@@ -3,7 +3,7 @@
 
 source ./step-0-color.sh
 
-echo -e "${red} ${double_arrow} Cleaning started ${NC}"
+echo -e "${cyan} ${double_arrow} Cleaning started ${NC}"
 
 rm -f DartConfiguration.tcl
 
@@ -29,5 +29,7 @@ rm -Rf target
 rm -Rf bin
 rm -Rf include
 rm -Rf Testing/
+
+echo -e "${magenta} ${double_arrow} Cleaning DONE ${NC}"
 
 exit 0

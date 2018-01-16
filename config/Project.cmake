@@ -15,21 +15,6 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 SET(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-if("${CMAKE_CXX_COMPILER_ID}" MATCHES GNU)
-  INCLUDE(CheckCXXCompilerFlag)
-
-  SET(COMPILE_FLAGS -Wall -Wextra)
-
-  check_cxx_compiler_flag("-Wpedantic" PEDANTIC_SUPPORTED)
-  if(PEDANTIC_SUPPORTED)
-    LIST(APPEND COMPILE_FLAGS -Wpedantic)
-  endif()
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  SET(COMPILE_FLAGS /W4)
-  # boost gets compiled as static libs on Windows
-  SET(Boost_USE_STATIC_LIBS ON)
-endif()
-
 SET( CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
 #SET( CTEST_MEMORYCHECK_COMMAND_OPTIONS "--tool=callgrind -v" )
 #SET( CTEST_MEMORYCHECK_COMMAND_OPTIONS, "--trace-children=yes --leak-check=full" )
@@ -157,6 +142,21 @@ SET(DATABASE_ROOT "${PROJECT_THIRDPARTY_PATH_LOCAL}/database")
 
 MESSAGE("CMAKE_SYSTEM is ${CMAKE_SYSTEM}")
 
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES GNU)
+  INCLUDE(CheckCXXCompilerFlag)
+
+  #SET(COMPILE_FLAGS -Wall -Wextra)
+  #
+  #check_cxx_compiler_flag("-Wpedantic" PEDANTIC_SUPPORTED)
+  #if(PEDANTIC_SUPPORTED)
+  #  LIST(APPEND COMPILE_FLAGS -Wpedantic)
+  #endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  SET(COMPILE_FLAGS /W4)
+  # boost gets compiled as static libs on Windows
+  SET(Boost_USE_STATIC_LIBS ON)
+endif()
+
 IF(UNIX)
 
   MESSAGE(STATUS "UNIX found")
@@ -166,11 +166,24 @@ IF(UNIX)
     SET(ARCH linux)
     SET(MACHINE x86Linux)
 
-    SET(CMAKE_CXX_FLAGS "-g -Wall -pthread")
+    SET(CMAKE_CXX_FLAGS "-Wall -Wextra -pthread")
+    check_cxx_compiler_flag("-Wpedantic" PEDANTIC_SUPPORTED)
+    if(PEDANTIC_SUPPORTED)
+      #LIST(APPEND CMAKE_CXX_FLAGS -Wpedantic)
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic" )
+    endif()
+    MESSAGE(STATUS, "CXXFLAGS: ${CMAKE_CXX_FLAGS}")
+    
     #See https://blog.flameeyes.eu/2008/11/relationship-between-as-needed-and-no-undefined-part-1-what-do-they-do/
-    SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed")
+    #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed")
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
+    SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-Bsymbolic-functions -Wl,-z,relro")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-as-needed")
+    
+    #-fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_FORTIFY_SOURCE=2")
+    
     ADD_DEFINITIONS(-Dlinux -DP100)
 
   ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
