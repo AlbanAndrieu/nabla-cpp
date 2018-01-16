@@ -12,6 +12,75 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
+SET(CMAKE_CXX_STANDARD 11)
+SET(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES GNU)
+  INCLUDE(CheckCXXCompilerFlag)
+
+  SET(COMPILE_FLAGS -Wall -Wextra)
+
+  check_cxx_compiler_flag("-Wpedantic" PEDANTIC_SUPPORTED)
+  if(PEDANTIC_SUPPORTED)
+    LIST(APPEND COMPILE_FLAGS -Wpedantic)
+  endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  SET(COMPILE_FLAGS /W4)
+  # boost gets compiled as static libs on Windows
+  SET(Boost_USE_STATIC_LIBS ON)
+endif()
+
+SET( CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
+#SET( CTEST_MEMORYCHECK_COMMAND_OPTIONS "--tool=callgrind -v" )
+#SET( CTEST_MEMORYCHECK_COMMAND_OPTIONS, "--trace-children=yes --leak-check=full" )
+#SET(MEMORYCHECK_COMMAND_OPTIONS "--xml=yes --xml-file=test.xml")
+
+# Coverage build doesn't work with MSVC
+OPTION(BUILD_COVERAGE "Build cpp_dependencies for coverage" OFF)
+
+# Add coverage options for CI
+IF(COVERAGE)
+	SET_TARGET_PROPERTIES(main_library run_app run_tests PROPERTIES
+						  COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
+						  LINK_FLAGS "-lgcov --coverage")
+ENDIF(COVERAGE)
+
+if (WIN32)
+  SET(DEFAULT_BOOST OFF)
+else()
+  SET(DEFAULT_BOOST ON)
+endif()
+
+# Running with Boost filesystem is typically faster, until platform specific std::filesystem comes out that is faster yet. 
+# Note that Boost::filesystem needs to be installed for this to be used.
+OPTION(WITH_BOOST "Use Boost filesystem" ${DEFAULT_BOOST})
+
+if (WIN32)
+  SET(DEFAULT_MMAP OFF)
+else()
+  SET(DEFAULT_MMAP ON)
+endif()
+
+# Switch between using the mmap logic for reading files (faster, because one copy less) or a file read (slower, because a full copy, but portable).
+OPTION(WITH_MMAP "Use mmapped files" ${DEFAULT_MMAP})
+
+if (WIN32 OR APPLE)
+  SET(DEFAULT_MEMRCHR OFF)
+else()
+  SET(DEFAULT_MEMRCHR ON)
+endif()
+
+# Whether your platform provides a fast memrchr function. If it does not, turn this off and a slower replacement will be used.
+OPTION(HAS_MEMRCHR "Platform has memrchr function" ${DEFAULT_MEMRCHR})
+
+if(WITH_MMAP)
+  LIST(APPEND COMPILE_FLAGS -DWITH_MMAP)
+endif()
+
+if(NOT HAS_MEMRCHR)
+  LIST(APPEND COMPILE_FLAGS -DNO_MEMRCHR)
+endif()
+
 OPTION(BUILD_SHARED_LIBS "Build shared libraries." ON)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
@@ -645,9 +714,16 @@ ENDIF(ZLIB_FOUND)
 #	REQUIRED signals
 #)
 
-FIND_PACKAGE(
-	Boost
-)
+if(WITH_BOOST)
+  LIST(APPEND COMPILE_FLAGS -DWITH_BOOST)
+  #FIND_PACKAGE(Boost COMPONENTS filesystem system REQUIRED)
+  FIND_PACKAGE(Boost REQUIRED)
+  SET(FILESYSTEM_LIBS ${Boost_LIBRARIES})
+else()
+  if(NOT WIN32)
+    SET(FILESYSTEM_LIBS stdc++fs)
+  endif()
+endif()
 
 #ADD_DEFINITIONS("-pthread")
 
@@ -728,14 +804,31 @@ INCLUDE(Dart)
 
 INCLUDE(InstallRequiredSystemLibraries)
 
-SET(CPACK_GENERATOR "DEB")
+# Default package format to use when building a package with CPack
+if(APPLE)
+  SET(DEFAULT_CPACK_GENERATOR "DragNDrop")
+elseif(UNIX)
+  SET(DEFAULT_CPACK_GENERATOR "DEB")
+elseif(WIN32)
+  SET(DEFAULT_CPACK_GENERATOR "NSIS")
+endif()
+SET(CPACK_GENERATOR "${DEFAULT_CPACK_GENERATOR}" CACHE STRING "Package type to generate with CPack")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Alban Andrieu") #required
 
+SET(CPACK_PACKAGE_NAME nabla)
+SET(CPACK_PACKAGE_VENDOR "Nabla International")
+SET(CPACK_PACKAGE_CONTACT "${CPACK_PACKAGE_VENDOR}")
+SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
 SET(CPACK_PACKAGE_DESCRIPTION "short description")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "long description bla bla bla... bah")
-SET(CPACK_PACKAGE_VENDOR "Vendor")
-SET(CPACK_PACKAGE_CONTACT "developer ")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Tool is a sample reference
+ Tool is an helper to create defoult C++ code.
+ .
+ The dependency information is output as .dot files, which can be visualized
+ in, for example, GraphViz.")
+SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE https://github.com/AlbanAndrieu/nabla-cpp)
+SET(CPACK_DEBIAN_PACKAGE_SUGGESTS graphviz)
+SET(CPACK_DEBIAN_PACKAGE_SECTION devel)
 
 SET(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 SET(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_MAJOR_VERSION})
@@ -749,6 +842,86 @@ SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12), l
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION "ubuntu")
 SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+
+# Automatically detect package version to use from git
+FIND_PACKAGE(Git)
+if(Git_FOUND OR GIT_FOUND)
+  execute_process(
+    COMMAND ${GIT_EXECUTABLE} describe --tags --long --dirty --always
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    RESULT_VARIABLE DESCRIBE_RESULT
+    OUTPUT_VARIABLE DESCRIBE_STDOUT
+    )
+  if(DESCRIBE_RESULT EQUAL 0)
+    string(STRIP "${DESCRIBE_STDOUT}" DESCRIBE_STDOUT)
+    message(STATUS "Git reported this project's version as '${DESCRIBE_STDOUT}'")
+    if(DESCRIBE_STDOUT MATCHES "^(.*)-(dirty)$")
+      set(DESCRIBE_DIRTY "${CMAKE_MATCH_2}")
+      set(DESCRIBE_STDOUT "${CMAKE_MATCH_1}")
+    endif()
+    if(DESCRIBE_STDOUT MATCHES "^([0-9a-f]+)$")
+      set(DESCRIBE_COMMIT_NAME "${CMAKE_MATCH_1}")
+      set(DESCRIBE_STDOUT "")
+    elseif(DESCRIBE_STDOUT MATCHES "^(.*)-g([0-9a-f]+)$")
+      set(DESCRIBE_COMMIT_NAME "${CMAKE_MATCH_2}")
+      set(DESCRIBE_STDOUT "${CMAKE_MATCH_1}")
+    endif()
+    if(DESCRIBE_STDOUT MATCHES "^(.*)-([0-9]+)$")
+      set(DESCRIBE_COMMIT_COUNT "${CMAKE_MATCH_2}")
+      set(DESCRIBE_TAG "${CMAKE_MATCH_1}")
+      set(DESCRIBE_STDOUT "")
+    endif()
+    if("${DESCRIBE_TAG}.0.0" MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+).*$")
+      set(CPACK_PACKAGE_VERSION_MAJOR "${CMAKE_MATCH_1}")
+      set(CPACK_PACKAGE_VERSION_MINOR "${CMAKE_MATCH_2}")
+      set(CPACK_PACKAGE_VERSION_PATCH "${CMAKE_MATCH_3}")
+    endif()
+    if(DESCRIBE_COMMIT_COUNT GREATER 0)
+      # Make it a pre-release version of the next patch release
+      math(EXPR CPACK_PACKAGE_VERSION_PATCH "${CPACK_PACKAGE_VERSION_PATCH} + 1")
+    endif()
+
+    set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+    set(CPACK_DEBIAN_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}")
+
+    # Now for the rest: format global CPack version according to semver.org, Debian so that it'll get proper sorting for dpkg
+    if(DESCRIBE_COMMIT_COUNT GREATER 0)
+      set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}-${DESCRIBE_COMMIT_COUNT}")
+      set(CPACK_DEBIAN_PACKAGE_VERSION "${CPACK_DEBIAN_PACKAGE_VERSION}~${DESCRIBE_COMMIT_COUNT}")
+    endif()
+
+    set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}+g${DESCRIBE_COMMIT_NAME}")
+    set(CPACK_DEBIAN_PACKAGE_VERSION "${CPACK_DEBIAN_PACKAGE_VERSION}+g${DESCRIBE_COMMIT_NAME}")
+
+    if(DESCRIBE_DIRTY)
+      string(TIMESTAMP DESCRIBE_DIRTY_TIMESTAMP "%Y%m%d%H%M%S" UTC)
+      set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}.dirty.${DESCRIBE_DIRTY_TIMESTAMP}")
+      set(CPACK_DEBIAN_PACKAGE_VERSION "${CPACK_DEBIAN_PACKAGE_VERSION}+dirty${DESCRIBE_DIRTY_TIMESTAMP}")
+    endif()
+  else()
+    message(WARNING "Git failed to report the version")
+  endif()
+endif()
+
+if(CPACK_GENERATOR STREQUAL DEB)
+  find_program(DPKG_CMD dpkg REQUIRED)
+  if(NOT DPKG_CMD)
+    message(STATUS "Can not find dpkg in your path, default to i386.")
+    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+  else()
+    execute_process(COMMAND "${DPKG_CMD}" --print-architecture
+      OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+  endif()
+
+  if(NOT DEFINED CPACK_DEBIAN_PACKAGE_VERSION)
+    set(CPACK_DEBIAN_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+  endif()
+
+  # Because the default package name produced by CPack fails to meet Debian packaging conventions
+  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+endif()
 
 IF(WIN32 AND NOT UNIX)
   SET(CPACK_NSIS_MODIFY_PATH ON)
