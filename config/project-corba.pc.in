@@ -10,4 +10,3 @@ Version: @PROJECT_VERSION@
 Libs: -L${libdir} -lproject-corba-@PROJECT_TARGET@
 Libs.private: @PROJECT_CORBA_LINKFLAGS@
 Cflags: @PROJECT_CORBA_CFLAGS@ -I${includedir}/project/corba
-

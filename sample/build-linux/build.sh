@@ -98,7 +98,7 @@ echo -e "${green} Clang format ${NC}"
 #${MAKE} check-all
 #clang-tidy -dump-config
 
-rm ../microsoft/compile_commands.json 
+rm ../microsoft/compile_commands.json
 ln -s $PWD/compile_commands.json ../microsoft/
 
 echo -e "${green} Building : CMake ${NC}"
@@ -162,7 +162,7 @@ if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
     echo -e "${green} Experimental : CMake ${NC}"
 
     ${MAKE} Experimental
-    
+
 fi
 
 echo -e "${green} Packaging : CPack ${NC}"

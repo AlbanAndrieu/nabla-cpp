@@ -48,7 +48,7 @@ coverageSourcePath="$sourcePath/src/main/app/"
 # ------------------------------------------------------------------------
 gcdacount=$(find $coverageSourcePath -name "*.gcda" | wc -c )
 
-if [ $gcdacount -eq 0 ]; then 
+if [ $gcdacount -eq 0 ]; then
     echo "No new LCOV report to generate. Bye."
     exit 0
 fi

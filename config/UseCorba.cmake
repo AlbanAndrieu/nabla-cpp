@@ -1,4 +1,4 @@
-# add everything necessary for a directory to use Corba (whichever 
+# add everything necessary for a directory to use Corba (whichever
 # implementation we are using)
 
 ADD_DEFINITIONS(${CORBA_CFLAGS} -DKIWI)
@@ -7,7 +7,7 @@ LINK_DIRECTORIES(${CORBA_LINK_DIRECTORIES})
 # \todo ${CORBA_LDFLAGS}
 
 
-# depending on their needs, caller should either do 
+# depending on their needs, caller should either do
 #
 # LINK_LIBRARIES(${CORBA_LIBRARIES})
 #
@@ -15,4 +15,3 @@ LINK_DIRECTORIES(${CORBA_LINK_DIRECTORIES})
 #
 # TARGET_LINK_LIBRARIES(prog-or-lib ... ${CORBA_LIBRARIES})
 #
-

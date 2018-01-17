@@ -149,7 +149,7 @@ ELSE( OMNIORB4_FOUND )
 ENDIF( OMNIORB4_FOUND )
 
 # Generate all files required for a corba server app.
-# ORO_ADD_CORBA_SERVERS( foo_SRCS foo_HPPS file.idl ... ) 
+# ORO_ADD_CORBA_SERVERS( foo_SRCS foo_HPPS file.idl ... )
 MACRO(ORO_ADD_CORBA_SERVERS _sources _headers)
    FOREACH (_current_FILE ${ARGN})
 
@@ -327,7 +327,7 @@ ELSE( OMNIORB4_FOUND )
 ENDIF( OMNIORB4_FOUND )
 
 # Generate all files required for a corba server app.
-# ORO_ADD_CORBA_SERVERS( foo_SRCS foo_HPPS file.idl ... ) 
+# ORO_ADD_CORBA_SERVERS( foo_SRCS foo_HPPS file.idl ... )
 MACRO(ORO_ADD_CORBA_SERVERS _sources _headers)
    FOREACH (_current_FILE ${ARGN})
 
@@ -353,4 +353,3 @@ MACRO(ORO_ADD_CORBA_SERVERS _sources _headers)
      SET(${_headers} ${${_headers}} ${_outh})
     ENDFOREACH (_current_FILE)
 ENDMACRO(ORO_ADD_CORBA_SERVERS)
-
