@@ -516,4 +516,3 @@ print "DEFAULT_TARGETS", map(str, DEFAULT_TARGETS)
 #TODO : http://v8.googlecode.com/svn/trunk/SConstruct
 
 print "[Timestamp] FINISH SCONS AT %s" % time.strftime('%H:%M:%S')
-

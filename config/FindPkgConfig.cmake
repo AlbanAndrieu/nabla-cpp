@@ -10,7 +10,7 @@
 ## Usage:
 ##
 ## INCLUDE( ${CMAKE_ROOT}/Modules/FindPkgConfig.cmake)
-## 
+##
 ## IF ( CMAKE_PKGCONFIG_EXECUTABLE )
 ##
 ##     # Find all the librtk stuff with pkg-config
@@ -24,7 +24,7 @@
 ##
 ##
 ## Notes:
-## 
+##
 ## You can set the PKG_CONFIG_PATH environment variable to tell
 ## pkg-config where to search for .pc files. See pkg-config(1) for
 ## more information.
@@ -47,7 +47,7 @@ MACRO(PKGCONFIG_PARSE_FLAGS FLAGS INCLUDES DEFINES)
   STRING(REGEX MATCHALL " -I[^ ]*" ${INCLUDES} "${FLAGS}")
   STRING(REGEX REPLACE " -I" "" ${INCLUDES} "${${INCLUDES}}")
   #MESSAGE("DEBUG: INCLUDES: ${${INCLUDES}}")
-  
+
   STRING(REGEX REPLACE " -I[^ ]*" "" ${DEFINES} "${FLAGS}")
   #MESSAGE("DEBUG: DEFINES: ${${DEFINES}}")
 
@@ -77,17 +77,17 @@ MACRO(PKGCONFIG LIBRARY FOUND INCLUDE_DIRS DEFINES LINKDIRS LINKLIBS)
 
 # alexm: why print it twice? once here, and once when it's found/not found
 #   MESSAGE("-- Looking for ${LIBRARY}")
-  
+
   IF(CMAKE_PKGCONFIG_EXECUTABLE)
     # MESSAGE("DEBUG: pkg-config executable found")
-    
+
     EXEC_PROGRAM(${CMAKE_PKGCONFIG_EXECUTABLE}
       ARGS "'${LIBRARY}'"
       OUTPUT_VARIABLE PKGCONFIG_OUTPUT
       RETURN_VALUE PKGCONFIG_RETURN)
 
     IF(NOT PKGCONFIG_RETURN)
-      
+
       # set C_FLAGS and CXX_FLAGS
       EXEC_PROGRAM(${CMAKE_PKGCONFIG_EXECUTABLE}
         ARGS "--cflags '${LIBRARY}'"
@@ -95,7 +95,7 @@ MACRO(PKGCONFIG LIBRARY FOUND INCLUDE_DIRS DEFINES LINKDIRS LINKLIBS)
 
       #SET(CMAKE_PKGCONFIG_CXX_FLAGS "${CMAKE_PKGCONFIG_C_FLAGS}")
       PKGCONFIG_PARSE_FLAGS(" ${CMAKE_PKGCONFIG_C_FLAGS}" ${INCLUDE_DIRS} ${DEFINES} )
-      
+
       # set LIBRARIES
       EXEC_PROGRAM(${CMAKE_PKGCONFIG_EXECUTABLE}
         ARGS "--libs '${LIBRARY}'"
@@ -107,7 +107,7 @@ MACRO(PKGCONFIG LIBRARY FOUND INCLUDE_DIRS DEFINES LINKDIRS LINKLIBS)
 
     ELSE(NOT PKGCONFIG_RETURN)
       MESSAGE("-- Looking for ${LIBRARY} -- not found")
-      
+
       SET(CMAKE_PKGCONFIG_C_FLAGS "")
       SET(CMAKE_PKGCONFIG_CXX_FLAGS "")
       SET(CMAKE_PKGCONFIG_LIBRARIES "")
@@ -129,4 +129,3 @@ MACRO(PKGCONFIG LIBRARY FOUND INCLUDE_DIRS DEFINES LINKDIRS LINKLIBS)
   #MESSAGE("${LIBRARY} link libs   : ${${LINKLIBS}}")
 
 ENDMACRO(PKGCONFIG)
-

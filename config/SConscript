@@ -4,7 +4,7 @@ Import('env') # exported by parent SConstruct
 #See https://quentinsf.com/writings/debscons/
 
 # I wanted to base the debian version number partly on the
-# revision checked out from our SVN repository. 
+# revision checked out from our SVN repository.
 # Skip this if it's not relevant to you.
 svn_version = os.popen('svnversion ..').read()[:-1]
 # This may be as simple as '89' or as complex as '4123:4184M'.
@@ -25,13 +25,13 @@ DEBFILES = [
 
     # Now we specify the files to be included in the .deb
     # Where they should go, and where they should be copied from.
-    # If you have a lot of files, you may wish to generate this 
+    # If you have a lot of files, you may wish to generate this
     # list in some other way.
     ("usr/bin/myutility",             "#src/myutility/myutility"),
     ("etc/myutility/myutility.conf",  "#misc/myutility.conf"),
 
 ]
-    
+
 # This is the debian package we're going to create
 debpkg = '#%s_%s-%s_%s.deb' % (DEBNAME, DEBVERSION, svn_version, DEBARCH)
 
@@ -84,7 +84,7 @@ def make_control(target=None, source=None, env=None):
     f = open(str(target[0]), 'w')
     f.write(control_info)
     f.close()
-    
+
 # We can generate the control file by calling make_control
 env.Command(DEBCONTROLFILE, None, make_control)
 

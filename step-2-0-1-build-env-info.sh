@@ -24,17 +24,17 @@ echo -e "========== RELEASE =========="
 if [ "$(uname -s)" == "SunOS" ]; then
   #/usr/sbin/psrinfo -v 2>&1
   isalist 2>&1 || true
-  showrev 2>&1 || true 
+  showrev 2>&1 || true
   #shorew -p | grep 138411
   cat /etc/release 2>&1 || true
 elif [ "$(uname -s)" == "Darwin" ]; then
   sw_vers -productVersion 2>&1 || true
 elif [ "$(uname -s)" == "FreeBSD" ]; then
-  freebsd-version 2>&1 || true 
+  freebsd-version 2>&1 || true
 elif [ "$(uname -s)" == "Linux" ]; then
   #pinguin
   echo -e "\U1F427"
-  lsb_release 2>&1 || true 
+  lsb_release 2>&1 || true
 fi
 
 ENV_FILE="jenkins-env.groovy"
@@ -88,7 +88,7 @@ echo "========== PERL =========="
 perl --version 2>&1 || true
 perl -V 2>&1 || true
 echo "========== PYTHON =========="
-python -V 2>&1 || true 
+python -V 2>&1 || true
 pip -V 2>&1 || true
 echo "========== ANSIBLE =========="
 ansible --version 2>&1 || true

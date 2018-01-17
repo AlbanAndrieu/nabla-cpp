@@ -9,9 +9,9 @@ MESSAGE ( STATUS "Looking for TAO with orbsvcs...")
 IF(CYGWIN)
   MESSAGE(STATUS "CYGWIN found ACE_DIR and TAO_ROOT setted to default values")
   SET(ACE_DIR "${PROJECT_THIRDPARTY_PATH}/tao/ACE_wrappers")
-  SET(TAO_DIR "${PROJECT_THIRDPARTY_PATH}/tao/ACE_wrappers/TAO")  
+  SET(TAO_DIR "${PROJECT_THIRDPARTY_PATH}/tao/ACE_wrappers/TAO")
   #SET(ACE_DIR "${PROJECT_THIRDPARTY_PATH}/ACE_wrappers")
-  #SET(TAO_DIR "${PROJECT_THIRDPARTY_PATH}/ACE_wrappers/TAO")      
+  #SET(TAO_DIR "${PROJECT_THIRDPARTY_PATH}/ACE_wrappers/TAO")
 ELSE(CYGWIN)
   MESSAGE(STATUS "CYGWIN not found ACE_DIR and TAO_ROOT setted to environement values")
   SET(ACE_DIR $ENV{ACE_ROOT})
@@ -42,28 +42,28 @@ ELSE(CYGWIN)
   FIND_FILE(TAO_15 Any.h ${TAO_DIR}/include/tao/AnyTypeCode )
   FIND_FILE(TAO_15 Any.h ${TAO_DIR}/TAO/tao/AnyTypeCode )
 ENDIF(CYGWIN)
-  
+
 # try to find orbsvcs (FIX: include CosNaming.idl ourselves ??)
 IF (NOT ORBSVCS_DIR )
     FIND_FILE(TAO_ORBSVCS CosNaming.idl ${TAO_DIR}/TAO/orbsvcs/orbsvcs)
     IF (TAO_ORBSVCS)
         SET( ORBSVCS_DIR ${TAO_DIR}/TAO/orbsvcs/orbsvcs )
-    ELSE (TAO_ORBSVCS)        
-                
-    ENDIF (TAO_ORBSVCS)    
-    
+    ELSE (TAO_ORBSVCS)
+
+    ENDIF (TAO_ORBSVCS)
+
     FIND_FILE(TAO_ORBSVCS CosNaming.idl ${TAO_DIR}/include/orbsvcs )
     IF (TAO_ORBSVCS)
         SET( ORBSVCS_DIR ${TAO_DIR}/include/orbsvcs )
     ELSE (TAO_ORBSVCS)
-    ENDIF (TAO_ORBSVCS)    
+    ENDIF (TAO_ORBSVCS)
 
     FIND_FILE(TAO_ORBSVCS CosNaming.idl ${TAO_DIR}/orbsvcs/orbsvcs )
     IF (TAO_ORBSVCS)
         SET( ORBSVCS_DIR ${TAO_DIR}/orbsvcs/orbsvcs )
     ELSE (TAO_ORBSVCS)
-    ENDIF (TAO_ORBSVCS)    
-        
+    ENDIF (TAO_ORBSVCS)
+
 ENDIF (NOT ORBSVCS_DIR )
 
 IF (NOT ACE_CONFIG )
@@ -71,13 +71,13 @@ IF (NOT ACE_CONFIG )
         MESSAGE( "ACE config-all.h not found in ${ACE_DIR}/ace.")
     ELSE(CYGWIN)
         MESSAGE( "ACE config-all.h not found in ${ACE_DIR}/include/ace.")
-    ENDIF(CYGWIN)  
-ELSE(NOT ACE_CONFIG ) 
+    ENDIF(CYGWIN)
+ELSE(NOT ACE_CONFIG )
     IF(CYGWIN)
         MESSAGE( "ACE config-all.h found in ${ACE_DIR}/ace.")
     ELSE(CYGWIN)
         MESSAGE( "ACE config-all.h found in ${ACE_DIR}/include/ace.")
-    ENDIF(CYGWIN)    
+    ENDIF(CYGWIN)
 ENDIF (NOT ACE_CONFIG )
 
 IF (NOT TAO_ORB )
@@ -85,13 +85,13 @@ IF (NOT TAO_ORB )
         MESSAGE( "TAO ORB.h not found in ${TAO_DIR}/tao.")
     ELSE(CYGWIN)
         MESSAGE( "TAO ORB.h not found in ${TAO_DIR}/include/tao.")
-    ENDIF(CYGWIN)      
+    ENDIF(CYGWIN)
 ELSE (NOT TAO_ORB )
     IF(CYGWIN)
         MESSAGE( "TAO ORB.h found in ${TAO_DIR}/tao.")
     ELSE(CYGWIN)
         MESSAGE( "TAO ORB.h found in ${TAO_DIR}/include/tao.")
-    ENDIF(CYGWIN)    
+    ENDIF(CYGWIN)
 ENDIF (NOT TAO_ORB )
 
 IF (NOT TAO_15 )
@@ -102,7 +102,7 @@ ENDIF (NOT TAO_15 )
 
 IF (NOT TAO_ORBSVCS )
     MESSAGE( "TAO orbsvcs/CosNaming.idl not found in ${ORBSVCS_DIR}.")
-ELSE (NOT TAO_ORBSVCS )    
+ELSE (NOT TAO_ORBSVCS )
     MESSAGE( "TAO orbsvcs/CosNaming.idl found in ${ORBSVCS_DIR}.")
 ENDIF (NOT TAO_ORBSVCS )
 
@@ -153,7 +153,7 @@ IF (ACE_CONFIG AND TAO_ORB AND TAO_ORBSVCS )
         ENDIF( NOT ${ORBSVCS_DIR} STREQUAL /usr AND NOT ${ORBSVCS_DIR} STREQUAL ${TAO_DIR})
 
         # Is used for building  the library
-        LIST(APPEND CORBA_LIBRARIES TAO TAO_PortableServer TAO_CosNaming ACE)        
+        LIST(APPEND CORBA_LIBRARIES TAO TAO_PortableServer TAO_CosNaming ACE)
         LIST(APPEND CORBA_LDFLAGS -lTAO -lTAO_PortableServer -lTAO_CosNaming -lACE)
 
         IF(APPLE)
@@ -161,7 +161,7 @@ IF (ACE_CONFIG AND TAO_ORB AND TAO_ORBSVCS )
             # definitions that ACE/TAO needs. Personally, I think this is a bug in
             # ACE/TAO, but ....
             LIST(APPEND CORBA_CFLAGS -D_DARWIN_C_SOURCE)
-            # and needs additional libraries 
+            # and needs additional libraries
             LIST(APPEND CORBA_LIBRARIES TAO_AnyTypeCode)
         ENDIF(APPLE)
 
@@ -178,7 +178,7 @@ IF (ACE_CONFIG AND TAO_ORB AND TAO_ORBSVCS )
 ENDIF (ACE_CONFIG AND TAO_ORB AND TAO_ORBSVCS )
 
 # Generate all files required for a corba server app.
-# PROJECT_ADD_CORBA_SERVERS( foo_SRCS foo_HPPS file.idl ... ) 
+# PROJECT_ADD_CORBA_SERVERS( foo_SRCS foo_HPPS file.idl ... )
 MACRO(PROJECT_ADD_CORBA_SERVERS _sources _headers)
    FOREACH (_current_FILE ${ARGN})
 
@@ -200,18 +200,18 @@ MACRO(PROJECT_ADD_CORBA_SERVERS _sources _headers)
 
       IF (NOT HAVE_${_basename}_SERVER_RULE)
          SET(HAVE_${_basename}_SERVER_RULE ON)
-	 
+
         # CMake atrocity: if none of these OUTPUT files is used in a target in the current CMakeLists.txt file,
         # the ADD_CUSTOM_COMMAND is plainly ignored and left out of the make files.
-     
+
          IF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
            MESSAGE( "tao_idl: ${ORO_TAOIDL_EXECUTABLE} -hc .hh -hs _s.hh -cs .cc -ss _s.cc -st _st.i -sT _st.cc -si _s.i -ci .i -hT _st.hh ${_current_FILE} -o ${CMAKE_CURRENT_BINARY_DIR} -I${CMAKE_CURRENT_SOURCE_DIR} -I${ORBSVCS_DIR}")
 	 ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 	   MESSAGE( "tao_idl: ${ORO_TAOIDL_EXECUTABLE} -hc .hh -hs _s.hh -cs .cc -ss _s.cc -sT _st.cc -si _s.i -ci .i -hT _st.hh ${_current_FILE} -o ${CMAKE_CURRENT_BINARY_DIR} -I${CMAKE_CURRENT_SOURCE_DIR} -I${ORBSVCS_DIR}")
 	 ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-	 
+
          IF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-           ADD_CUSTOM_COMMAND(OUTPUT ${_tserver} ${_server} ${_client} ${_tserverh} ${_serverh} ${_clienth}	 
+           ADD_CUSTOM_COMMAND(OUTPUT ${_tserver} ${_server} ${_client} ${_tserverh} ${_serverh} ${_clienth}
              COMMAND ${ORO_TAOIDL_EXECUTABLE} -hc .hh -hs _s.hh -cs .cc -ss _s.cc -st _st.i -sT _st.cc -si _s.i -ci .i -hT _st.hh ${_current_FILE} -o ${CMAKE_CURRENT_BINARY_DIR} -I${CMAKE_CURRENT_SOURCE_DIR} -I${ORBSVCS_DIR} -I${PROJECT_INCLUDE_DIR}
            DEPENDS ${_tmp_FILE}
            )
@@ -219,9 +219,9 @@ MACRO(PROJECT_ADD_CORBA_SERVERS _sources _headers)
            ADD_CUSTOM_COMMAND(OUTPUT ${_tserver} ${_server} ${_client} ${_tserverh} ${_serverh} ${_clienth}
 	     COMMAND ${ORO_TAOIDL_EXECUTABLE} -hc .hh -hs _s.hh -cs .cc -ss _s.cc -sT _st.cc -si _s.i -ci .i -hT _st.hh ${_current_FILE} -o ${CMAKE_CURRENT_BINARY_DIR} -I${CMAKE_CURRENT_SOURCE_DIR} -I${ORBSVCS_DIR} -I${PROJECT_INCLUDE_DIR}
 	   DEPENDS ${_tmp_FILE}
-           )	 
+           )
 	 ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-	 
+
      ENDIF (NOT HAVE_${_basename}_SERVER_RULE)
 
      SET(${_sources} ${${_sources}} ${_server} ${_tserver} ${_client})

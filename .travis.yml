@@ -11,11 +11,11 @@ dist: trusty
 # branch push _and_ the pull request.
 branches:
   except: /pr\/.*/
-  
+
 env:
   global:
     - PROJECT_SRC="$TRAVIS_BUILD_DIR"
-    
+
 addons:
   apt:
     packages:
@@ -23,7 +23,7 @@ addons:
 #      - g++-6
       - libcppunit-dev
       - colormake
-      - libxml2-dev 
+      - libxml2-dev
       - libxml2-utils
       - libboost-filesystem-dev
     sources: &sources
@@ -40,7 +40,7 @@ cache:
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.61.0
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.62.0
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.63.0
-    
+
 script:
   - mkdir -p sample/build-linux/
   - cd sample/build-linux/

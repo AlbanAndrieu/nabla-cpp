@@ -36,7 +36,7 @@ else()
   SET(DEFAULT_BOOST ON)
 endif()
 
-# Running with Boost filesystem is typically faster, until platform specific std::filesystem comes out that is faster yet. 
+# Running with Boost filesystem is typically faster, until platform specific std::filesystem comes out that is faster yet.
 # Note that Boost::filesystem needs to be installed for this to be used.
 OPTION(WITH_BOOST "Use Boost filesystem" ${DEFAULT_BOOST})
 
@@ -173,17 +173,17 @@ IF(UNIX)
     #  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic" )
     #endif()
     MESSAGE(STATUS, "CXXFLAGS: ${CMAKE_CXX_FLAGS}")
-    
+
     #See https://blog.flameeyes.eu/2008/11/relationship-between-as-needed-and-no-undefined-part-1-what-do-they-do/
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed")
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
     SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-Bsymbolic-functions -Wl,-z,relro")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-as-needed")
-    
+
     #-fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_FORTIFY_SOURCE=2")
-    
+
     ADD_DEFINITIONS(-Dlinux -DP100)
 
   ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
@@ -224,7 +224,7 @@ IF(UNIX)
     #INCLUDE_DIRECTORIES("${CYGWIN_HOME}/lib/gcc/i686-pc-cygwin/${GCC_VERSION}/include/c++")
     #LINK_DIRECTORIES("${CYGWIN_HOME}/lib/gcc/i686-pc-cygwin/${GCC_VERSION}/debug")
 
-    
+
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
 
     ADD_DEFINITIONS(-Dcygwin -Dlinux -DP100)
@@ -854,9 +854,9 @@ SET(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_PATH_VERSION})
 MESSAGE("CPACK_PACKAGE_VERSION is defined to : ${CPACK_PACKAGE_VERSION}")
 SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MINOR_VERSION}.${CPACK_PACKAGE_VERSION_PATCH}")
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MINOR_VERSION}.${CPACK_PACKAGE_VERSION_PATCH}")
- 
+
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12), libstdc++6 (>= 4.2.1)")
- 
+
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION "ubuntu")
 SET(CPACK_DEBIAN_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
@@ -921,7 +921,7 @@ if(Git_FOUND OR GIT_FOUND)
   endif()
   MESSAGE("CPACK_PACKAGE_VERSION is defined to : ${CPACK_PACKAGE_VERSION}")
   else()
-  MESSAGE(STATUS "GIT not found")  
+  MESSAGE(STATUS "GIT not found")
 endif()
 
 if(CPACK_GENERATOR STREQUAL DEB)

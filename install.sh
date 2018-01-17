@@ -11,7 +11,7 @@ sudo apt-get install clang flawfinder cppcheck ggcov gcovr gperf doxygen
 sudo apt-get install ninja-build
 
 sudo apt-get install texlive-latex-extra texlive-xetex
-sudo apt-get install gnuplot latex2html biber 
+sudo apt-get install gnuplot latex2html biber
 sudo apt-get install zlib1g-dbg
 
 sudo apt install libxml2-dev libxml2-utils
@@ -25,12 +25,12 @@ sudo apt-get install libclang-dev llvm-3.8-dev
 
 llvm-config --version
 clang --version
- 
-sudo apt-get install iwyu 
+
+sudo apt-get install iwyu
 
 sudo apt-get install valgrind gawk kcachegrind valkyrie
 sudo apt-get install perf linux-tools-generic linux-cloud-tools-generic
- 
+
 sudo apt-get install libboost-filesystem-dev
 #Below do not work
 #git clone https://github.com/tomtom-international/cpp-dependencies.git
@@ -39,5 +39,6 @@ sudo apt-get install libboost-filesystem-dev
 #make
 
 sudo apt install vera++
- 
+sudo apt-get install pcregrep
+
 exit 0

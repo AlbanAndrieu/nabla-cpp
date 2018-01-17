@@ -3,7 +3,7 @@
 #
 
 #
-# RTT supplies header files which should be included when 
+# RTT supplies header files which should be included when
 # using RTT. Each subdir should use this macro
 # to supply its header-files.
 #
@@ -14,7 +14,7 @@ MACRO( GLOBAL_ADD_INCLUDE COMPONENT_LOCATION )
 ENDMACRO( GLOBAL_ADD_INCLUDE COMPONENT_LOCATION )
 
 #
-# Sources should add themselves by calling 'GLOBAL_ADD_SRC' 
+# Sources should add themselves by calling 'GLOBAL_ADD_SRC'
 # instead of 'ADD_LIBRARY' in CMakeLists.txt.
 #
 # This gives a centralised location where all sources are registered
@@ -27,7 +27,7 @@ MACRO( GLOBAL_ADD_SRC )
   STRING(LENGTH "${ARGN}" NOTEMPTY)
   IF(NOTEMPTY)
     SET (ENV{GLOBAL_LIBRARY_SRCS} "$ENV{GLOBAL_LIBRARY_SRCS}${ARGN};" )
-  ENDIF(NOTEMPTY) 
+  ENDIF(NOTEMPTY)
 ENDMACRO( GLOBAL_ADD_SRC )
 
 
@@ -37,7 +37,7 @@ MACRO( GLOBAL_ADD_TESTS TEST_NAME )
     STRING(LENGTH "${ARGN}" NOTEMPTY)
     IF(NOTEMPTY)
     ADD_EXECUTABLE( ${TEST_NAME} ${ARGN} )
-    ENDIF(NOTEMPTY) 
+    ENDIF(NOTEMPTY)
   ENDIF(BUILD_TESTS)
 ENDMACRO( GLOBAL_ADD_TESTS TEST_NAME)
 
@@ -49,7 +49,7 @@ ENDMACRO( GLOBAL_ADD_TESTS TEST_NAME)
 #
 MACRO(COPY_HEADER_LIST TO_DIR EXTENSION)
    # Macro to implement copy_header_list for a list of files
-   # Arguments - 
+   # Arguments -
    #   TO_DIR   - this is the destination directory
 #IF (MINGW)
 IF (NOT MINGW)
@@ -59,8 +59,8 @@ FOREACH(file ${files})
   get_filename_component(po ${file} ABSOLUTE)
   get_filename_component(podir ${file} PATH)
   get_filename_component(outfile ${file} NAME)
-  MESSAGE(STATUS "Moving \"${file}\" to include dir \"${TO_DIR}/${outfile}\" ")  
-  #MESSAGE(STATUS "${COPY_FILE_COMMAND} -p \${file}\" \"${TO_DIR}/${outfile}\"")  
+  MESSAGE(STATUS "Moving \"${file}\" to include dir \"${TO_DIR}/${outfile}\" ")
+  #MESSAGE(STATUS "${COPY_FILE_COMMAND} -p \${file}\" \"${TO_DIR}/${outfile}\"")
   IF(EXISTS "${file}")
     EXECUTE_PROCESS(
       COMMAND ${COPY_FILE_COMMAND} -p ${file} ${TO_DIR}/${outfile}
@@ -127,4 +127,3 @@ MACRO(CREATE_LIBTOOL_FILE _target _install_DIR)
   INSTALL( FILES ${_laname} ${_soname}
     DESTINATION ${CMAKE_INSTALL_PREFIX}${_install_DIR})
 ENDMACRO(CREATE_LIBTOOL_FILE)
-
