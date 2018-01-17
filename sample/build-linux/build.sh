@@ -227,7 +227,7 @@ cmake --graphviz=test.dot .
 
 if [[ "${CHECK_FORMATTING}" == "true" ]]; then
 
-     cd ../../
+     cd ../../sample/microsoft
      ./cpplint.sh
 
      # Find non-ASCII characters in headers
