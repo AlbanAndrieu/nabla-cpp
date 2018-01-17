@@ -76,14 +76,14 @@ def getFileNodesRecursively(aPath, aSconsEnv, aListOfPatterns, aListOfFoldersToS
         theNodeList += aSconsEnv.Glob(os.path.join(aPath, thePattern))
     theFolderList = listDirectories(
         aSconsEnv.Dir(
-        aPath,
+            aPath,
         ).srcnode().abspath, aListOfFoldersToSkip,
     )
 #	theFolderList = listDirectories(aPath, aListOfFoldersToSkip)
     for theFolder in theFolderList:
         theNodeList.extend(getFileNodesRecursively(
             os.path.join(
-            aPath, theFolder,
+                aPath, theFolder,
             ), aSconsEnv, aListOfPatterns, aListOfFoldersToSkip,
         ))
     return theNodeList

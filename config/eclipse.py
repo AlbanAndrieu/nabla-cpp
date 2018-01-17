@@ -38,7 +38,7 @@ def AddIncludes2EclipseCProject(env):
                     continue
                 etree.SubElement(
                     config, 'listOptionValue', {
-                    'value': includePath, 'bulitIn': 'false', 'kplus_generated': 'true',
+                        'value': includePath, 'bulitIn': 'false', 'kplus_generated': 'true',
                     },
                 )
 
@@ -53,7 +53,7 @@ def AddSconsTarget2Eclipse(env, etree, targetsElement, targetName, targetArgumen
 #    print 'Add target:', targetName, targetArguments, targetDescription
     targetElement = etree.SubElement(
         targetsElement, 'target', {
-        'description': targetDescription, 'targetID': 'ch.hsr.ifs.sconsolidator.Builder',
+            'description': targetDescription, 'targetID': 'ch.hsr.ifs.sconsolidator.Builder',
         },
     )
     targetNameElement = etree.SubElement(targetElement, 'buildTargetName')
@@ -78,7 +78,7 @@ def AddTargets2EclipseProject(env, progDirs, clean=False):
         if sconsolidator is None:  # is not None:
             sconsolidator = etree.SubElement(
                 tree.getroot(), 'storageModule', {
-                'moduleId': 'ch.hsr.ifs.sconsolidator.core.buildtargets',
+                    'moduleId': 'ch.hsr.ifs.sconsolidator.core.buildtargets',
                 },
             )
 
