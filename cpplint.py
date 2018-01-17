@@ -1318,11 +1318,11 @@ def CheckForNonStandardConstructs(
         line,
     )
     if (args and
-        args.group(1) != 'void' and
-        not Match(
-            r'(const\s+)?%s\s*&' % re.escape(base_classname),
-            args.group(1).strip(),
-        )):
+            args.group(1) != 'void' and
+            not Match(
+                r'(const\s+)?%s\s*&' % re.escape(base_classname),
+                args.group(1).strip(),
+            )):
         error(
             filename, linenum, 'runtime/explicit', 5,
             'Single-argument constructors should be marked explicit.',
@@ -1626,7 +1626,7 @@ def CheckSpacing(filename, clean_lines, linenum, error):
                     r' {4}\w[^\(]*\)\s*(const\s*)?(\{\s*$|:)',
                     prev_line,
                 )
-                             or Match(r' {4}:', prev_line))
+                    or Match(r' {4}:', prev_line))
 
             if not exception:
                 error(
@@ -1668,14 +1668,14 @@ def CheckSpacing(filename, clean_lines, linenum, error):
                 line.count('\\"', 0, commentpos)) % 2 == 0:   # not in quotes
             # Allow one space for new scopes, two spaces otherwise:
             if (not Match(r'^\s*{ //', line) and
-                ((
-                    commentpos >= 1 and
-                    line[commentpos - 1] not in string.whitespace
-                ) or
-                 (
-                     commentpos >= 2 and
-                     line[commentpos - 2] not in string.whitespace
-                 ))):
+                    ((
+                        commentpos >= 1 and
+                        line[commentpos - 1] not in string.whitespace
+                    ) or
+                    (
+                        commentpos >= 2 and
+                        line[commentpos - 2] not in string.whitespace
+                    ))):
                 error(
                     filename, linenum, 'whitespace/comments', 2,
                     'At least two spaces is best between code and comments',
@@ -2387,14 +2387,14 @@ def CheckLanguage(
     # Don't check the implemention on same line.
     fnline = line.split('{', 1)[0]
     if (len(re.findall(r'\([^()]*\b(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline)) >
-        len(re.findall(
-            r'\([^()]*\bconst\s+(?:typename\s+)?(?:struct\s+)?'
-            r'(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline,
-        )) +
-        len(re.findall(
-            r'\([^()]*\b(?:[\w:]|<[^()]*>)+\s+const(\s?&|&\s?)[\w]+',
-            fnline,
-        ))):
+            len(re.findall(
+                r'\([^()]*\bconst\s+(?:typename\s+)?(?:struct\s+)?'
+                r'(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline,
+            )) +
+            len(re.findall(
+                r'\([^()]*\b(?:[\w:]|<[^()]*>)+\s+const(\s?&|&\s?)[\w]+',
+                fnline,
+            ))):
 
         # We allow non-const references in a few standard places, like functions
         # called "swap()" or iostream operators like "<<" or ">>".
@@ -2511,7 +2511,9 @@ def CheckLanguage(
         if match:
             error(
                 filename, linenum, 'runtime/int', 4,
-                'Use int16/int64/etc, rather than the C type %s' % match.group(1),
+                'Use int16/int64/etc, rather than the C type %s' % match.group(
+                    1,
+                ),
             )
 
     # When snprintf is used, the second argument shouldn't be a literal.

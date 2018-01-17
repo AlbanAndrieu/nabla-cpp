@@ -1,7 +1,7 @@
 /*
  * Triangle.cpp
  *
- *  Created on: 1 f�vr. 2012
+ *  Created on: 1 fevr. 2012
  *      Author: Alban
  */
 
@@ -9,7 +9,7 @@
 #include <iostream>
 
 // Equilateral Triangle
-// Three equal sides and three equal angles, always 60�
+// Three equal sides and three equal angles, always 60
 
 // Isosceles Triangle
 // Two equal sides and two equal angles

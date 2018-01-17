@@ -226,6 +226,10 @@ gcovr --branches -r . --html --html-details -o gcovr-report.html
 cmake --graphviz=test.dot .
 
 if [[ "${CHECK_FORMATTING}" == "true" ]]; then
+
+     cd ../../
+     ./cpplint.sh
+
      # Find non-ASCII characters in headers
      hpps=$(find ../.. -name \*\.h)
      cpps=$(find ../.. -name \*\.cpp)
