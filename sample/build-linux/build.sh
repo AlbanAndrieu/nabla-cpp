@@ -98,8 +98,10 @@ echo -e "${green} Clang format ${NC}"
 #${MAKE} check-all
 #clang-tidy -dump-config
 
-rm ../microsoft/compile_commands.json
-ln -s $PWD/compile_commands.json ../microsoft/
+if [[ -f ../microsoft/compile_commands.json ]]; then
+    rm ../microsoft/compile_commands.json
+    ln -s $PWD/compile_commands.json ../microsoft/
+fi
 
 echo -e "${green} Building : CMake ${NC}"
 
