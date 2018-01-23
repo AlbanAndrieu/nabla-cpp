@@ -29,7 +29,9 @@ clang --version
 sudo apt-get install iwyu
 
 sudo apt-get install valgrind gawk kcachegrind valkyrie
-sudo apt-get install perf linux-tools-generic linux-cloud-tools-generic
+sudo apt-get install linux-tools-4.13.0-26-generic linux-cloud-tools-4.13.0-26-generic linux-tools-generic linux-cloud-tools-generic perf 
+#See https://github.com/jrfonseca/gprof2dot
+sudo pip install gprof2dot
 
 sudo apt-get install libboost-filesystem-dev
 #Below do not work
@@ -40,5 +42,10 @@ sudo apt-get install libboost-filesystem-dev
 
 sudo apt install vera++
 sudo apt-get install pcregrep
+
+sudo apt-get install sparse
+#sudo yum install sparse 
+sudo apt-get install splint 
+#sudo yum install splint
 
 exit 0
