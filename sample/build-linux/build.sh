@@ -221,6 +221,10 @@ gcovr --branches --xml-pretty -r .
 #html
 gcovr --branches -r . --html --html-details -o gcovr-report.html
 
+sudo perf record -g -- /usr/bin/git --version
+sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
+#eog output.png
+
 #Objective C
 #xcodebuild | xcpretty
 #scan-build xcodebuild
