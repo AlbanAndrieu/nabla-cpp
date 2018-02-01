@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Helper functions for the scons K+TP build
+# Helper functions for the scons build
 # inspired from SconsBuilder.py
 import fnmatch
 import glob
@@ -7,12 +7,12 @@ import os
 import platform
 import re
 import string
+import time
 
 import SCons
 import SCons.Scanner.IDL
 
 ######################################################
-
 
 def getEnvVariable(aVariableName, aDefaultValue):
     if aVariableName in os.environ:
@@ -79,7 +79,7 @@ def getFileNodesRecursively(aPath, aSconsEnv, aListOfPatterns, aListOfFoldersToS
             aPath,
         ).srcnode().abspath, aListOfFoldersToSkip,
     )
-#	theFolderList = listDirectories(aPath, aListOfFoldersToSkip)
+#   theFolderList = listDirectories(aPath, aListOfFoldersToSkip)
     for theFolder in theFolderList:
         theNodeList.extend(getFileNodesRecursively(
             os.path.join(
@@ -203,24 +203,35 @@ def build_status():
     return (status, failures_message)
 
 
-def display_build_status():
+def display_build_status(env):
+    if env['color']:
+        from termcolor import colored, cprint
     """Display the build status.  Called by atexit.
     Here you could do all kinds of complicated things."""
     status, failures_message = build_status()
     if status == 'failed':
-        print 'FAILED!!!!'  # could display alert, ring bell, etc.
+        if env['color']:
+            cprint("FAILED!!!!", 'red', attrs=['bold'], file=sys.stderr)	
+        else:
+            print 'FAILED!!!!'  # could display alert, ring bell, etc.
     elif status == 'ok':
-        print 'Build succeeded.'
-    print failures_message
+        if env['color']:
+            print colored("Build succeeded.", 'green')
+        else:
+            print 'Build succeeded.'
+
+    if env['color']:
+        print colored("[Timestamp] FINISH SCONS AT %s" % time.strftime('%H:%M:%S'), 'red')
+    else:
+        print failures_message
 
 
-def registerBuildFailuresAtExit():
+def registerBuildFailuresAtExit(env):
     import atexit
-    atexit.register(display_build_status)
+    atexit.register(display_build_status(env))
 
 ##############################################################################
 # defined env verbosity
-
 
 def reduceBuildVerbosity(env):
     env['CCCOMSTR'] = 'Compiling $TARGET'
@@ -230,7 +241,6 @@ def reduceBuildVerbosity(env):
 
 ################################################################
 # define the arch
-
 
 def getArch():
     thePlatform = platform.platform()

@@ -1,12 +1,21 @@
 # -*- coding: utf-8 -*-
 # SCons tool set-arch.py
 import os
+import sys
+import platform
 
 import ProjectMacro
 import SCons.Tool.MSCommon.vc
 
-
 def generate(env, **kw):
+
+    if env['color']:
+        from termcolor import colored, cprint
+        cprint("COMPILING OPTIONS!", 'red', attrs=['bold'], file=sys.stderr)
+        	
+    system = platform.system()
+    machine = platform.machine()
+
     Arch = ProjectMacro.getArch()
 
     #env['ENV']['SCONS_BUILD'] = '1'
@@ -223,10 +232,25 @@ def generate(env, **kw):
             '/nodefaultlib:libcmtd.lib',
         ]
 
-    print 'CC is:', env['CC']
-    print 'CXX is:', env['CXX']
-    print 'CCCOM is:', env.subst('$CCCOM')
+    if env['color']:
+        
+        print colored("Platform :", 'magenta'), colored(platform.platform(), 'cyan')
+        print colored("System :", 'magenta'), colored(system, 'cyan')
+        print colored("Machine :", 'magenta'), colored(machine, 'cyan')
+    		
+        print colored("ENV TOOLS :", 'magenta'), colored(env['TOOLS'], 'cyan')
+        #print "dump whole env :", env.Dump()
+        if env['verbose']:
+            print colored("ENV ENV :", 'magenta'), colored(env['ENV'], 'cyan')
 
+        print colored("ENV TERM :", 'magenta'), colored(env['ENV']['TERM'] , 'cyan')
+        print colored("ENV PATH :", 'magenta'), colored(env['ENV']['PATH'], 'cyan')
+        print colored("ENV HOME :", 'magenta'), colored(env['ENV']['HOME'], 'cyan')
+        
+        print colored("CXXVERSION :", 'magenta'), colored(env['CXXVERSION'], 'cyan')        
+        print colored("CC:", 'magenta'), colored(env['CC'], 'cyan')
+        print colored("CXX :", 'magenta'), colored(env['CXX'], 'cyan')
+        print colored("CCCOM :", 'magenta'), colored(env.subst('$CCCOM'), 'cyan')
 
 def exists(env):
     return 1

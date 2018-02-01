@@ -9,9 +9,9 @@ import platform
 import subprocess
 import time
 import SCons
+import sys
 
 from config import ProjectMacro
-from termcolor import colored, cprint
 
 EnsureSConsVersion(2, 3, 5)
 EnsurePythonVersion(2, 7)
@@ -67,13 +67,12 @@ if Arch in ['x86sol','sun4sol']:
 #'eclipse'
 env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
 
+if env['color']:
+    from termcolor import colored, cprint
+    cprint("SCONSTRUCT!", 'red', attrs=['bold'], file=sys.stderr)
+
 system = platform.system()
-machine = platform.machine()
-
-print "Platform :", platform.platform()
-print ("System : ", system)
-print ("Machine : ",machine)
-
+#machine = platform.machine()
 if system == 'Linux' or system == 'CYGWIN_NT-5.1':
     env['ENV']['TERM'] = os.environ['TERM']
     env['ENV']['PATH'] = os.environ['PATH']
@@ -87,29 +86,22 @@ if 'CXX' in ARGUMENTS: env.Replace(CXX = ARGUMENTS['CXX'])
 if 'CCFLAGS' in ARGUMENTS: env.Append(CCFLAGS = ARGUMENTS['CCFLAGS'])
 if 'CXXFLAGS' in ARGUMENTS: env.Append(CXXFLAGS = ARGUMENTS['CXXFLAGS'])
 
-if not env['verbose']:
-    env['CCCOMSTR']       = "[CC]  $TARGET"
-    env['CXXCOMSTR']      = "[CXX] $TARGET"
-    env['SHCCCOMSTR']     = "[CC]  $TARGET"
-    env['SHCXXCOMSTR']    = "[CXX] $TARGET"
-    env['SHLINKCOMSTR']   = "[LNK] $TARGET"
-    env['ARCOMSTR']       = "[LNK] $TARGET"
-    env['LINKCOMSTR']     = "[LNK] $TARGET"
-    env['RANLIBCOMSTR']   = "[RAN] $TARGET"
-    env['RCCOMSTR']       = "[RC]  $TARGET"
-    env['INSTALLSTR']     = "[INST] $SOURCE -> $TARGET"
-
-print "ENV TOOLS :", env['TOOLS']
-#print "dump whole env :", env.Dump()
-print "ENV ENV :", env['ENV']
 vars.Update(env)
 Help(vars.GenerateHelpText(env))
 unknown = vars.UnknownVariables()
 if unknown:
-    print "Unknown variables :", unknown.keys()
+    if env['color']:
+        print colored("Unknown variables:", 'red'), colored(unknown.keys(), 'red')
+    else:
+        print "Unknown variables :", unknown.keys()
     Exit(1)
 
-print "vars :", vars.GenerateHelpText(env)
+if env['verbose']:
+    if env['color']:
+        print colored("vars :", 'green'), colored(vars.GenerateHelpText(env), 'green')
+    else:
+        print "vars :", vars.GenerateHelpText(env)
+
 # Save variables
 vars.Save('variables.py', env)
 
@@ -122,19 +114,19 @@ AddOption('--createtar', action="store_true",
 
 # Paths deduced from sandbox location
 env['sandbox'] = Dir("#").srcnode().abspath
-print "sandbox :", env['sandbox']
+if env['verbose'] and env['color']:
+    print colored("sandbox:", 'magenta'), colored(env['sandbox'], 'cyan')
+
 if 'WORKSPACE' in os.environ:
     env['ENV']['WORKSPACE'] = os.environ['WORKSPACE']
 else:
-	env['ENV']['WORKSPACE'] = env['sandbox']
+    env['ENV']['WORKSPACE'] = env['sandbox']
 
 try: # /dev/tty not accessible from jenkins
     screen = open('/dev/tty', 'w')
     Progress('$TARGET\r', overwrite=True, file=screen)
 except:
     pass
-
-print "CXXVERSION :", env['CXXVERSION']
 
 # Ensure no warning is added
 def TreatWarningsAsErrors(env): # params: list of archs for which warnings must be treated as errors
@@ -176,29 +168,31 @@ else:
 #if re.search('dev\/', DEV_BINARY_DIR):
 #  DEV_BINARY_DIR = re.sub(r'dev\/', 'dev_target/', DEV_BINARY_DIR)
 
-print "DEV_BINARY_DIR :", DEV_BINARY_DIR
+if env['verbose'] and env['color']:
+    print colored("DEV_BINARY_DIR:", 'grey'), colored(DEV_BINARY_DIR, 'cyan')
 
 if env['target'] == 'local':
     PROJECT_THIRDPARTY_PATH = env['sandbox'] + '/thirdparty'
 else:
     PROJECT_THIRDPARTY_PATH = ProjectMacro.getEnvVariable('PROJECT_THIRDPARTY_PATH','/thirdparty')
 
-print "PROJECT_THIRDPARTY_PATH :", PROJECT_THIRDPARTY_PATH
+if env['verbose'] and env['color']:
+    print colored("PROJECT_THIRDPARTY_PATH:", 'grey'), colored(PROJECT_THIRDPARTY_PATH, 'cyan')
 
 # might not WORK in eclipse (hard code it)
 PROJECT_JAVA_PATH = ProjectMacro.getEnvVariable('JAVA_HOME', PROJECT_THIRDPARTY_PATH + 'java' + Arch)
-print "PROJECT_JAVA_PATH :", PROJECT_JAVA_PATH
+if env['verbose'] and env['color']:
+    print colored("PROJECT_JAVA_PATH:", 'grey'), colored(PROJECT_JAVA_PATH, 'cyan')
 
 #env['cache_path'] = DEV_BINARY_DIR + '/buildcache-' + Arch
-print "env['cache_path'] :", env['cache_path']
+if env['verbose'] and env['color']:
+    print colored("nv['cache_path']:", 'magenta'), colored(env['cache_path'], 'cyan')
 CacheDir(env['cache_path']+ Arch)
 SConsignFile(DEV_BINARY_DIR + '/scons-signatures' + Arch)
 
-#registering function to handle builderrors correctly
-ProjectMacro.registerBuildFailuresAtExit()
-
 if env['opt'] == 'True':
-    print "opt mode activated"
+    if env['color']:
+        print colored("Optimized mode activated", 'blue')
     theOptDbgFolder = 'opt'+env['Suffix64']
     env.Prepend(CCFLAGS = env['opt_flags'])
     env.Prepend(CCFLAGS = '-DNDEBUG')
@@ -206,6 +200,8 @@ if env['opt'] == 'True':
         env.Prepend(CCFLAGS = '-xlibmil')
         env.Prepend(CCFLAGS = '-xlibmopt')
 else:
+    if env['color']:
+        print colored("Debug mode activated", 'blue')	
     theOptDbgFolder = 'debug'+env['Suffix64']
     env.Prepend(CCFLAGS = env['debug_flags'])
     env.Prepend(CCFLAGS = '-DDEBUG')
@@ -239,10 +235,11 @@ env['LIBRARY_OUTPUT_PATH'] = LIBRARY_OUTPUT_PATH
 env['PROJECT_BINARY_DIR'] = PROJECT_BINARY_DIR
 env['PROJECT_INCLUDE_DIR'] = PROJECT_INCLUDE_DIR
 
-print "static lib dir :", LIBRARY_STATIC_OUTPUT_PATH
-print "shared lib dir :", LIBRARY_OUTPUT_PATH
-print "bin dir :", PROJECT_BINARY_DIR
-print "include dir :", PROJECT_INCLUDE_DIR
+if env['verbose'] and env['color']:
+    print colored("static lib dir:", 'magenta'), colored(LIBRARY_STATIC_OUTPUT_PATH, 'cyan')
+    print colored("shared lib dir:", 'magenta'), colored(LIBRARY_OUTPUT_PATH, 'cyan')
+    print colored("bin dir:", 'magenta'), colored(PROJECT_BINARY_DIR, 'cyan')
+    print colored("include dir:", 'magenta'), colored(PROJECT_INCLUDE_DIR, 'cyan')
 
 env['CPPPATH'] = [
     '.',
@@ -347,8 +344,6 @@ if 'package' in COMMAND_LINE_TARGETS:
 # Clean
 Clean('.', 'target')
 
-print "sandbox:", env['sandbox']
-
 # mrproper target
 def mrproper(env, directory=''):
     scmDataDir = env.Dir('#').path
@@ -407,17 +402,23 @@ env.AddMethod(mrproper, "MrProper")
 
 # remove target
 if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
+    if env['color']:
+        print colored("Cache/3rdparties cleaning STARTED:", 'blue')
     shutil.rmtree(env['sandbox'] + '/3rdparties', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/nabla-1.2.3', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/target', ignore_errors=True)
     shutil.rmtree(env['sandbox'] + '/install', ignore_errors=True)
     shutil.rmtree(env['ENV']['WORKSPACE'] + '/../buildcache' + Arch, ignore_errors=True)
-    env.Execute("rm -Rf " + env['ENV']['WORKSPACE'] + "/download3rdparties-cache* scons-signatures-x86Linux.dblite *.tgz *.zip /tmp/*-kgr-buildinit/ " + env['ENV']['WORKSPACE'] + '/../buildcache' + Arch)
+    env.Execute("rm -Rf variables.py " + env['ENV']['WORKSPACE'] + "/download3rdparties-cache* scons-signatures-x86Linux.dblite *.tgz *.zip /tmp/*-kgr-buildinit/ " + env['ENV']['WORKSPACE'] + '/../buildcache' + Arch)
+    if env['color']:
+        print colored("Cache/3rdparties cleaning DONE:", 'green')
     SetOption("clean", 1)
     #Exit(0)
 
 # Initialize KGR build dependencies
 if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
+    if env['color']:
+        print colored("Downloading 3rdparties STARTED:", 'blue')
     target_dir = "3rdparties/" + Arch + "/nabla"
     from config import download3rdparties
     shutil.rmtree(env['sandbox'] + '/3rdparties/' + Arch + '/nabla', ignore_errors=True)
@@ -425,6 +426,8 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in
     print ("./config/download3rdparties.py" + ' --arch ' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir)
     if env['bom'] != '':
         download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')
+    if env['color']:
+        print colored("Downloading 3rdparties DONE:", 'green')
     #Exit(0)
 
 #additional libs for link
@@ -509,11 +512,18 @@ if 'package' in COMMAND_LINE_TARGETS:
                  #SOURCE_URL     = 'https://home.nabla.mobi/nabla-' + env['version'] + '.tar.gz'
             )
 
-print "DEFAULT_TARGETS", map(str, DEFAULT_TARGETS)
-
 #See http://google-styleguide.googlecode.com/
 #os.system('./cpplint.sh')
 
 #TODO : http://v8.googlecode.com/svn/trunk/SConstruct
 
-print "[Timestamp] FINISH SCONS AT %s" % time.strftime('%H:%M:%S')
+if not env['verbose']:
+   ProjectMacro.reduceBuildVerbosity(env)
+else:
+   if env['color']:
+       print colored("DEFAULT_TARGETS:", 'magenta'), colored(map(str, DEFAULT_TARGETS), 'cyan')
+          
+#registering function to handle builderrors correctly
+#ProjectMacro.registerBuildFailuresAtExit(env)
+
+#Exit(0)
