@@ -11,6 +11,7 @@ import time
 import SCons
 
 from config import ProjectMacro
+from termcolor import colored, cprint
 
 EnsureSConsVersion(2, 3, 5)
 EnsurePythonVersion(2, 7)
