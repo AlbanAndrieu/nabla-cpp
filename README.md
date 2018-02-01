@@ -5,12 +5,22 @@ A project that contains cpp code sample
 
 ## How to run it
 
-### Install python dependencies
+### Install tools
 
 ```
 sudo apt-get install scons scons-doc
+```
+
+See also install.sh
+
+### Install python dependencies
+
+```
+#pip freeze > requirements.txt
 sudo pip install -r requirements.txt
 ```
+
+See also build.sh for scons AND sample/build-linux/build.sh for cmake
 
 ### Run it
 
@@ -24,6 +34,8 @@ scons
 ```
 scons --clean
 ```
+
+See also clean.sh
 
 Your components should be available
 
