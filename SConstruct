@@ -20,7 +20,8 @@ EnsurePythonVersion(2, 7)
 SCons.Scanner.Dir.skip_entry['.svn'] = 1
 
 #In Eclipse add to scons
-#--cache-disable --warn=no-dependency use_system_thirdparties=True gcc_version=5.4.1 CC=clang CXX=clang++ color=True
+#--cache-disable --warn=no-dependency gcc_version=5.4.1 CC=clang CXX=clang++ color=False
+#TERM xterm-256color
 
 # To be retrieved automatically
 Arch = ProjectMacro.getArch()
