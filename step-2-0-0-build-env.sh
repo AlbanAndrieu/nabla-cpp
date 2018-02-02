@@ -70,7 +70,7 @@ fi
 
 if [ -z "$WORKSPACE" ]; then
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
-  exit 1
+  #exit 1
 fi
 
 #if [ -n "${GIT_BRANCH_NAME}" ]; then
