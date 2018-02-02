@@ -16,8 +16,8 @@ See also install.sh
 ### Install python dependencies
 
 ```
-#pip freeze > requirements.txt
-sudo pip install -r requirements.txt
+#pip2.7 freeze > requirements.txt
+sudo pip2.7 install -r requirements.txt
 ```
 
 See also build.sh for scons AND sample/build-linux/build.sh for cmake

@@ -44,7 +44,7 @@ cache:
 script:
   - mkdir -p sample/build-linux/
   - cd sample/build-linux/
-  - cd ./build.sh  
+  - ./build.sh  
 #  - cmake ${CMAKEFLAGS} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
 #  - make
 #  - make CTEST_OUTPUT_ON_FAILURE=1 test
