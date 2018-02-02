@@ -1,32 +1,15 @@
 #!/bin/bash
 #set -xv
 
-bold="\033[01m"
-underline="\033[04m"
-blink="\033[05m"
+cd ../../
 
-black="\033[30m"
-red="\033[31m"
-green="\033[32m"
-yellow="\033[33m"
-blue="\033[34m"
-magenta="\033[35m"
-cyan="\033[36m"
-ltgray="\033[37m"
-
-NC="\033[0m"
-
-#double_arrow='\u00BB'
-double_arrow='\xC2\xBB'
-#head_skull='\u2620'
-head_skull='\xE2\x98\xA0'
-#happy_smiley='\u263A'
-happy_smiley='\xE2\x98\xBA'
-nabla_logo='\xE2\x88\x87'
+./step-2-0-0-build-env.sh || exit 1
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
 echo "WORKSPACE ${WORKSPACE}"
+
+pwd
 
 #See https://github.com/fffaraz/awesome-cpp#static-code-analysis
 
@@ -49,7 +32,6 @@ export ENABLE_EXPERIMENTAL=true
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
-cd ../../
 ./clean.sh
 
 #cd $PROJECT_SRC/sample/microsoft
@@ -58,7 +40,7 @@ cd ../../
 #sudo dpkg -i cppan-master-Linux-client.deb
 #cppan
 
-cd $PROJECT_SRC/sample/build-${ARCH}
+cd "$PROJECT_SRC/sample/build-${ARCH}"
 
 rm -f CMakeCache.txt
 rm -f compile_commands.json
@@ -105,10 +87,7 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-#PROCESSOR=`uname -m`
-PROCESSOR="x86-32"
-
-/workspace/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install test DoxygenDoc package
+${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then

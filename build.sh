@@ -3,6 +3,12 @@
 
 ./step-2-0-0-build-env.sh || exit 1
 
+echo -e "${cyan} ${double_arrow} Environment ${NC}"
+
+echo "WORKSPACE ${WORKSPACE}"
+
+pwd
+
 #clang-format -style=llvm -dump-config > .clang-format
 
 #TODO check https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis
@@ -24,8 +30,8 @@ export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 #scons opt=True
 #cd /workspace
 #wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
-echo -e "${magenta} ~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir \"${WORKSPACE}/bw-outputs\" scons target=local --cache-disable gcc_version=5 CC=clang CXX=clang++ color=True package ${NC}"
-~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir "${WORKSPACE}/bw-outputs" scons target=local --cache-disable gcc_version=5 CC=clang CXX=clang++ color=True package 2>&1 > scons.log
+echo -e "${magenta} ${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC=clang CXX=clang++ color=True package ${NC}"
+${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC=clang CXX=clang++ color=True package 2>&1 > scons.log
 #/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs
 
 echo -e "${green} Security : hardening-check ${NC}"
