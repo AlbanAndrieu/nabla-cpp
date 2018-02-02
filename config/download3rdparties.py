@@ -104,7 +104,6 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 #==============================================================================
 
-
 class ThirdParty:
 
     #--------------------------------------------------------------------------
@@ -501,9 +500,13 @@ def exists(env):
     return 1
 
 
-def download(arch, bit, compiler, base_url_old, base_url, bom, third_parties_dir, serials):
+def download(arch, bit, compiler, base_url_old, base_url, bom, third_parties_dir, serials, color):
     # run with already parsed arguments
 
+    if color:
+        from termcolor import colored, cprint
+        cprint("BOM DOWNLOADING!", 'red', attrs=['bold'], file=sys.stderr)
+        
     # Strangly, the path set by scons is not transfered to os.environ['PATH'], even if it is visible from subprocess.call('set', shell=True)
     if os.name == 'nt':
         # for 64 bit Windows
@@ -524,7 +527,7 @@ def download(arch, bit, compiler, base_url_old, base_url, bom, third_parties_dir
         print 'Build dependencies initialized'
 
 
-def main(args):
+def main(env, args):
     parser = argparse.ArgumentParser(
         description='Download and expand third parties defined in a .bom file',
     )
@@ -562,7 +565,8 @@ def main(args):
         '--serials',  action='append',
         help='directly specify some serials (multiple uses are possible', required=False,
     )
-
+    parser.add_argument('--color',    default=False, help = 'set to true to build with colorizer', required=False)  
+    
     args = parser.parse_args(args)
     if args.third_parties_dir == parser.get_default('third_parties_dir'):
         args.third_parties_dir = '%s/%s' % (args.third_parties_dir, args.arch)
@@ -570,7 +574,7 @@ def main(args):
     # parse sys.argv[1:] using optparse or argparse or what have you
     download(
         args.arch, args.bit, args.compiler, args.base_url_old,
-        args.base_url, args.bom, args.third_parties_dir, args.serials,
+        args.base_url, args.bom, args.third_parties_dir, args.serials, args.color
     )
 
 

@@ -423,9 +423,9 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in
     from config import download3rdparties
     shutil.rmtree(env['sandbox'] + '/3rdparties/' + Arch + '/nabla', ignore_errors=True)
 
-    print ("./config/download3rdparties.py" + ' --arch ' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir)
+    print ("python ./config/download3rdparties.py" + ' --arch=' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir + ' --color=' + 'True' if env['color'] else 'False')
     if env['bom'] != '':
-        download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '')
+        download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '', 'True' if env['color'] else 'False')
     if env['color']:
         print colored("Downloading 3rdparties DONE:", 'green')
     #Exit(0)

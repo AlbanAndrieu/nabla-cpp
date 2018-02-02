@@ -33,7 +33,7 @@ sudo apt-get install linux-tools-4.13.0-26-generic linux-cloud-tools-4.13.0-26-g
 #See https://github.com/jrfonseca/gprof2dot
 sudo pip install gprof2dot
 
-sudo apt-get install libboost-filesystem-dev
+sudo apt-get install libboost-filesystem-dev libcppunit-dev
 #Below do not work
 #git clone https://github.com/tomtom-international/cpp-dependencies.git
 #cd cpp-dependencies

@@ -44,10 +44,11 @@ cache:
 script:
   - mkdir -p sample/build-linux/
   - cd sample/build-linux/
-  - cmake ${CMAKEFLAGS} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
-  - make
-  - make CTEST_OUTPUT_ON_FAILURE=1 test
-  - make package
+  - cd ./build.sh  
+#  - cmake ${CMAKEFLAGS} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
+#  - make
+#  - make CTEST_OUTPUT_ON_FAILURE=1 test
+#  - make package
 
 matrix:
   include:
@@ -84,10 +85,11 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-4.8.2
-            - cmake
+#            - g++-4.8.2
+#            - cmake
             - libboost-system-dev
             - libboost-filesystem-dev
+            - libcppunit-dev
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.2
     #- compiler: gcc
     #  os: linux
@@ -120,6 +122,9 @@ matrix:
           packages:
             - g++-6
             - cmake
+            - libboost-system-dev
+            - libboost-filesystem-dev
+            - libcppunit-dev            
       env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-6
     #- compiler: clang
     #  os: linux
@@ -146,4 +151,5 @@ matrix:
             - cmake
             - libboost-system-dev
             - libboost-filesystem-dev
+            - libcppunit-dev
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-3.7
