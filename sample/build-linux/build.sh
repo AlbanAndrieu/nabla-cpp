@@ -1,9 +1,20 @@
 #!/bin/bash
 #set -xv
 
+export PROJECT_TARGET_PATH=${WORKSPACE}/target
+#AddressSanitizer to sanitize your code!
+export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
+export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
+export ENABLE_MEMCHECK=true
+export UNIT_TESTS=true
+export CHECK_FORMATTING=true
+export ENABLE_CLANG=true
+export ENABLE_EXPERIMENTAL=true
+export SONAR_PROCESSOR="x86-64"
+
 cd ../../
 
-./step-2-0-0-build-env.sh || exit 1
+source ./step-2-0-0-build-env.sh || exit 1
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
@@ -19,17 +30,6 @@ pwd
 #export PROJECT_SRC=${WORKSPACE}
 #export PROJECT_TARGET_PATH=/target
 
-export PROJECT_TARGET_PATH=${WORKSPACE}/target
-#export MAKE=make
-export MAKE=colormake
-export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
-export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
-export ENABLE_MEMCHECK=true
-export UNIT_TESTS=true
-export CHECK_FORMATTING=true
-export ENABLE_CLANG=true
-export ENABLE_EXPERIMENTAL=true
-
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
 ./clean.sh
@@ -40,7 +40,7 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 #sudo dpkg -i cppan-master-Linux-client.deb
 #cppan
 
-cd "$PROJECT_SRC/sample/build-${ARCH}"
+cd "${PROJECT_SRC}/sample/build-${ARCH}"
 
 rm -f CMakeCache.txt
 rm -f compile_commands.json

@@ -70,7 +70,7 @@ fi
 
 if [ -z "$WORKSPACE" ]; then
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
-  #exit 1
+  exit 1
 fi
 
 #if [ -n "${GIT_BRANCH_NAME}" ]; then
@@ -94,16 +94,30 @@ else
   export ARCH="x86sol"
 fi
 
+if [ -n "${ENABLE_CLANG}" ]; then
+  echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+  export CC="/usr/bin/clang"
+  export CXX="/usr/bin/clang++"
+  export COMPILER=${CXX}  
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+  if [ "$(uname -s)" == "SunOS" ]; then
+    export CC="cc"
+    export CXX="CC"
+  elif [ "$(uname -s)" == "Linux" ]; then
+    export CC="/usr/bin/gcc-6"
+    export CXX="/usr/bin/g++-6"
+  else  
+    export CC="/usr/bin/gcc"
+    export CXX="/usr/bin/g++"
+  fi
+  export COMPILER=${CXX}  
+fi
+
 if [ -n "${COMPILER}" ]; then
-  echo -e "${green} COMPILER is defined ${happy_smiley} ${NC}"
+  echo -e "${green} COMPILER is defined ${happy_smiley} : ${COMPILER} ${CC}  ${CXX}  ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : COMPILER, use default one ${NC}"
-  if [ "$(uname -s)" == "SunOS" ]; then
-    COMPILER="CC"
-  else
-    COMPILER="gcc"
-  fi
-  export COMPILER
 fi
 
 if [ -n "${ANSIBLE_CMD}" ]; then
@@ -157,6 +171,18 @@ else
     SONAR_CMD=""
   fi
   export SONAR_CMD
+fi
+
+if [ -n "${MAKE}" ]; then
+  echo -e "${green} MAKE is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MAKE, use default one ${NC}"
+  if [ "$(uname -s)" == "Linux" ]; then
+    MAKE="colormake"
+  else
+    MAKE="make"
+  fi
+  export MAKE
 fi
 
 if [ -n "${SCONS}" ]; then
