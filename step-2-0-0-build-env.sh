@@ -134,6 +134,31 @@ else
   export ANSIBLE_PLAYBOOK_CMD="/usr/local/bin/ansible-playbook"
 fi
 
+if [ -n "${SONAR_PROCESSOR}" ]; then
+  echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
+  #SONAR_PROCESSOR=`uname -m`
+  if [ "$(uname -s)" == "Linux" ]; then
+    SONAR_PROCESSOR="x86-32"
+  else
+    SONAR_PROCESSOR=""
+  fi
+  export SONAR_PROCESSOR
+fi
+
+if [ -n "${SONAR_CMD}" ]; then
+  echo -e "${green} SONAR_CMD is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
+  if [ "$(uname -s)" == "Linux" ]; then
+    SONAR_CMD="~/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir \"${WORKSPACE}/bw-outputs\""
+  else
+    SONAR_CMD=""
+  fi
+  export SONAR_CMD
+fi
+
 if [ -n "${SCONS}" ]; then
   echo -e "${green} SCONS is defined ${happy_smiley} ${NC}"
 else

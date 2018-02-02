@@ -15,7 +15,8 @@ branches:
 env:
   global:
     - PROJECT_SRC="$TRAVIS_BUILD_DIR"
-
+    - SONAR_PROCESSOR="x86-64"
+    - SONAR_CMD=""
 addons:
   apt:
     packages:
