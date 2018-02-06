@@ -16,24 +16,22 @@ env:
   global:
     - PROJECT_SRC="$TRAVIS_BUILD_DIR"
     - WORKSPACE="$TRAVIS_BUILD_DIR"
-#    - SONAR_PROCESSOR="x86-64"
     - SONAR_CMD=""
     - MAKE=make
     - ARCH=linux
-addons:
-  apt:
-    packages:
-      - valgrind
-#      - g++-6
-      - libcppunit-dev
-      - colormake
-      - libxml2-dev
-      - libxml2-utils
-      - libboost-thread-dev
-      - libboost-date-time-dev
-      - libboost-filesystem-dev
-    sources: &sources
-      - ubuntu-toolchain-r-test
+#addons:
+#  apt:
+#    packages:
+#      - valgrind
+#      - libcppunit-dev
+#      - colormake
+#      - libxml2-dev
+#      - libxml2-utils
+#      - libboost-thread-dev
+#      - libboost-date-time-dev
+#      - libboost-filesystem-dev
+#    sources: &sources
+#      - ubuntu-toolchain-r-test
 
 cache:
   directories:
@@ -91,38 +89,49 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - valgrind
-#            - g++-6
-            - libcppunit-dev
+            - cmake            
             - colormake
             - libxml2-dev
             - libxml2-utils
+            - libcppunit-dev            
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.2
-    #- compiler: gcc
-    #  os: linux
-    #  addons:
-    #    apt:
-    #      sources:
-    #        - ubuntu-toolchain-r-test
-    #      packages:
-    #        - g++-4.9
-    #        - cmake
-    #        - libboost-system-dev
-    #        - libboost-filesystem-dev
-    #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.9
-    #- compiler: gcc
-    #  os: linux
-    #  addons:
-    #    apt:
-    #      sources:
-    #        - ubuntu-toolchain-r-test
-    #      packages:
-    #        - g++-5
-    #        - cmake
-    #  env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-5
+    - compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+            - cmake
+            - colormake
+            - libxml2-dev
+            - libxml2-utils
+            - libcppunit-dev            
+            - libboost-thread-dev
+            - libboost-date-time-dev
+            - libboost-filesystem-dev
+      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.9
+    - compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+            - cmake            
+            - colormake
+            - libxml2-dev
+            - libxml2-utils
+            - libcppunit-dev            
+            - libboost-thread-dev
+            - libboost-date-time-dev
+            - libboost-filesystem-dev
+      env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-5
     - compiler: gcc
       os: linux
       addons:
@@ -131,27 +140,32 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-6
-            - libcppunit-dev
+            - cmake             
             - colormake
+            - libxml2-dev
+            - libxml2-utils
+            - libcppunit-dev            
+            - libboost-thread-dev
+            - libboost-date-time-dev
+            - libboost-filesystem-dev
+      env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-6
+    - compiler: clang
+      os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+            - cmake
+            - libcppunit-dev
             - libxml2-dev
             - libxml2-utils
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
-      env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-6
-    #- compiler: clang
-    #  os: linux
-    #  addons:
-    #    apt:
-    #      sources:
-    #        - ubuntu-toolchain-r-test
-    #        - llvm-toolchain-precise-3.6
-    #      packages:
-    #        - clang-3.6
-    #        - cmake
-    #        - libboost-system-dev
-    #        - libboost-filesystem-dev
-    #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-3.6
+      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-3.6
     - compiler: clang
       os: linux
       addons:
