@@ -29,6 +29,8 @@ addons:
       - colormake
       - libxml2-dev
       - libxml2-utils
+      - libboost-thread-dev
+      - libboost-date-time-dev
       - libboost-filesystem-dev
     sources: &sources
       - ubuntu-toolchain-r-test
