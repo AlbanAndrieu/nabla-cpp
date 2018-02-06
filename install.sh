@@ -21,7 +21,7 @@ sudo apt install xsltproc
 sudo apt-get install checkinstall
 
 #See https://github.com/include-what-you-use/include-what-you-use
-sudo apt-get install libclang-dev llvm-3.8-dev
+sudo apt-get install libclang-dev llvm-dev llvm-3.8-dev
 
 llvm-config --version
 clang --version
