@@ -28,12 +28,12 @@
     ELSE (TAO_ORBSVCS)
         FIND_FILE(TAO_ORBSVCS CosNaming.idl ${TAO_DIR}/include/orbsvcs )
         SET( ORBSVCS_DIR ${TAO_DIR}/include/orbsvcs )
-    ENDIF (TAO_ORBSVCS)    
+    ENDIF (TAO_ORBSVCS)
   ENDIF (NOT ORBSVCS_DIR )
 
   IF (NOT ACE_CONFIG )
     MESSAGE( "ACE config-all.h not found in ${ACE_DIR}/ace.")
-  ELSE(NOT ACE_CONFIG ) 
+  ELSE(NOT ACE_CONFIG )
    MESSAGE( "ACE config-all.h found in ${ACE_DIR}/ace.")
   ENDIF (NOT ACE_CONFIG )
   IF (NOT TAO_ORB )
@@ -51,14 +51,14 @@
     MESSAGE ( "TAO with orbsvcs found.")
 
     FIND_PROGRAM( ORO_TAOIDL_EXECUTABLE tao_idl PATHS "${ACE_DIR}/bin" NO_DEFAULT_PATH )
-    
+
     IF (UNIX)
       FIND_PROGRAM( ORO_TAOIDL_EXECUTABLE tao_idl PATHS "${ACE_DIR}/../bin/x86Linux.mt/opt" NO_DEFAULT_PATH )
       MESSAGE ( "tao_idl searching in : ${ACE_DIR}/../bin/x86Linux.mt/opt")
       FIND_PROGRAM( ORO_TAOIDL_EXECUTABLE tao_idl PATHS "${ACE_DIR}/../bin/sun4sol.mt/opt" NO_DEFAULT_PATH )
       MESSAGE ( "tao_idl searching in : ${ACE_DIR}/../bin/sun4sol.mt/opt")
     ENDIF(UNIX)
-    
+
     FIND_PROGRAM( ORO_TAOIDL_EXECUTABLE tao_idl )
 
     IF( NOT ORO_TAOIDL_EXECUTABLE )
@@ -66,5 +66,5 @@
     ELSE( NOT ORO_TAOIDL_EXECUTABLE )
       MESSAGE( "tao_idl: ${ORO_TAOIDL_EXECUTABLE}")
     ENDIF( NOT ORO_TAOIDL_EXECUTABLE )
-  
+
   ENDIF (ACE_CONFIG AND TAO_ORB AND TAO_ORBSVCS )

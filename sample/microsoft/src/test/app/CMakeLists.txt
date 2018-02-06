@@ -26,4 +26,4 @@ ENABLE_TESTING()
 MESSAGE("  ######  adding test ${BUILDNAME}")
 
 # Add a simple test
-ADD_TEST(TEST ${PROJECT_INSTALL_DIR}/bin/run_tests TEST) 
+ADD_TEST(TEST ${PROJECT_INSTALL_DIR}/bin/run_tests TEST)

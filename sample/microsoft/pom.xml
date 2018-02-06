@@ -6,7 +6,7 @@
   <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Microsoft</name>
-  
+
   <profiles>
     <profile>
       <id>RELEASE</id>
@@ -101,7 +101,7 @@
                   <!-- <sourceDirs>
                     <sourceDir>sources/application</sourceDir>
                     <sourceDir>sources/utils</sourceDir>
-                    <sourceDir>sources/tests</sourceDir> 
+                    <sourceDir>sources/tests</sourceDir>
                   </sourceDirs>-->
                   <includeDirs>
                     <includeDir>${basedir}/builds/Unix Makefiles/RELEASE/application</includeDir>
@@ -682,7 +682,7 @@
                   <projectDir>${OutSourceDir}</projectDir>
                 </configuration>
               </execution>
-           
+
             </executions>
 <!-- main configuration node is mainly used by sonar cxx sensor -->
             <configuration>
