@@ -46,13 +46,13 @@ cache:
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.63.0
 
 script:
-  - mkdir -p sample/build-linux/
-  - cd sample/build-linux/
-  - ./build.sh  
-#  - cmake ${CMAKEFLAGS} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
-#  - make
-#  - make CTEST_OUTPUT_ON_FAILURE=1 test
-#  - make package
+  - mkdir -p sample/build-${ARCH}/
+  - cd sample/build-${ARCH}/
+#  - ./build.sh
+  - cmake ${CMAKEFLAGS} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
+  - make
+  - make CTEST_OUTPUT_ON_FAILURE=1 test
+  - make package
 
 matrix:
   include:
