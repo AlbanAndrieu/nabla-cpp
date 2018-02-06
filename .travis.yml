@@ -16,9 +16,10 @@ env:
   global:
     - PROJECT_SRC="$TRAVIS_BUILD_DIR"
     - WORKSPACE="$TRAVIS_BUILD_DIR"    
-    - SONAR_PROCESSOR="x86-64"
+#    - SONAR_PROCESSOR="x86-64"
     - SONAR_CMD=""
     - MAKE=make
+    - ARCH=linux
 addons:
   apt:
     packages:

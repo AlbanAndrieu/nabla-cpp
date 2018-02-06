@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 #set -xv
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
@@ -87,7 +88,7 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package
+"${SONAR_CMD}" "${MAKE}" -B clean install test DoxygenDoc package
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
