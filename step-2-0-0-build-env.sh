@@ -88,22 +88,84 @@ else
 fi
 
 if [ -n "${ARCH}" ]; then
-  echo -e "${green} ARCH is defined ${happy_smiley} ${NC}"
+  echo -e "${green} ARCH is defined ${happy_smiley} : ${ARCH} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ARCH, use default one ${NC}"
-  export ARCH="x86sol"
+
+  if [ "$(uname -s)" == "SunOS" ]; then
+    case $(uname -m) in
+    sun4v)
+        ARCH=sun4sol
+        ;;
+    i*86*)
+        ARCH=x86sol
+        ;;
+    *)
+        # leave ARCH as-is
+        ;;
+    esac
+  elif [ "$(uname -s)" == "Linux" ]; then
+    case $(uname -m) in
+    x86_64)
+        ARCH=linux  # or AMD64 or Intel64 or whatever
+        ;;
+    i*86)
+        ARCH=x86Linux  # or IA32 or Intel32 or whatever
+        ;;
+    *)
+        # leave ARCH as-is
+        ;;
+    esac
+  else
+    ARCH="$(uname -m)"
+  fi
+  export ARCH
+fi
+
+if [ -n "${CC}" ]; then
+  echo -e "${green} CC is defined ${happy_smiley} : ${CC} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CC, use default one ${NC}"
+  if [ -n "${ENABLE_CLANG}" ]; then
+    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+    export CC="/usr/bin/clang"
+  else
+    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+    if [ "$(uname -s)" == "SunOS" ]; then
+      export CC="cc"
+    elif [ "$(uname -s)" == "Linux" ]; then
+      export CC="/usr/bin/gcc-6"
+    else  
+      export CC="/usr/bin/gcc"
+    fi
+  fi  
+fi
+
+if [ -n "${CXX}" ]; then
+  echo -e "${green} COMPILER is defined ${happy_smiley} : ${CXX} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CXX, use default one ${NC}"
+  if [ -n "${ENABLE_CLANG}" ]; then
+    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+    export CXX="/usr/bin/clang++"
+    export COMPILER=${CXX}  
+  else
+    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+    if [ "$(uname -s)" == "SunOS" ]; then
+      export CXX="CC"
+    elif [ "$(uname -s)" == "Linux" ]; then
+      export CXX="/usr/bin/g++-6"
+    else  
+      export CXX="/usr/bin/g++"
+    fi
+    export COMPILER=${CXX}  
+  fi    
 fi
 
 if [ -n "${COMPILER}" ]; then
-  echo -e "${green} COMPILER is defined ${happy_smiley} ${NC}"
+  echo -e "${green} COMPILER is defined ${happy_smiley} : ${COMPILER} ${CC} ${CXX} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : COMPILER, use default one ${NC}"
-  if [ "$(uname -s)" == "SunOS" ]; then
-    COMPILER="CC"
-  else
-    COMPILER="gcc"
-  fi
-  export COMPILER
 fi
 
 if [ -n "${ANSIBLE_CMD}" ]; then
@@ -132,6 +194,43 @@ if [ -n "${ANSIBLE_PLAYBOOK_CMD}" ]; then
 else
   echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_PLAYBOOK_CMD, use the default one ${NC}"
   export ANSIBLE_PLAYBOOK_CMD="/usr/local/bin/ansible-playbook"
+fi
+
+if [ -n "${SONAR_PROCESSOR}" ]; then
+  echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
+  SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g') 
+  #if [ "$(uname -s)" == "Linux" ]; then
+  #  SONAR_PROCESSOR="x86-32"
+  #else
+  #  SONAR_PROCESSOR=`uname -m`
+  #fi
+  export SONAR_PROCESSOR
+fi
+
+if [ -n "${SONAR_CMD}" ]; then
+  echo -e "${green} SONAR_CMD is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
+  if [ "$(uname -s)" == "Linux" ]; then
+    SONAR_CMD="${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
+  else
+    SONAR_CMD=""
+  fi
+  export SONAR_CMD
+fi
+
+if [ -n "${MAKE}" ]; then
+  echo -e "${green} MAKE is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MAKE, use default one ${NC}"
+  if [ "$(uname -s)" == "Linux" ]; then
+    MAKE="colormake"
+  else
+    MAKE="make"
+  fi
+  export MAKE
 fi
 
 if [ -n "${SCONS}" ]; then

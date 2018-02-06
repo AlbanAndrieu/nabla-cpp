@@ -1,7 +1,25 @@
 #!/bin/bash
+set -e
 #set -xv
 
-./step-2-0-0-build-env.sh || exit 1
+export PROJECT_TARGET_PATH=${WORKSPACE}/target
+#AddressSanitizer to sanitize your code!
+export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
+export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
+#export ENABLE_MEMCHECK=true
+export UNIT_TESTS=true
+export CHECK_FORMATTING=true
+export ENABLE_CLANG=true
+export ENABLE_EXPERIMENTAL=true
+#export SONAR_CMD=""
+
+source ./step-2-0-0-build-env.sh || exit 1
+
+echo -e "${cyan} ${double_arrow} Environment ${NC}"
+
+echo "WORKSPACE ${WORKSPACE}"
+
+pwd
 
 #clang-format -style=llvm -dump-config > .clang-format
 
@@ -16,15 +34,11 @@
 
 echo -e "${green} Building : scons ${NC}"
 
-#AddressSanitizer to sanitize your code!
-export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
-export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
-
 #scons opt=True
 #cd /workspace
 #wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
-echo -e "${magenta} ~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir \"${WORKSPACE}/bw-outputs\" scons target=local --cache-disable gcc_version=5 CC=clang CXX=clang++ color=True package ${NC}"
-~/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir "${WORKSPACE}/bw-outputs" scons target=local --cache-disable gcc_version=5 CC=clang CXX=clang++ color=True package 2>&1 > scons.log
+echo -e "${magenta} ${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC=${CC} CXX=${CXX} color=True package ${NC}"
+${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC="${CC}" CXX="${CXX}" color=True package 2>&1 > scons.log
 #/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs
 
 echo -e "${green} Security : hardening-check ${NC}"
@@ -47,7 +61,7 @@ coverageSourcePath="$sourcePath/src/main/app/"
 # ------------------------------------------------------------------------
 gcdacount=$(find $coverageSourcePath -name "*.gcda" | wc -c )
 
-if [ $gcdacount -eq 0 ]; then 
+if [ $gcdacount -eq 0 ]; then
     echo "No new LCOV report to generate. Bye."
     exit 0
 fi

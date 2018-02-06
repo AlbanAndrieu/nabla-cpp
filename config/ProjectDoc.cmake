@@ -23,7 +23,7 @@ IF (DOXYGEN_FOUND)
   ELSE  (CMAKE_BUILD_TOOL MATCHES "(msdev|devenv)")
     SET(DOXY_WARN_FORMAT "\"$file:$line: $text \"")
   ENDIF (CMAKE_BUILD_TOOL MATCHES "(msdev|devenv)")
-  
+
   # we need latex for doxygen because of the formulas
   FIND_PACKAGE(LATEX)
   IF    (NOT LATEX_COMPILER)
@@ -35,7 +35,7 @@ IF (DOXYGEN_FOUND)
   IF    (NOT DVIPS_CONVERTER)
     MESSAGE(STATUS "dvips command DVIPS_CONVERTER not found but usually required.")
   ENDIF (NOT DVIPS_CONVERTER)
-  
+
   # For Doxygen
   INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
   OPTION(BUILD_DOCUMENTATION "Build osg documentation" ON)
@@ -56,15 +56,15 @@ IF (DOXYGEN_FOUND)
     IF(DOT)
         SET(HAVE_DOT YES)
     ELSE(DOT)
-        MESSAGE(STATUS "d0t command not found but usually required.")    
+        MESSAGE(STATUS "d0t command not found but usually required.")
         SET(HAVE_DOT NO)
     ENDIF(DOT)
   ENDIF(BUILD_DOCUMENTATION)
 
-  #CMAKE_CURRENT_SOURCE_DIR --> PROJECT_SOURCE_DIR 
+  #CMAKE_CURRENT_SOURCE_DIR --> PROJECT_SOURCE_DIR
   IF   (EXISTS "${PROJECT_SOURCE_DIR}/config/doxy.config.in")
     MESSAGE(STATUS "configured ${PROJECT_SOURCE_DIR}/config/doxy.config.in --> ${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
-    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/doxy.config.in 
+    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/doxy.config.in
       ${CMAKE_CURRENT_BINARY_DIR}/doxy.config
       @ONLY )
     ## use (configured) doxy.config from (out of place) BUILD tree:
@@ -78,7 +78,7 @@ IF (DOXYGEN_FOUND)
       IF   (EXISTS "${CMAKE_MODULE_PATH}/doxy.config.in")
         # using template doxy.config.in
         MESSAGE(STATUS "configured ${CMAKE_CMAKE_MODULE_PATH}/doxy.config.in --> ${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
-        CONFIGURE_FILE(${CMAKE_MODULE_PATH}/doxy.config.in 
+        CONFIGURE_FILE(${CMAKE_MODULE_PATH}/doxy.config.in
           ${CMAKE_CURRENT_BINARY_DIR}/doxy.config
           @ONLY )
         SET(DOXY_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/doxy.config")
@@ -89,26 +89,26 @@ IF (DOXYGEN_FOUND)
 
     ENDIF(EXISTS "${PROJECT_SOURCE_DIR}/config/doxy.config")
   ENDIF(EXISTS "${PROJECT_SOURCE_DIR}/config/doxy.config.in")
-  
+
   ADD_CUSTOM_TARGET(DoxygenDoc ${DOXYGEN_EXECUTABLE} ${DOXY_CONFIG})
-  
+
   # create a windows help .chm file using hhc.exe
   # HTMLHelp DLL must be in path!
   # fallback: use hhw.exe interactively
   IF    (WIN32)
     FIND_PACKAGE(HTMLHelp)
-    IF   (HTML_HELP_COMPILER)      
+    IF   (HTML_HELP_COMPILER)
       SET (TMP "${CMAKE_CURRENT_BINARY_DIR}\\doc\\html\\index.hhp")
       STRING(REGEX REPLACE "[/]" "\\\\" HHP_FILE ${TMP} )
       # MESSAGE(SEND_ERROR "DBG  HHP_FILE=${HHP_FILE}")
       ADD_CUSTOM_TARGET(winhelp ${HTML_HELP_COMPILER} ${HHP_FILE})
       ADD_DEPENDENCIES (winhelp doc)
-     
+
       IF (NOT TARGET_DOC_SKIP_INSTALL)
       # install windows help?
-      # determine useful name for output file 
-      # should be project and version unique to allow installing 
-      # multiple projects into one global directory      
+      # determine useful name for output file
+      # should be project and version unique to allow installing
+      # multiple projects into one global directory
       IF   (EXISTS "${PROJECT_BINARY_DIR}/doc/html/index.chm")
         IF   (PROJECT_NAME)
           SET(OUT "${PROJECT_NAME}")
@@ -120,15 +120,15 @@ IF (DOXYGEN_FOUND)
           IF   (${PROJECT_NAME}_VERSION_MINOR)
             SET(OUT  "${OUT}.${${PROJECT_NAME}_VERSION_MINOR}")
             IF   (${PROJECT_NAME}_VERSION_PATCH)
-              SET(OUT "${OUT}.${${PROJECT_NAME}_VERSION_PATCH}")      
+              SET(OUT "${OUT}.${${PROJECT_NAME}_VERSION_PATCH}")
             ENDIF(${PROJECT_NAME}_VERSION_PATCH)
           ENDIF(${PROJECT_NAME}_VERSION_MINOR)
         ENDIF(${PROJECT_NAME}_VERSION_MAJOR)
         # keep suffix
         SET(OUT  "${OUT}.chm")
-        
+
         #MESSAGE("DBG ${PROJECT_BINARY_DIR}/doc/html/index.chm \n${OUT}")
-        # create target used by install and package commands 
+        # create target used by install and package commands
         INSTALL(FILES "${PROJECT_SOURCE_DIR}/fullsite/site-deploy/doc/html/index.chm"
           DESTINATION "doc"
           RENAME "${OUT}"
@@ -138,7 +138,7 @@ IF (DOXYGEN_FOUND)
 
     ENDIF(HTML_HELP_COMPILER)
     # MESSAGE(SEND_ERROR "HTML_HELP_COMPILER=${HTML_HELP_COMPILER}")
-  ENDIF (WIN32) 
+  ENDIF (WIN32)
 ELSE (DOXYGEN_FOUND)
   MESSAGE(STATUS "DOXYGEN not found")
 ENDIF(DOXYGEN_FOUND)

@@ -1,3 +1,5 @@
+#!/bin/bash
+#set -xv
 
 #rm CMakeCache.txt
 
@@ -8,3 +10,5 @@
 #-DECLIPSE_CDT4_GENERATE_SOURCE_PROJECT=TRUE
 
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../microsoft
+
+exit 0
