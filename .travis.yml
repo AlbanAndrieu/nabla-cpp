@@ -15,7 +15,7 @@ branches:
 env:
   global:
     - PROJECT_SRC="$TRAVIS_BUILD_DIR"
-    - WORKSPACE="$TRAVIS_BUILD_DIR"    
+    - WORKSPACE="$TRAVIS_BUILD_DIR"
 #    - SONAR_PROCESSOR="x86-64"
     - SONAR_CMD=""
     - MAKE=make
@@ -91,11 +91,15 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-#            - g++-4.8.2
-#            - cmake
-            - libboost-system-dev
-            - libboost-filesystem-dev
+            - valgrind
+#            - g++-6
             - libcppunit-dev
+            - colormake
+            - libxml2-dev
+            - libxml2-utils
+            - libboost-thread-dev
+            - libboost-date-time-dev
+            - libboost-filesystem-dev
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.2
     #- compiler: gcc
     #  os: linux
@@ -127,10 +131,13 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-6
-            - cmake
-            - libboost-system-dev
+            - libcppunit-dev
+            - colormake
+            - libxml2-dev
+            - libxml2-utils
+            - libboost-thread-dev
+            - libboost-date-time-dev
             - libboost-filesystem-dev
-            - libcppunit-dev            
       env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-6
     #- compiler: clang
     #  os: linux
@@ -155,7 +162,10 @@ matrix:
           packages:
             - clang-3.7
             - cmake
-            - libboost-system-dev
-            - libboost-filesystem-dev
             - libcppunit-dev
+            - libxml2-dev
+            - libxml2-utils
+            - libboost-thread-dev
+            - libboost-date-time-dev
+            - libboost-filesystem-dev
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-3.7
