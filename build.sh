@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 #set -xv
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
@@ -10,6 +11,7 @@ export UNIT_TESTS=true
 export CHECK_FORMATTING=true
 export ENABLE_CLANG=true
 export ENABLE_EXPERIMENTAL=true
+#export SONAR_CMD=""
 
 source ./step-2-0-0-build-env.sh || exit 1
 
@@ -36,7 +38,7 @@ echo -e "${green} Building : scons ${NC}"
 #cd /workspace
 #wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
 echo -e "${magenta} ${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC=${CC} CXX=${CXX} color=True package ${NC}"
-${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC=${CC} CXX=${CXX} color=True package 2>&1 > scons.log
+${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC="${CC}" CXX="${CXX}" color=True package 2>&1 > scons.log
 #/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs
 
 echo -e "${green} Security : hardening-check ${NC}"

@@ -88,10 +88,38 @@ else
 fi
 
 if [ -n "${ARCH}" ]; then
-  echo -e "${green} ARCH is defined ${happy_smiley} ${NC}"
+  echo -e "${green} ARCH is defined ${happy_smiley} : ${ARCH} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ARCH, use default one ${NC}"
-  export ARCH="x86sol"
+
+  if [ "$(uname -s)" == "SunOS" ]; then
+    case $(uname -m) in
+    sun4v)
+        ARCH=sun4sol
+        ;;
+    i*86*)
+        ARCH=x86sol
+        ;;
+    *)
+        # leave ARCH as-is
+        ;;
+    esac
+  elif [ "$(uname -s)" == "Linux" ]; then
+    case $(uname -m) in
+    x86_64)
+        ARCH=linux  # or AMD64 or Intel64 or whatever
+        ;;
+    i*86)
+        ARCH=x86Linux  # or IA32 or Intel32 or whatever
+        ;;
+    *)
+        # leave ARCH as-is
+        ;;
+    esac
+  else
+    ARCH="$(uname -m)"
+  fi
+  export ARCH
 fi
 
 if [ -n "${ENABLE_CLANG}" ]; then
@@ -152,12 +180,12 @@ if [ -n "${SONAR_PROCESSOR}" ]; then
   echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
-  #SONAR_PROCESSOR=`uname -m`
-  if [ "$(uname -s)" == "Linux" ]; then
-    SONAR_PROCESSOR="x86-32"
-  else
-    SONAR_PROCESSOR=""
-  fi
+  SONAR_PROCESSOR=`uname -m`
+  #if [ "$(uname -s)" == "Linux" ]; then
+  #  SONAR_PROCESSOR="x86-32"
+  #else
+  #  SONAR_PROCESSOR=`uname -m`
+  #fi
   export SONAR_PROCESSOR
 fi
 
@@ -166,7 +194,7 @@ if [ -n "${SONAR_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
   if [ "$(uname -s)" == "Linux" ]; then
-    SONAR_CMD="~/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir \"${WORKSPACE}/bw-outputs\""
+    SONAR_CMD="${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
   else
     SONAR_CMD=""
   fi
