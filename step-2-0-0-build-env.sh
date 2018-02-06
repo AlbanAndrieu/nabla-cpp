@@ -122,28 +122,48 @@ else
   export ARCH
 fi
 
-if [ -n "${ENABLE_CLANG}" ]; then
-  echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
-  export CC="/usr/bin/clang"
-  export CXX="/usr/bin/clang++"
-  export COMPILER=${CXX}  
+if [ -n "${CC}" ]; then
+  echo -e "${green} CC is defined ${happy_smiley} : ${CC} ${NC}"
 else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
-  if [ "$(uname -s)" == "SunOS" ]; then
-    export CC="cc"
-    export CXX="CC"
-  elif [ "$(uname -s)" == "Linux" ]; then
-    export CC="/usr/bin/gcc-6"
-    export CXX="/usr/bin/g++-6"
-  else  
-    export CC="/usr/bin/gcc"
-    export CXX="/usr/bin/g++"
-  fi
-  export COMPILER=${CXX}  
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CC, use default one ${NC}"
+  if [ -n "${ENABLE_CLANG}" ]; then
+    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+    export CC="/usr/bin/clang"
+  else
+    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+    if [ "$(uname -s)" == "SunOS" ]; then
+      export CC="cc"
+    elif [ "$(uname -s)" == "Linux" ]; then
+      export CC="/usr/bin/gcc-6"
+    else  
+      export CC="/usr/bin/gcc"
+    fi
+  fi  
+fi
+
+if [ -n "${CXX}" ]; then
+  echo -e "${green} COMPILER is defined ${happy_smiley} : ${CXX} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CXX, use default one ${NC}"
+  if [ -n "${ENABLE_CLANG}" ]; then
+    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+    export CXX="/usr/bin/clang++"
+    export COMPILER=${CXX}  
+  else
+    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+    if [ "$(uname -s)" == "SunOS" ]; then
+      export CXX="CC"
+    elif [ "$(uname -s)" == "Linux" ]; then
+      export CXX="/usr/bin/g++-6"
+    else  
+      export CXX="/usr/bin/g++"
+    fi
+    export COMPILER=${CXX}  
+  fi    
 fi
 
 if [ -n "${COMPILER}" ]; then
-  echo -e "${green} COMPILER is defined ${happy_smiley} : ${COMPILER} ${CC}  ${CXX}  ${NC}"
+  echo -e "${green} COMPILER is defined ${happy_smiley} : ${COMPILER} ${CC} ${CXX} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : COMPILER, use default one ${NC}"
 fi
@@ -180,7 +200,7 @@ if [ -n "${SONAR_PROCESSOR}" ]; then
   echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
-  SONAR_PROCESSOR=`uname -m`
+  SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g') 
   #if [ "$(uname -s)" == "Linux" ]; then
   #  SONAR_PROCESSOR="x86-32"
   #else
