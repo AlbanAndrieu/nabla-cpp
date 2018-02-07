@@ -116,6 +116,15 @@ else
         # leave ARCH as-is
         ;;
     esac
+  elif [ "$(uname -s)" == "FreeBSD" ]; then
+    case $(uname -m) in
+    amd64)
+        ARCH=freebsd  # or AMD64 or Intel64 or whatever
+        ;;
+    *)
+        # leave ARCH as-is
+        ;;
+    esac
   else
     ARCH="$(uname -m)"
   fi
@@ -135,10 +144,10 @@ else
       export CC="cc"
     elif [ "$(uname -s)" == "Linux" ]; then
       export CC="/usr/bin/gcc-6"
-    else  
+    else
       export CC="/usr/bin/gcc"
     fi
-  fi  
+  fi
 fi
 
 if [ -n "${CXX}" ]; then
@@ -148,18 +157,18 @@ else
   if [ -n "${ENABLE_CLANG}" ]; then
     echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
     export CXX="/usr/bin/clang++"
-    export COMPILER=${CXX}  
+    export COMPILER=${CXX}
   else
     echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
     if [ "$(uname -s)" == "SunOS" ]; then
       export CXX="CC"
     elif [ "$(uname -s)" == "Linux" ]; then
       export CXX="/usr/bin/g++-6"
-    else  
+    else
       export CXX="/usr/bin/g++"
     fi
-    export COMPILER=${CXX}  
-  fi    
+    export COMPILER=${CXX}
+  fi
 fi
 
 if [ -n "${COMPILER}" ]; then
@@ -200,12 +209,20 @@ if [ -n "${SONAR_PROCESSOR}" ]; then
   echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
-  SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g') 
-  #if [ "$(uname -s)" == "Linux" ]; then
-  #  SONAR_PROCESSOR="x86-32"
-  #else
-  #  SONAR_PROCESSOR=`uname -m`
-  #fi
+  SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g')
+  if [ "$(uname -s)" == "Linux" ]; then
+    case $(uname -m) in
+    x86_64)
+        ARCH=x86-64  # or AMD64 or Intel64 or whatever
+        ;;
+    i*86)
+        SONAR_PROCESSOR=x86-32  # or IA32 or Intel32 or whatever
+        ;;
+    *)
+        # leave ARCH as-is
+        ;;
+    esac
+  fi
   export SONAR_PROCESSOR
 fi
 
