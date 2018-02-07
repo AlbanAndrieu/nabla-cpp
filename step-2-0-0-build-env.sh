@@ -213,10 +213,8 @@ if [ -n "${SONAR_CMD}" ]; then
   echo -e "${green} SONAR_CMD is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
-  if [ "$(uname -s)" == "Linux" ]; then
+  if [ -d "${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR}" ]; then
     SONAR_CMD="${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
-  else
-    SONAR_CMD=""
   fi
   export SONAR_CMD
 fi
