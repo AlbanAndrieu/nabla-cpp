@@ -15,6 +15,7 @@ def generate(env, **kw):
         	
     system = platform.system()
     machine = platform.machine()
+    dist = platform.dist()
 
     Arch = ProjectMacro.getArch()
 
@@ -237,6 +238,8 @@ def generate(env, **kw):
         print colored("Platform :", 'magenta'), colored(platform.platform(), 'cyan')
         print colored("System :", 'magenta'), colored(system, 'cyan')
         print colored("Machine :", 'magenta'), colored(machine, 'cyan')
+        print colored("Dist :", 'magenta'), colored(dist, 'cyan')
+        print colored("Dist-Os :", 'magenta'), colored(dist[0], 'cyan')
     		
         print colored("ENV TOOLS :", 'magenta'), colored(env['TOOLS'], 'cyan')
         #print "dump whole env :", env.Dump()
