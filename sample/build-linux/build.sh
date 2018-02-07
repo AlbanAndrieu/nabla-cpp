@@ -11,7 +11,7 @@ export UNIT_TESTS=true
 export CHECK_FORMATTING=true
 export ENABLE_CLANG=true
 export ENABLE_EXPERIMENTAL=true
-export SONAR_PROCESSOR="x86-64"
+#export SONAR_PROCESSOR="x86-64"
 
 cd ../../
 
