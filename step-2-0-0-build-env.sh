@@ -217,6 +217,7 @@ else
     SONAR_CMD="${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
   fi
   export SONAR_CMD
+  echo -e "${cyan} ${double_arrow} ${SONAR_CMD} ${NC}"
 fi
 
 if [ -n "${MAKE}" ]; then
