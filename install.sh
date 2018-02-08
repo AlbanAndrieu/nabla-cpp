@@ -32,6 +32,7 @@ sudo apt-get install valgrind gawk kcachegrind valkyrie
 sudo apt-get install linux-tools-4.13.0-26-generic linux-cloud-tools-4.13.0-26-generic linux-tools-generic linux-cloud-tools-generic perf 
 #See https://github.com/jrfonseca/gprof2dot
 sudo pip install gprof2dot
+sudo pip install cpplint 
 
 sudo apt-get install libboost-filesystem-dev libcppunit-dev libboost-thread-dev 
 #Below do not work
