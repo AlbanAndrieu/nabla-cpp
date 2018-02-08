@@ -23,7 +23,7 @@ def generate(env, **kw):
 
     if Arch in ['x86Linux', 'cygwin']:
         if not 'gcc_version' in env:
-            #            env['gcc_version'] = '4.6.3'
+            env['gcc_version'] = '6'
             env['gcc_version'] = subprocess.check_output(
                 ['gcc', '-dumpversion'],
             )[:3]
@@ -125,7 +125,7 @@ def generate(env, **kw):
         ]
 
         # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-        if env['gcc_version'] >= '4.9':
+        if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
             env['LINKFLAGS'] += ['-fdiagnostics-color=always']
 
         if env['gcc_version'] >= '4.6':
@@ -141,7 +141,7 @@ def generate(env, **kw):
         if env['use_clang']:
             env['CCFLAGS'] += ['-fsanitize=address']
             env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
-
+			
         if env['gcc_version'] >= '4.8':
             env['CCFLAGS'] += [
                 '-D_FORTIFY_SOURCE=2',
@@ -155,6 +155,8 @@ def generate(env, **kw):
         # If not set, -l order on command lines matter
         env['LINKFLAGS'] = [
             '-Wl,--no-as-needed',
+            '-Wl,--no-undefined'
+		#	 '-Wl,--as-needed',
         ]
 
         if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
