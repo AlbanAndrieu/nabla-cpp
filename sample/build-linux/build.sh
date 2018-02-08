@@ -106,8 +106,8 @@ fi
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Checking include : IWYU ${NC}"
 
-    echo -e "${magenta} iwyu_tool.py -p . ${NC}"
-    iwyu_tool.py -p .
+    echo -e "${magenta} iwyu_tool -p . ${NC}"
+    iwyu_tool -p .
 fi
 
 echo -e "${green} Testing : CTest ${NC}"
