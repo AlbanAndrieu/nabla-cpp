@@ -203,7 +203,7 @@ if env['opt'] == 'True':
         env.Prepend(CCFLAGS = '-xlibmopt')
 else:
     if env['color']:
-        print colored("Debug mode activated", 'blue')	
+        print colored("Debug mode activated", 'blue')
     theOptDbgFolder = 'debug'+env['Suffix64']
     env.Prepend(CCFLAGS = env['debug_flags'])
     env.Prepend(CCFLAGS = '-DDEBUG')
@@ -524,7 +524,7 @@ if not env['verbose']:
 else:
    if env['color']:
        print colored("DEFAULT_TARGETS:", 'magenta'), colored(map(str, DEFAULT_TARGETS), 'cyan')
-          
+
 #registering function to handle builderrors correctly
 #ProjectMacro.registerBuildFailuresAtExit(env)
 

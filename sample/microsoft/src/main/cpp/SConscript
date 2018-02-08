@@ -5,15 +5,29 @@ import ProjectMacro
 Import('env')
 localenv = env.Clone()
 
+Arch = ProjectMacro.getArch()
+print "Arch :", Arch
+
 #exporting headers
 localenv.Install(os.path.join(localenv['PROJECT_INCLUDE_DIR'],''), Glob('include/*.h')+Glob('include/*.ipp'))
 
 #explicit links
 localenv["LIBS"] = [
-	'boost_thread',
-	'boost_date_time',
-	'boost_system',
+    'boost_thread',
+    'boost_date_time',
+    'boost_system',
 ]
+
+if not env['use_asan']:
+    localenv.MergeFlags([
+        '-Wl,--no-undefined',
+    ])
+
+localenv.MergeFlags([
+    '-Wl,--as-needed',
+#    '-Wl,--no-as-needed',
+    '-Wl,-rpath=target/lib/'+ Arch +'/debug64/shared/',
+])
 
 #building shared library
 p = localenv.SharedLibrary(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'main_library'), Glob('*.cpp'))
