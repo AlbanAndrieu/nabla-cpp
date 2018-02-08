@@ -248,8 +248,8 @@ if [[ "${CHECK_FORMATTING}" == "true" ]]; then
 
     echo -e "${magenta} cd ../../sample/microsoft ${NC}"
     cd $PROJECT_SRC/sample/microsoft
-    echo -e "${magenta} ./cpplint.sh ${NC}"
-    ./cpplint.sh
+    echo -e "${magenta} $PROJECT_SRC/cpplint.sh ${NC}"
+    $PROJECT_SRC/cpplint.sh
 
     # Find non-ASCII characters in headers
     hpps=$(find ../.. -name \*\.h)
