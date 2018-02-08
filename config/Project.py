@@ -158,7 +158,7 @@ def generate(env, **kw):
 		#	 '-Wl,--as-needed',
         ]
         if not env['use_asan']:
-			env['LINKFLAGS'] = += ['-Wl,--no-undefined']
+			env['LINKFLAGS'] += ['-Wl,--no-undefined']
         
         if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
             env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
