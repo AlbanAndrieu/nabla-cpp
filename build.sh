@@ -61,12 +61,14 @@ ${SONAR_CMD} ${SCONS} ${SCONS_OPTS} 2>&1 > scons.log
 
 echo -e "${green} Security : hardening-check ${NC}"
 
+echo -e "${magenta} hardening-check target/bin/x86Linux/run_app ${NC}"
 hardening-check target/bin/x86Linux/run_app
 
 #complexity --histogram --score --thresh=3 `ls sample/microsoft/src/main/*/*.c`
 
 echo -e "${green} Quality : shellcheck ${NC}"
 
+echo -e "${magenta} shellcheck *.sh -f checkstyle > checkstyle-result.xml ${NC}"
 shellcheck *.sh -f checkstyle > checkstyle-result.xml || true
 
 echo -e "${green} Quality : Coverage ${NC}"
@@ -77,6 +79,7 @@ coverageSourcePath="$sourcePath/src/main/app/"
 # ------------------------------------------------------------------------
 # Do we have something to do ?
 # ------------------------------------------------------------------------
+echo -e "${magenta} gcdacount=$(find $coverageSourcePath -name "*.gcda" | wc -c ) ${NC}"
 gcdacount=$(find $coverageSourcePath -name "*.gcda" | wc -c )
 
 if [ $gcdacount -eq 0 ]; then
@@ -90,6 +93,7 @@ fi
 #cd coverage
 
 # Capture
+echo -e "${magenta} lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.info ${NC}"
 lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.info
 
 # Remove useless stuffs
@@ -97,11 +101,14 @@ lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.in
 #lcov --remove coverage.info "$coverageSourcePath/*" --output-file coverage.info
 
 # Generate Report
+echo -e "${magenta} genhtml coverage.info --title \"Nabla during UT\" --output-directory \"Nabla\" ${NC}"
 genhtml coverage.info --title "Nabla during UT" --output-directory "Nabla"
 
 #xml
+echo -e "${magenta} gcovr --branches --xml-pretty -r . 2>&1 > gcovr.xml ${NC}"
 gcovr --branches --xml-pretty -r . 2>&1 > gcovr.xml
 #html
+echo -e "${magenta} gcovr --branches -r . --html --html-details -o gcovr-report.html ${NC}"
 gcovr --branches -r . --html --html-details -o gcovr-report.html
 
 #gprof exampleapp gmon.out > gprof_output.txt

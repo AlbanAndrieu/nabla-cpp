@@ -18,6 +18,7 @@ if [ -n "${ENABLE_CLANG}" ]; then
 fi
 
 cd ../../
+#cd $PROJECT_SRC/
 
 source ./step-2-0-0-build-env.sh || exit 1
 
@@ -69,6 +70,7 @@ else
 fi
 
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
+echo -e "${magenta} cmake -G\"Eclipse CDT4 - Unix Makefiles\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
 #-DENABLE_TESTING=true
@@ -92,6 +94,7 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
+echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package ${NC}"
 ${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
@@ -103,6 +106,7 @@ fi
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Checking include : IWYU ${NC}"
 
+    echo -e "${magenta} iwyu_tool.py -p . ${NC}"
     iwyu_tool.py -p .
 fi
 
@@ -115,11 +119,13 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
       if [ `uname -s` == "Linux" ]; then
          echo -e "${green} Checking memory leak : CTest ${NC}"
 
+         echo -e "${magenta} ctest --output-on-failure -j2 -N -D ExperimentalMemCheck ${NC}"
          #ctest -T memcheck
          ctest --output-on-failure -j2 -N -D ExperimentalMemCheck
       fi
 
     else
+      echo -e "${magenta} ctest --output-on-failure -j2 ${NC}"
       ctest --output-on-failure -j2
     fi
 
@@ -128,6 +134,7 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
     #ctest .. -R circular_queueTest
     #cd src/test/app/
     #ctest -V -C Debug
+    echo -e "${magenta} ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true ${NC}"
     ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
 
     #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
@@ -138,8 +145,11 @@ fi
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Fixing include : IWYU ${NC}"
 
+    echo -e "${magenta} ${MAKE} clean ${NC}"
     ${MAKE} clean
+    echo -e "${magenta} ${MAKE} -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out ${NC}"
     ${MAKE} -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out
+    echo -e "${magenta} fix_includes.py < /tmp/iwyu.out ${NC}"
     fix_includes.py < /tmp/iwyu.out
 fi
 
@@ -147,6 +157,7 @@ if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
 
     echo -e "${green} Experimental : CMake ${NC}"
 
+    echo -e "${magenta} ${MAKE} Experimental ${NC}"
     ${MAKE} Experimental
 
 fi
@@ -156,7 +167,9 @@ echo -e "${green} Packaging : CPack ${NC}"
 #cmake --help-module CPackDeb
 #cpack
 
+echo -e "${magenta} cd $PROJECT_SRC/sample/build-${ARCH} ${NC}"
 cd $PROJECT_SRC/sample/build-${ARCH}
+echo -e "${magenta} ${MAKE} package ${NC}"
 ${MAKE} package
 # To use this:
 # ${MAKE} package
@@ -165,6 +178,7 @@ ${MAKE} package
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Packaging : checkinstall ${NC}"
 
+    echo -e "${magenta} checkinstall --version ${NC}"
     checkinstall --version
 
     #sudo dpkg -r nabla-microsoft || true
@@ -184,7 +198,8 @@ fi
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Reporting : Junit ${NC}"
 
-    xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > JUnitTestResults.xml
+    echo -e "${magenta} xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > JUnitTestResults.xml ${NC}"
+    xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > JUnitTestResults.xml || true
 fi
 
 if [ `uname -s` == "Linux" ]; then
@@ -192,20 +207,26 @@ if [ `uname -s` == "Linux" ]; then
 
     #http://clang-analyzer.llvm.org/installation.html
     #http://clang-analyzer.llvm.org/scan-build.html
+    echo -e "${magenta} scan-build make ${NC}"
     scan-build make
     #scan-view
 fi
 
 echo -e "${green} Reporting : Coverage ${NC}"
 
+echo -e "${magenta} find ../.. -name '*.gcda' ${NC}"
 find ../.. -name '*.gcda'
 
 #xml
+echo -e "${magenta} gcovr --branches --xml-pretty -r . ${NC}"
 gcovr --branches --xml-pretty -r .
 #html
+echo -e "${magenta} gcovr --branches -r . --html --html-details -o gcovr-report.html ${NC}"
 gcovr --branches -r . --html --html-details -o gcovr-report.html
 
+echo -e "${magenta} sudo perf record -g -- /usr/bin/git --version ${NC}"
 sudo perf record -g -- /usr/bin/git --version
+echo -e "${magenta} sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
 sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
 #eog output.png
 
@@ -213,22 +234,27 @@ sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
 #xcodebuild | xcpretty
 #scan-build xcodebuild
 
+echo -e "${magenta} cmake --graphviz=test.dot . ${NC}"
 cmake --graphviz=test.dot .
 
 if [[ "${CHECK_FORMATTING}" == "true" ]]; then
 
-     cd ../../sample/microsoft
-     ./cpplint.sh
+    echo -e "${magenta} cd ../../sample/microsoft ${NC}"
+    cd $PROJECT_SRC/sample/microsoft
+    echo -e "${magenta} ./cpplint.sh ${NC}"
+    ./cpplint.sh
 
-     # Find non-ASCII characters in headers
-     hpps=$(find ../.. -name \*\.h)
-     cpps=$(find ../.. -name \*\.cpp)
-     pcregrep --color='auto' -n "[\x80-\xFF]" ${hpps} ${cpps}
-     if [[ $? -ne 1 ]]; then exit 1; fi
-     # F001: Source files should not use the '\r' (CR) character
-     # L001: No trailing whitespace at the end of lines
-     # L002: Don't use tab characters
-     find ../.. -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error
+    # Find non-ASCII characters in headers
+    hpps=$(find ../.. -name \*\.h)
+    cpps=$(find ../.. -name \*\.cpp)
+    echo -e "${magenta} pcregrep --color='auto' -n \"[\x80-\xFF]\" ${hpps} ${cpps} ${NC}"
+    pcregrep --color='auto' -n "[\x80-\xFF]" ${hpps} ${cpps}
+    if [[ $? -ne 1 ]]; then exit 1; fi
+    # F001: Source files should not use the '\r' (CR) character
+    # L001: No trailing whitespace at the end of lines
+    # L002: Don't use tab characters
+    echo -e "${magenta} find ../.. -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error ${hpps} ${cpps} ${NC}"
+    find ../.. -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error
 fi
 
 echo "http://192.168.0.28/cdash/user.php"
