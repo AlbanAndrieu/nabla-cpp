@@ -12,7 +12,7 @@ def generate(env, **kw):
     if env['color']:
         from termcolor import colored, cprint
         cprint("COMPILING OPTIONS!", 'red', attrs=['bold'], file=sys.stderr)
-        	
+
     system = platform.system()
     machine = platform.machine()
     dist = platform.dist()
@@ -141,7 +141,7 @@ def generate(env, **kw):
         if env['use_clang'] and env['use_asan']:
             env['CCFLAGS'] += ['-fsanitize=address']
             env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
-			
+
         if env['gcc_version'] >= '4.8':
             env['CCFLAGS'] += [
                 '-D_FORTIFY_SOURCE=2',
@@ -154,12 +154,13 @@ def generate(env, **kw):
 
         # If not set, -l order on command lines matter
         env['LINKFLAGS'] = [
-            '-Wl,--no-as-needed',
-		#	 '-Wl,--as-needed',
+        #    '-Wl,--no-as-needed',
+             '-Wl,--as-needed',
+             '-Wl,--no-allow-shlib-undefined',
         ]
         if not env['use_asan']:
-			env['LINKFLAGS'] += ['-Wl,--no-undefined']
-        
+            env['LINKFLAGS'] += ['-Wl,--no-undefined']
+
         if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
             env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
             #'-std=gnu++98',
@@ -237,13 +238,13 @@ def generate(env, **kw):
         ]
 
     if env['color']:
-        
+
         print colored("Platform :", 'magenta'), colored(platform.platform(), 'cyan')
         print colored("System :", 'magenta'), colored(system, 'cyan')
         print colored("Machine :", 'magenta'), colored(machine, 'cyan')
         print colored("Dist :", 'magenta'), colored(dist, 'cyan')
         print colored("Dist-Os :", 'magenta'), colored(dist[0], 'cyan')
-    		
+
         print colored("ENV TOOLS :", 'magenta'), colored(env['TOOLS'], 'cyan')
         #print "dump whole env :", env.Dump()
         if env['verbose']:
@@ -252,8 +253,8 @@ def generate(env, **kw):
         print colored("ENV TERM :", 'magenta'), colored(env['ENV']['TERM'] , 'cyan')
         print colored("ENV PATH :", 'magenta'), colored(env['ENV']['PATH'], 'cyan')
         print colored("ENV HOME :", 'magenta'), colored(env['ENV']['HOME'], 'cyan')
-        
-        print colored("CXXVERSION :", 'magenta'), colored(env['CXXVERSION'], 'cyan')        
+
+        print colored("CXXVERSION :", 'magenta'), colored(env['CXXVERSION'], 'cyan')
         print colored("CC:", 'magenta'), colored(env['CC'], 'cyan')
         print colored("CXX :", 'magenta'), colored(env['CXX'], 'cyan')
         print colored("CCCOM :", 'magenta'), colored(env.subst('$CCCOM'), 'cyan')
