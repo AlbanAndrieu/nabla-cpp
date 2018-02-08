@@ -213,7 +213,7 @@ else
   if [ "$(uname -s)" == "Linux" ]; then
     case $(uname -m) in
     x86_64)
-        ARCH=x86-64  # or AMD64 or Intel64 or whatever
+        SONAR_PROCESSOR=x86-64  # or AMD64 or Intel64 or whatever
         ;;
     i*86)
         SONAR_PROCESSOR=x86-32  # or IA32 or Intel32 or whatever
