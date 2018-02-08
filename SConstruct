@@ -49,6 +49,7 @@ vars.AddVariables(
     BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
     BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', False),
     BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
+    BoolVariable('use_asan', 'On linux only and clang: build with address sanitize', False),
     BoolVariable('color', 'Set to true to build with colorizer', True),
     ('gcc_version', 'Set gcc version to use', '6'),
     ('install_path', 'Set install path', 'install'),

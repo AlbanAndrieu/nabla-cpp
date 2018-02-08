@@ -138,7 +138,7 @@ def generate(env, **kw):
         # export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
         # export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 
-        if env['use_clang']:
+        if env['use_clang'] and env['use_asan']:
             env['CCFLAGS'] += ['-fsanitize=address']
             env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
 			
@@ -155,10 +155,11 @@ def generate(env, **kw):
         # If not set, -l order on command lines matter
         env['LINKFLAGS'] = [
             '-Wl,--no-as-needed',
-            '-Wl,--no-undefined'
 		#	 '-Wl,--as-needed',
         ]
-
+        if not env['use_asan']:
+			env['LINKFLAGS'] = += ['-Wl,--no-undefined']
+        
         if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
             env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
             #'-std=gnu++98',
