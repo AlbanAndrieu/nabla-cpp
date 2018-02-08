@@ -256,7 +256,7 @@ else
   if [ "$(uname -s)" == "SunOS" ]; then
     SCONS="/usr/local/bin/scons"
   else
-    SCONS="/usr/bin/scons"
+    SCONS="/usr/bin/python2.7 /usr/bin/scons"
   fi
   export SCONS
 fi

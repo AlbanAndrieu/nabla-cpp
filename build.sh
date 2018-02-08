@@ -19,6 +19,22 @@ fi
 
 source ./step-2-0-0-build-env.sh || exit 1
 
+if [ -n "${SCONS_OPTS}" ]; then
+  echo -e "${green} SCONS_OPTS is defined ${happy_smiley} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
+
+  if [ "$(uname -s)" == "Linux" ]; then
+    SCONS_OPTS="target=local --cache-disable gcc_version=5 CC="${CC}" CXX="${CXX}" color=True package"
+  else
+    SCONS_OPTS="--cache-disable opt=True"
+  fi
+  #-j32 --cache-disable gcc_version=4.8.5 opt=True
+  #--debug=time,explain
+  #count, duplicate, explain, findlibs, includes, memoizer, memory, objects, pdb, prepare, presub, stacktrace, time
+  export SCONS_OPTS
+fi
+
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
 echo "WORKSPACE ${WORKSPACE}"
@@ -38,12 +54,10 @@ pwd
 
 echo -e "${green} Building : scons ${NC}"
 
-#scons opt=True
 #cd /workspace
 #wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
-echo -e "${magenta} ${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC=${CC} CXX=${CXX} color=True package ${NC}"
-${SONAR_CMD} scons target=local --cache-disable gcc_version=5 CC="${CC}" CXX="${CXX}" color=True package 2>&1 > scons.log
-#/workspace/build-wrapper-linux-x86/build-wrapper-linux-x86-32 --out-dir ${WORKSPACE}/bw-outputs
+echo -e "${magenta} ${SONAR_CMD} ${SCONS} ${SCONS_OPTS} ${NC}"
+${SONAR_CMD} ${SCONS} ${SCONS_OPTS} 2>&1 > scons.log
 
 echo -e "${green} Security : hardening-check ${NC}"
 

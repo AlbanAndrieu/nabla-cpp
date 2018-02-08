@@ -48,4 +48,6 @@ sudo apt-get install sparse
 sudo apt-get install splint 
 #sudo yum install splint
 
+sudo pip2.7 install -r requirements.txt
+
 exit 0
