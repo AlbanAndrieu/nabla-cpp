@@ -3,15 +3,19 @@ set -e
 #set -xv
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
-#AddressSanitizer to sanitize your code!
-export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
-export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 export ENABLE_MEMCHECK=true
 export UNIT_TESTS=true
 export CHECK_FORMATTING=true
 export ENABLE_CLANG=true
-export ENABLE_EXPERIMENTAL=true
+#export ENABLE_EXPERIMENTAL=true
 #export SONAR_PROCESSOR="x86-64"
+
+if [ -n "${ENABLE_CLANG}" ]; then
+    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+    #AddressSanitizer to sanitize your code!
+    export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
+    export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
+fi
 
 cd ../../
 
