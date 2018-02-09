@@ -43,6 +43,7 @@ addons:
 
 cache:
   directories:
+    - '$HOME/.sonar/cache'  
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.6.2
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.7.1
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.8.0
