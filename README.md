@@ -3,7 +3,8 @@ A project that contains cpp code sample
 
 [![Jenkins build Status](http://home.nabla.mobi:8381/job/nabla-cpp-interview-microsoft-cmake/badge/icon)](http://home.nabla.mobi:8381/job/nabla-cpp-interview-microsoft-cmake/)
 [![Travis Build Status](https://travis-ci.org/AlbanAndrieu/nabla-cpp.svg?branch=master)](https://travis-ci.org/AlbanAndrieu/nabla-cpp)
-
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=MICROSOFT%3Amaster&metric=alert_status)](https://sonarcloud.io/dashboard/index/MICROSOFT%3Amaster)
+ 
 ## How to run it
 
 ### Install tools
