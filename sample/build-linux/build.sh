@@ -252,16 +252,16 @@ if [[ "${CHECK_FORMATTING}" == "true" ]]; then
     $PROJECT_SRC/cpplint.sh
 
     # Find non-ASCII characters in headers
-    hpps=$(find ../.. -name \*\.h)
-    cpps=$(find ../.. -name \*\.cpp)
+    hpps=$(find $PROJECT_SRC/sample/microsoft/src -name \*\.h)
+    cpps=$(find $PROJECT_SRC/sample/microsoft/src -name \*\.cpp)
     echo -e "${magenta} pcregrep --color='auto' -n \"[\x80-\xFF]\" ${hpps} ${cpps} ${NC}"
     pcregrep --color='auto' -n "[\x80-\xFF]" ${hpps} ${cpps}
     if [[ $? -ne 1 ]]; then exit 1; fi
     # F001: Source files should not use the '\r' (CR) character
     # L001: No trailing whitespace at the end of lines
     # L002: Don't use tab characters
-    echo -e "${magenta} find ../.. -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error ${hpps} ${cpps} ${NC}"
-    find ../.. -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error
+    echo -e "${magenta} find $PROJECT_SRC/sample/microsoft/src -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error ${hpps} ${cpps} ${NC}"
+    find $PROJECT_SRC/sample/microsoft/src -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error
 fi
 
 echo "http://192.168.0.28/cdash/user.php"
