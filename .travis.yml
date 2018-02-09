@@ -32,6 +32,14 @@ env:
 #      - libboost-filesystem-dev
 #    sources: &sources
 #      - ubuntu-toolchain-r-test
+addons:
+  sonarcloud:
+    organization: "albanandrieu-github"
+    token:
+      secure: "m3pCsPSu3M39JP+8f+WALyDOxRpq2PJERIuyvK/XKVwyvC4hNT/SLIKQayLCAgPzYSEeqRchORr2Y8wKrRHMblfZtZu9XKVdv1cvBe26NHjKZy7xakuvi/7kvKI/Yu22DAcE1a6mBz1XC5WPUiRIm+vm3X4VzWBV6/Y+ptst6o8="
+    branches:
+      - master
+      - develop
 
 cache:
   directories:
@@ -53,7 +61,8 @@ script:
   - make
   - make CTEST_OUTPUT_ON_FAILURE=1 test
   - make package
-
+  - sonar-scanner
+  
 matrix:
   include:
     #- compiler: gcc
