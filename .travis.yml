@@ -19,7 +19,7 @@ env:
     - PROJECT_SRC="$TRAVIS_BUILD_DIR"
     - WORKSPACE="$TRAVIS_BUILD_DIR"
     - SONAR_CMD=""
-    - SONARQUBE_SKIPPED=true
+#    - SONARQUBE_SKIPPED=true
     - MAKE=make
     - ARCH=linux
 
@@ -63,7 +63,7 @@ script:
   - make
   - make CTEST_OUTPUT_ON_FAILURE=1 test
   - make package
-  - sonar-scanner
+#  - sonar-scanner
 
 services:
   - docker
