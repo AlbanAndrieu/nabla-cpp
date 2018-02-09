@@ -53,3 +53,10 @@ file /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.22
 #readelf -a -W /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.22
 readelf -a -W target/lib/x86Linux/debug64/shared/libmain_library.so
 ```
+
+### Quality
+
+```
+pylint --rcfile=.pylintrc SConstruct
+pylint --rcfile=.pylintrc *.py
+```
