@@ -3,29 +3,79 @@
 
 source ./step-0-color.sh
 
+# shellcheck disable=SC2154
 echo -e "${yellow} ${bold} WELCOME ${nabla_logo} ${NC}"
 
+# shellcheck disable=SC2154
 echo -e "${ltgray} HOSTNAME : ${HOSTNAME} ${NC}"
+# shellcheck disable=SC2154
 echo -e "${cyan} SHELL : ${SHELL} ${NC}"
 echo -e "${cyan} TERM : ${TERM} ${NC}"
 echo -e "${cyan} HOME : ${HOME} ${NC}"
 echo -e "${cyan} USER : ${USER} ${NC}"
+# shellcheck disable=SC2154
 echo -e "${blue} PATH : ${PATH} ${NC}"
 
-echo -e "${green} SCONS : ${SCONS} ${NC}"
-echo -e "${green} SCONS_OPTS : ${SCONS_OPTS} ${NC}"
+# shellcheck disable=SC2154
 echo -e "${green} ARCH : ${ARCH} ${NC}"
 echo -e "${green} WORKSPACE_SUFFIX : ${WORKSPACE_SUFFIX} ${NC}"
 echo -e "${green} GIT_BRANCH_NAME : ${GIT_BRANCH_NAME} ${NC}"
 echo -e "${green} GIT_BRANCH : ${GIT_BRANCH} ${NC}"
 echo -e "${green} GIT_COMMIT : ${GIT_COMMIT} ${NC}"
 
+# shellcheck disable=SC2154
 echo -e "${magenta} ${underline}PARAMETERS ${NC}"
+
+case "$OSTYPE" in
+  linux*)   SYSTEM=LINUX;;
+  darwin*)  SYSTEM=OSX;;
+  win*)     SYSTEM=Windows;;
+  cygwin*)  SYSTEM=Cygwin;;
+  msys*)    SYSTEM=MSYS;;
+  bsd*)     SYSTEM=BSD;;
+  solaris*) SYSTEM=SOLARIS;;
+  *)        SYSTEM=UNKNOWN;;
+esac
+echo "SYSTEM : ${SYSTEM}"
+
+if [ -f /etc/os-release ]; then
+    # freedesktop.org and systemd
+    . /etc/os-release
+    OS=$NAME
+    VER=$VERSION_ID
+elif type lsb_release >/dev/null 2>&1; then
+    # linuxbase.org
+    OS=$(lsb_release -si)
+    VER=$(lsb_release -sr)
+elif [ -f /etc/lsb-release ]; then
+    # For some versions of Debian/Ubuntu without lsb_release command
+    . /etc/lsb-release
+    OS=$DISTRIB_ID
+    VER=$DISTRIB_RELEASE
+elif [ -f /etc/debian_version ]; then
+    # Older Debian/Ubuntu/etc.
+    OS=Debian
+    VER=$(cat /etc/debian_version)
+elif [ -f /etc/SuSe-release ]; then
+    # Older SuSE/etc.
+    ...
+elif [ -f /etc/redhat-release ]; then
+    # Older Red Hat, CentOS, etc.
+    ...
+else
+    # Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
+    OS=$(uname -s)
+    VER=$(uname -r)
+fi
+echo "OS : ${OS}"
+echo "VER : ${VER}"
 
 #DRY_RUN is used on UAT in order to avoid TAGING or DEPLOYING to production
 if [ -n "${DRY_RUN}" ]; then
-  echo -e "${green} DRY_RUN is defined ${happy_smiley} ${NC}"
+  # shellcheck disable=SC2154
+  echo -e "${green} DRY_RUN is defined ${happy_smiley} : ${DRY_RUN} ${NC}"
 else
+  # shellcheck disable=SC2154
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : DRY_RUN, please override ${NC}"
 fi
 
@@ -81,7 +131,7 @@ fi
 #fi
 
 if [ -n "${WORKSPACE_SUFFIX}" ]; then
-  echo -e "${green} WORKSPACE_SUFFIX is defined ${happy_smiley} ${NC}"
+  echo -e "${green} WORKSPACE_SUFFIX is defined ${happy_smiley} : ${WORKSPACE_SUFFIX} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE_SUFFIX, use default one ${NC}"
   export WORKSPACE_SUFFIX="CMR"
@@ -178,35 +228,35 @@ else
 fi
 
 if [ -n "${ANSIBLE_CMD}" ]; then
-  echo -e "${green} ANSIBLE_CMD is defined ${happy_smiley} ${NC}"
+  echo -e "${green} ANSIBLE_CMD is defined ${happy_smiley} : ${ANSIBLE_CMD} ${NC}"
 else
-  echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_CMD, use the default one ${NC}"
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_CMD, use the default one ${NC}"
   export ANSIBLE_CMD="/usr/local/bin/ansible"
 fi
 
 if [ -n "${ANSIBLE_CMBD_CMD}" ]; then
-  echo -e "${green} ANSIBLE_CMBD_CMD is defined ${happy_smiley} ${NC}"
+  echo -e "${green} ANSIBLE_CMBD_CMD is defined ${happy_smiley} : ${ANSIBLE_CMBD_CMD} ${NC}"
 else
-  echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_CMBD_CMD, use the default one ${NC}"
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_CMBD_CMD, use the default one ${NC}"
   export ANSIBLE_CMBD_CMD="/usr/local/bin/ansible-cmdb"
 fi
 
 if [ -n "${ANSIBLE_GALAXY_CMD}" ]; then
-  echo -e "${green} ANSIBLE_GALAXY_CMD is defined ${happy_smiley} ${NC}"
+  echo -e "${green} ANSIBLE_GALAXY_CMD is defined ${happy_smiley} : ${ANSIBLE_GALAXY_CMD} ${NC}"
 else
-  echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_GALAXY_CMD, use the default one ${NC}"
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_GALAXY_CMD, use the default one ${NC}"
   export ANSIBLE_GALAXY_CMD="/usr/local/bin/ansible-galaxy"
 fi
 
 if [ -n "${ANSIBLE_PLAYBOOK_CMD}" ]; then
-  echo -e "${green} ANSIBLE_PLAYBOOK_CMD is defined ${happy_smiley} ${NC}"
+  echo -e "${green} ANSIBLE_PLAYBOOK_CMD is defined ${happy_smiley} : ${ANSIBLE_PLAYBOOK_CMD} ${NC}"
 else
-  echo -e "${red} \u00BB Undefined build parameter ${head_skull} : ANSIBLE_PLAYBOOK_CMD, use the default one ${NC}"
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_PLAYBOOK_CMD, use the default one ${NC}"
   export ANSIBLE_PLAYBOOK_CMD="/usr/local/bin/ansible-playbook"
 fi
 
 if [ -n "${SONAR_PROCESSOR}" ]; then
-  echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} ${NC}"
+  echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} : ${SONAR_PROCESSOR} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
   SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g')
@@ -227,9 +277,10 @@ else
 fi
 
 if [ -n "${SONAR_CMD}" ]; then
-  echo -e "${green} SONAR_CMD is defined ${happy_smiley} ${NC}"
+  echo -e "${green} SONAR_CMD is defined ${happy_smiley} : ${SONAR_CMD} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
+  echo -e "${magenta} ${double_arrow} ${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} ? ${NC}"
   if [ -d "${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR}" ]; then
     SONAR_CMD="${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
   fi
@@ -238,7 +289,7 @@ else
 fi
 
 if [ -n "${MAKE}" ]; then
-  echo -e "${green} MAKE is defined ${happy_smiley} ${NC}"
+  echo -e "${green} MAKE is defined ${happy_smiley} : ${MAKE} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MAKE, use default one ${NC}"
   if [ "$(uname -s)" == "Linux" ]; then
@@ -250,10 +301,12 @@ else
 fi
 
 if [ -n "${SCONS}" ]; then
-  echo -e "${green} SCONS is defined ${happy_smiley} ${NC}"
+  echo -e "${green} SCONS is defined ${happy_smiley} : ${SCONS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS, use default one ${NC}"
   if [ "$(uname -s)" == "SunOS" ]; then
+    SCONS="/usr/local/bin/scons"
+  elif [ "$(uname -s)" == "Darwin" ]; then
     SCONS="/usr/local/bin/scons"
   else
     SCONS="/usr/bin/python2.7 /usr/bin/scons"
@@ -262,7 +315,7 @@ else
 fi
 
 if [ -n "${SCONS_OPTS}" ]; then
-  echo -e "${green} SCONS_OPTS is defined ${happy_smiley} ${NC}"
+  echo -e "${green} SCONS_OPTS is defined ${happy_smiley} : ${SCONS_OPTS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
 
@@ -280,7 +333,7 @@ else
 fi
 
 if [ -n "${GIT_CMD}" ]; then
-  echo -e "${green} GIT_CMD is defined ${happy_smiley} ${NC}"
+  echo -e "${green} GIT_CMD is defined ${happy_smiley} : ${GIT_CMD} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : GIT_CMD, use the default one ${NC}"
   GIT_CMD="/usr/bin/git"
@@ -298,8 +351,16 @@ else
   export GIT_AUTHOR_EMAIL
 fi
 
+if [ -n "${SONAR_BRANCH}" -o "${SONAR_BRANCH}" == "null" ]; then
+  echo -e "${green} SONAR_BRANCH is defined ${happy_smiley} : ${SONAR_BRANCH} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_BRANCH, use the default one ${NC}"
+  SONAR_BRANCH="master"
+  export SONAR_BRANCH
+fi
+
 if [ -n "${TAR}" ]; then
-  echo -e "${green} TAR is defined ${happy_smiley} ${NC}"
+  echo -e "${green} TAR is defined ${happy_smiley} : ${TAR} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TAR, use default one ${NC}"
   if [ "$(uname -s)" == "SunOS" ]; then
@@ -310,7 +371,7 @@ else
     TAR="/usr/bin/tar"
   elif [ "$(uname -s)" == "Linux" ]; then
     TAR="tar"
-  elif [ "$(echo $(uname -s) | cut -c 1-7)" == "MSYS_NT" ]; then
+  elif [ "$(uname -s | cut -c 1-7)" == "MSYS_NT" ]; then
     TAR="zip"
   else
     TAR="7z"
@@ -319,7 +380,7 @@ else
 fi
 
 if [ -n "${WGET}" ]; then
-  echo -e "${green} WGET is defined ${happy_smiley} ${NC}"
+  echo -e "${green} WGET is defined ${happy_smiley} : ${WGET} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WGET, use default one ${NC}"
   if [ "$(uname -s)" == "SunOS" ]; then
@@ -328,7 +389,7 @@ else
     WGET="/opt/local/bin/wget"
   elif [ "$(uname -s)" == "Linux" ]; then
     WGET="wget"
-  elif [ "$(echo $(uname -s) | cut -c 1-7)" == "MSYS_NT" ]; then
+  elif [ "$(uname -s | cut -c 1-7)" == "MSYS_NT" ]; then
     WGET="wget"
   else
     WGET="wget"
@@ -336,8 +397,42 @@ else
   export WGET
 fi
 
+if [ -n "${WGET_OPTIONS}" ]; then
+  echo -e "${green} WGET_OPTIONS is defined ${happy_smiley} : ${WGET_OPTIONS} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WGET_OPTIONS, use default one ${NC}"
+  WGET_OPTIONS="--no-check-certificate"
+  export WGET_OPTIONS
+fi
+
+if [ -n "${CURL}" ]; then
+  echo -e "${green} CURL is defined ${happy_smiley} : ${CURL} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CURL, use default one ${NC}"
+  if [ "$(uname -s)" == "SunOS" ]; then
+    WGET="/usr/local/bin/curl"
+  elif [ "$(uname -s)" == "Darwin" ]; then
+    WGET="/opt/local/bin/curl"
+  elif [ "$(uname -s)" == "Linux" ]; then
+    WGET="/usr/bin/curl"
+  elif [ "$(uname -s | cut -c 1-7)" == "MSYS_NT" ]; then
+    WGET="curl"
+  else
+    WGET="curl"
+  fi
+  export CURL
+fi
+
+if [ -n "${CURL_OPTIONS}" ]; then
+  echo -e "${green} CURL_OPTIONS is defined ${happy_smiley} : ${CURL_OPTIONS} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CURL_OPTIONS, use default one ${NC}"
+  CURL_OPTIONS="-k"
+  export CURL_OPTIONS
+fi
+
 if [ -n "${MD5SUM}" ]; then
-  echo -e "${green} MD5SUM is defined ${happy_smiley} ${NC}"
+  echo -e "${green} MD5SUM is defined ${happy_smiley} : ${MD5SUM} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MD5SUM, use default one ${NC}"
   if [ "$(uname -s)" == "SunOS" ]; then
@@ -346,8 +441,8 @@ else
     MD5SUM="/usr/local/bin/md5sum"
   elif [ "$(uname -s)" == "Linux" ]; then
     MD5SUM="md5sum"
-  elif [ "$(echo $(uname -s) | cut -c 1-7)" == "MSYS_NT" ]; then
-    WGET="md5sum"
+  elif [ "$(uname -s | cut -c 1-7)" == "MSYS_NT" ]; then
+    MD5SUM="md5sum"
   else
     MD5SUM="md5sum"
   fi
@@ -355,7 +450,7 @@ else
 fi
 
 if [ -n "${TIBCO_HOME}" ]; then
-  echo -e "${green} TIBCO_HOME is defined ${happy_smiley} ${NC}"
+  echo -e "${green} TIBCO_HOME is defined ${happy_smiley} : ${TIBCO_HOME} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBCO_HOME, use default one ${NC}"
   if [ "$(uname -s)" == "Linux" ]; then
@@ -367,7 +462,7 @@ else
 fi
 
 if [ -n "${TIBRV_VERSION}" ]; then
-  echo -e "${green} TIBRV_VERSION is defined ${happy_smiley} ${NC}"
+  echo -e "${green} TIBRV_VERSION is defined ${happy_smiley} : ${TIBRV_VERSION} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBRV_VERSION, use default one ${NC}"
   TIBRV_VERSION="8.4"
@@ -375,7 +470,7 @@ else
 fi
 
 if [ -n "${TIBRV_HOME}" ]; then
-  echo -e "${green} TIBRV_HOME is defined ${happy_smiley} ${NC}"
+  echo -e "${green} TIBRV_HOME is defined ${happy_smiley} : ${TIBRV_HOME} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBRV_HOME, use default one ${NC}"
   if [ "$(uname -s)" == "Linux" ]; then
@@ -391,15 +486,15 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TIBRV_HOME/lib
 #========================================= JAVA
 
 if [ -n "${JAVA_SSL_OPTS}" ]; then
-  echo -e "${green} JAVA_SSL_OPTS is defined ${happy_smiley} ${NC}"
+  echo -e "${green} JAVA_SSL_OPTS is defined ${happy_smiley} : ${JAVA_SSL_OPTS} ${NC}"
 else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JAVA_HOME, please override ${NC}"
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JAVA_SSL_OPTS, please override ${NC}"
   #JAVA_SSL_OPTS="-Djavax.net.ssl.trustStore=/usr/local/share/ca-certificates/ca.crt"
   #export JAVA_SSL_OPTS
 fi
 
 if [ -n "${JAVA_TOOL_OPTIONS}" ]; then
-  echo -e "${green} JAVA_TOOL_OPTIONS is defined ${happy_smiley} ${NC}"
+  echo -e "${green} JAVA_TOOL_OPTIONS is defined ${happy_smiley} : ${JAVA_TOOL_OPTIONS} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JAVA_TOOL_OPTIONS, please override ${NC}"
   #JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
@@ -407,15 +502,24 @@ else
 fi
 
 if [ -n "${JAVA_HOME}" ]; then
-  echo -e "${green} JAVA_HOME is defined ${happy_smiley} ${NC}"
+  echo -e "${green} JAVA_HOME is defined ${happy_smiley} : ${JAVA_HOME} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JAVA_HOME, use the default one ${NC}"
-  JAVA_HOME=/usr/lib/jvm/java-8-oracle/
+  JAVA_HOME="/usr"
   if [ "$(uname -s)" == "SunOS" ]; then
-    JAVA_HOME=/usr/jdk/instances/jdk1.8.0_131/
+    JAVA_HOME="/usr/jdk/instances/jdk1.8.0_131"
+  elif [ "$(uname -s)" == "Darwin" ]; then
+    JAVA_HOME=""
+  fi
+  
+  if [[ -d /kgr-mvn/jdk ]]; then
+    JAVA_HOME="/kgr-mvn/jdk"
   fi
   if [[ -d /dpool/jdk ]]; then
-    JAVA_HOME=/dpool/jdk
+    JAVA_HOME="/dpool/jdk"
+  fi
+  if [[ -d /usr/lib/jvm/java-8-oracle ]]; then
+    JAVA_HOME="/usr/lib/jvm/java-8-oracle"
   fi
   export JAVA_HOME
 fi
@@ -425,8 +529,28 @@ if [ "$(uname -s)" == "SunOS" ]; then
   export PATH
 fi
 
+if [ -n "${MAVEN_PATH}" ]; then
+  echo -e "${green} MAVEN_PATH is defined ${happy_smiley} : ${MAVEN_PATH} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MAVEN_PATH, use the default one ${NC}"
+  MAVEN_PATH="/usr/local/apache-maven-3.2.1"
+  export MAVEN_PATH
+fi
+
+if [ -n "${MAVEN_OPTS}" ]; then
+  echo -e "${green} MAVEN_OPTS is defined ${happy_smiley} : ${MAVEN_OPTS} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MAVEN_OPTS, use the default one ${NC}"
+  #MAVEN_OPTS="-XX:MaxPermSize=512m"
+  MAVEN_OPTS="-d64 -Xmx3072m -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.log -XX:+HeapDumpOnOutOfMemoryError -Dsun.zip.disableMemoryMapping=true -Djava.io.tmpdir=${WORKSPACE}/target/tmp"
+  export MAVEN_OPTS
+fi
+
+#export PATH="${JAVA_HOME}/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/kgr/dev/kgr_maven/nexus/bin/jsw/linux-x86-64:/kgr-mvn/hudson/etc/init.d:/home/kgr_mvn/bin"
+export M2_HOME=""
+
 if [ -n "${RELEASE_VERSION}" ]; then
-  echo -e "${green} RELEASE_VERSION is defined ${happy_smiley} ${NC}"
+  echo -e "${green} RELEASE_VERSION is defined ${happy_smiley} : ${RELEASE_VERSION} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : RELEASE_VERSION, use the default one ${NC}"
   RELEASE_VERSION="1.0.0"
@@ -434,30 +558,22 @@ else
 fi
 
 if [ -n "${MVN_RELEASE_VERSION}" ]; then
-  echo -e "${green} MVN_RELEASE_VERSION is defined ${happy_smiley} ${NC}"
+  echo -e "${green} MVN_RELEASE_VERSION is defined ${happy_smiley} : ${MVN_RELEASE_VERSION} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MVN_RELEASE_VERSION, use the default one ${NC}"
   MVN_RELEASE_VERSION=${RELEASE_VERSION}
   export MVN_RELEASE_VERSION
 fi
 
-if [ -n "${ZAP_PORT}" ]; then
-  echo -e "${green} ZAP_PORT is defined ${happy_smiley} ${NC}"
-else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ZAP_PORT, use the default one ${NC}"
-  ZAP_PORT=8090
-  export ZAP_PORT
-fi
-
-if [[ -n "${HTTP_PROTOCOL}" ]]; then
-  echo -e "${green} HTTP_PROTOCOL is defined ${happy_smiley} ${NC}"
+if [ -n "${HTTP_PROTOCOL}" ]; then
+  echo -e "${green} HTTP_PROTOCOL is defined ${happy_smiley} : ${HTTP_PROTOCOL} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : HTTP_PROTOCOL, use the default one ${NC}"
   export HTTP_PROTOCOL="https://"
 fi
 
 if [ -n "${TARGET_PROJECT}" ]; then
-  echo -e "${green} TARGET_PROJECT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} TARGET_PROJECT is defined ${happy_smiley} : ${TARGET_PROJECT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_PROJECT, use the default one ${NC}"
   TARGET_PROJECT="${JOB_NAME}"
@@ -465,11 +581,18 @@ else
 fi
 
 if [ -n "${TARGET_TAG}" ]; then
-  echo -e "${green} TARGET_TAG is defined ${happy_smiley} ${NC}"
+  echo -e "${green} TARGET_TAG is defined ${happy_smiley} ; ${TARGET_TAG} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_TAG, use the default one ${NC}"
   export TARGET_TAG="LATEST_SUCCESSFULL"
   #export TARGET_TAG="1.7.0.0_1"
+fi
+
+if [ -n "${TARGET_USER}" ]; then
+  echo -e "${green} TARGET_USER is defined ${happy_smiley} : ${TARGET_USER} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_USER, use the default one ${NC}"
+  export TARGET_USER="jenkins"
 fi
 
 if [ -n "${TARGET_SERVER}" ]; then
@@ -502,7 +625,7 @@ else
 fi
 
 if [ -n "${SERVER_CONTEXT}" ]; then
-  echo -e "${green} SERVER_URL is defined ${happy_smiley} ${NC}"
+  echo -e "${green} SERVER_URL is defined ${happy_smiley} : ${SERVER_CONTEXT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SERVER_CONTEXT, use the default one ${NC}"
   SERVER_CONTEXT="/test"
@@ -510,7 +633,7 @@ else
 fi
 
 if [ -n "${SERVER_URL}" ]; then
-  echo -e "${green} SERVER_URL is defined ${happy_smiley} ${NC}"
+  echo -e "${green} SERVER_URL is defined ${happy_smiley} : ${SERVER_URL} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SERVER_URL, use the default one ${NC}"
   SERVER_URL=${HTTP_PROTOCOL}${SERVER_HOST}${SERVER_CONTEXT}
@@ -518,7 +641,7 @@ else
 fi
 
 if [ -n "${ZAP_PORT}" ]; then
-  echo -e "${green} ZAP_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} ZAP_PORT is defined ${happy_smiley} : ${ZAP_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ZAP_PORT, use the default one ${NC}"
   ZAP_PORT=8090
@@ -526,7 +649,7 @@ else
 fi
 
 if [ -n "${JBOSS_PORT}" ]; then
-  echo -e "${green} JBOSS_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} JBOSS_PORT is defined ${happy_smiley} : ${JBOSS_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JBOSS_PORT, use the default one ${NC}"
   JBOSS_PORT=8180
@@ -534,7 +657,7 @@ else
 fi
 
 if [ -n "${TOMCAT_PORT}" ]; then
-  echo -e "${green} TOMCAT_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} TOMCAT_PORT is defined ${happy_smiley} : ${TOMCAT_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TOMCAT_PORT, use the default one ${NC}"
   TOMCAT_PORT=8280
@@ -542,7 +665,7 @@ else
 fi
 
 if [ -n "${JETTY_PORT}" ]; then
-  echo -e "${green} JETTY_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} JETTY_PORT is defined ${happy_smiley} : ${JETTY_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JETTY_PORT, use the default one ${NC}"
   JETTY_PORT=9090
@@ -550,7 +673,7 @@ else
 fi
 
 if [ -n "${CARGO_RMI_PORT}" ]; then
-  echo -e "${green} CARGO_RMI_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} CARGO_RMI_PORT is defined ${happy_smiley} : ${CARGO_RMI_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_RMI_PORT, use the default one ${NC}"
   CARGO_RMI_PORT=44447
@@ -558,7 +681,7 @@ else
 fi
 
 if [ -n "${CARGO_RMI_REGISTRY_PORT}" ]; then
-  echo -e "${green} CARGO_RMI_REGISTRY_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} CARGO_RMI_REGISTRY_PORT is defined ${happy_smiley} : ${CARGO_RMI_REGISTRY_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_RMI_REGISTRY_PORT, use the default one ${NC}"
   CARGO_RMI_REGISTRY_PORT=1099
@@ -566,7 +689,7 @@ else
 fi
 
 if [ -n "${CARGO_HTTP_PORT}" ]; then
-  echo -e "${green} CARGO_HTTP_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} CARGO_HTTP_PORT is defined ${happy_smiley} : ${CARGO_HTTP_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_HTTP_PORT, use the default one ${NC}"
   CARGO_HTTP_PORT=8181
@@ -574,7 +697,7 @@ else
 fi
 
 if [ -n "${CARGO_TELNET_PORT}" ]; then
-  echo -e "${green} CARGO_TELNET_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} CARGO_TELNET_PORT is defined ${happy_smiley} : ${CARGO_TELNET_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_TELNET_PORT, use the default one ${NC}"
   CARGO_TELNET_PORT=8001
@@ -582,7 +705,7 @@ else
 fi
 
 if [ -n "${CARGO_SSH_PORT}" ]; then
-  echo -e "${green} CARGO_SSH_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} CARGO_SSH_PORT is defined ${happy_smiley} : ${CARGO_SSH_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_SSH_PORT, use the default one ${NC}"
   CARGO_SSH_PORT=8444
@@ -590,7 +713,7 @@ else
 fi
 
 if [ -n "${CARGO_AJP_PORT}" ]; then
-  echo -e "${green} CARGO_AJP_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} CARGO_AJP_PORT is defined ${happy_smiley} : ${CARGO_AJP_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_AJP_PORT, use the default one ${NC}"
   CARGO_AJP_PORT=9009
@@ -598,7 +721,7 @@ else
 fi
 
 if [ -n "${ECLIPSE_DEBUG_PORT}" ]; then
-  echo -e "${green} ECLIPSE_DEBUG_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} ECLIPSE_DEBUG_PORT is defined ${happy_smiley} : ${ECLIPSE_DEBUG_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ECLIPSE_DEBUG_PORT, use the default one ${NC}"
   ECLIPSE_DEBUG_PORT=2924
@@ -606,7 +729,7 @@ else
 fi
 
 if [ -n "${CARGO_DEBUG_PORT}" ]; then
-  echo -e "${green} CARGO_DEBUG_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} CARGO_DEBUG_PORT is defined ${happy_smiley} : ${CARGO_DEBUG_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_DEBUG_PORT, use the default one ${NC}"
   CARGO_DEBUG_PORT=5005
@@ -614,7 +737,7 @@ else
 fi
 
 if [ -n "${REDIS_PORT}" ]; then
-  echo -e "${green} REDIS_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} REDIS_PORT is defined ${happy_smiley} : ${REDIS_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : REDIS_PORT, use the default one ${NC}"
   REDIS_PORT=6379
@@ -622,7 +745,7 @@ else
 fi
 
 if [ -n "${H2_PORT}" ]; then
-  echo -e "${green} H2_PORT is defined ${happy_smiley} ${NC}"
+  echo -e "${green} H2_PORT is defined ${happy_smiley} : ${H2_PORT} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : H2_PORT, use the default one ${NC}"
   H2_PORT=5055
@@ -635,6 +758,7 @@ echo -e "${NC}"
 
 ./step-2-0-1-build-env-info.sh > "${ENV_FILENAME}"
 
+# shellcheck disable=SC2154
 echo -e "${black} ${blink} DONE ${NC}"
 
 #exit 0
