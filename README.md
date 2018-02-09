@@ -1,7 +1,8 @@
 # nabla-cpp
 A project that contains cpp code sample
 
-[![Build Status](http://home.nabla.mobi:8381/job/nabla-cpp-interview-microsoft-cmake/badge/icon)](http://home.nabla.mobi:8381/job/nabla-cpp-interview-microsoft-cmake/)
+[![Jenkins build Status](http://home.nabla.mobi:8381/job/nabla-cpp-interview-microsoft-cmake/badge/icon)](http://home.nabla.mobi:8381/job/nabla-cpp-interview-microsoft-cmake/)
+[![Travis Build Status](https://travis-ci.org/AlbanAndrieu/nabla-cpp.svg?branch=master)](https://travis-ci.org/AlbanAndrieu/nabla-cpp)
 
 ## How to run it
 
