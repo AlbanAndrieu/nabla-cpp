@@ -221,6 +221,25 @@ else
   fi
 fi
 
+if [ -n "${BITS}" ]; then
+  echo -e "${green} BITS is defined ${happy_smiley} : ${BITS} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : BITS, use default one ${NC}"
+  case $(uname -m) in
+  x86_64)
+      BITS=64
+      ;;
+  i*86)
+      BITS=32
+      ;;
+  *)
+      BITS="?"
+      ;;
+  esac
+  export BITS
+  #echo -e "${yellow} Override BITS ${BITS} upon you choice ${NC}"
+fi
+
 if [ -n "${COMPILER}" ]; then
   echo -e "${green} COMPILER is defined ${happy_smiley} : ${COMPILER} ${CC} ${CXX} ${NC}"
 else
@@ -343,8 +362,8 @@ else
   export GIT_CMD
 fi
 
-if [ -n "${GIT_AUTHOR_EMAIL}" ]; then
-  echo -e "${green} GIT_CMD is defined ${happy_smiley} ${NC}"
+if [ -n "${GIT_AUTHOR_EMAIL}" -o "${GIT_AUTHOR_EMAIL}" != "null" ]; then
+  echo -e "${green} GIT_AUTHOR_EMAIL is defined ${happy_smiley} : ${GIT_AUTHOR_EMAIL} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : GIT_AUTHOR_EMAIL, use the default one ${NC}"
   GIT_AUTHOR_EMAIL="alban.andrieu@free.fr"
@@ -510,10 +529,6 @@ else
     JAVA_HOME="/usr/jdk/instances/jdk1.8.0_131"
   elif [ "$(uname -s)" == "Darwin" ]; then
     JAVA_HOME=""
-  fi
-  
-  if [[ -d /kgr-mvn/jdk ]]; then
-    JAVA_HOME="/kgr-mvn/jdk"
   fi
   if [[ -d /dpool/jdk ]]; then
     JAVA_HOME="/dpool/jdk"
