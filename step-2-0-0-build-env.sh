@@ -94,6 +94,7 @@ fi
 if [ -z "$TMPDIR" ]; then
     TMPDIR="/var/tmp/"
     export TMPDIR
+    echo -e "${magenta} TMPDIR : ${TMPDIR} ${NC}"
 fi
 
 if [ -z "$SUNSTUDIO_HOME" ]; then
@@ -103,6 +104,7 @@ if [ -z "$SUNSTUDIO_HOME" ]; then
     #SUNSTUDIO_HOME="/rms/sunpro/sun-studio-12/SUNWspro"
     SUNSTUDIO_HOME="/opt/SUNWspro"
     export SUNSTUDIO_HOME
+    echo -e "${magenta} SUNSTUDIO_HOME : ${SUNSTUDIO_HOME} ${NC}"
   fi
 fi
 
@@ -135,6 +137,7 @@ if [ -n "${WORKSPACE_SUFFIX}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE_SUFFIX, use default one ${NC}"
   export WORKSPACE_SUFFIX="CMR"
+  echo -e "${magenta} WORKSPACE_SUFFIX : ${WORKSPACE_SUFFIX} ${NC}"
 fi
 
 if [ -n "${ARCH}" ]; then
@@ -179,6 +182,7 @@ else
     ARCH="$(uname -m)"
   fi
   export ARCH
+  echo -e "${magenta} ARCH : ${ARCH} ${NC}"
 fi
 
 if [ -n "${CC}" ]; then
@@ -198,6 +202,7 @@ else
       export CC="/usr/bin/gcc"
     fi
   fi
+  echo -e "${magenta} CC : ${CC} ${NC}"
 fi
 
 if [ -n "${CXX}" ]; then
@@ -219,6 +224,7 @@ else
     fi
     export COMPILER=${CXX}
   fi
+  echo -e "${magenta} COMPILER : ${COMPILER} ${NC}"
 fi
 
 if [ -n "${BITS}" ]; then
@@ -238,12 +244,33 @@ else
   esac
   export BITS
   #echo -e "${yellow} Override BITS ${BITS} upon you choice ${NC}"
+  echo -e "${magenta} BITS : ${BITS} ${NC}"
+fi
+
+if [ -n "${ENABLE_CLANG}" ]; then
+  echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+  export CC="/usr/bin/clang"
+  export CXX="/usr/bin/clang++"  
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+  if [ "$(uname -s)" == "SunOS" ]; then
+    export CC="cc"
+    export CXX="CC"
+  elif [ "$(uname -s)" == "Linux" ]; then
+    export CC="/usr/bin/gcc-6"
+    export CXX="/usr/bin/g++-6"
+  else  
+    export CC="/usr/bin/gcc"
+    export CXX="/usr/bin/g++"
+  fi
 fi
 
 if [ -n "${COMPILER}" ]; then
   echo -e "${green} COMPILER is defined ${happy_smiley} : ${COMPILER} ${CC} ${CXX} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : COMPILER, use default one ${NC}"
+  export COMPILER=${CXX}
+  echo -e "${magenta} COMPILER : ${COMPILER} ${NC}"
 fi
 
 if [ -n "${ANSIBLE_CMD}" ]; then
@@ -251,6 +278,7 @@ if [ -n "${ANSIBLE_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_CMD, use the default one ${NC}"
   export ANSIBLE_CMD="/usr/local/bin/ansible"
+  echo -e "${magenta} ANSIBLE_CMD : ${ANSIBLE_CMD} ${NC}"
 fi
 
 if [ -n "${ANSIBLE_CMBD_CMD}" ]; then
@@ -258,6 +286,7 @@ if [ -n "${ANSIBLE_CMBD_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_CMBD_CMD, use the default one ${NC}"
   export ANSIBLE_CMBD_CMD="/usr/local/bin/ansible-cmdb"
+  echo -e "${magenta} ANSIBLE_CMBD_CMD : ${ANSIBLE_CMBD_CMD} ${NC}"
 fi
 
 if [ -n "${ANSIBLE_GALAXY_CMD}" ]; then
@@ -265,6 +294,7 @@ if [ -n "${ANSIBLE_GALAXY_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_GALAXY_CMD, use the default one ${NC}"
   export ANSIBLE_GALAXY_CMD="/usr/local/bin/ansible-galaxy"
+  echo -e "${magenta} ANSIBLE_GALAXY_CMD : ${ANSIBLE_GALAXY_CMD} ${NC}"
 fi
 
 if [ -n "${ANSIBLE_PLAYBOOK_CMD}" ]; then
@@ -272,6 +302,7 @@ if [ -n "${ANSIBLE_PLAYBOOK_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ANSIBLE_PLAYBOOK_CMD, use the default one ${NC}"
   export ANSIBLE_PLAYBOOK_CMD="/usr/local/bin/ansible-playbook"
+  echo -e "${magenta} ANSIBLE_PLAYBOOK_CMD : ${ANSIBLE_PLAYBOOK_CMD} ${NC}"
 fi
 
 if [ -n "${SONAR_PROCESSOR}" ]; then
@@ -293,6 +324,7 @@ else
     esac
   fi
   export SONAR_PROCESSOR
+  echo -e "${magenta} SONAR_PROCESSOR : ${SONAR_PROCESSOR} ${NC}"
 fi
 
 if [ -n "${SONAR_CMD}" ]; then
@@ -304,7 +336,7 @@ else
     SONAR_CMD="${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
   fi
   export SONAR_CMD
-  echo -e "${cyan} ${double_arrow} ${SONAR_CMD} ${NC}"
+  echo -e "${magenta} MAKE : ${SONAR_CMD} ${NC}"
 fi
 
 if [ -n "${MAKE}" ]; then
@@ -317,6 +349,7 @@ else
     MAKE="make"
   fi
   export MAKE
+  echo -e "${magenta} MAKE : ${MAKE} ${NC}"
 fi
 
 if [ -n "${SCONS}" ]; then
@@ -331,6 +364,7 @@ else
     SCONS="/usr/bin/python2.7 /usr/bin/scons"
   fi
   export SCONS
+  echo -e "${magenta} SCONS : ${SCONS} ${NC}"
 fi
 
 if [ -n "${SCONS_OPTS}" ]; then
@@ -349,6 +383,7 @@ else
   #--debug=time,explain
   #count, duplicate, explain, findlibs, includes, memoizer, memory, objects, pdb, prepare, presub, stacktrace, time
   export SCONS_OPTS
+  echo -e "${magenta} SCONS_OPTS : ${SCONS_OPTS} ${NC}"
 fi
 
 if [ -n "${GIT_CMD}" ]; then
@@ -360,6 +395,7 @@ else
     GIT_CMD="/usr/local/bin/git"
   fi
   export GIT_CMD
+  echo -e "${magenta} GIT_CMD : ${GIT_CMD} ${NC}"
 fi
 
 if [ -n "${GIT_AUTHOR_EMAIL}" -o "${GIT_AUTHOR_EMAIL}" != "null" ]; then
@@ -368,6 +404,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : GIT_AUTHOR_EMAIL, use the default one ${NC}"
   GIT_AUTHOR_EMAIL="alban.andrieu@free.fr"
   export GIT_AUTHOR_EMAIL
+  echo -e "${magenta} GIT_AUTHOR_EMAIL : ${GIT_AUTHOR_EMAIL} ${NC}"
 fi
 
 if [ -n "${SONAR_BRANCH}" -o "${SONAR_BRANCH}" == "null" ]; then
@@ -376,6 +413,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_BRANCH, use the default one ${NC}"
   SONAR_BRANCH="master"
   export SONAR_BRANCH
+  echo -e "${magenta} SONAR_BRANCH : ${SONAR_BRANCH} ${NC}"
 fi
 
 if [ -n "${TAR}" ]; then
@@ -396,6 +434,7 @@ else
     TAR="7z"
   fi
   export TAR
+  echo -e "${magenta} TAR : ${TAR} ${NC}"
 fi
 
 if [ -n "${WGET}" ]; then
@@ -414,6 +453,7 @@ else
     WGET="wget"
   fi
   export WGET
+  echo -e "${magenta} WGET : ${WGET} ${NC}"
 fi
 
 if [ -n "${WGET_OPTIONS}" ]; then
@@ -422,6 +462,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WGET_OPTIONS, use default one ${NC}"
   WGET_OPTIONS="--no-check-certificate"
   export WGET_OPTIONS
+  echo -e "${magenta} WGET_OPTIONS : ${WGET_OPTIONS} ${NC}"
 fi
 
 if [ -n "${CURL}" ]; then
@@ -440,6 +481,7 @@ else
     WGET="curl"
   fi
   export CURL
+  echo -e "${magenta} CURL : ${CURL} ${NC}"
 fi
 
 if [ -n "${CURL_OPTIONS}" ]; then
@@ -448,6 +490,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CURL_OPTIONS, use default one ${NC}"
   CURL_OPTIONS="-k"
   export CURL_OPTIONS
+  echo -e "${magenta} CURL_OPTIONS : ${CURL_OPTIONS} ${NC}"
 fi
 
 if [ -n "${MD5SUM}" ]; then
@@ -466,6 +509,7 @@ else
     MD5SUM="md5sum"
   fi
   export MD5SUM
+  echo -e "${magenta} MD5SUM : ${MD5SUM} ${NC}"
 fi
 
 if [ -n "${TIBCO_HOME}" ]; then
@@ -478,6 +522,7 @@ else
     TIBCO_HOME=""
   fi
   export TIBCO_HOME
+  echo -e "${magenta} TIBCO_HOME : ${TIBCO_HOME} ${NC}"
 fi
 
 if [ -n "${TIBRV_VERSION}" ]; then
@@ -486,6 +531,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TIBRV_VERSION, use default one ${NC}"
   TIBRV_VERSION="8.4"
   export TIBRV_VERSION
+  echo -e "${magenta} TIBRV_VERSION : ${TIBRV_VERSION} ${NC}"
 fi
 
 if [ -n "${TIBRV_HOME}" ]; then
@@ -498,6 +544,7 @@ else
     TIBRV_HOME=""
   fi
   export TIBRV_HOME
+  echo -e "${magenta} TIBRV_HOME : ${TIBRV_HOME} ${NC}"
 fi
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TIBRV_HOME/lib
@@ -537,11 +584,13 @@ else
     JAVA_HOME="/usr/lib/jvm/java-8-oracle"
   fi
   export JAVA_HOME
+  echo -e "${magenta} JAVA_HOME : ${JAVA_HOME} ${NC}"
 fi
 
 if [ "$(uname -s)" == "SunOS" ]; then
   PATH=$JAVA_HOME/bin:$PATH;
   export PATH
+  echo -e "${magenta} PATH : ${PATH} ${NC}"
 fi
 
 if [ -n "${MAVEN_PATH}" ]; then
@@ -550,6 +599,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MAVEN_PATH, use the default one ${NC}"
   MAVEN_PATH="/usr/local/apache-maven-3.2.1"
   export MAVEN_PATH
+  echo -e "${magenta} MAVEN_PATH : ${MAVEN_PATH} ${NC}"
 fi
 
 if [ -n "${MAVEN_OPTS}" ]; then
@@ -559,6 +609,7 @@ else
   #MAVEN_OPTS="-XX:MaxPermSize=512m"
   MAVEN_OPTS="-d64 -Xmx3072m -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.log -XX:+HeapDumpOnOutOfMemoryError -Dsun.zip.disableMemoryMapping=true -Djava.io.tmpdir=${WORKSPACE}/target/tmp"
   export MAVEN_OPTS
+  echo -e "${magenta} MAVEN_OPTS : ${MAVEN_OPTS} ${NC}"
 fi
 
 #export PATH="${JAVA_HOME}/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/kgr/dev/kgr_maven/nexus/bin/jsw/linux-x86-64:/kgr-mvn/hudson/etc/init.d:/home/kgr_mvn/bin"
@@ -570,6 +621,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : RELEASE_VERSION, use the default one ${NC}"
   RELEASE_VERSION="1.0.0"
   export RELEASE_VERSION
+  echo -e "${magenta} RELEASE_VERSION : ${RELEASE_VERSION} ${NC}"
 fi
 
 if [ -n "${MVN_RELEASE_VERSION}" ]; then
@@ -578,6 +630,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : MVN_RELEASE_VERSION, use the default one ${NC}"
   MVN_RELEASE_VERSION=${RELEASE_VERSION}
   export MVN_RELEASE_VERSION
+  echo -e "${magenta} MVN_RELEASE_VERSION : ${MVN_RELEASE_VERSION} ${NC}"
 fi
 
 if [ -n "${HTTP_PROTOCOL}" ]; then
@@ -585,6 +638,7 @@ if [ -n "${HTTP_PROTOCOL}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : HTTP_PROTOCOL, use the default one ${NC}"
   export HTTP_PROTOCOL="https://"
+  echo -e "${magenta} HTTP_PROTOCOL : ${HTTP_PROTOCOL} ${NC}"
 fi
 
 if [ -n "${TARGET_PROJECT}" ]; then
@@ -593,6 +647,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_PROJECT, use the default one ${NC}"
   TARGET_PROJECT="${JOB_NAME}"
   export TARGET_PROJECT
+  echo -e "${magenta} TARGET_PROJECT : ${TARGET_PROJECT} ${NC}"
 fi
 
 if [ -n "${TARGET_TAG}" ]; then
@@ -601,6 +656,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_TAG, use the default one ${NC}"
   export TARGET_TAG="LATEST_SUCCESSFULL"
   #export TARGET_TAG="1.7.0.0_1"
+  echo -e "${magenta} TARGET_TAG : ${TARGET_TAG} ${NC}"
 fi
 
 if [ -n "${TARGET_USER}" ]; then
@@ -608,6 +664,7 @@ if [ -n "${TARGET_USER}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_USER, use the default one ${NC}"
   export TARGET_USER="jenkins"
+  echo -e "${magenta} TARGET_USER : ${TARGET_USER} ${NC}"
 fi
 
 if [ -n "${TARGET_SERVER}" ]; then
@@ -615,6 +672,7 @@ if [ -n "${TARGET_SERVER}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_SERVER, use the default one ${NC}"
   export TARGET_SERVER=nabla.freeboxos.fr
+  echo -e "${magenta} TARGET_SERVER : ${TARGET_SERVER} ${NC}"
 fi
 
 if [ -n "${TARGET_PORT}" ]; then
@@ -622,6 +680,7 @@ if [ -n "${TARGET_PORT}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_PORT, use the default one ${NC}"
   export TARGET_PORT=8280
+  echo -e "${magenta} TARGET_PORT : ${TARGET_PORT} ${NC}"
 fi
 
 if [ -n "${TARGET_URL}" ]; then
@@ -629,6 +688,7 @@ if [ -n "${TARGET_URL}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_URL, use the default one ${NC}"
   export TARGET_URL="visma/"
+  echo -e "${magenta} TARGET_URL : ${TARGET_URL} ${NC}"
 fi
 
 if [ -n "${SERVER_HOST}" ]; then
@@ -637,6 +697,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SERVER_HOST, use the default one ${NC}"
   SERVER_HOST="albandri"
   export SERVER_HOST
+  echo -e "${magenta} SERVER_HOST : ${SERVER_HOST} ${NC}"
 fi
 
 if [ -n "${SERVER_CONTEXT}" ]; then
@@ -645,6 +706,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SERVER_CONTEXT, use the default one ${NC}"
   SERVER_CONTEXT="/test"
   export SERVER_CONTEXT
+  echo -e "${magenta} SERVER_CONTEXT : ${SERVER_CONTEXT} ${NC}"
 fi
 
 if [ -n "${SERVER_URL}" ]; then
@@ -653,6 +715,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SERVER_URL, use the default one ${NC}"
   SERVER_URL=${HTTP_PROTOCOL}${SERVER_HOST}${SERVER_CONTEXT}
   export SERVER_URL
+  echo -e "${magenta} SERVER_URL : ${SERVER_URL} ${NC}"
 fi
 
 if [ -n "${ZAP_PORT}" ]; then
@@ -661,6 +724,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ZAP_PORT, use the default one ${NC}"
   ZAP_PORT=8090
   export ZAP_PORT
+  echo -e "${magenta} ZAP_PORT : ${ZAP_PORT} ${NC}"
 fi
 
 if [ -n "${JBOSS_PORT}" ]; then
@@ -669,6 +733,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JBOSS_PORT, use the default one ${NC}"
   JBOSS_PORT=8180
   export TOMCAT_PORT
+  echo -e "${magenta} TOMCAT_PORT : ${TOMCAT_PORT} ${NC}"
 fi
 
 if [ -n "${TOMCAT_PORT}" ]; then
@@ -677,6 +742,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TOMCAT_PORT, use the default one ${NC}"
   TOMCAT_PORT=8280
   export TOMCAT_PORT
+  echo -e "${magenta} TOMCAT_PORT : ${TOMCAT_PORT} ${NC}"
 fi
 
 if [ -n "${JETTY_PORT}" ]; then
@@ -685,6 +751,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : JETTY_PORT, use the default one ${NC}"
   JETTY_PORT=9090
   export JETTY_PORT
+  echo -e "${magenta} JETTY_PORT : ${JETTY_PORT} ${NC}"
 fi
 
 if [ -n "${CARGO_RMI_PORT}" ]; then
@@ -693,6 +760,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_RMI_PORT, use the default one ${NC}"
   CARGO_RMI_PORT=44447
   export CARGO_RMI_PORT
+  echo -e "${magenta} CARGO_RMI_PORT : ${CARGO_RMI_PORT} ${NC}"
 fi
 
 if [ -n "${CARGO_RMI_REGISTRY_PORT}" ]; then
@@ -701,6 +769,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_RMI_REGISTRY_PORT, use the default one ${NC}"
   CARGO_RMI_REGISTRY_PORT=1099
   export CARGO_RMI_REGISTRY_PORT
+  echo -e "${magenta} CARGO_RMI_REGISTRY_PORT : ${CARGO_RMI_REGISTRY_PORT} ${NC}"
 fi
 
 if [ -n "${CARGO_HTTP_PORT}" ]; then
@@ -709,6 +778,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_HTTP_PORT, use the default one ${NC}"
   CARGO_HTTP_PORT=8181
   export CARGO_HTTP_PORT
+  echo -e "${magenta} CARGO_HTTP_PORT : ${CARGO_HTTP_PORT} ${NC}"
 fi
 
 if [ -n "${CARGO_TELNET_PORT}" ]; then
@@ -717,6 +787,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_TELNET_PORT, use the default one ${NC}"
   CARGO_TELNET_PORT=8001
   export CARGO_TELNET_PORT
+  echo -e "${magenta} CARGO_TELNET_PORT : ${CARGO_TELNET_PORT} ${NC}"
 fi
 
 if [ -n "${CARGO_SSH_PORT}" ]; then
@@ -725,6 +796,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_SSH_PORT, use the default one ${NC}"
   CARGO_SSH_PORT=8444
   export CARGO_SSH_PORT
+  echo -e "${magenta} CARGO_SSH_PORT : ${CARGO_SSH_PORT} ${NC}"
 fi
 
 if [ -n "${CARGO_AJP_PORT}" ]; then
@@ -733,6 +805,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_AJP_PORT, use the default one ${NC}"
   CARGO_AJP_PORT=9009
   export CARGO_AJP_PORT
+  echo -e "${magenta} CARGO_AJP_PORT : ${CARGO_AJP_PORT} ${NC}"
 fi
 
 if [ -n "${ECLIPSE_DEBUG_PORT}" ]; then
@@ -741,6 +814,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ECLIPSE_DEBUG_PORT, use the default one ${NC}"
   ECLIPSE_DEBUG_PORT=2924
   export ECLIPSE_DEBUG_PORT
+  echo -e "${magenta} ECLIPSE_DEBUG_PORT : ${ECLIPSE_DEBUG_PORT} ${NC}"
 fi
 
 if [ -n "${CARGO_DEBUG_PORT}" ]; then
@@ -749,6 +823,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CARGO_DEBUG_PORT, use the default one ${NC}"
   CARGO_DEBUG_PORT=5005
   export CARGO_DEBUG_PORT
+  echo -e "${magenta} CARGO_DEBUG_PORT : ${CARGO_DEBUG_PORT} ${NC}"
 fi
 
 if [ -n "${REDIS_PORT}" ]; then
@@ -757,6 +832,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : REDIS_PORT, use the default one ${NC}"
   REDIS_PORT=6379
   export REDIS_PORT
+  echo -e "${magenta} REDIS_PORT : ${REDIS_PORT} ${NC}"
 fi
 
 if [ -n "${H2_PORT}" ]; then
@@ -765,6 +841,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : H2_PORT, use the default one ${NC}"
   H2_PORT=5055
   export H2_PORT
+  echo -e "${magenta} H2_PORT : ${H2_PORT} ${NC}"
 fi
 
 ENV_FILENAME="${WORKSPACE}/ENV_${ARCH}_VERSION.TXT"
