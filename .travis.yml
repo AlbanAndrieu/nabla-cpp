@@ -1,6 +1,6 @@
-# Copyright Louis Dionne 2013-2017
-# Distributed under the Boost Software License, Version 1.0.
-# (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
+# Copyright Alban Andrieu 2013-2017
+# Distributed under the GPL-3.0
+# (See accompanying file LICENSE.md)
 
 language: c++
 sudo: required
@@ -10,31 +10,41 @@ dist: trusty
 # from branches inside the repository with pr/, this avoids building both the
 # branch push _and_ the pull request.
 branches:
-  except: /pr\/.*/
+#  except: /pr\/.*/
+  only:
+  - master
 
 env:
   global:
     - PROJECT_SRC="$TRAVIS_BUILD_DIR"
     - WORKSPACE="$TRAVIS_BUILD_DIR"
     - SONAR_CMD=""
+#    - SONARQUBE_SKIPPED=true
     - MAKE=make
     - ARCH=linux
-#addons:
-#  apt:
-#    packages:
-#      - valgrind
-#      - libcppunit-dev
-#      - colormake
-#      - libxml2-dev
-#      - libxml2-utils
-#      - libboost-thread-dev
-#      - libboost-date-time-dev
-#      - libboost-filesystem-dev
-#    sources: &sources
-#      - ubuntu-toolchain-r-test
+
+addons:
+  apt:
+    packages:
+      - unzip
+      # Java8 Required for Sonar and SQLCL
+      - oracle-java8-installer
+      - oracle-java8-set-default      
+  sonarcloud:
+    organization: albanandrieu-github
+    token:
+      secure: "m3pCsPSu3M39JP+8f+WALyDOxRpq2PJERIuyvK/XKVwyvC4hNT/SLIKQayLCAgPzYSEeqRchORr2Y8wKrRHMblfZtZu9XKVdv1cvBe26NHjKZy7xakuvi/7kvKI/Yu22DAcE1a6mBz1XC5WPUiRIm+vm3X4VzWBV6/Y+ptst6o8="
+    branches:
+      - master
+      - develop
 
 cache:
+  pip: true
   directories:
+    - $HOME/.sonar/cache
+    - $HOME/.cache
+    - $HOME/.m2
+    - node_modules    
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.6.2
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.7.1
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.8.0
@@ -53,7 +63,11 @@ script:
   - make
   - make CTEST_OUTPUT_ON_FAILURE=1 test
   - make package
+#  - sonar-scanner
 
+services:
+  - docker
+  
 matrix:
   include:
     #- compiler: gcc
@@ -89,11 +103,11 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - cmake            
+            - cmake
             - colormake
             - libxml2-dev
             - libxml2-utils
-            - libcppunit-dev            
+            - libcppunit-dev
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
@@ -110,7 +124,7 @@ matrix:
             - colormake
             - libxml2-dev
             - libxml2-utils
-            - libcppunit-dev            
+            - libcppunit-dev
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
@@ -123,11 +137,11 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-5
-            - cmake            
+            - cmake
             - colormake
             - libxml2-dev
             - libxml2-utils
-            - libcppunit-dev            
+            - libcppunit-dev
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
@@ -140,11 +154,11 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-6
-            - cmake             
+            - cmake
             - colormake
             - libxml2-dev
             - libxml2-utils
-            - libcppunit-dev            
+            - libcppunit-dev
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
