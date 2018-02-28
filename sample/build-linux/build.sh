@@ -226,10 +226,10 @@ find ../.. -name '*.gcda'
 
 #xml
 echo -e "${magenta} gcovr --branches --xml-pretty -r . ${NC}"
-gcovr --branches --xml-pretty -r .
+sudo gcovr --branches --xml-pretty -r .
 #html
 echo -e "${magenta} gcovr --branches -r . --html --html-details -o gcovr-report.html ${NC}"
-gcovr --branches -r . --html --html-details -o gcovr-report.html
+sudo gcovr --branches -r . --html --html-details -o gcovr-report.html
 
 echo -e "${magenta} sudo perf record -g -- /usr/bin/git --version ${NC}"
 sudo perf record -g -- /usr/bin/git --version
