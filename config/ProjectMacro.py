@@ -14,6 +14,7 @@ import SCons.Scanner.IDL
 
 ######################################################
 
+
 def getEnvVariable(aVariableName, aDefaultValue):
     if aVariableName in os.environ:
         return os.environ[aVariableName]
@@ -211,17 +212,17 @@ def display_build_status(env):
     status, failures_message = build_status()
     if status == 'failed':
         if env['color']:
-            cprint("FAILED!!!!", 'red', attrs=['bold'], file=sys.stderr)	
+            cprint('FAILED!!!!', 'red', attrs=['bold'], file=sys.stderr)
         else:
             print 'FAILED!!!!'  # could display alert, ring bell, etc.
     elif status == 'ok':
         if env['color']:
-            print colored("Build succeeded.", 'green')
+            print colored('Build succeeded.', 'green')
         else:
             print 'Build succeeded.'
 
     if env['color']:
-        print colored("[Timestamp] FINISH SCONS AT %s" % time.strftime('%H:%M:%S'), 'red')
+        print colored('[Timestamp] FINISH SCONS AT %s' % time.strftime('%H:%M:%S'), 'red')
     else:
         print failures_message
 
@@ -233,6 +234,7 @@ def registerBuildFailuresAtExit(env):
 ##############################################################################
 # defined env verbosity
 
+
 def reduceBuildVerbosity(env):
     env['CCCOMSTR'] = 'Compiling $TARGET'
     env['CXXCOMSTR'] = 'Compiling $SOURCE'
@@ -241,6 +243,7 @@ def reduceBuildVerbosity(env):
 
 ################################################################
 # define the arch
+
 
 def getArch():
     thePlatform = platform.platform()

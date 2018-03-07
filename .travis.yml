@@ -29,7 +29,7 @@ addons:
       - unzip
       # Java8 Required for Sonar and SQLCL
       - oracle-java8-installer
-      - oracle-java8-set-default      
+      - oracle-java8-set-default
   sonarcloud:
     organization: albanandrieu-github
     token:
@@ -44,7 +44,7 @@ cache:
     - $HOME/.sonar/cache
     - $HOME/.cache
     - $HOME/.m2
-    - node_modules    
+    - node_modules
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.6.2
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.7.1
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.8.0
@@ -67,7 +67,7 @@ script:
 
 services:
   - docker
-  
+
 matrix:
   include:
     #- compiler: gcc

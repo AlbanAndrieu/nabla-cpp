@@ -19,7 +19,7 @@ echo "==============="
 echo "BUILD"
 call date /T && ECHO date succeeded!
 call time /T
-cd %project_dir%\ || ECHO command return code %ERRORLEVEL% 
+cd %project_dir%\ || ECHO command return code %ERRORLEVEL%
 echo "cd %project_dir%\"
 echo "call scons %SCONS_OPTS%"
 REM call scons %SCONS_OPTS% || EXIT /B 1
@@ -32,15 +32,15 @@ IF %ERRORLEVEL% NEQ 0 (
 call date /T
 call time /T
 
-if not exist %project_dir%\install\winnt\debug\bin\run_tests.exe ( 
+if not exist %project_dir%\install\winnt\debug\bin\run_tests.exe (
   echo "Build failure: install\winnt\debug\bin\run_tests.exe not found."
-  exit 1 
-) 
+  exit 1
+)
 
-if not exist %project_dir%\install\winnt\debug\bin\run_app.exe ( 
+if not exist %project_dir%\install\winnt\debug\bin\run_app.exe (
   echo "Build failure: install\winnt\debug\bin\run_app.exe not found."
-  exit 1 
-) 
+  exit 1
+)
 
 echo "==============="
 cd %project_dir%\install\winnt || EXIT /B 1
