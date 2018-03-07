@@ -110,7 +110,7 @@ if [ `uname -s` == "Linux" ]; then
 		echo -e "${magenta} iwyu_tool.py -p . ${NC}"
 		iwyu_tool.py -p .
 	fi
-	
+
 	if [ -f /usr/bin/iwyu_tool ]; then
 		echo -e "${magenta} iwyu_tool -p . ${NC}"
 		iwyu_tool -p .

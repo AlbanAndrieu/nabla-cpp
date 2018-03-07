@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 # SCons tool set-arch.py
 import os
-import sys
 import platform
+import sys
 
 import ProjectMacro
 import SCons.Tool.MSCommon.vc
+
 
 def generate(env, **kw):
 
     if env['color']:
         from termcolor import colored, cprint
-        cprint("COMPILING OPTIONS!", 'red', attrs=['bold'], file=sys.stderr)
+        cprint('COMPILING OPTIONS!', 'red', attrs=['bold'], file=sys.stderr)
 
     system = platform.system()
     machine = platform.machine()
@@ -154,9 +155,9 @@ def generate(env, **kw):
 
         # If not set, -l order on command lines matter
         env['LINKFLAGS'] = [
-        #    '-Wl,--no-as-needed',
-             '-Wl,--as-needed',
-             '-Wl,--no-allow-shlib-undefined',
+            #    '-Wl,--no-as-needed',
+            '-Wl,--as-needed',
+            '-Wl,--no-allow-shlib-undefined',
         ]
         if not env['use_asan']:
             env['LINKFLAGS'] += ['-Wl,--no-undefined']
@@ -239,25 +240,26 @@ def generate(env, **kw):
 
     if env['color']:
 
-        print colored("Platform :", 'magenta'), colored(platform.platform(), 'cyan')
-        print colored("System :", 'magenta'), colored(system, 'cyan')
-        print colored("Machine :", 'magenta'), colored(machine, 'cyan')
-        print colored("Dist :", 'magenta'), colored(dist, 'cyan')
-        print colored("Dist-Os :", 'magenta'), colored(dist[0], 'cyan')
+        print colored('Platform :', 'magenta'), colored(platform.platform(), 'cyan')
+        print colored('System :', 'magenta'), colored(system, 'cyan')
+        print colored('Machine :', 'magenta'), colored(machine, 'cyan')
+        print colored('Dist :', 'magenta'), colored(dist, 'cyan')
+        print colored('Dist-Os :', 'magenta'), colored(dist[0], 'cyan')
 
-        print colored("ENV TOOLS :", 'magenta'), colored(env['TOOLS'], 'cyan')
-        #print "dump whole env :", env.Dump()
+        print colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan')
+        # print "dump whole env :", env.Dump()
         if env['verbose']:
-            print colored("ENV ENV :", 'magenta'), colored(env['ENV'], 'cyan')
+            print colored('ENV ENV :', 'magenta'), colored(env['ENV'], 'cyan')
 
-        print colored("ENV TERM :", 'magenta'), colored(env['ENV']['TERM'] , 'cyan')
-        print colored("ENV PATH :", 'magenta'), colored(env['ENV']['PATH'], 'cyan')
-        print colored("ENV HOME :", 'magenta'), colored(env['ENV']['HOME'], 'cyan')
+        print colored('ENV TERM :', 'magenta'), colored(env['ENV']['TERM'], 'cyan')
+        print colored('ENV PATH :', 'magenta'), colored(env['ENV']['PATH'], 'cyan')
+        print colored('ENV HOME :', 'magenta'), colored(env['ENV']['HOME'], 'cyan')
 
-        print colored("CXXVERSION :", 'magenta'), colored(env['CXXVERSION'], 'cyan')
-        print colored("CC:", 'magenta'), colored(env['CC'], 'cyan')
-        print colored("CXX :", 'magenta'), colored(env['CXX'], 'cyan')
-        print colored("CCCOM :", 'magenta'), colored(env.subst('$CCCOM'), 'cyan')
+        print colored('CXXVERSION :', 'magenta'), colored(env['CXXVERSION'], 'cyan')
+        print colored('CC:', 'magenta'), colored(env['CC'], 'cyan')
+        print colored('CXX :', 'magenta'), colored(env['CXX'], 'cyan')
+        print colored('CCCOM :', 'magenta'), colored(env.subst('$CCCOM'), 'cyan')
+
 
 def exists(env):
     return 1

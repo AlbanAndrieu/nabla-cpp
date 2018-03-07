@@ -9,10 +9,15 @@ repos:
     -   id: check-case-conflict
     -   id: check-docstring-first
     -   id: check-executables-have-shebangs
+        exclude: >
+                  (?x)^(
+                      clean.bat|
+                      build.bat
+                  )$
     -   id: check-json
     -   id: check-xml
     -   id: check-yaml
-    -   id: check-symlinks    
+    -   id: check-symlinks
     -   id: debug-statements
     -   id: detect-private-key
         exclude: >

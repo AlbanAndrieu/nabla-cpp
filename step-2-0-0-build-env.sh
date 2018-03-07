@@ -250,7 +250,7 @@ fi
 if [ -n "${ENABLE_CLANG}" ]; then
   echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
   export CC="/usr/bin/clang"
-  export CXX="/usr/bin/clang++"  
+  export CXX="/usr/bin/clang++"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
   if [ "$(uname -s)" == "SunOS" ]; then
@@ -259,7 +259,7 @@ else
   elif [ "$(uname -s)" == "Linux" ]; then
     export CC="/usr/bin/gcc-6"
     export CXX="/usr/bin/g++-6"
-  else  
+  else
     export CC="/usr/bin/gcc"
     export CXX="/usr/bin/g++"
   fi
