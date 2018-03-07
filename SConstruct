@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
 #################
 # Scons build script
 ######################
@@ -190,7 +192,7 @@ if env['verbose'] and env['color']:
 if env['verbose'] and env['color']:
     print colored("nv['cache_path']:", 'magenta'), colored(env['cache_path'], 'cyan')
 CacheDir(env['cache_path']+ Arch)
-SConsignFile(DEV_BINARY_DIR + '/scons-signatures' + Arch)
+SConsignFile(os.path.join(DEV_BINARY_DIR, 'scons-signatures' + Arch))
 
 if env['opt'] == 'True':
     if env['color']:
@@ -406,12 +408,12 @@ env.AddMethod(mrproper, "MrProper")
 if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
     if env['color']:
         print colored("Cache/3rdparties cleaning STARTED:", 'blue')
-    shutil.rmtree(env['sandbox'] + '/3rdparties', ignore_errors=True)
-    shutil.rmtree(env['sandbox'] + '/nabla-1.2.3', ignore_errors=True)
-    shutil.rmtree(env['sandbox'] + '/target', ignore_errors=True)
-    shutil.rmtree(env['sandbox'] + '/install', ignore_errors=True)
-    shutil.rmtree(env['ENV']['WORKSPACE'] + '/../buildcache' + Arch, ignore_errors=True)
-    env.Execute("rm -Rf variables.py " + env['ENV']['WORKSPACE'] + "/download3rdparties-cache* scons-signatures-x86Linux.dblite *.tgz *.zip /tmp/*-kgr-buildinit/ " + env['ENV']['WORKSPACE'] + '/../buildcache' + Arch)
+    shutil.rmtree(os.path.join(env['sandbox'], '3rdparties'), ignore_errors=True)
+    shutil.rmtree(os.path.join(env['sandbox'], 'nabla-1.2.3'), ignore_errors=True)
+    shutil.rmtree(os.path.join(env['sandbox'], 'target'), ignore_errors=True)
+    shutil.rmtree(os.path.join(env['sandbox'],'install'), ignore_errors=True)
+    shutil.rmtree(os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch), ignore_errors=True)
+    env.Execute("rm -Rf variables.py " + os.path.join(env['ENV']['WORKSPACE'], "download3rdparties-cache*") + " " + "scons-signatures-x86Linux.dblite *.tgz *.zip" + " " + os.path.join(env['sandbox'], 'buildcache'  + Arch) + " " + os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch))
     if env['color']:
         print colored("Cache/3rdparties cleaning DONE:", 'green')
     SetOption("clean", 1)
@@ -421,11 +423,11 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COM
 if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
     if env['color']:
         print colored("Downloading 3rdparties STARTED:", 'blue')
-    target_dir = "3rdparties/" + Arch + "/nabla"
+    target_dir = os.path.join("3rdparties", Arch)
     from config import download3rdparties
-    shutil.rmtree(env['sandbox'] + '/3rdparties/' + Arch + '/nabla', ignore_errors=True)
+    shutil.rmtree(os.path.join(env['sandbox'], '3rdparties', Arch, 'nabla'), ignore_errors=True)
 
-    print ("python ./config/download3rdparties.py" + ' --arch=' + Arch  + ' --bom=' + env['bom']  + ' --third_parties_dir=3rdparties/' + target_dir + ' --color=' + 'True' if env['color'] else 'False')
+    print ('python ' + os.path.join('.', 'config', 'download3rdparties.py') + ' --arch=' + Arch + ' --bom=' + os.path.join(os.sep, env['sandbox'], env['bom'])  + ' --third_parties_dir=' + target_dir + ' --color=' + 'True' if env['color'] else 'False')
     if env['bom'] != '':
         download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '', 'True' if env['color'] else 'False')
     if env['color']:
