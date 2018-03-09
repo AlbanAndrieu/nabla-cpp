@@ -255,7 +255,7 @@ def getArch():
     elif thePlatform.startswith('CYGWIN'):
         theArch = 'cygwin'
     elif thePlatform.startswith('SunOS'):
-        if platform.machine() == 'sun4u':
+        if platform.machine() == 'sun4u' or platform.machine() == 'sun4v':
             theArch = 'sun4sol'
         elif platform.machine() == 'i86pc':
             theArch = 'x86sol'
