@@ -1,7 +1,9 @@
 #!/bin/bash
 #set -xv
 
-source ./step-0-color.sh
+script_dir="$( cd "$(dirname "$0")" ; pwd -P )"
+
+tput colors && source "$script_dir/step-0-color.sh"
 
 # shellcheck disable=SC2154
 echo -e "${yellow} ${bold} WELCOME ${nabla_logo} ${NC}"
@@ -183,6 +185,17 @@ else
   fi
   export ARCH
   echo -e "${magenta} ARCH : ${ARCH} ${NC}"
+fi
+
+if [ "${OS}" == "Debian" ]; then
+    echo -e "${green} CPP flags : ${NC}"
+
+	dpkg-buildflags
+	
+	#CPPFLAGS=$(dpkg-buildflags --get CPPFLAGS)
+	#CFLAGS=$(dpkg-buildflags --get CFLAGS)
+	#CXXFLAGS=$(dpkg-buildflags --get CXXFLAGS)
+	#LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
 if [ -n "${CC}" ]; then
