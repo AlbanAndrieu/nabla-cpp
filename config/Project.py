@@ -90,15 +90,18 @@ def generate(env, **kw):
         env['CCFLAGS'] = [
             '-pthread',
             '-g',
-            #'-Werror',
-            '-Wall',
+            #'-Werror', #Turns all warnings into errors.
+            '-Wall', #Turn on all warnings 
             '-fdiagnostics-show-option',  # sonar cxx
-            '-Wl,-z,relro',
+            '-Wl,-z,relro,now', #Full RELRO
             '-Wformat',
-            '-Wformat-security',
+            '-Wformat-security', #Warn about uses of format functions that represent possible security problems
             '-Wno-unused-parameter',
-            '-Wextra',
+            '-Wextra', #Turn on all extra warnings
+            '-Wconversion',
+            '-Wsign-conversion',
             '-Wpedantic',
+            #'-mmitigate-rop'
             #'-Wunreacheable-code',
             '-ansi',
             '-O3',
@@ -146,11 +149,14 @@ def generate(env, **kw):
         if env['gcc_version'] >= '4.8':
             env['CCFLAGS'] += [
                 '-D_FORTIFY_SOURCE=2',
-                '-fstack-protector',
+                #'-fstack-protector', # Gives warnings
+                '-fstack-protector-all', 
                 '-Wno-error=maybe-uninitialized',
                 '-Wno-unused-local-typedefs',
                 '-Wno-conversion-null',
                 '-Wno-invalid-offsetof',
+                #'-fmudflap', #http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
+                #'-pie -fPIE', # For ASLR                
             ]
 
         # If not set, -l order on command lines matter
@@ -158,6 +164,7 @@ def generate(env, **kw):
             #    '-Wl,--no-as-needed',
             '-Wl,--as-needed',
             '-Wl,--no-allow-shlib-undefined',
+
         ]
         if not env['use_asan']:
             env['LINKFLAGS'] += ['-Wl,--no-undefined']

@@ -54,20 +54,23 @@ rm -f compile_commands.json
 
 echo -e "${green} CMake ${NC}"
 
+if [ "${OS}" == "Debian" ]; then
+    echo -e "${green} CPP flags : ${NC}"
+
+	dpkg-buildflags
+	
+	#CPPFLAGS=$(dpkg-buildflags --get CPPFLAGS)
+	#CFLAGS=$(dpkg-buildflags --get CFLAGS)
+	#CXXFLAGS=$(dpkg-buildflags --get CXXFLAGS)
+	#LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
+fi
+
 #cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
 
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}
 #-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
-
-if [[ "${ENABLE_CLANG}" == "true" ]]; then
-    export CC="/usr/bin/clang"
-    export CXX="/usr/bin/clang++"
-else
-    export CC="/usr/bin/gcc-6"
-    export CXX="/usr/bin/g++-6"
-fi
 
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
 echo -e "${magenta} cmake -G\"Eclipse CDT4 - Unix Makefiles\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
