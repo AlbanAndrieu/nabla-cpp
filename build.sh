@@ -37,6 +37,12 @@ fi
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
+echo -e "${cyan} ${double_arrow} Python install ${NC}"
+
+#sudo pip3.6 freeze > requirements-current-3.6.txt
+#sudo pip3.6 install -r requirements-current-3.6.txt
+#/opt/ansible/env35/bin/pip install hacking
+
 echo "WORKSPACE ${WORKSPACE}"
 
 pwd
@@ -65,6 +71,31 @@ echo -e "${magenta} hardening-check target/bin/x86Linux/run_app ${NC}"
 hardening-check target/bin/x86Linux/run_app
 
 #complexity --histogram --score --thresh=3 `ls sample/microsoft/src/main/*/*.c`
+
+#See https://blog.sideci.com/about-style-guide-of-python-and-linter-tool-pep8-pyflakes-flake8-haking-pyling-7fdbe163079d
+echo -e "${green} Quality : python style check pep8/pycodestyle ${NC}"
+
+echo -e "${magenta} pycodestyle --first ./config/Project.py ${NC}"
+pycodestyle --first ./config/Project.py
+
+echo -e "${green} Quality : python logistic check pyflakes ${NC}"
+
+#echo -e "${magenta} pyflakes ./config/Project.py ${NC}"
+#pyflakes ./config/Project.py
+
+#Simply speaking flake8 is “the wrapper which verifies pep8, pyflakes and circular complexity “.
+echo -e "${magenta} flake8 ./config/Project.py ${NC}"
+flake8 ./config/Project.py
+
+echo -e "${green} Quality : python module check pylint ${NC}"
+
+echo -e "${magenta} pylint ./config/Project.py ${NC}"
+pylint ./config/Project.py
+
+echo -e "${green} Quality : python pep8/pycodestyle statistics ${NC}"
+
+echo -e "${magenta} pycodestyle --statistics -qq ./config/ ${NC}"
+pycodestyle --statistics -qq ./config/
 
 echo -e "${green} Quality : shellcheck ${NC}"
 
