@@ -29,14 +29,14 @@ echo -e "${green} GIT_COMMIT : ${GIT_COMMIT} ${NC}"
 echo -e "${magenta} ${underline}PARAMETERS ${NC}"
 
 case "$OSTYPE" in
-  linux*)   SYSTEM=LINUX;;
-  darwin*)  SYSTEM=OSX;;
-  win*)     SYSTEM=Windows;;
-  cygwin*)  SYSTEM=Cygwin;;
-  msys*)    SYSTEM=MSYS;;
-  bsd*)     SYSTEM=BSD;;
-  solaris*) SYSTEM=SOLARIS;;
-  *)        SYSTEM=UNKNOWN;;
+  linux*)   export SYSTEM=LINUX;;
+  darwin*)  export SYSTEM=OSX;;
+  win*)     export SYSTEM=Windows;;
+  cygwin*)  export SYSTEM=Cygwin;;
+  msys*)    export SYSTEM=MSYS;;
+  bsd*)     export SYSTEM=BSD;;
+  solaris*) export SYSTEM=SOLARIS;;
+  *)        export SYSTEM=UNKNOWN;;
 esac
 echo "SYSTEM : ${SYSTEM}"
 
@@ -116,15 +116,23 @@ if [ "$(uname -s)" == "SunOS" ]; then
     PATH=${SUNSTUDIO_HOME}/bin:${PATH}
   fi
   export PATH
+  echo -e "${magenta} PATH : ${PATH} ${NC}"  
 elif [ "$(uname -s)" == "Linux" ]; then
   #For RedHat add /usr/sbin
   PATH=${PATH}:/usr/sbin;
   export PATH
+  echo -e "${magenta} PATH : ${PATH} ${NC}"  
 fi
 
-if [ -z "$WORKSPACE" ]; then
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
+if [ -n "${WORKSPACE}" ]; then
+  if [ "${SYSTEM}" == "MSYS" -o "${SYSTEM}" == "Cygwin" ]; then
+      export WORKSPACE=`cygpath -u ${WORKSPACE}`
+  fi  
+  echo -e "${green} WORKSPACE is defined ${happy_smiley} : ${WORKSPACE} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE, use default one ${NC}"
   exit 1
+  #echo -e "${magenta} WORKSPACE : ${WORKSPACE} ${NC}"
 fi
 
 #if [ -n "${GIT_BRANCH_NAME}" ]; then
@@ -324,6 +332,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
   SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g')
   if [ "$(uname -s)" == "Linux" ]; then
+    SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g')  # x86_64 -> x86-64    
     case $(uname -m) in
     x86_64)
         SONAR_PROCESSOR=x86-64  # or AMD64 or Intel64 or whatever
@@ -335,6 +344,8 @@ else
         # leave ARCH as-is
         ;;
     esac
+  else  # [ "$(uname -s)" == "SunOS" ]; then # does not cover osx
+    SONAR_PROCESSOR=$(uname -m)  # i86pc
   fi
   export SONAR_PROCESSOR
   echo -e "${magenta} SONAR_PROCESSOR : ${SONAR_PROCESSOR} ${NC}"
@@ -627,6 +638,53 @@ fi
 
 #export PATH="${JAVA_HOME}/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/kgr/dev/kgr_maven/nexus/bin/jsw/linux-x86-64:/kgr-mvn/hudson/etc/init.d:/home/kgr_mvn/bin"
 export M2_HOME=""
+
+if [ -n "${PYTHON_MAJOR_VERSION}" ]; then
+  echo -e "${green} PYTHON_MAJOR_VERSION is defined ${happy_smiley} : ${PYTHON_MAJOR_VERSION} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PYTHON_MAJOR_VERSION, use the default one ${NC}"
+  export PYTHON_MAJOR_VERSION=3.5
+  echo -e "${magenta} PYTHON_MAJOR_VERSION : ${PYTHON_MAJOR_VERSION} ${NC}"
+fi
+
+if [ -n "${VIRTUALENV_PATH}" ]; then
+  echo -e "${green} VIRTUALENV_PATH is defined ${happy_smiley} : ${VIRTUALENV_PATH} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : VIRTUALENV_PATH, use the default one ${NC}"
+  export VIRTUALENV_PATH=/opt/ansible/env$(echo $PYTHON_MAJOR_VERSION | sed -r 's/\.//g')
+  #sudo virtualenv ${VIRTUALENV_PATH} -p {{PYTHON_EXE}}
+  #source ${VIRTUALENV_PATH}/bin/activate
+  echo -e "${magenta} VIRTUALENV_PATH : ${VIRTUALENV_PATH} ${NC}"
+fi
+
+if [ -n "${PYTHON_CMD}" ]; then
+  echo -e "${green} PYTHON_CMD is defined ${happy_smiley} : ${PYTHON_CMD} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PYTHON_CMD, use the default one ${NC}"
+  #/usr/local/bin/python3.5 for RedHat
+  #/usr/bin/python3.5 for Ubuntu
+  if [ "${OS}" == "Red Hat Enterprise Linux Server" ]; then
+    PYTHON_CMD="/usr/local/bin/python${PYTHON_MAJOR_VERSION}"
+  else
+    PYTHON_CMD="${VIRTUALENV_PATH}/bin/python${PYTHON_MAJOR_VERSION}"
+    #PYTHON_CMD="/usr/bin/python3.5"
+  fi
+  export PYTHON_CMD
+  echo -e "${magenta} PYTHON_CMD : ${PYTHON_CMD} ${NC}"
+fi
+
+if [ -n "${USE_SUDO}" ]; then
+  echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : USE_SUDO, use the default one ${NC}"
+  if [ "${OS}" == "Ubuntu" ]; then
+    USE_SUDO="sudo"
+  else
+    USE_SUDO=""
+  fi
+  export USE_SUDO
+  echo -e "${magenta} USE_SUDO : ${USE_SUDO} ${NC}"
+fi
 
 if [ -n "${RELEASE_VERSION}" ]; then
   echo -e "${green} RELEASE_VERSION is defined ${happy_smiley} : ${RELEASE_VERSION} ${NC}"

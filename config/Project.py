@@ -91,13 +91,14 @@ def generate(env, **kw):
             '-pthread',
             '-g',
             #'-Werror', #Turns all warnings into errors.
-            '-Wall', #Turn on all warnings 
+            '-Wall',  # Turn on all warnings
             '-fdiagnostics-show-option',  # sonar cxx
-            '-Wl,-z,relro,now', #Full RELRO
+            '-Wl,-z,relro,now',  # Full RELRO
             '-Wformat',
-            '-Wformat-security', #Warn about uses of format functions that represent possible security problems
+            # Warn about uses of format functions that represent possible security problems
+            '-Wformat-security',
             '-Wno-unused-parameter',
-            '-Wextra', #Turn on all extra warnings
+            '-Wextra',  # Turn on all extra warnings
             '-Wconversion',
             '-Wsign-conversion',
             '-Wpedantic',
@@ -150,13 +151,13 @@ def generate(env, **kw):
             env['CCFLAGS'] += [
                 '-D_FORTIFY_SOURCE=2',
                 #'-fstack-protector', # Gives warnings
-                '-fstack-protector-all', 
+                '-fstack-protector-all',
                 '-Wno-error=maybe-uninitialized',
                 '-Wno-unused-local-typedefs',
                 '-Wno-conversion-null',
                 '-Wno-invalid-offsetof',
                 #'-fmudflap', #http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
-                #'-pie -fPIE', # For ASLR                
+                #'-pie -fPIE', # For ASLR
             ]
 
         # If not set, -l order on command lines matter
