@@ -41,7 +41,7 @@ repos:
     sha: v1.0.1
     hooks:
     -   id: reorder-python-imports
-        language_version: python2.7
+#        language_version: python2.7
 -   repo: https://github.com/asottile/add-trailing-comma
     sha: v0.6.4
     hooks:
