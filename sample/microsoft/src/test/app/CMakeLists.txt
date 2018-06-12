@@ -10,7 +10,7 @@ INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/test/cpp/include")
 
 ADD_EXECUTABLE(run_tests run_tests.cpp)
 
-TARGET_LINK_LIBRARIES(run_tests main_library test_library ${CPPUNIT_LIBRARY})
+TARGET_LINK_LIBRARIES(run_tests --coverage main_library test_library ${CPPUNIT_LIBRARY})
 
 INSTALL(TARGETS run_tests
   EXPORT  microsoft-install
