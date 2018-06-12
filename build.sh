@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+#set -e
 #set -xv
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
