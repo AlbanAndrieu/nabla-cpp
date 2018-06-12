@@ -7,6 +7,8 @@
 MESSAGE(STATUS "MAIN APP: " ${CMAKE_SOURCE_DIR}/src/main/app )
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/main/cpp/include")
 
+#ADD_COMPILE_OPTIONS(-lgcov --coverage)
+
 #TODO 
 #LIST(APPEND CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}:${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -14,7 +16,7 @@ INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/main/cpp/include")
 
 ADD_EXECUTABLE(run_app run_app.cpp)
 
-TARGET_LINK_LIBRARIES(run_app main_library)
+TARGET_LINK_LIBRARIES(run_app --coverage main_library)
 
 INSTALL(TARGETS run_app
   EXPORT  microsoft-install

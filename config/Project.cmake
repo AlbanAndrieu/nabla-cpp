@@ -5,11 +5,15 @@
 
 SET(CMAKE_BUILD_TYPE "debug")
 
+#TODO Clang https://git.moeryn.com/Moeryn/cppskeleton/blob/d7f2655222c105ef5437483d5a576fb7d8c35b51/cmake/CppToolchain.cmake
+
 IF(CMAKE_COMPILER_IS_GNUCC)
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0 -g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0 -g -O0 -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
+  #SET(CMAKE_SHARED_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 SET(CMAKE_CXX_STANDARD 11)
@@ -21,14 +25,14 @@ SET( CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
 #SET(MEMORYCHECK_COMMAND_OPTIONS "--xml=yes --xml-file=test.xml")
 
 # Coverage build doesn't work with MSVC
-OPTION(BUILD_COVERAGE "Build cpp_dependencies for coverage" OFF)
+#OPTION(BUILD_COVERAGE "Build cpp_dependencies for coverage" OFF)
 
 # Add coverage options for CI
-IF(COVERAGE)
-	SET_TARGET_PROPERTIES(main_library run_app run_tests PROPERTIES
-						  COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
-						  LINK_FLAGS "-lgcov --coverage")
-ENDIF(COVERAGE)
+#IF(COVERAGE)
+#	SET_TARGET_PROPERTIES(main_library run_app run_tests PROPERTIES
+#						  COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
+#						  LINK_FLAGS "-lgcov --coverage")
+#ENDIF(COVERAGE)
 
 if (WIN32)
   SET(DEFAULT_BOOST OFF)
@@ -166,7 +170,7 @@ IF(UNIX)
     SET(ARCH linux)
     SET(MACHINE x86Linux)
 
-    SET(CMAKE_CXX_FLAGS "-Wall -Wextra -pthread")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pthread")
     #check_cxx_compiler_flag("-Wpedantic" PEDANTIC_SUPPORTED)
     #if(PEDANTIC_SUPPORTED)
     #  #LIST(APPEND CMAKE_CXX_FLAGS -Wpedantic)
@@ -178,7 +182,7 @@ IF(UNIX)
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed")
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
-    SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-Bsymbolic-functions -Wl,-z,relro")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Bsymbolic-functions -Wl,-z,relro")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-as-needed")
 
     #-fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2
@@ -802,6 +806,51 @@ INCLUDE(${PROJECT_SOURCE_DIR}/config/ProjectDoc.cmake)
 
 INCLUDE(CTest)
 INCLUDE(${PROJECT_SOURCE_DIR}/config/CTestConfig.cmake)
+
+# C++11
+MACRO(use_cxx11)
+  IF (CMAKE_VERSION VERSION_LESS "3.1")
+    IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      SET (CMAKE_CXX_FLAGS "--std=gnu++11 ${CMAKE_CXX_FLAGS}")
+    ENDIF ()
+  ELSE ()
+    SET (CMAKE_CXX_STANDARD 11)
+  ENDIF ()
+ENDMACRO(use_cxx11)
+
+#target valgrind
+ADD_CUSTOM_TARGET(valgrind
+COMMAND valgrind --leak-check=full run_tests
+)
+
+#target cov produce report : coverage.html
+ADD_CUSTOM_TARGET(cov
+# Run tests
+COMMAND run_tests
+# Run gcovr
+COMMAND gcovr -r ${CMAKE_CURRENT_SOURCE_DIR} --html -o coverage.html --html-details
+WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+COMMENT "Running gcovr to produce code coverage report."
+)
+
+#target sonarqube
+ADD_CUSTOM_TARGET(sonarqube
+COMMAND sonar-scanner -Dproject.settings=${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+#target cppcheck produce report : check/index.html
+ADD_CUSTOM_TARGET(cppcheck
+# Code analysis
+COMMAND cppcheck --enable=all --force --inconclusive --std=posix ${CMAKE_CURRENT_SOURCE_DIR} --xml-version=2  2&> check.xml
+# Run htmlreport
+COMMAND cppcheck-htmlreport --source-dir=${CMAKE_CURRENT_SOURCE_DIR} --report-dir=check --file=check.xml
+WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+COMMENT "Running cppcheck to produce code analysis report."
+)
+
+# target etags/tags
+#ADD_CUSTOM_TARGET(tags etags --members --declarations  `find ${CMAKE_CURRENT_SOURCE_DIR} -name *.cxx -or -name *.h`)
+#ADD_CUSTOM_TARGET(etags DEPENDS tags)
 
 #ENABLE_TESTING(true)
 

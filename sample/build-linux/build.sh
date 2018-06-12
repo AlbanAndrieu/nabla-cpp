@@ -9,6 +9,7 @@ export CHECK_FORMATTING=true
 export ENABLE_CLANG=true
 #export ENABLE_EXPERIMENTAL=true
 #export SONAR_PROCESSOR="x86-64"
+export MODE_RELEASE=
 
 if [ -n "${ENABLE_CLANG}" ]; then
     echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
@@ -67,15 +68,20 @@ fi
 
 #cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
 
+if [ -n "${MODE_RELEASE}" ]; then
+    echo -e "${green} MODE_RELEASE is defined ${happy_smiley} ${NC}"
+    export CMAKE_INSTALL_PREFIX=/usr/local
+else
+    export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug
+fi
+
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
-#-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}
 #-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
 
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
-echo -e "${magenta} cmake -G\"Eclipse CDT4 - Unix Makefiles\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
-#-DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug
+echo -e "${magenta} cmake -G\"Eclipse CDT4 - Unix Makefiles\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
+cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
 #-DENABLE_TESTING=true
 cmake_res=$?
 if [[ $cmake_res -ne 0 ]]; then
