@@ -47,8 +47,6 @@ echo "WORKSPACE ${WORKSPACE}"
 
 pwd
 
-#clang-format -style=llvm -dump-config > .clang-format
-
 #TODO check https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis
 #./install.sh
 
