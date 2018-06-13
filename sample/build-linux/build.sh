@@ -89,13 +89,6 @@ if [[ $cmake_res -ne 0 ]]; then
     exit 1
 fi
 
-echo -e "${green} Clang format ${NC}"
-
-#http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html
-#clang-format -dump-config
-#${MAKE} check-all
-#clang-tidy -dump-config
-
 if [[ -f ../microsoft/compile_commands.json ]]; then
     rm ../microsoft/compile_commands.json
     ln -s $PWD/compile_commands.json ../microsoft/
@@ -272,6 +265,15 @@ if [[ "${CHECK_FORMATTING}" == "true" ]]; then
     echo -e "${magenta} find $PROJECT_SRC/sample/microsoft/src -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error ${hpps} ${cpps} ${NC}"
     find $PROJECT_SRC/sample/microsoft/src -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error
 fi
+
+echo -e "${green} Clang tidy/format ${NC}"
+
+#http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html
+##clang-format -style=llvm -dump-config > .clang-format
+#clang-format -dump-config
+#${MAKE} check-all
+#clang-tidy -dump-config
+clang-tidy $PROJECT_SRC/sample/microsoft/src/main/app/run_app.cpp
 
 echo "http://192.168.0.28/cdash/user.php"
 echo "http://maven.nabla.mobi/cpp/microsoft/index.html"
