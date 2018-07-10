@@ -60,7 +60,7 @@ cd "${PROJECT_SRC}/sample/build-${ARCH}"
 ##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
 ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
 #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
-#conan install ../microsoft/ --build boost_system
+conan install ../microsoft/ --build boost_system
 #conan info ../microsoft/ --graph=file.html
 
 rm -f CMakeCache.txt

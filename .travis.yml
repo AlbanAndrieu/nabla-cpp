@@ -59,6 +59,7 @@ script:
   - mkdir -p sample/build-${ARCH}/
   - cd sample/build-${ARCH}/
 #  - ./build.sh
+  - conan install ../microsoft/ --build boost_system
   - cmake ${CMAKEFLAGS} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
   - make
   - make CTEST_OUTPUT_ON_FAILURE=1 test
