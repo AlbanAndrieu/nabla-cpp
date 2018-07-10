@@ -27,6 +27,7 @@ cffi==1.10.0
 chardet==3.0.4
 click==6.2
 colorama==0.3.7
+conan==1.5.1
 compizconfig-python==0.9.12.2
 ConfigArgParse==0.10.0
 configobj==5.0.6

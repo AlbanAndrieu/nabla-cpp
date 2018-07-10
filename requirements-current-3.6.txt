@@ -3,6 +3,7 @@ apparmor.click==0.3.13.1
 apturl==0.5.2
 Brlapi==0.6.4
 command-not-found==0.3
+conan==1.5.1
 defer==1.0.6
 ecdsa==0.13
 fail2ban==0.9.3
