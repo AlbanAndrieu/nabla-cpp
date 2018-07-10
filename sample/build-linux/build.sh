@@ -6,7 +6,7 @@ export PROJECT_TARGET_PATH=${WORKSPACE}/target
 export ENABLE_MEMCHECK=true
 export UNIT_TESTS=true
 export CHECK_FORMATTING=true
-export ENABLE_CLANG=true
+#export ENABLE_CLANG=true
 #export ENABLE_EXPERIMENTAL=true
 #export SONAR_PROCESSOR="x86-64"
 export MODE_RELEASE=
@@ -28,7 +28,6 @@ echo -e "${cyan} ${double_arrow} Environment ${NC}"
 echo "WORKSPACE ${WORKSPACE}"
 
 pwd
-
 #See https://github.com/fffaraz/awesome-cpp#static-code-analysis
 
 #In Hudson
@@ -48,6 +47,21 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 #cppan
 
 cd "${PROJECT_SRC}/sample/build-${ARCH}"
+
+#See https://conan.io/
+#See https://bintray.com/bincrafters/public-conan
+
+#rm -f conan*
+
+#conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
+#conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu 
+
+#conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
+##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
+##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
+#conan install boost_system/1.66.0@bincrafters/stable --build boost_system
+#conan install ../microsoft/ --build boost_system
+#conan info ../microsoft/ --graph=file.html
 
 rm -f CMakeCache.txt
 rm -f compile_commands.json

@@ -22,6 +22,7 @@ FILE(GLOB main_files_HDRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.h")
 MESSAGE("Found Header Files: ${main_files_HDRS}")
 
 LINK_LIBRARIES(boost_system)
+#LINK_LIBRARIES(${CONAN_LIBS})
 
 ADD_LIBRARY(main_library SHARED ${main_files_SRCS})
 
