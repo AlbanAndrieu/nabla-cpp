@@ -57,7 +57,8 @@ cache:
 
 install:
  # Install conan
- - sudo pip install conan
+ #- sudo pip install conan
+ - sudo pip2.7 install -r requirements-current-2.7.txt
  # Automatic detection of your arch, compiler, etc.
  - conan user
 
