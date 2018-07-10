@@ -51,10 +51,10 @@ cd "${PROJECT_SRC}/sample/build-${ARCH}"
 #See https://conan.io/
 #See https://bintray.com/bincrafters/public-conan
 
-#rm -f conan*
+rm -f conan*
 
-#conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
-#conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu 
+conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
+conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
 
 #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
 ##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
