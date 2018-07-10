@@ -52,4 +52,6 @@ sudo apt-get install splint
 sudo pip2.7 install -r requirements-current-2.7.txt
 sudo pip3.6 install -r requirements-current-3.6.txt
 
+pip install conan==1.5.1
+
 exit 0
