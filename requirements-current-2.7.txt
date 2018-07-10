@@ -16,10 +16,9 @@ aptoncd==0.1.98+bzr117.1.4
 argh==0.26.1
 asn1crypto==0.24.0
 aspy.yaml==1.0.0
-autopep8==1.3.4
 astroid==1.4.4
 attrs==15.2.0
-autopep8==1.3.3
+autopep8==1.3.4
 #awscli==1.11.68
 backports.ssl-match-hostname==3.5.0.1
 beautifulsoup4==4.4.1
