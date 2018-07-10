@@ -7,7 +7,7 @@ acme==0.4.1
 adium-theme-ubuntu==0.3.4
 ansible==2.4.3.0
 ansible-cmdb==1.24
-ansible-container==0.2.0
+#ansible-container==0.2.0
 ansible-lint==3.3.3
 ansicolors==1.1.8
 ansigenome==0.5.6
