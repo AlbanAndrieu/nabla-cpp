@@ -70,7 +70,7 @@ script:
   - conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
   - conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
   - conan install ../microsoft/ --build boost_system
-  - export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug
+  - export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/target/
   - cmake ${CMAKEFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
   - make install
   - make CTEST_OUTPUT_ON_FAILURE=1 test
