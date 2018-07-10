@@ -11,6 +11,21 @@ SET( DROP_LOCATION "/cdash/submit.php?project=MICROSOFT" )
 
 INCLUDE(${PROJECT_SOURCE_DIR}/../../config/Project.cmake)
 
+# Prepare Conan.io packages
+SET(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+IF(NOT EXISTS ${CONAN_BUILD_INFO_FILE})
+  MESSAGE(STATUS "No conan package information available. Trying to fix that!")
+  EXECUTE_PROCESS(COMMAND conan install --build=missing ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_QUIET)
+ENDIF()
+
+# Import dependencies via Conan.io
+INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+SET(CONAN_SYSTEM_INCLUDES On)
+CONAN_BASIC_SETUP()
+
+#SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
+#OPTION(FCL_STATIC_LIBRARY "Whether the FCL library should be static rather than shared" ON)
+
 SET(EXPORT_FILE microsoft-build.cmake)
 
 INSTALL(EXPORT microsoft-install
