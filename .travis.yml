@@ -2,7 +2,7 @@
 # Distributed under the GPL-3.0
 # (See accompanying file LICENSE.md)
 
-language: c++
+language: cpp
 sudo: required
 dist: trusty
 
@@ -50,14 +50,14 @@ cache:
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.8.0
     - ${TRAVIS_BUILD_DIR}/deps/llvm-3.9.0
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.59.0
-    - ${TRAVIS_BUILD_DIR}/deps/boost-1.60.0
+    - ${TRAVIS_BUILD_DIR}/depgit pushs/boost-1.60.0
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.61.0
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.62.0
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.63.0
 
 install:
  # Install conan
- - pip install conan
+ - sudo pip install conan
  # Automatic detection of your arch, compiler, etc.
  - conan user
 

@@ -53,5 +53,6 @@ sudo pip2.7 install -r requirements-current-2.7.txt
 sudo pip3.6 install -r requirements-current-3.6.txt
 
 pip install conan==1.5.1
+pip install conan_package_tools==0.18.2
 
 exit 0
