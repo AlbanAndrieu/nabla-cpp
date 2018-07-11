@@ -39,17 +39,6 @@ SET_TARGET_PROPERTIES(test_library PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${PROJECT_MAJOR_VERSION})
 
-#ADD_CUSTOM_COMMAND(TARGET run_tests POST_BUILD
-#  COMMAND "${PROJECT_INSTALL_DIR}/bin/run_tests")
-ADD_CUSTOM_TARGET(tests "${PROJECT_INSTALL_DIR}/bin/run_tests" DEPENDS run_tests COMMENT "Running CPPUNIT tests...")
-
-#FOREACH(test ${test_files_to_run_SRCS})
-#  MESSAGE("  ######  adding test ${test}")
-#
-#  GET_FILENAME_COMPONENT(TestName ${test} NAME_WE)
-#  ADD_TEST(${TestName} ${PROJECT_INSTALL_DIR}/bin/run_tests ${TestName})
-#ENDFOREACH(test)
-
 # add install files:
 INSTALL(FILES ${test_files_HDRS}
   DESTINATION include-test
