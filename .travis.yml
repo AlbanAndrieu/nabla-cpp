@@ -73,7 +73,7 @@ script:
   - export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/sample/build-${ARCH}/target/
   #- export CMAKE_INSTALL_PREFIX=/usr/local/
   - cmake ${CMAKEFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
-  - sudo make install
+  - make install
   - make CTEST_OUTPUT_ON_FAILURE=1 test
   - make package
 #  - sonar-scanner
