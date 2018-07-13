@@ -51,7 +51,7 @@ cd "${PROJECT_SRC}/sample/build-${ARCH}"
 #See https://conan.io/
 #See https://bintray.com/bincrafters/public-conan
 
-if [ -z "${ENABLE_CLANG}" ]; then
+if [ -n "${ENABLE_CLANG}" ]; then
 
   echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"
   rm -f ${PROJECT_SRC}/sample/build-${ARCH}/conan*
