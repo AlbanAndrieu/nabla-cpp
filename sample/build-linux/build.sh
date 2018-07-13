@@ -51,17 +51,22 @@ cd "${PROJECT_SRC}/sample/build-${ARCH}"
 #See https://conan.io/
 #See https://bintray.com/bincrafters/public-conan
 
-rm -f conan*
+if [ -n "${ENABLE_CLANG}" ]; then
 
-conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
-conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
-
-#conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
-##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
-##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
-#conan install boost_system/1.66.0@bincrafters/stable --build boost_system
-conan install ../microsoft/ --build boost_system
-#conan info ../microsoft/ --graph=file.html
+  echo -e "${green} ENABLE_CLANG is defined, using CONAN ${happy_smiley} ${NC}"
+  rm -f ${PROJECT_SRC}/sample/build-${ARCH}/conan*
+  
+  conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
+  conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
+  
+  #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
+  ##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
+  ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
+  #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
+  echo -e "${magenta} conan install ../microsoft/ --build boost_system ${NC}"
+  conan install ../microsoft/ --build boost_system
+  #conan info ../microsoft/ --graph=file.html
+fi
 
 rm -f CMakeCache.txt
 rm -f compile_commands.json
