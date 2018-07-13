@@ -53,19 +53,34 @@ cd "${PROJECT_SRC}/sample/build-${ARCH}"
 
 if [ -n "${ENABLE_CLANG}" ]; then
 
-  echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"
-  rm -f ${PROJECT_SRC}/sample/build-${ARCH}/conan*
+    if [ "$(uname -s)" == "Linux" ]; then
+    case $(uname -m) in
+    x86_64)
+        ARCH=x86Linux  # or AMD64 or Intel64 or whatever
+
+        echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"
+        rm -f ${PROJECT_SRC}/sample/build-${ARCH}/conan*
+        
+        conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
+        conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
+        
+        #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
+        ##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
+        ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
+        #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
+        echo -e "${magenta} conan install ../microsoft/ --build boost_system ${NC}"
+        conan install ../microsoft/ --build boost_system
+        #conan info ../microsoft/ --graph=file.html
   
-  conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
-  conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
-  
-  #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
-  ##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
-  ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
-  #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
-  echo -e "${magenta} conan install ../microsoft/ --build boost_system ${NC}"
-  conan install ../microsoft/ --build boost_system
-  #conan info ../microsoft/ --graph=file.html
+        ;;
+    i*86)
+        ARCH=x86Linux  # or IA32 or Intel32 or whatever
+        ;;
+    *)
+        # leave ARCH as-is
+        ;;
+    esac
+    
 fi
 
 rm -f CMakeCache.txt
