@@ -56,9 +56,7 @@ if [ -n "${ENABLE_CLANG}" ]; then
     if [ "$(uname -s)" == "Linux" ]; then
     
         case $(uname -m) in
-        x86_64)
-            ARCH=x86Linux  # or AMD64 or Intel64 or whatever
-	    
+        x86_64)	    
             echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"
             rm -f ${PROJECT_SRC}/sample/build-${ARCH}/conan*
             
@@ -75,7 +73,6 @@ if [ -n "${ENABLE_CLANG}" ]; then
 	    
             ;;
         i*86)
-            ARCH=x86Linux  # or IA32 or Intel32 or whatever
             ;;
         *)
             # leave ARCH as-is
