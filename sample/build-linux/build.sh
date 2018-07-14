@@ -57,8 +57,7 @@ if [ -n "${ENABLE_CLANG}" ]; then
     
         case $(uname -m) in
         x86_64)	    
-            echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"
-            rm -f ${PROJECT_SRC}/sample/build-${ARCH}/conan*
+            echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"            
             
             conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
             conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
