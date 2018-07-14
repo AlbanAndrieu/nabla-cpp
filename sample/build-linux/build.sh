@@ -193,7 +193,7 @@ if [ `uname -s` == "Linux" ]; then
     ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out
     echo -e "${magenta} fix_includes.py < ./iwyu.out ${NC}"
     if [[ ! -f ./fix_includes.py ]]; then
-        wget https://github.com/vancegroup-mirrors/include-what-you-use/blob/master/fix_includes.py || true
+        wget https://github.com/vancegroup-mirrors/include-what-you-use/blob/master/fix_includes.py && chmod 777 fix_includes.py || true
     fi 
     if [[ -f ./fix_includes.py ]]; then
         ./fix_includes.py < ./iwyu.out
