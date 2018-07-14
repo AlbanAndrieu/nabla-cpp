@@ -190,9 +190,9 @@ if [ `uname -s` == "Linux" ]; then
     echo -e "${magenta} ${MAKE} clean ${NC}"
     ${MAKE} clean
     echo -e "${magenta} ${MAKE} -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out ${NC}"
-    ${MAKE} -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out
+    ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out
     echo -e "${magenta} fix_includes.py < /tmp/iwyu.out ${NC}"
-    fix_includes.py < /tmp/iwyu.out
+    fix_includes.py < ./iwyu.out
 fi
 
 if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
