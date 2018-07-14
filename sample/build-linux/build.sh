@@ -189,9 +189,10 @@ if [ `uname -s` == "Linux" ]; then
 
     echo -e "${magenta} ${MAKE} clean ${NC}"
     ${MAKE} clean
-    echo -e "${magenta} ${MAKE} -k CXX=/usr/bin/iwyu  2> /tmp/iwyu.out ${NC}"
+    echo -e "${magenta} ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out ${NC}"
     ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out
-    echo -e "${magenta} fix_includes.py < /tmp/iwyu.out ${NC}"
+    echo -e "${magenta} fix_includes.py < ./iwyu.out ${NC}"
+    wget https://github.com/vancegroup-mirrors/include-what-you-use/blob/master/fix_includes.py || true
     fix_includes.py < ./iwyu.out
 fi
 
