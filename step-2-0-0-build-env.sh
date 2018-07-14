@@ -920,7 +920,7 @@ ENV_FILENAME="${WORKSPACE}/ENV_${ARCH}_VERSION.TXT"
 
 echo -e "${NC}"
 
-./step-2-0-1-build-env-info.sh > "${ENV_FILENAME}"
+$script_dir/step-2-0-1-build-env-info.sh > "${ENV_FILENAME}"
 
 # shellcheck disable=SC2154
 echo -e "${black} ${blink} DONE ${NC}"
