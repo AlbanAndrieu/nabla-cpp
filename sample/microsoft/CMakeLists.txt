@@ -19,9 +19,9 @@ IF(NOT EXISTS ${CONAN_BUILD_INFO_FILE})
 ENDIF()
 
 # Import dependencies via Conan.io
-INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-SET(CONAN_SYSTEM_INCLUDES On)
-CONAN_BASIC_SETUP()
+#INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+#SET(CONAN_SYSTEM_INCLUDES On)
+#CONAN_BASIC_SETUP()
 
 #SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #OPTION(FCL_STATIC_LIBRARY "Whether the FCL library should be static rather than shared" ON)
