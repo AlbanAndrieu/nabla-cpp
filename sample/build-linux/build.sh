@@ -59,7 +59,7 @@ if [ -n "${ENABLE_CLANG}" ]; then
         x86_64)	    
             echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"            
             
-            conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
+            conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan || true
             conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
             
             #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
