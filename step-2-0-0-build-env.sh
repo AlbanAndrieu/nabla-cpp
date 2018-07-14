@@ -331,9 +331,10 @@ if [ -n "${SONAR_PROCESSOR}" ]; then
   echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} : ${SONAR_PROCESSOR} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
-  SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g')
+  #PLATFORM=$(uname -m)
+  SONAR_PROCESSOR=$(uname -m | sed 's/_/-/g')
   if [ "$(uname -s)" == "Linux" ]; then
-    SONAR_PROCESSOR=$(uname -m | sed -r 's/_+/-/g')  # x86_64 -> x86-64    
+    SONAR_PROCESSOR=$(uname -m | sed 's/_/-/g')  # x86_64 -> x86-64    
     case $(uname -m) in
     x86_64)
         SONAR_PROCESSOR=x86-64  # or AMD64 or Intel64 or whatever
@@ -348,6 +349,7 @@ else
   else  # [ "$(uname -s)" == "SunOS" ]; then # does not cover osx
     SONAR_PROCESSOR=$(uname -m)  # i86pc
   fi
+  #export PLATFORM
   export SONAR_PROCESSOR
   echo -e "${magenta} SONAR_PROCESSOR : ${SONAR_PROCESSOR} ${NC}"
 fi
