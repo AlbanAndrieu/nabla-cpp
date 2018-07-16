@@ -1,13 +1,19 @@
 #!/bin/bash
 #set -xv
 
+#sudo apt-get install rats
+wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/rough-auditing-tool-for-security/rats-2.4.tgz
+tar -xzvf rats-2.4.tgz
+cd rats-2.4
+./configure && make && sudo make install
+./rats
+
 sudo apt-get install colormake
 sudo apt-get install cppcheck
-sudo apt-get install rats
 #sudo apt-get install findbugs
 sudo apt-get install flawfinder
 #sudo apt-get install cppncss complexity
-sudo apt-get install clang clang-tools
+sudo apt-get install clang clang-tools clang-tidy
 sudo apt-get install flawfinder cppcheck ggcov gcovr gperf doxygen
 sudo apt-get install ninja-build
 
@@ -56,5 +62,7 @@ sudo apt-get install splint
 #sudo pip install conan==1.5.1
 sudo pip install conan
 sudo pip install conan_package_tools==0.18.2
+
+sudo apt-get install vera++ gcovr perl lua5.3 tcl tk 
 
 exit 0
