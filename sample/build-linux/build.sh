@@ -261,21 +261,28 @@ fi
 
 echo -e "${green} Reporting : Coverage ${NC}"
 
+#TODO http://cppncss.sourceforge.net/installation.html
+
+#TODO https://github.com/SonarOpenCommunity/sonar-cxx/blob/master/sonar-cxx-plugin/src/samples/SampleProject2/Makefile
+
 echo -e "${magenta} find ../.. -name '*.gcda' ${NC}"
 find ../.. -name '*.gcda'
 
+mkdir ${WORKSPACE}/reports
 #xml
 echo -e "${magenta} gcovr --branches --xml-pretty -r . ${NC}"
-sudo gcovr --branches --xml-pretty -r .
+sudo gcovr --branches --xml-pretty -r ../../sample/ > ${WORKSPACE}/reports/gcovr-report.xml
 #html
-echo -e "${magenta} gcovr --branches -r . --html --html-details -o gcovr-report.html ${NC}"
-sudo gcovr --branches -r . --html --html-details -o gcovr-report.html
+echo -e "${magenta} gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html ${NC}"
+sudo gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
 
 echo -e "${magenta} sudo perf record -g -- /usr/bin/git --version ${NC}"
 sudo perf record -g -- /usr/bin/git --version
 echo -e "${magenta} sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
 sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
 #eog output.png
+
+#bash -c 'find src -regex ".*\.cc\|.*\.hh" | vera++ - -showrules -nodup |& vera++Report2checkstyleReport.perl > $(BUILD_DIR)/vera++-report.xml'
 
 #Objective C
 #xcodebuild | xcpretty
