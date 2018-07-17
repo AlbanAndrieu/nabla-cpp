@@ -7,15 +7,6 @@ SET(CMAKE_BUILD_TYPE "debug")
 
 #TODO Clang https://git.moeryn.com/Moeryn/cppskeleton/blob/d7f2655222c105ef5437483d5a576fb7d8c35b51/cmake/CppToolchain.cmake
 
-IF(CMAKE_COMPILER_IS_GNUCC)
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0 -g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
-ENDIF(CMAKE_COMPILER_IS_GNUCC)
-IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0 -g -O0 -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
-  #SET(CMAKE_SHARED_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
-  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
-ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-
 SET(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
@@ -300,6 +291,23 @@ OPTION(ENABLE_TESTS "Enable building of tests" ON)
 IF( ENABLE_TESTS )
   INCLUDE(${PROJECT_SOURCE_DIR}/config/FindCppUnit.cmake)
 ENDIF(ENABLE_TESTS )
+
+#IF(CMAKE_COMPILER_IS_GNUCC)
+#  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0 -g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
+#ENDIF(CMAKE_COMPILER_IS_GNUCC)
+IF(CMAKE_COMPILER_IS_GNUCXX)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0 -g -O0 -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings --coverage -fprofile-arcs -ftest-coverage")
+  #SET(CMAKE_SHARED_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+MESSAGE(STATUS "PROJECT_NAME ${PROJECT_NAME} = ${CMAKE_PROJECT_NAME}")
+
+#IF(CMAKE_COMPILER_IS_GNUCXX)
+#  #https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
+#  INCLUDE(${PROJECT_SOURCE_DIR}/config/CodeCoverage.cmake)
+#  SETUP_TARGET_FOR_COVERAGE_LCOV(${PROJECT_NAME}_coverage test coverage)
+#ENDIF()
 
 #Inclusion
 # See ${PROJ_SOURCE_DIR}/config for special inclusion

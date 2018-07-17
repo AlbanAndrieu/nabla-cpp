@@ -177,11 +177,12 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
     #cd src/test/app/
     #ctest -V -C Debug
     echo -e "${magenta} ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true ${NC}"
-    ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
+    ctest -V --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
 
-    #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
+    #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheckctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
 
-#${MAKE} tests
+    #${MAKE} tests
+    
 fi
 
 if [ `uname -s` == "Linux" ]; then
@@ -265,16 +266,21 @@ echo -e "${green} Reporting : Coverage ${NC}"
 
 #TODO https://github.com/SonarOpenCommunity/sonar-cxx/blob/master/sonar-cxx-plugin/src/samples/SampleProject2/Makefile
 
+#find . -type f \( -iname \*.gcno -or -iname \*.gcda \) -exec rm  {} -f \;
+find . -type f \( -iname \*.gcno -or -iname \*.gcda \) -exec cp {} ../../ \;
+
 echo -e "${magenta} find ../.. -name '*.gcda' ${NC}"
 find ../.. -name '*.gcda'
+find ../.. -name '*.gcno'
 
-mkdir ${WORKSPACE}/reports
+mkdir ${WORKSPACE}/reports || true
+gcovr -v -r ${WORKSPACE}/sample/microsoft/ -f ${WORKSPACE}/sample/microsoft/
 #xml
-echo -e "${magenta} gcovr --branches --xml-pretty -r . ${NC}"
-sudo gcovr --branches --xml-pretty -r ../../sample/ > ${WORKSPACE}/reports/gcovr-report.xml
+echo -e "${magenta} gcovr --branches --xml-pretty -r ${WORKSPACE}/microsoft/ ${NC}"
+sudo gcovr --branches --xml-pretty -r ${WORKSPACE}/sample/microsoft/ > ${WORKSPACE}/reports/gcovr-report.xml
 #html
-echo -e "${magenta} gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html ${NC}"
-sudo gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
+echo -e "${magenta} gcovr --branches -r ${WORKSPACE}/microsoft/ --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html ${NC}"
+sudo gcovr --branches -r ${WORKSPACE}/sample/microsoft/ --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
 
 echo -e "${magenta} sudo perf record -g -- /usr/bin/git --version ${NC}"
 sudo perf record -g -- /usr/bin/git --version

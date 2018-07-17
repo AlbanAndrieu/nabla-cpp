@@ -8,6 +8,7 @@ MESSAGE(STATUS "MAIN APP: " ${CMAKE_SOURCE_DIR}/src/main/app )
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/main/cpp/include")
 
 #ADD_COMPILE_OPTIONS(-lgcov --coverage)
+#ADD_COMPILE_OPTIONS(-fprofile-arcs -ftest-coverage)
 
 #TODO 
 #LIST(APPEND CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}:${CMAKE_CURRENT_BINARY_DIR}")
@@ -17,6 +18,12 @@ INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/main/cpp/include")
 ADD_EXECUTABLE(run_app run_app.cpp)
 
 TARGET_LINK_LIBRARIES(run_app --coverage main_library)
+
+IF(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    TARGET_LINK_LIBRARIES(gcov)
+ELSE()
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+ENDIF()
 
 INSTALL(TARGETS run_app
   EXPORT  microsoft-install
