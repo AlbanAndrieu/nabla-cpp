@@ -22,6 +22,6 @@ flawfinder \
  sample/microsoft \
  > "${WORKSPACE}/${report_filename}.html"
 
-mv "${report_filename}*" "${reports_directory}"
+mv "${WORKSPACE}/${report_filename}.html" "${reports_directory}"
 
 exit 0
