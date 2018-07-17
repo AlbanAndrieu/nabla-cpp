@@ -359,11 +359,11 @@ if [ -n "${SONAR_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
   echo -e "${magenta} ${double_arrow} ${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} ? ${NC}"
-  if [ -f "${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR}" ]; then
+  if [ -d "${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR}" ]; then
     SONAR_CMD="${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
   fi
   export SONAR_CMD
-  echo -e "${magenta} MAKE : ${SONAR_CMD} ${NC}"
+  echo -e "${magenta} SONAR_CMD : ${SONAR_CMD} ${NC}"
 fi
 
 if [ -n "${MAKE}" ]; then
