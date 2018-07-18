@@ -3,7 +3,7 @@
 #rats --version
 
 reports_directory="reports"
-report_filename="rats-result-SAMPLE"
+report_filename="rats-result"
 if [ ! -e ${reports_directory} ]; then
     mkdir ${reports_directory}
 fi
