@@ -3,7 +3,7 @@
 cppcheck --version
 
 reports_directory="reports"
-report_filename="cppcheck-result-SAMPLE"
+report_filename="cppcheck-result"
 if [ ! -e ${reports_directory} ]; then
     mkdir ${reports_directory}
 fi
