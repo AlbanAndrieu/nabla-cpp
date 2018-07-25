@@ -125,6 +125,10 @@ elif [ "$(uname -s)" == "Linux" ]; then
   echo -e "${magenta} PATH : ${PATH} ${NC}"  
 fi
 
+if [ -z "$WORKSPACE" ]; then
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
+  exit 1
+fi
 if [ -n "${WORKSPACE}" ]; then
   if [ "${SYSTEM}" == "MSYS" -o "${SYSTEM}" == "Cygwin" ]; then
       export WORKSPACE=`cygpath -u ${WORKSPACE}`
@@ -199,12 +203,12 @@ fi
 if [ "${OS}" == "Debian" ]; then
     echo -e "${green} CPP flags : ${NC}"
 
-	dpkg-buildflags
-	
-	#CPPFLAGS=$(dpkg-buildflags --get CPPFLAGS)
-	#CFLAGS=$(dpkg-buildflags --get CFLAGS)
-	#CXXFLAGS=$(dpkg-buildflags --get CXXFLAGS)
-	#LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
+    dpkg-buildflags
+
+    #CPPFLAGS=$(dpkg-buildflags --get CPPFLAGS)
+    #CFLAGS=$(dpkg-buildflags --get CFLAGS)
+    #CXXFLAGS=$(dpkg-buildflags --get CXXFLAGS)
+    #LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
 if [ -n "${CC}" ]; then
@@ -331,10 +335,8 @@ if [ -n "${SONAR_PROCESSOR}" ]; then
   echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} : ${SONAR_PROCESSOR} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
-  #PLATFORM=$(uname -m)
-  SONAR_PROCESSOR=$(uname -m | sed 's/_/-/g')
+  SONAR_PROCESSOR=$(uname -m | sed 's/_/-/g')  # x86_64 -> x86-64    
   if [ "$(uname -s)" == "Linux" ]; then
-    SONAR_PROCESSOR=$(uname -m | sed 's/_/-/g')  # x86_64 -> x86-64    
     case $(uname -m) in
     x86_64)
         SONAR_PROCESSOR=x86-64  # or AMD64 or Intel64 or whatever
@@ -343,7 +345,7 @@ else
         SONAR_PROCESSOR=x86-32  # or IA32 or Intel32 or whatever
         ;;
     *)
-        # leave ARCH as-is
+        # leave SONAR_PROCESSOR as-is
         ;;
     esac
   else  # [ "$(uname -s)" == "SunOS" ]; then # does not cover osx
@@ -359,8 +361,8 @@ if [ -n "${SONAR_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
   echo -e "${magenta} ${double_arrow} ${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} ? ${NC}"
-  if [ -d "${HOME}/build-wrapper-linux-x86/" ]; then
-    SONAR_CMD="${HOME}/build-wrapper-linux-x86/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
+  if [ -d "/usr/local/sonar-build-wrapper/bin/" ]; then
+    SONAR_CMD="/usr/local/sonar-build-wrapper/bin/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
   else
     echo -e "${red} ${double_arrow} Undefined directory ${head_skull} : SONAR_CMD failed ${NC}"
     #exit 1
@@ -657,7 +659,7 @@ if [ -n "${VIRTUALENV_PATH}" ]; then
   echo -e "${green} VIRTUALENV_PATH is defined ${happy_smiley} : ${VIRTUALENV_PATH} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : VIRTUALENV_PATH, use the default one ${NC}"
-  export VIRTUALENV_PATH=/opt/ansible/env$(echo $PYTHON_MAJOR_VERSION | sed -r 's/\.//g')
+  export VIRTUALENV_PATH=/opt/ansible/env$(echo $PYTHON_MAJOR_VERSION | sed 's/\.//g')
   #sudo virtualenv ${VIRTUALENV_PATH} -p {{PYTHON_EXE}}
   #source ${VIRTUALENV_PATH}/bin/activate
   echo -e "${magenta} VIRTUALENV_PATH : ${VIRTUALENV_PATH} ${NC}"
