@@ -67,8 +67,8 @@ script:
   - cd sample/build-${ARCH}/
 #  - ./build.sh
   # Download dependencies, build, test and create package
-  - conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
-  - conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
+  - conan remote add nabla https://bintray.com/bincrafters/public-conan
+  - conan user -p 0ce5c52bb236191b96e29a326f3d46a5989078bf -r nabla albanandrieu
   - conan install ../microsoft/ --build boost_system
   - export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/sample/build-${ARCH}/target/
   #- export CMAKE_INSTALL_PREFIX=/usr/local/
