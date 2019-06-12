@@ -1,10 +1,11 @@
 FROM alpine
 
-COPY myhello.c /
+COPY nabla.c /
 RUN apk add build-base \
-    && gcc -o myhello2 myhello.c
-#    && apk -delete build-base
+    && gcc -o nabla nabla.c \
+    && apk del build-base linux-headers pcre-dev openssl-dev && \
+    rm -rf /var/cache/apk/*
 
 
-ENTRYPOINT ["/myhello2"]
+ENTRYPOINT ["/nabla"]
 CMD ["Bonjour"]
