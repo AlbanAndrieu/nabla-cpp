@@ -124,7 +124,7 @@ matrix:
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
-      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.2
+      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.4
     - compiler: gcc
       os: linux
       addons:
