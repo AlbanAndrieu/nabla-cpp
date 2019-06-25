@@ -6,6 +6,5 @@ RUN apk add build-base \
     && apk del build-base linux-headers pcre-dev openssl-dev && \
     rm -rf /var/cache/apk/*
 
-
 ENTRYPOINT ["/nabla"]
 CMD ["Bonjour"]

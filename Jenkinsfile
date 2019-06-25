@@ -12,34 +12,53 @@ node ('albandri'){
       }
    }
    stage('Build') {
-      dir('Scripts/ansible') {
-        docker.withRegistry('https://registry.nabla.mobi', 'docker-login') {
-          def DOCKER_REGISTRY_URI="registry.nabla.mobi"
-          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            sh "docker login --password=${PASSWORD} --username=${USERNAME} ${DOCKER_REGISTRY_URI}"
-             //git '…'
-             def ansible = docker.build 'nabla/jenkins-slave-ubuntu:snapshot'
-             ansible.inside {
-               sh 'echo test'
-             }
-             ansible.push()  // record this snapshot (optional)
-             //stage 'Test image'
-             stage('Test image') {
-              //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
-                docker.image('nabla/jenkins-slave-ubuntu:snapshot').withRun {c ->
-                sh "docker logs ${c.id}"
-             }
-            }
-             // run some tests on it (see below), then if everything looks good:
-             //stage 'Approve image'
-             ansible.push 'latest'
-             //def myImg = docker.image('nabla/jenkins-slave-ubuntu:snapshot')
-             //sh "docker push ${myImg.imageName()}"
-        }
-        }
-      }
+       steps {
+           script {
+               sh "conan remove --system-reqs '*'"
+               
+               docker.withRegistry('https://registry.nabla.mobi', 'docker-login') {
+                   def DOCKER_REGISTRY_URI="registry.nabla.mobi"
+                   //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                   //sh "docker login --password=${PASSWORD} --username=${USERNAME} ${DOCKER_REGISTRY_URI}"
+                   //git '…'
+                   def ansible = docker.build 'nabla/jenkins-slave-ubuntu:latest'
+                   ansible.inside {
+                     sh 'echo test'
+                   }
+                   ansible.push()  // record this latest (optional)
+                   //stage 'Test image'
+                   stage('Test image') {
+                    //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
+                      docker.image('nabla/jenkins-slave-ubuntu:latest').withRun {c ->
+                      sh "docker logs ${c.id}"
+                     }
+                   }
+                   // run some tests on it (see below), then if everything looks good:
+                   //stage 'Approve image'
+                   ansible.push 'latest'
+                   //def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
+                   //sh "docker push ${myImg.imageName()}"
+                   //} // withCredentials
+               } // withRegistry
+          } // script             
+      } // steps
    }
-
+   post {
+	 always {
+	   recordIssues enabledForFailure: true, filters: [
+	 	 excludeFile('.*qrc_icons\\.cpp.*'),
+	 	 excludeMessage('.*tmpnam.*')],
+	 	 tools: [gcc4(name: 'GCC-GUI', id: 'gcc4-gui',
+	 	 	     pattern: 'build/build*.log'),
+	 	 	     gcc4(name: 'Doxygen', id: 'doxygen',
+                             pattern: 'build/DoxygenWarnings.log'],
+	 	 unstableTotalAll: 1
+	   recordIssues enabledForFailure: true,
+	 	 tools: [cppCheck(pattern: 'build/cppcheck.log')]
+	 }
+	 success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
+   }
+  
    stage('SonarQube analysis') {
        environment {
            SONAR_SCANNER_OPTS = "-Xmx1g"
@@ -51,7 +70,7 @@ node ('albandri'){
    }
    //stage('Approve image') {
    // sshagent(['jenkins-ssh']) {
-   ////   def myImg = docker.image('nabla/nabla-cpp:snapshot')
+   ////   def myImg = docker.image('nabla/nabla-cpp:latest')
    ////   sh "docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz ${myImg.imageName()}"
     //    sh returnStdout: true, script: 'sudo docker run -it --net host --pid host --cap-add audit_control -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock -v /usr/lib/systemd:/usr/lib/systemd -v /etc:/etc --label docker_bench_security docker/docker-bench-security'
     //}
