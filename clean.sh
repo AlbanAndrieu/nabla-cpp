@@ -1,7 +1,10 @@
 #!/bin/bash
 #set -xv
 
-source ./step-0-color.sh
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+
+# shellcheck source=/dev/null
+tput colors && source "${WORKING_DIR}/step-0-color.sh"
 
 echo -e "${cyan} ${double_arrow} Cleaning started ${NC}"
 
@@ -22,6 +25,12 @@ rm -f sample/build-${ARCH}/conan*
 #Scons
 #rm -Rf buildcache-*
 #rm -Rf scons-signatures-*.dblite
+
+scons clean
+
+#git clean --quiet -fdx --exclude="*.tgz" --exclude="*md5" --exclude="*VERSION.TXT"
+#git checkout -f .
+
 #Other
 rm -Rf nabla-*
 #rm -Rf nabla-*.tar.gz
