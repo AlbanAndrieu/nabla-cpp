@@ -5,7 +5,7 @@ Brlapi==0.6.4
 command-not-found==0.3
 conan==1.5.1
 defer==1.0.6
-ecdsa==0.13
+ecdsa==0.13.3
 fail2ban==0.9.3
 flake8==3.5.0
 gramps==4.2.2
