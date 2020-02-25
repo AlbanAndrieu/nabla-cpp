@@ -68,7 +68,7 @@ gcovr==3.2
 git-pre-commit-hook-utils==0.0.5
 gprof2dot==2017.9.19
 gyp==0.1
-hpack==2.1.0
+hpack==2.3.0
 html2text==2016.1.8
 html5lib==0.999
 httplib2==0.9.1
