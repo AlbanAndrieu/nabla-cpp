@@ -88,7 +88,7 @@ fire==0.2.1
 fixtures==3.0.0
 flake8==3.7.9
 flake8-polyfill==1.0.2
-Flask==1.1.1
+Flask==1.0
 Flask-Migrate==2.5.2
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.1

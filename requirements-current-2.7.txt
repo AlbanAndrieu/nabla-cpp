@@ -58,7 +58,7 @@ enum34==1.1.6
 et-xmlfile==1.0.1
 flake8==3.5.0
 flake8-polyfill==1.0.2
-Flask==0.12
+Flask==1.0
 folder-color==0.0.79
 folder-color-common==0.0.79
 funcsigs==0.4
