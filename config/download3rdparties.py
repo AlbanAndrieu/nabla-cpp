@@ -13,9 +13,9 @@ import subprocess
 import sys
 import tempfile
 import time
-import urllib
-import urllib2
-import urlparse
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 
 sandbox = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 thirdPartyRoot = '%s/3rdparties' % sandbox
@@ -100,7 +100,7 @@ else:
             handle.close()
 
 # Set unbuffered stdout for progress messages
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+#sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 #==============================================================================
 
@@ -149,7 +149,7 @@ class ThirdParty:
         isExpanded = False
         if version == 'latest':
             # C=N;O=D sort on decreasing names -> the first one is want we want
-            with contextlib.closing(urllib.urlopen('%s/%s/?C=N;O=D' % (self._base_url, name))) as page:
+            with contextlib.closing(urllib.request.urlopen('%s/%s/?C=N;O=D' % (self._base_url, name))) as page:
                 for line in page:
                     match = re.search(r'href="([^/]+)/"', line)
                     if match:
@@ -164,7 +164,7 @@ class ThirdParty:
         if digest == 'latest':
             timestamp = None
             # C=M;O=D sort on decreasing dates -> the first one is want we want
-            with contextlib.closing(urllib.urlopen('%s/%s/%s/%s/?C=M;O=D' % (self._base_url, name, version, pkg_arch))) as page:
+            with contextlib.closing(urllib.request.urlopen('%s/%s/%s/%s/?C=M;O=D' % (self._base_url, name, version, pkg_arch))) as page:
                 for line in page:
                     match = re.search(
                         r'href="([a-f0-9]{32})".*(\d\d-\w\w\w-20\d\d \d\d:\d\d)', line,
@@ -182,9 +182,9 @@ class ThirdParty:
                 )
 
             if isExpanded:
-                print self._serial,
+                print(self._serial, end=' ')
                 self._serial = self.serial(name, version, pkg_arch, digest)
-                print '=> %s (%s)' % (self._serial, time.strftime('%d/%m/%Y %H:%M', time.localtime(timestamp)))
+                print('=> %s (%s)' % (self._serial, time.strftime('%d/%m/%Y %H:%M', time.localtime(timestamp))))
 
     #--------------------------------------------------------------------------
     def get_serial_from_file(self, filepath):
@@ -211,7 +211,7 @@ class ThirdParty:
         if not os.path.isdir(unchecked_dir):
             os.mkdir(unchecked_dir)
 
-        scheme = urlparse.urlparse(self._base_url)[0]
+        scheme = urllib.parse.urlparse(self._base_url)[0]
 
         download_ok = False
         download_count = 0
@@ -227,12 +227,12 @@ class ThirdParty:
         )
         #unchecked_pkg = '%s/%s-%s-%s'%(unchecked_dir,   name, version, digest)
         while not download_ok:
-            print '-> download',
+            print('-> download', end=' ')
             download_count += 1
             base_urls = [self._base_url, self._base_url_old]
             for base_url in base_urls:
-                print 'downloading %s/%s' % (base_url, self._serial)
-                name, header = urllib.urlretrieve(
+                print('downloading %s/%s' % (base_url, self._serial))
+                name, header = urllib.request.urlretrieve(
                     '%s/%s' % (base_url, self._serial), unchecked_pkg,
                 )
                 no_error = True
@@ -244,7 +244,7 @@ class ThirdParty:
                         content = fic.read()
                     match = re.search(r'<title>(.*)</title>', content)
                     if match:
-                        print '-> download failed (%s)' % match.group(1)
+                        print('-> download failed (%s)' % match.group(1))
                         download_ok = False
                         no_error = False
                 if no_error:
@@ -254,11 +254,11 @@ class ThirdParty:
                     computed_digest = hashlib.md5(content).hexdigest()
                     download_ok = (computed_digest == digest)
                     if not download_ok:
-                        print '-> bad md5 (%s)' % computed_digest,
+                        print('-> bad md5 (%s)' % computed_digest, end=' ')
                 if download_ok:
                     break
             if not download_ok and download_count >= try_number:
-                print '-> ABORT'
+                print('-> ABORT')
                 raise SystemExit('Tried to downloaded package %s %s %d times without success' % (
                     name, version, try_number,
                 ))
@@ -285,16 +285,16 @@ class ThirdParty:
             prev_serial = ''
             # Test the serial
             if not os.path.isfile(installed_serial_file):
-                print '%s %s: found with missing serial -> remove' % (name, version),
+                print('%s %s: found with missing serial -> remove' % (name, version), end=' ')
             else:
                 prev_serial = self.get_serial_from_file(installed_serial_file)
                 if prev_serial == self._serial:
                     return  # package ok, nothing to do
-                print '%s %s: found with bad serial -> remove' % (name, version),
+                print('%s %s: found with bad serial -> remove' % (name, version), end=' ')
 
             shutil.rmtree(installed_thirdPartyPath)
         else:
-            print '%s %s: missing' % (name, version),
+            print('%s %s: missing' % (name, version), end=' ')
 
         # Nothing to do if a previously downloaded package is available in the right version.
         # If not, have to download it
@@ -308,12 +308,12 @@ class ThirdParty:
             if not os.path.exists(pkg):
                 self.download()
             else:
-                print '-> in cache',
+                print('-> in cache', end=' ')
         # Then, create directory and extract
         os.makedirs(installed_thirdPartyPath)
-        print '-> extract',
+        print('-> extract', end=' ')
         os.chdir(installed_thirdPartyPath)
-        print '-> tar_cmd (%s)' % tar_cmd(),
+        print('-> tar_cmd (%s)' % tar_cmd(), end=' ')
         if(self._arch == 'winnt' or self._arch == 'win'):
             pkg_dir = '%s_dir' % (pkg)
             if os.path.exists(pkg_dir):
@@ -327,11 +327,11 @@ class ThirdParty:
             subprocess.check_call(
                 [tar_cmd(), '-x', '-z', '-f', pkg], shell=False,
             )
-        print '-> create serial',
+        print('-> create serial', end=' ')
         # and create the serial file
         with open(installed_serial_file, 'w') as fic:
             fic.write(self._serial + '\n')
-        print '-> done'
+        print('-> done')
 
 
 #==============================================================================
@@ -376,7 +376,7 @@ def tar_cmd():
 def getSerialList(bom, arch, bit, compiler, serials):
     serials = serials[:] if serials else []
 
-    print '%s: serials' % (serials)
+    print('%s: serials' % (serials))
 
     # Hack to do as if we were already called with a new arch name
     arch = {
@@ -411,7 +411,7 @@ def getSerialList(bom, arch, bit, compiler, serials):
             'winnt': 'winnt64',  # for migration
         }[arch]
 
-        print 'bom: %s' % (bom)
+        print('bom: %s' % (bom))
         with open(bom) as fic:
             for line in fic:
                 if re.match(r'^\s*#', line):
@@ -421,28 +421,28 @@ def getSerialList(bom, arch, bit, compiler, serials):
                 elif re.search(r'/(%s)/' % legacy_arch, line):
                     line = re.sub(r'#.*', '', line)
                     serials.append(line.strip())
-                    print 'serials : %s' % (serials)
+                    print('serials : %s' % (serials))
                 elif re.search(r'/(%s)/' % migration_arch, line):
                     line = re.sub(r'#.*', '', line)
                     serials.append(line.strip())
-                    print 'serials : %s' % (serials)
+                    print('serials : %s' % (serials))
                 else:
-                    print 'arch : %s' % (arch),
+                    print('arch : %s' % (arch), end=' ')
                     match = re.search(
                         r'/(%s|noarch)(-[^_]+)?(_[^/]+)?/' % arch, line,
                     )
                     if match:
                         #serialCompiler = match.group(1)
                         targetArch = match.group(1)
-                        print '(match ) targetArch : %s' % (targetArch),
+                        print('(match ) targetArch : %s' % (targetArch), end=' ')
                         serialCompiler = match.group(
                             2,
                         )[1:] if match.group(2) else None
-                        print '- serialCompiler : %s' % (serialCompiler),
+                        print('- serialCompiler : %s' % (serialCompiler), end=' ')
                         serialDetails = match.group(3).split(
                             '_',
                         )[1:] if match.group(3) else None
-                        print '- serialDetails : %s' % (serialDetails)
+                        print('- serialDetails : %s' % (serialDetails))
                         foundBitDetail = False
                         if serialDetails:
                             keepIt = True
@@ -463,7 +463,7 @@ def getSerialList(bom, arch, bit, compiler, serials):
                         line = re.sub(r'#.*', '', line)
                         serials.append(line.strip())
                     else:
-                        print '  (no match) : %s' % (line),
+                        print('  (no match) : %s' % (line), end=' ')
     # Check there is no conflict (same package listed more than once)
     count = {}
     for serial in serials:
@@ -515,9 +515,9 @@ def download(arch, bit, compiler, base_url_old, base_url, bom, third_parties_dir
         # for 32 bit Windows
         os.environ['PATH'] += ';C:\\Program Files\\GnuWin32\\bin'
 
-    print 'BOM file: %s - %s' % (sandbox, bom)
+    print('BOM file: %s - %s' % (sandbox, bom))
     if bom != '' and bom != sandbox + '/':
-        print 'Initializing build dependencies'
+        print('Initializing build dependencies')
         serials = getSerialList(bom, arch, bit, compiler, serials)
         for serial in serials:
             ThirdParty(
@@ -525,7 +525,7 @@ def download(arch, bit, compiler, base_url_old, base_url, bom, third_parties_dir
                 sandbox, third_parties_dir,
             ).get()
         writeArchBom(serials)
-        print 'Build dependencies initialized'
+        print('Build dependencies initialized')
 
 
 def main(env, args):

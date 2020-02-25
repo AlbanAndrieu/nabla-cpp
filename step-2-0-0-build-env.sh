@@ -283,8 +283,8 @@ else
     export CC="cc"
     export CXX="CC"
   elif [ "$(uname -s)" == "Linux" ]; then
-    export CC="/usr/bin/gcc-6"
-    export CXX="/usr/bin/g++-6"
+    export CC="/usr/bin/gcc-9"
+    export CXX="/usr/bin/g++-9"
   else
     export CC="/usr/bin/gcc"
     export CXX="/usr/bin/g++"
@@ -393,7 +393,8 @@ else
   elif [ "$(uname -s)" == "Darwin" ]; then
     SCONS="/usr/local/bin/scons"
   else
-    SCONS="/usr/bin/python2.7 /usr/bin/scons"
+    #SCONS="/usr/bin/python2.7 /usr/bin/scons"
+    SCONS="python3 /usr/bin/scons"
   fi
   export SCONS
   echo -e "${magenta} SCONS : ${SCONS} ${NC}"
@@ -409,7 +410,7 @@ else
   elif [ "$(uname -s)" == "Linux" ]; then
     SCONS_OPTS="-j32 opt=True"
   else
-    SCONS_OPTS="-j8 --cache-disable gcc_version=4.1.2 opt=True"
+    SCONS_OPTS="-j8 --cache-disable gcc_version=9.2.1 opt=True"
   fi
   #-j32 --cache-disable gcc_version=4.8.5 opt=True
   #--debug=time,explain

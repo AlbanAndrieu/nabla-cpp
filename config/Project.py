@@ -24,7 +24,7 @@ def generate(env, **kw):
 
     if Arch in ['x86Linux', 'cygwin']:
         if not 'gcc_version' in env:
-            env['gcc_version'] = '6'
+            env['gcc_version'] = '9.2.1'
             env['gcc_version'] = subprocess.check_output(
                 ['gcc', '-dumpversion'],
             )[:3]
@@ -35,7 +35,7 @@ def generate(env, **kw):
         env['ENV']['LD_LIBRARY_PATH'] = ''
 
         if 'CLANG' in os.environ:  # set by scan-build
-            env['ENV'].update(x for x in os.environ.items() if (
+            env['ENV'].update(x for x in list(os.environ.items()) if (
                 x[0].startswith('CCC_') or x[0].startswith('CLANG')
             ))
             env['use_clangsa'] = True
@@ -129,8 +129,20 @@ def generate(env, **kw):
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
 
+        # If not set, -l order on command lines matter
+        env['LINKFLAGS'] = [
+            #    '-Wl,--no-as-needed',
+            '-Wl,--as-needed',
+            '-Wl,--no-allow-shlib-undefined',
+        ]
+
         # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-        if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
+
+        if env['gcc_version'] >= '9.2.1' and 'use_cpp11' in env and env['use_cpp11']:
+            env['LINKFLAGS'] += ['-std=c++11', '-pthread']
+
+        #NOK if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
+        if env['gcc_version'] >= '4.9':
             env['LINKFLAGS'] += ['-fdiagnostics-color=always']
 
         if env['gcc_version'] >= '4.6':
@@ -160,18 +172,13 @@ def generate(env, **kw):
                 #'-pie -fPIE', # For ASLR
             ]
 
-        # If not set, -l order on command lines matter
-        env['LINKFLAGS'] = [
-            #    '-Wl,--no-as-needed',
-            '-Wl,--as-needed',
-            '-Wl,--no-allow-shlib-undefined',
 
-        ]
         if not env['use_asan']:
             env['LINKFLAGS'] += ['-Wl,--no-undefined']
 
-        if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
-            env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
+        #if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
+        #    env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
+
             #'-std=gnu++98',
             #'-std=gnu++11',
             #'-std=gnu++0x',
@@ -179,6 +186,9 @@ def generate(env, **kw):
 
         # if env['gcc_version'] >= '5.2':
         #    env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=0']
+
+        if env['gcc_version'] >= '9.2.1' and 'use_cpp11' in env and env['use_cpp11']:
+            env['CCFLAGS'] += ['-std=c++11']
 
         # Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
@@ -248,25 +258,25 @@ def generate(env, **kw):
 
     if env['color']:
 
-        print colored('Platform :', 'magenta'), colored(platform.platform(), 'cyan')
-        print colored('System :', 'magenta'), colored(system, 'cyan')
-        print colored('Machine :', 'magenta'), colored(machine, 'cyan')
-        print colored('Dist :', 'magenta'), colored(dist, 'cyan')
-        print colored('Dist-Os :', 'magenta'), colored(dist[0], 'cyan')
+        print(colored('Platform :', 'magenta'), colored(platform.platform(), 'cyan'))
+        print(colored('System :', 'magenta'), colored(system, 'cyan'))
+        print(colored('Machine :', 'magenta'), colored(machine, 'cyan'))
+        print(colored('Dist :', 'magenta'), colored(dist, 'cyan'))
+        print(colored('Dist-Os :', 'magenta'), colored(dist[0], 'cyan'))
 
-        print colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan')
+        print(colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan'))
         # print "dump whole env :", env.Dump()
         if env['verbose']:
-            print colored('ENV ENV :', 'magenta'), colored(env['ENV'], 'cyan')
+            print(colored('ENV ENV :', 'magenta'), colored(env['ENV'], 'cyan'))
 
-        print colored('ENV TERM :', 'magenta'), colored(env['ENV']['TERM'], 'cyan')
-        print colored('ENV PATH :', 'magenta'), colored(env['ENV']['PATH'], 'cyan')
-        print colored('ENV HOME :', 'magenta'), colored(env['ENV']['HOME'], 'cyan')
+        print(colored('ENV TERM :', 'magenta'), colored(env['ENV']['TERM'], 'cyan'))
+        print(colored('ENV PATH :', 'magenta'), colored(env['ENV']['PATH'], 'cyan'))
+        print(colored('ENV HOME :', 'magenta'), colored(env['ENV']['HOME'], 'cyan'))
 
-        print colored('CXXVERSION :', 'magenta'), colored(env['CXXVERSION'], 'cyan')
-        print colored('CC:', 'magenta'), colored(env['CC'], 'cyan')
-        print colored('CXX :', 'magenta'), colored(env['CXX'], 'cyan')
-        print colored('CCCOM :', 'magenta'), colored(env.subst('$CCCOM'), 'cyan')
+        print(colored('CXXVERSION :', 'magenta'), colored(env['CXXVERSION'], 'cyan'))
+        print(colored('CC:', 'magenta'), colored(env['CC'], 'cyan'))
+        print(colored('CXX :', 'magenta'), colored(env['CXX'], 'cyan'))
+        print(colored('CCCOM :', 'magenta'), colored(env.subst('$CCCOM'), 'cyan'))
 
 
 def exists(env):

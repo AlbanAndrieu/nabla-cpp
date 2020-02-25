@@ -5,21 +5,33 @@ import ProjectMacro
 Import('env')
 localenv = env.Clone()
 
+Arch = ProjectMacro.getArch()
+print("Arch :", Arch)
+
 #exporting headers
 localenv.Install(os.path.join(localenv['PROJECT_INCLUDE_DIR'],''), Glob('include/*.h')+Glob('include/*.ipp'))
 
 #explicit links
 localenv["LIBS"] = [
-	'boost_thread',
-	'boost_date_time',
-	'boost_system',
-	'cppunit',
+    'boost_thread',
+    'boost_date_time',
+    'boost_system',
+    'cppunit',
 ]
 
 localenv.Append(LIBS=['main_library'], LIBPATH=['#main_library'])
 
 #localenv.Prepend(LIBS = 'cppunit')
 
+#localenv['LINKFLAGS'] += ['-std=c++11', '-pthread']
+
+if localenv['color']:
+	from termcolor import colored, cprint
+
+	print(colored('LINKFLAGS :', 'magenta'), colored(localenv['LINKFLAGS'], 'cyan'))
+	# print "dump whole env :", localenv.Dump()
+	print(colored('CXXVERSION :', 'magenta'), colored(localenv['CXXVERSION'], 'cyan'))
+        
 #building shared library
 p = localenv.SharedLibrary(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'test_library'), Glob('*.cpp'))
 

@@ -26,7 +26,7 @@ rm -f sample/build-${ARCH}/conan*
 #rm -Rf buildcache-*
 #rm -Rf scons-signatures-*.dblite
 
-scons clean
+python3 /usr/bin/scons clean
 
 #git clean --quiet -fdx --exclude="*.tgz" --exclude="*md5" --exclude="*VERSION.TXT"
 #git checkout -f .

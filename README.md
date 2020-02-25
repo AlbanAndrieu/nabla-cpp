@@ -10,7 +10,7 @@ A project that contains cpp code sample
 ### Install tools
 
 ```
-sudo apt-get install scons scons-doc
+./install.sh
 ```
 
 See also install.sh
@@ -21,8 +21,8 @@ See also install.sh
 #sudo pip2.7 freeze > requirements-current-2.7.txt
 sudo pip2.7 install -r requirements-current-2.7.txt
 
-#sudo pip3.6 freeze > requirements-current-3.6.txt
-sudo pip3.6 install -r requirements-current-3.6.txt
+#sudo pip3.7 freeze > requirements-current-3.7.txt
+sudo pip3.7 install -r requirements-current-3.7.txt
 ```
 
 See also build.sh for scons AND sample/build-linux/build.sh for cmake
@@ -31,7 +31,7 @@ See also build.sh for scons AND sample/build-linux/build.sh for cmake
 
 ```
 scons
-#scons --cache-disable opt=True gcc_version=5.4.0 color=True
+#python3 /usr/bin/scons --cache-disable opt=True gcc_version=9.2.1 color=True use_cpp11=True
 ```
 
 ### Clean it
