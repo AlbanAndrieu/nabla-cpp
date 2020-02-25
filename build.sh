@@ -1,6 +1,11 @@
 #!/bin/bash
-#set -e
 #set -xv
+#set -eu
+
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+
+# shellcheck source=/dev/null
+source "${WORKING_DIR}/step-0-color.sh"
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 #export ENABLE_MEMCHECK=true
@@ -17,6 +22,8 @@ if [ -n "${ENABLE_CLANG}" ]; then
     export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 fi
 
+export WORKSPACE="${WORKING_DIR}"
+
 source ./step-2-0-0-build-env.sh || exit 1
 
 if [ -n "${SCONS_OPTS}" ]; then
@@ -25,7 +32,7 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
 
   if [ "$(uname -s)" == "Linux" ]; then
-    SCONS_OPTS="target=local --cache-disable gcc_version=5 CC="${CC}" CXX="${CXX}" color=True package"
+    SCONS_OPTS="target=local --cache-disable gcc_version=9.2.1 CC="${CC}" CXX="${CXX}" color=True package"
   else
     SCONS_OPTS="--cache-disable opt=True"
   fi
@@ -55,6 +62,8 @@ pwd
 #-1
 
 ./clean.sh
+
+echo -e "${magenta} Upgrade python from 2 to 3 : 2to3 -w SConstruct ${NC}"
 
 echo -e "${green} Building : scons ${NC}"
 

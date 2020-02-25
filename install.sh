@@ -7,11 +7,11 @@ tar -xzvf rats-2.4.tgz
 cd rats-2.4
 ./configure && make && sudo make install
 ./rats
+ls -lrta /usr/local/bin/rats
 
+sudo apt-get install scons scons-doc
 sudo apt-get install colormake
-sudo apt-get install cppcheck
 #sudo apt-get install findbugs
-sudo apt-get install flawfinder
 #sudo apt-get install cppncss complexity
 sudo apt-get install clang clang-tools clang-tidy
 sudo apt-get install flawfinder cppcheck ggcov gcovr gperf doxygen
@@ -28,18 +28,19 @@ sudo apt install xsltproc
 sudo apt-get install checkinstall
 
 #See https://github.com/include-what-you-use/include-what-you-use
-sudo apt-get install libclang-dev llvm-dev llvm-3.8-dev
+sudo apt-get install libclang-dev llvm-dev #llvm-3.8-dev
 
 llvm-config --version
 clang --version
 
 sudo apt-get install iwyu
 
-sudo apt-get install valgrind gawk kcachegrind valkyrie
-sudo apt-get install linux-tools-4.13.0-26-generic linux-cloud-tools-4.13.0-26-generic linux-tools-generic linux-cloud-tools-generic perf
+sudo apt-get install valgrind gawk kcachegrind #valkyrie
+#sudo apt-get install linux-tools-4.13.0-26-generic linux-cloud-tools-4.13.0-26-generic linux-tools-generic linux-cloud-tools-generic perf
+sudo apt-get install linux-tools-generic linux-cloud-tools-generic
 #See https://github.com/jrfonseca/gprof2dot
-sudo pip install gprof2dot
-sudo pip install cpplint
+pip install gprof2dot
+pip install cpplint
 
 sudo apt-get install libboost-filesystem-dev libcppunit-dev libboost-thread-dev
 #Below do not work
@@ -48,7 +49,7 @@ sudo apt-get install libboost-filesystem-dev libcppunit-dev libboost-thread-dev
 #cmake .
 #make
 
-sudo apt install vera++
+sudo apt-get install vera++
 sudo apt-get install pcregrep
 
 sudo apt-get install sparse
@@ -61,8 +62,8 @@ sudo apt-get install splint
 
 #sudo pip install conan==1.5.1
 sudo pip install conan
-sudo pip install conan_package_tools==0.18.2
+#sudo pip install conan_package_tools==0.18.2
 
-sudo apt-get install vera++ gcovr perl lua5.3 tcl tk 
+sudo apt-get install vera++ gcovr perl lua5.3 tcl tk
 
 exit 0

@@ -214,17 +214,17 @@ def display_build_status(env):
         if env['color']:
             cprint('FAILED!!!!', 'red', attrs=['bold'], file=sys.stderr)
         else:
-            print 'FAILED!!!!'  # could display alert, ring bell, etc.
+            print('FAILED!!!!')  # could display alert, ring bell, etc.
     elif status == 'ok':
         if env['color']:
-            print colored('Build succeeded.', 'green')
+            print(colored('Build succeeded.', 'green'))
         else:
-            print 'Build succeeded.'
+            print('Build succeeded.')
 
     if env['color']:
-        print colored('[Timestamp] FINISH SCONS AT %s' % time.strftime('%H:%M:%S'), 'red')
+        print(colored('[Timestamp] FINISH SCONS AT %s' % time.strftime('%H:%M:%S'), 'red'))
     else:
-        print failures_message
+        print(failures_message)
 
 
 def registerBuildFailuresAtExit(env):

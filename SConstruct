@@ -27,7 +27,7 @@ SCons.Scanner.Dir.skip_entry['.svn'] = 1
 
 # To be retrieved automatically
 Arch = ProjectMacro.getArch()
-print "Arch :", Arch
+print("Arch :", Arch)
 
 Help('''
 Type 'scons' to build and run all the available test cases.
@@ -49,16 +49,16 @@ vars.AddVariables(
     BoolVariable('verbose', 'Show compilation commands', True),
     BoolVariable('use_clang', 'On linux only: replace gcc by clang', True),
     BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
-    BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', False),
+    BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', True),
     BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
     BoolVariable('use_asan', 'On linux only and clang: build with address sanitize', False),
     BoolVariable('color', 'Set to true to build with colorizer', True),
     ('gcc_version', 'Set gcc version to use', '6'),
     ('install_path', 'Set install path', 'install'),
-    ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../../buildcache'),
+    ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../buildcache'),
     ('bom', 'bom location of additional 3rdparties.', ''),
-    ('CC', 'Set C compiler', 'gcc-6'),
-    ('CXX', 'Set C++ compiler', 'g++-6'),
+    ('CC', 'Set C compiler', 'gcc-9'),
+    ('CXX', 'Set C++ compiler', 'g++-9'),
     ('version', 'The version of the component you build', '1.0.0'),
     ('tar', 'tar binary', 'tar'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
@@ -95,16 +95,16 @@ Help(vars.GenerateHelpText(env))
 unknown = vars.UnknownVariables()
 if unknown:
     if env['color']:
-        print colored("Unknown variables:", 'red'), colored(unknown.keys(), 'red')
+        print(colored("Unknown variables:", 'red'), colored(list(unknown.keys()), 'red'))
     else:
-        print "Unknown variables :", unknown.keys()
+        print("Unknown variables :", list(unknown.keys()))
     Exit(1)
 
 if env['verbose']:
     if env['color']:
-        print colored("vars :", 'green'), colored(vars.GenerateHelpText(env), 'green')
+        print(colored("vars :", 'green'), colored(vars.GenerateHelpText(env), 'green'))
     else:
-        print "vars :", vars.GenerateHelpText(env)
+        print("vars :", vars.GenerateHelpText(env))
 
 # Save variables
 vars.Save('variables.py', env)
@@ -119,7 +119,7 @@ AddOption('--createtar', action="store_true",
 # Paths deduced from sandbox location
 env['sandbox'] = Dir("#").srcnode().abspath
 if env['verbose'] and env['color']:
-    print colored("sandbox:", 'magenta'), colored(env['sandbox'], 'cyan')
+    print(colored("sandbox:", 'magenta'), colored(env['sandbox'], 'cyan'))
 
 if 'WORKSPACE' in os.environ:
     env['ENV']['WORKSPACE'] = os.environ['WORKSPACE']
@@ -139,9 +139,9 @@ def TreatWarningsAsErrors(env): # params: list of archs for which warnings must 
         if env['gcc_version'] >= '4.8':
             env.Append(CCFLAGS = ['-Wno-error=maybe-uninitialized'])
     elif Arch in ['sun4sol', 'x86sol']:
-        print "Solaris TreatWarningsAsErrors not handled yet"
+        print("Solaris TreatWarningsAsErrors not handled yet")
     elif Arch in ['winnt', 'win']:
-        print "Windows TreatWarningsAsErrors not handled yet"
+        print("Windows TreatWarningsAsErrors not handled yet")
 
 # Disable a warning on a given architecture
 # (please, do not abuse of this function and use it with caution)
@@ -150,9 +150,9 @@ def DisableWarning(env, arch, warning): # params: - the architecture on which th
     if arch in ['x86Linux'] and env['gcc_version'] >= '4.6':
         env.Append(CCFLAGS = ['-Wno-' + warning])
     elif arch in ['sun4sol', 'x86sol']:
-        print "Solaris DisableWarning not handled yet"
+        print("Solaris DisableWarning not handled yet")
     elif arch in ['winnt']:
-        print "Windows DisableWarning not handled yet"
+        print("Windows DisableWarning not handled yet")
 
 env.AddMethod(DisableWarning, "DisableWarning")
 
@@ -173,7 +173,7 @@ else:
 #  DEV_BINARY_DIR = re.sub(r'dev\/', 'dev_target/', DEV_BINARY_DIR)
 
 if env['verbose'] and env['color']:
-    print colored("DEV_BINARY_DIR:", 'grey'), colored(DEV_BINARY_DIR, 'cyan')
+    print(colored("DEV_BINARY_DIR:", 'grey'), colored(DEV_BINARY_DIR, 'cyan'))
 
 if env['target'] == 'local':
     PROJECT_THIRDPARTY_PATH = env['sandbox'] + '/thirdparty'
@@ -181,22 +181,22 @@ else:
     PROJECT_THIRDPARTY_PATH = ProjectMacro.getEnvVariable('PROJECT_THIRDPARTY_PATH','/thirdparty')
 
 if env['verbose'] and env['color']:
-    print colored("PROJECT_THIRDPARTY_PATH:", 'grey'), colored(PROJECT_THIRDPARTY_PATH, 'cyan')
+    print(colored("PROJECT_THIRDPARTY_PATH:", 'grey'), colored(PROJECT_THIRDPARTY_PATH, 'cyan'))
 
 # might not WORK in eclipse (hard code it)
 PROJECT_JAVA_PATH = ProjectMacro.getEnvVariable('JAVA_HOME', PROJECT_THIRDPARTY_PATH + 'java' + Arch)
 if env['verbose'] and env['color']:
-    print colored("PROJECT_JAVA_PATH:", 'grey'), colored(PROJECT_JAVA_PATH, 'cyan')
+    print(colored("PROJECT_JAVA_PATH:", 'grey'), colored(PROJECT_JAVA_PATH, 'cyan'))
 
 #env['cache_path'] = DEV_BINARY_DIR + '/buildcache-' + Arch
 if env['verbose'] and env['color']:
-    print colored("nv['cache_path']:", 'magenta'), colored(env['cache_path'], 'cyan')
+    print(colored("nv['cache_path']:", 'magenta'), colored(env['cache_path'], 'cyan'))
 CacheDir(env['cache_path']+ Arch)
 SConsignFile(os.path.join(DEV_BINARY_DIR, 'scons-signatures' + Arch))
 
 if env['opt'] == 'True':
     if env['color']:
-        print colored("Optimized mode activated", 'blue')
+        print(colored("Optimized mode activated", 'blue'))
     theOptDbgFolder = 'opt'+env['Suffix64']
     env.Prepend(CCFLAGS = env['opt_flags'])
     env.Prepend(CCFLAGS = '-DNDEBUG')
@@ -205,7 +205,7 @@ if env['opt'] == 'True':
         env.Prepend(CCFLAGS = '-xlibmopt')
 else:
     if env['color']:
-        print colored("Debug mode activated", 'blue')
+        print(colored("Debug mode activated", 'blue'))
     theOptDbgFolder = 'debug'+env['Suffix64']
     env.Prepend(CCFLAGS = env['debug_flags'])
     env.Prepend(CCFLAGS = '-DDEBUG')
@@ -240,10 +240,10 @@ env['PROJECT_BINARY_DIR'] = PROJECT_BINARY_DIR
 env['PROJECT_INCLUDE_DIR'] = PROJECT_INCLUDE_DIR
 
 if env['verbose'] and env['color']:
-    print colored("static lib dir:", 'magenta'), colored(LIBRARY_STATIC_OUTPUT_PATH, 'cyan')
-    print colored("shared lib dir:", 'magenta'), colored(LIBRARY_OUTPUT_PATH, 'cyan')
-    print colored("bin dir:", 'magenta'), colored(PROJECT_BINARY_DIR, 'cyan')
-    print colored("include dir:", 'magenta'), colored(PROJECT_INCLUDE_DIR, 'cyan')
+    print(colored("static lib dir:", 'magenta'), colored(LIBRARY_STATIC_OUTPUT_PATH, 'cyan'))
+    print(colored("shared lib dir:", 'magenta'), colored(LIBRARY_OUTPUT_PATH, 'cyan'))
+    print(colored("bin dir:", 'magenta'), colored(PROJECT_BINARY_DIR, 'cyan'))
+    print(colored("include dir:", 'magenta'), colored(PROJECT_INCLUDE_DIR, 'cyan'))
 
 env['CPPPATH'] = [
     '.',
@@ -285,8 +285,8 @@ env["LIBPATH"]     = [
 
 #print "LIBPATH :", env['LIBPATH']
 LD_LIBRARY_PATH=':'.join([os.path.abspath(x) for x in env['LIBPATH']])
-print "LD_LIBRARY_PATH :", LD_LIBRARY_PATH
-textfile = file('path.sh','w')
+print("LD_LIBRARY_PATH :", LD_LIBRARY_PATH)
+textfile = open('path.sh','w')
 textfile.writelines('#!/bin/sh\n')
 textfile.writelines('#Generated by scons\n')
 textfile.writelines('export LIBPATH=' + LD_LIBRARY_PATH + '\n')
@@ -342,7 +342,7 @@ env['MORELibs'] = [
 ]
 
 if 'package' in COMMAND_LINE_TARGETS:
-    print "Remove nabla-1.2.3 directory"
+    print("Remove nabla-1.2.3 directory")
     env.Execute("rm -Rf nabla-1.2.3")
 
 # Clean
@@ -362,13 +362,13 @@ def mrproper(env, directory=''):
             if up != scmDataDir:
                 scmDataDir = up
             else:
-                print "Looks like this is neither a svn nor a git workspace. I can't mrproper"
+                print("Looks like this is neither a svn nor a git workspace. I can't mrproper")
                 Exit(1)
 
     launchDir = env.GetLaunchDir()
     directory = os.path.join(launchDir, directory)
     if os.path.exists(directory):
-        print "Clean " + directory
+        print("Clean " + directory)
         if scm == 'git':
             subprocess.check_call(['git', 'clean', '-fdxq', directory])
         else:
@@ -398,16 +398,16 @@ def mrproper(env, directory=''):
                         else:
                             raise
                     except WindowsError as e:
-                        print e.errno
+                        print(e.errno)
     else:
-        print "This path does not exist: '%s'" % directory
+        print("This path does not exist: '%s'" % directory)
 
 env.AddMethod(mrproper, "MrProper")
 
 # remove target
 if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
     if env['color']:
-        print colored("Cache/3rdparties cleaning STARTED:", 'blue')
+        print(colored("Cache/3rdparties cleaning STARTED:", 'blue'))
     shutil.rmtree(os.path.join(env['sandbox'], '3rdparties'), ignore_errors=True)
     shutil.rmtree(os.path.join(env['sandbox'], 'nabla-1.2.3'), ignore_errors=True)
     shutil.rmtree(os.path.join(env['sandbox'], 'target'), ignore_errors=True)
@@ -415,23 +415,23 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COM
     shutil.rmtree(os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch), ignore_errors=True)
     env.Execute("rm -Rf variables.py " + os.path.join(env['ENV']['WORKSPACE'], "download3rdparties-cache*") + " " + "scons-signatures-x86Linux.dblite *.tgz *.zip" + " " + os.path.join(env['sandbox'], 'buildcache'  + Arch) + " " + os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch))
     if env['color']:
-        print colored("Cache/3rdparties cleaning DONE:", 'green')
+        print(colored("Cache/3rdparties cleaning DONE:", 'green'))
     SetOption("clean", 1)
     #Exit(0)
 
 # Initialize KGR build dependencies
 if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
     if env['color']:
-        print colored("Downloading 3rdparties STARTED:", 'blue')
+        print(colored("Downloading 3rdparties STARTED:", 'blue'))
     target_dir = os.path.join("3rdparties", Arch)
     from config import download3rdparties
     shutil.rmtree(os.path.join(env['sandbox'], '3rdparties', Arch, 'nabla'), ignore_errors=True)
 
-    print ('python ' + os.path.join('.', 'config', 'download3rdparties.py') + ' --arch=' + Arch + ' --bom=' + os.path.join(os.sep, env['sandbox'], env['bom'])  + ' --third_parties_dir=' + target_dir + ' --color=' + 'True' if env['color'] else 'False')
+    print(('python ' + os.path.join('.', 'config', 'download3rdparties.py') + ' --arch=' + Arch + ' --bom=' + os.path.join(os.sep, env['sandbox'], env['bom'])  + ' --third_parties_dir=' + target_dir + ' --color=' + 'True' if env['color'] else 'False'))
     if env['bom'] != '':
         download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '', 'True' if env['color'] else 'False')
     if env['color']:
-        print colored("Downloading 3rdparties DONE:", 'green')
+        print(colored("Downloading 3rdparties DONE:", 'green'))
     #Exit(0)
 
 #additional libs for link
@@ -458,9 +458,9 @@ SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/app/SConscript')
 # post build stuff
 
 def createTar(tar, path, artifact):
-    print 'Create tar ' + artifact
+    print('Create tar ' + artifact)
     command = [tar, '-C', path, '-czf', artifact, '.']
-    print ' '.join(command)
+    print(' '.join(command))
     subprocess.check_call(command)
 
 def finish(target, source, env):
@@ -480,7 +480,7 @@ def finish(target, source, env):
             'win'      : 'winnt',
         }[arch]
         for tgz in glob.glob('%s*_%s.tgz' % (name, arch)):
-            print 'Delete old tar ' + tgz
+            print('Delete old tar ' + tgz)
             os.remove(tgz)
         if 'SVN_REVISION' in env['ENV']:
            rev = 'r%s'%env['ENV']['SVN_REVISION']
@@ -525,7 +525,7 @@ if not env['verbose']:
    ProjectMacro.reduceBuildVerbosity(env)
 else:
    if env['color']:
-       print colored("DEFAULT_TARGETS:", 'magenta'), colored(map(str, DEFAULT_TARGETS), 'cyan')
+       print(colored("DEFAULT_TARGETS:", 'magenta'), colored(list(map(str, DEFAULT_TARGETS)), 'cyan'))
 
 #registering function to handle builderrors correctly
 #ProjectMacro.registerBuildFailuresAtExit(env)

@@ -5,7 +5,7 @@ import select
 import subprocess
 import sys
 
-import ProjectMacro
+from . import ProjectMacro
 
 c_underline = '\033[04m'
 c_blink = '\033[05m'

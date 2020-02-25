@@ -1,6 +1,6 @@
 #!/bin/sh
 
-scons --tree=prune
-#scons --tree=prune binaries
+python3 /usr/bin/scons --tree=prune
+#python3 /usr/bin/scons --tree=prune binaries
 
-scons --tree=all -n | ./scons2dot.py --save --outfile deps.pdf
+python3 /usr/bin/scons --tree=all -n | ./scons2dot.py --save --outfile deps.pdf
