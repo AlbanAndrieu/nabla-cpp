@@ -27,10 +27,11 @@ sudo pip3.7 install -r requirements-current-3.7.txt
 
 See also build.sh for scons AND sample/build-linux/build.sh for cmake
 
-### Run it
+### Build it
 
 ```
-scons
+export SCONS="/usr/bin/python3.6 /opt/ansible/env36/bin/scons"
+./build.sh
 #python3 /usr/bin/scons --cache-disable opt=True gcc_version=9.2.1 color=True use_cpp11=True
 ```
 

@@ -182,7 +182,7 @@ class ThirdParty:
                 )
 
             if isExpanded:
-                print(self._serial, end=' ')
+                print(self._serial)
                 self._serial = self.serial(name, version, pkg_arch, digest)
                 print('=> %s (%s)' % (self._serial, time.strftime('%d/%m/%Y %H:%M', time.localtime(timestamp))))
 
@@ -227,7 +227,7 @@ class ThirdParty:
         )
         #unchecked_pkg = '%s/%s-%s-%s'%(unchecked_dir,   name, version, digest)
         while not download_ok:
-            print('-> download', end=' ')
+            print('-> download')
             download_count += 1
             base_urls = [self._base_url, self._base_url_old]
             for base_url in base_urls:
@@ -254,7 +254,7 @@ class ThirdParty:
                     computed_digest = hashlib.md5(content).hexdigest()
                     download_ok = (computed_digest == digest)
                     if not download_ok:
-                        print('-> bad md5 (%s)' % computed_digest, end=' ')
+                        print('-> bad md5 (%s)' % computed_digest)
                 if download_ok:
                     break
             if not download_ok and download_count >= try_number:
@@ -285,16 +285,16 @@ class ThirdParty:
             prev_serial = ''
             # Test the serial
             if not os.path.isfile(installed_serial_file):
-                print('%s %s: found with missing serial -> remove' % (name, version), end=' ')
+                print('%s %s: found with missing serial -> remove' % (name, version))
             else:
                 prev_serial = self.get_serial_from_file(installed_serial_file)
                 if prev_serial == self._serial:
                     return  # package ok, nothing to do
-                print('%s %s: found with bad serial -> remove' % (name, version), end=' ')
+                print('%s %s: found with bad serial -> remove' % (name, version))
 
             shutil.rmtree(installed_thirdPartyPath)
         else:
-            print('%s %s: missing' % (name, version), end=' ')
+            print('%s %s: missing' % (name, version))
 
         # Nothing to do if a previously downloaded package is available in the right version.
         # If not, have to download it
@@ -308,12 +308,12 @@ class ThirdParty:
             if not os.path.exists(pkg):
                 self.download()
             else:
-                print('-> in cache', end=' ')
+                print('-> in cache')
         # Then, create directory and extract
         os.makedirs(installed_thirdPartyPath)
-        print('-> extract', end=' ')
+        print('-> extract')
         os.chdir(installed_thirdPartyPath)
-        print('-> tar_cmd (%s)' % tar_cmd(), end=' ')
+        print('-> tar_cmd (%s)' % tar_cmd())
         if(self._arch == 'winnt' or self._arch == 'win'):
             pkg_dir = '%s_dir' % (pkg)
             if os.path.exists(pkg_dir):
@@ -327,7 +327,7 @@ class ThirdParty:
             subprocess.check_call(
                 [tar_cmd(), '-x', '-z', '-f', pkg], shell=False,
             )
-        print('-> create serial', end=' ')
+        print('-> create serial')
         # and create the serial file
         with open(installed_serial_file, 'w') as fic:
             fic.write(self._serial + '\n')
@@ -427,18 +427,18 @@ def getSerialList(bom, arch, bit, compiler, serials):
                     serials.append(line.strip())
                     print('serials : %s' % (serials))
                 else:
-                    print('arch : %s' % (arch), end=' ')
+                    print('arch : %s' % (arch))
                     match = re.search(
                         r'/(%s|noarch)(-[^_]+)?(_[^/]+)?/' % arch, line,
                     )
                     if match:
                         #serialCompiler = match.group(1)
                         targetArch = match.group(1)
-                        print('(match ) targetArch : %s' % (targetArch), end=' ')
+                        print('(match ) targetArch : %s' % (targetArch))
                         serialCompiler = match.group(
                             2,
                         )[1:] if match.group(2) else None
-                        print('- serialCompiler : %s' % (serialCompiler), end=' ')
+                        print('- serialCompiler : %s' % (serialCompiler))
                         serialDetails = match.group(3).split(
                             '_',
                         )[1:] if match.group(3) else None
@@ -463,7 +463,7 @@ def getSerialList(bom, arch, bit, compiler, serials):
                         line = re.sub(r'#.*', '', line)
                         serials.append(line.strip())
                     else:
-                        print('  (no match) : %s' % (line), end=' ')
+                        print('  (no match) : %s' % (line))
     # Check there is no conflict (same package listed more than once)
     count = {}
     for serial in serials:
