@@ -751,7 +751,7 @@ if [ -n "${TARGET_SERVER}" ]; then
   echo -e "${green} TARGET_SERVER is defined ${happy_smiley} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : TARGET_SERVER, use the default one ${NC}"
-  export TARGET_SERVER=nabla.freeboxos.fr
+  export TARGET_SERVER=nabla.albandrieu.com
   echo -e "${magenta} TARGET_SERVER : ${TARGET_SERVER} ${NC}"
 fi
 

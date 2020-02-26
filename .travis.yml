@@ -4,7 +4,19 @@
 
 language: cpp
 sudo: required
-dist: trusty
+dist: travis_lts
+#dist: bionic
+
+python:
+#  - 2.7
+#  - 3.3
+#  - 3.4
+#  - 3.5
+#  - 3.6
+  - 3.7
+
+virtualenv:
+  system_site_packages: false
 
 # Do not build branches of the form "pr/*". By prefixing pull requests coming
 # from branches inside the repository with pr/, this avoids building both the
@@ -57,7 +69,8 @@ cache:
 
 install:
  # Install conan
- - sudo pip install conan
+ # - pip install --upgrade pip
+ - sudo pip install conan==1.21.1
  #- sudo pip2.7 install -r requirements-current-2.7.txt
  # Automatic detection of your arch, compiler, etc.
  - conan user

@@ -143,10 +143,10 @@ echo -e "${magenta} genhtml coverage.info --title \"Nabla during UT\" --output-d
 genhtml coverage.info --title "Nabla during UT" --output-directory "Nabla"
 
 #xml
-echo -e "${magenta} gcovr --branches --xml-pretty -r . 2>&1 > gcovr.xml ${NC}"
+echo -e "${magenta} gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml ${NC}"
 gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml
 #html
-echo -e "${magenta} gcovr --branches -r . --html --html-details -o gcovr-report.html ${NC}"
+echo -e "${magenta} gcovr --branches -r . --html --html-details -o {WORKSPACE}/reports/gcovr-report.html ${NC}"
 gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
 
 #gprof exampleapp gmon.out > gprof_output.txt
