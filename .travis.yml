@@ -13,7 +13,7 @@ python:
 #  - 3.4
 #  - 3.5
   - 3.6
-#  - 3.7
+  - 3.7
 
 virtualenv:
   system_site_packages: false
@@ -138,23 +138,6 @@ matrix:
     #        - libboost-date-time-dev
     #        - libboost-filesystem-dev
     #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.4
-    #- compiler: gcc
-    #  os: linux
-    #  addons:
-    #    apt:
-    #      sources:
-    #        - ubuntu-toolchain-r-test
-    #      packages:
-    #        - g++-4.9
-    #        - cmake
-    #        - colormake
-    #        - libxml2-dev
-    #        - libxml2-utils
-    #        - libcppunit-dev
-    #        - libboost-thread-dev
-    #        - libboost-date-time-dev
-    #        - libboost-filesystem-dev
-    #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.9
     - compiler: gcc
       os: linux
       addons:
@@ -162,7 +145,6 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-5
             - cmake
             - colormake
             - libxml2-dev
@@ -171,7 +153,25 @@ matrix:
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
-      env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-5
+      #env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.4
+      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-7.4.0
+    #- compiler: gcc
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #        - ubuntu-toolchain-r-test
+    #      packages:
+    #        - g++-5
+    #        - cmake
+    #        - colormake
+    #        - libxml2-dev
+    #        - libxml2-utils
+    #        - libcppunit-dev
+    #        - libboost-thread-dev
+    #        - libboost-date-time-dev
+    #        - libboost-filesystem-dev
+    #  env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-5
     - compiler: gcc
       os: linux
       addons:
