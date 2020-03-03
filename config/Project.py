@@ -25,7 +25,7 @@ def generate(env, **kw):
 
     if Arch in ['x86Linux', 'cygwin']:
         if not 'gcc_version' in env:
-            env['gcc_version'] = '9.2.1'
+            env['gcc_version'] = '8'
             env['gcc_version'] = subprocess.check_output(
                 ['gcc', '-dumpversion'],
             )[:3]
