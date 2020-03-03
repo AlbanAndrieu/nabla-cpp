@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 # SCons tool set-arch.py
 import os

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 #################
 # Scons build script
@@ -15,8 +15,8 @@ import sys
 
 from config import ProjectMacro
 
-EnsureSConsVersion(2, 3, 5)
-EnsurePythonVersion(2, 7)
+EnsureSConsVersion(2, 4, 1)
+EnsurePythonVersion(3, 6)
 
 # Hack to ensure that .svn changes don't trigger rebuild where using DirScanner
 SCons.Scanner.Dir.skip_entry['.svn'] = 1
@@ -53,7 +53,7 @@ vars.AddVariables(
     BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
     BoolVariable('use_asan', 'On linux only and clang: build with address sanitize', False),
     BoolVariable('color', 'Set to true to build with colorizer', True),
-    ('gcc_version', 'Set gcc version to use', '6'),
+    ('gcc_version', 'Set gcc version to use', '6.5'),
     ('install_path', 'Set install path', 'install'),
     ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../buildcache'),
     ('bom', 'bom location of additional 3rdparties.', ''),

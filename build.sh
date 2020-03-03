@@ -65,6 +65,12 @@ pwd
 
 echo -e "${magenta} Upgrade python from 2 to 3 : 2to3 -w SConstruct ${NC}"
 
+#conan profile new test --detect
+conan profile list
+echo "conan profile update settings.compiler.libcxx=libstdc++11 default"
+#ls -lrta $HOME/.conan/profiles
+conan profile show default
+
 echo -e "${green} Building : scons ${NC}"
 
 #cd /workspace
