@@ -163,23 +163,23 @@ matrix:
             - libboost-filesystem-dev
       #env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.4
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-7
-    #- compiler: gcc
-    #  os: linux
-    #  addons:
-    #    apt:
-    #      sources:
-    #        - ubuntu-toolchain-r-test
-    #      packages:
-    #        - g++-5
-    #        - cmake
-    #        - colormake
-    #        - libxml2-dev
-    #        - libxml2-utils
-    #        - libcppunit-dev
-    #        - libboost-thread-dev
-    #        - libboost-date-time-dev
-    #        - libboost-filesystem-dev
-    #  env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-5
+    - compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+            - cmake
+            - colormake
+            - libxml2-dev
+            - libxml2-utils
+            - libcppunit-dev
+            - libboost-thread-dev
+            - libboost-date-time-dev
+            - libboost-filesystem-dev
+      env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-8
     - compiler: gcc
       os: linux
       addons:
