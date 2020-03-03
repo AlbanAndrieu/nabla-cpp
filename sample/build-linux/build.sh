@@ -2,6 +2,8 @@
 set -e
 #set -xv
 
+unset SCONS
+
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 export ENABLE_MEMCHECK=true
 export UNIT_TESTS=true
@@ -40,6 +42,8 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
 ./clean.sh
 
+./conan.sh
+
 #cd $PROJECT_SRC/sample/microsoft
 
 #wget https://cppan.org/client/cppan-master-Linux-client.deb
@@ -47,40 +51,6 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 #cppan
 
 cd "${PROJECT_SRC}/sample/build-${ARCH}"
-
-#See https://conan.io/
-#See https://bintray.com/bincrafters/public-conan
-
-if [ -n "${ENABLE_CLANG}" ]; then
-
-    if [ "$(uname -s)" == "Linux" ]; then
-    
-        case $(uname -m) in
-        x86_64)	    
-            echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"            
-            
-            #conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan || true
-            #conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
-            
-            #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
-            ##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
-            ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
-            #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
-            echo -e "${magenta} conan install ../microsoft/ --build boost_system ${NC}"
-            conan install ../microsoft/ --build boost_system
-            #conan info ../microsoft/ --graph=file.html
-	    
-            ;;
-        i*86)
-            ;;
-        *)
-            # leave ARCH as-is
-            ;;
-        esac
-        
-    fi
-    
-fi
 
 rm -f CMakeCache.txt
 rm -f compile_commands.json
