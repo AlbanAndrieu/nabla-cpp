@@ -130,7 +130,7 @@ def idl2hh_bld(env, target, source):
 
 
 def registerIDLBuilders(env, thirdPartyDir, arch):
-            # IDL generation builder function
+    # IDL generation builder function
     idl2many_bld = SCons.Builder.Builder(
         action=SCons.Action.Action(
             '$IDL $IDLFLAGS -I$KTPPIncludesDir ${SOURCE} -o ${TARGET.dir}', '$IDLCOMSTR',
@@ -222,7 +222,10 @@ def display_build_status(env):
             print('Build succeeded.')
 
     if env['color']:
-        print(colored('[Timestamp] FINISH SCONS AT %s' % time.strftime('%H:%M:%S'), 'red'))
+        print(colored(
+            '[Timestamp] FINISH SCONS AT %s' %
+            time.strftime('%H:%M:%S'), 'red',
+        ))
     else:
         print(failures_message)
 

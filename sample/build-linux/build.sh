@@ -54,14 +54,14 @@ cd "${PROJECT_SRC}/sample/build-${ARCH}"
 if [ -n "${ENABLE_CLANG}" ]; then
 
     if [ "$(uname -s)" == "Linux" ]; then
-    
+
         case $(uname -m) in
-        x86_64)	    
-            echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"            
-            
+        x86_64)
+            echo -e "${green} ENABLE_CLANG is undefined, using CONAN ${happy_smiley} ${NC}"
+
             #conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan || true
             #conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
-            
+
             #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
             ##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
             ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
@@ -69,7 +69,7 @@ if [ -n "${ENABLE_CLANG}" ]; then
             echo -e "${magenta} conan install ../microsoft/ --build boost_system ${NC}"
             conan install ../microsoft/ --build boost_system
             #conan info ../microsoft/ --graph=file.html
-	    
+
             ;;
         i*86)
             ;;
@@ -77,9 +77,9 @@ if [ -n "${ENABLE_CLANG}" ]; then
             # leave ARCH as-is
             ;;
         esac
-        
+
     fi
-    
+
 fi
 
 rm -f CMakeCache.txt
@@ -92,7 +92,7 @@ if [ "${OS}" == "Debian" ]; then
     echo -e "${green} CPP flags : ${NC}"
 
 	dpkg-buildflags
-	
+
 	#CPPFLAGS=$(dpkg-buildflags --get CPPFLAGS)
 	#CFLAGS=$(dpkg-buildflags --get CFLAGS)
 	#CXXFLAGS=$(dpkg-buildflags --get CXXFLAGS)
@@ -182,7 +182,7 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
     #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheckctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
 
     #${MAKE} tests
-    
+
 fi
 
 if [ `uname -s` == "Linux" ]; then
@@ -195,7 +195,7 @@ if [ `uname -s` == "Linux" ]; then
     echo -e "${magenta} fix_includes.py < ./iwyu.out ${NC}"
     if [[ ! -f ./fix_includes.py ]]; then
         wget https://github.com/vancegroup-mirrors/include-what-you-use/blob/master/fix_includes.py && chmod 777 fix_includes.py || true
-    fi 
+    fi
     if [[ -f ./fix_includes.py ]]; then
         ./fix_includes.py < ./iwyu.out
     fi

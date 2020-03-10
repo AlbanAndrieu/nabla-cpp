@@ -117,12 +117,12 @@ if [ "$(uname -s)" == "SunOS" ]; then
     PATH=${SUNSTUDIO_HOME}/bin:${PATH}
   fi
   export PATH
-  echo -e "${magenta} PATH : ${PATH} ${NC}"  
+  echo -e "${magenta} PATH : ${PATH} ${NC}"
 elif [ "$(uname -s)" == "Linux" ]; then
   #For RedHat add /usr/sbin
   PATH=${PATH}:/usr/sbin;
   export PATH
-  echo -e "${magenta} PATH : ${PATH} ${NC}"  
+  echo -e "${magenta} PATH : ${PATH} ${NC}"
 fi
 
 if [ -z "$WORKSPACE" ]; then
@@ -132,7 +132,7 @@ fi
 if [ -n "${WORKSPACE}" ]; then
   if [ "${SYSTEM}" == "MSYS" -o "${SYSTEM}" == "Cygwin" ]; then
       export WORKSPACE=`cygpath -u ${WORKSPACE}`
-  fi  
+  fi
   echo -e "${green} WORKSPACE is defined ${happy_smiley} : ${WORKSPACE} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE, use default one ${NC}"
@@ -335,7 +335,7 @@ if [ -n "${SONAR_PROCESSOR}" ]; then
   echo -e "${green} SONAR_PROCESSOR is defined ${happy_smiley} : ${SONAR_PROCESSOR} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_PROCESSOR, use default one ${NC}"
-  SONAR_PROCESSOR=$(uname -m | sed 's/_/-/g')  # x86_64 -> x86-64    
+  SONAR_PROCESSOR=$(uname -m | sed 's/_/-/g')  # x86_64 -> x86-64
   if [ "$(uname -s)" == "Linux" ]; then
     case $(uname -m) in
     x86_64)

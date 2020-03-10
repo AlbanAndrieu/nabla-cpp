@@ -15,7 +15,7 @@ node ('albandri'){
        steps {
            script {
                sh "conan remove --system-reqs '*'"
-               
+
                docker.withRegistry('https://registry.nabla.mobi', 'docker-login') {
                    def DOCKER_REGISTRY_URI="registry.nabla.mobi"
                    //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
@@ -40,7 +40,7 @@ node ('albandri'){
                    //sh "docker push ${myImg.imageName()}"
                    //} // withCredentials
                } // withRegistry
-          } // script             
+          } // script
       } // steps
    }
    post {
@@ -58,7 +58,7 @@ node ('albandri'){
 	 }
 	 success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
    }
-  
+
    stage('SonarQube analysis') {
        environment {
            SONAR_SCANNER_OPTS = "-Xmx1g"

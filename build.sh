@@ -143,7 +143,7 @@ echo -e "${magenta} genhtml coverage.info --title \"Nabla during UT\" --output-d
 genhtml coverage.info --title "Nabla during UT" --output-directory "Nabla"
 
 mkdir "${WORKSPACE}/reports"
- 
+
 #xml
 echo -e "${magenta} gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml ${NC}"
 /usr/bin/python3.6 /usr/local/bin/gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml

@@ -31,7 +31,7 @@ if localenv['color']:
 	print(colored('LINKFLAGS :', 'magenta'), colored(localenv['LINKFLAGS'], 'cyan'))
 	# print "dump whole env :", localenv.Dump()
 	print(colored('CXXVERSION :', 'magenta'), colored(localenv['CXXVERSION'], 'cyan'))
-        
+
 #building shared library
 p = localenv.SharedLibrary(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'test_library'), Glob('*.cpp'))
 

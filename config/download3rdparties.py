@@ -1,6 +1,5 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
-import argparse
 import contextlib
 import getpass
 import glob
@@ -13,18 +12,20 @@ import subprocess
 import sys
 import tempfile
 import time
-import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
+import urllib.error
 import urllib.parse
+import urllib.request
+from contextlib import contextmanager
+
+import argparse
 
 sandbox = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 thirdPartyRoot = '%s/3rdparties' % sandbox
 
-#==============================================================================
+# ==============================================================================
 # Lock class
-#==============================================================================
+# ==============================================================================
 
-from contextlib import contextmanager
 if os.name == 'nt':
     @contextmanager
     def Lock(lock_file):
@@ -102,12 +103,12 @@ else:
 # Set unbuffered stdout for progress messages
 #sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
-#==============================================================================
+# ==============================================================================
 
 
 class ThirdParty:
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, arch, serial, base_url, base_url_old, sandbox_dir, third_parties_dir):
         self._arch = arch
         self._serial = serial
@@ -124,7 +125,7 @@ class ThirdParty:
         )
         self.expandLatestKeywords()
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def info(self, serial=None):
         if not serial:
             serial = self._serial
@@ -139,11 +140,11 @@ class ThirdParty:
 
         return tuple(serial_as_list)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def serial(self, *infos):
         return '/'.join(infos)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def expandLatestKeywords(self):
         name, version, pkg_arch, digest = self.info()
         isExpanded = False
@@ -184,15 +185,19 @@ class ThirdParty:
             if isExpanded:
                 print(self._serial)
                 self._serial = self.serial(name, version, pkg_arch, digest)
-                print('=> %s (%s)' % (self._serial, time.strftime('%d/%m/%Y %H:%M', time.localtime(timestamp))))
+                print('=> %s (%s)' % (
+                    self._serial, time.strftime(
+                    '%d/%m/%Y %H:%M', time.localtime(timestamp),
+                    ),
+                ))
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def get_serial_from_file(self, filepath):
         with open(filepath) as fic:
             serial = fic.read().strip()
         return serial
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def download(self):
         name, version, pkg_arch, digest = self.info()
 
@@ -266,7 +271,7 @@ class ThirdParty:
         # package is ok, move it out of unchecked dir
         os.rename(unchecked_pkg, pkg)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def get(self):
         name, version, pkg_arch, digest = self.info()
         thirdPartyRoot = '%s/%s' % (self._sandbox_dir, self._third_parties_dir)
@@ -285,12 +290,14 @@ class ThirdParty:
             prev_serial = ''
             # Test the serial
             if not os.path.isfile(installed_serial_file):
-                print('%s %s: found with missing serial -> remove' % (name, version))
+                print('%s %s: found with missing serial -> remove' %
+                      (name, version))
             else:
                 prev_serial = self.get_serial_from_file(installed_serial_file)
                 if prev_serial == self._serial:
                     return  # package ok, nothing to do
-                print('%s %s: found with bad serial -> remove' % (name, version))
+                print('%s %s: found with bad serial -> remove' %
+                      (name, version))
 
             shutil.rmtree(installed_thirdPartyPath)
         else:
@@ -334,9 +341,9 @@ class ThirdParty:
         print('-> done')
 
 
-#==============================================================================
+# ==============================================================================
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def getCurrentArch():
     arch = None
     system = platform.system()
@@ -354,7 +361,7 @@ def getCurrentArch():
         raise Exception("Can't find out on which architecture I'm running")
     return arch
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def tar_cmd():
@@ -367,10 +374,10 @@ def tar_cmd():
         'sol': '/usr/sfw/bin/gtar',
         'solsparc': '/usr/sfw/bin/gtar',
         'win': '7z',
-        #'win'      : 'bsdtar',
+        # 'win'      : 'bsdtar',
     }[getCurrentArch()]
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def getSerialList(bom, arch, bit, compiler, serials):
@@ -479,7 +486,7 @@ def getSerialList(bom, arch, bit, compiler, serials):
         ))
     return serials
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 def writeArchBom(serials):
@@ -489,7 +496,7 @@ def writeArchBom(serials):
         for serial in sorted(serials):
             bom.write(serial + '\n')
 
-#==============================================================================
+# ==============================================================================
 
 
 def generate(env, **kw):
@@ -566,8 +573,10 @@ def main(env, args):
         '--serials',  action='append',
         help='directly specify some serials (multiple uses are possible', required=False,
     )
-    parser.add_argument('--color',    default=False,
-                        help='set to true to build with colorizer', required=False)
+    parser.add_argument(
+        '--color',    default=False,
+        help='set to true to build with colorizer', required=False,
+    )
 
     args = parser.parse_args(args)
     if args.third_parties_dir == parser.get_default('third_parties_dir'):
@@ -576,7 +585,7 @@ def main(env, args):
     # parse sys.argv[1:] using optparse or argparse or what have you
     download(
         args.arch, args.bit, args.compiler, args.base_url_old,
-        args.base_url, args.bom, args.third_parties_dir, args.serials, args.color
+        args.base_url, args.bom, args.third_parties_dir, args.serials, args.color,
     )
 
 

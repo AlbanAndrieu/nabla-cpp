@@ -41,4 +41,3 @@ ADD_CUSTOM_TARGET(tests "${CTEST_BINARY_DIRECTORY}/run_tests" DEPENDS run_tests 
 #  GET_FILENAME_COMPONENT(TestName ${test} NAME_WE)
 #  ADD_TEST(${TestName} ${PROJECT_INSTALL_DIR}/bin/run_tests ${TestName})
 #ENDFOREACH(test)
-

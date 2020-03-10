@@ -98,6 +98,11 @@ TODO
 .. |date| date:: %m-%d-%y
 """
 
+import tempfile
+import sets
+import os.path
+import sys
+import re
 cmd_line_usage = \
     """
 Usage: %prog [options]
@@ -121,11 +126,6 @@ scons --tree=all -n | %prog --save --outfile deps.pdf
 ##########################################################################
 # Std. imports
 ##########################################################################
-import re
-import sys
-import os.path
-import sets
-import tempfile
 
 
 ##########################################################################
@@ -211,7 +211,7 @@ class DotBuilder(object):
         self.print_graph()
         self.fd.close()
 
-        #(the following is a cheap trick to do str replacement
+        # (the following is a cheap trick to do str replacement
         # using this object's dictionary as the replacement.)
         cmd = self.dot_cmd % self.__dict__
         cmd += ' %s' % fname

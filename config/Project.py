@@ -73,7 +73,7 @@ def generate(env, **kw):
             env['cc_path'] = '/sunpro/sun-studio-12.x86sol_2/SUNWspro/bin'
         else:
             env['cc_path'] = '/sunpro/sun-studio-12/SUNWspro/bin'
-        #/opt/SUNWspro/bin:/usr/sfw/bin
+        # /opt/SUNWspro/bin:/usr/sfw/bin
         env['ENV']['PATH'] = env['cc_path'] + \
             ':/usr/bin:/usr/sbin:/usr/ccs/bin:/usr/local/bin'
         env['ENV']['LD_LIBRARY_PATH'] = ''
@@ -90,7 +90,7 @@ def generate(env, **kw):
         env['CCFLAGS'] = [
             '-pthread',
             '-g',
-            #'-Werror', #Turns all warnings into errors.
+            # '-Werror', #Turns all warnings into errors.
             '-Wall',  # Turn on all warnings
             '-fdiagnostics-show-option',  # sonar cxx
             '-Wl,-z,relro,now',  # Full RELRO
@@ -102,31 +102,31 @@ def generate(env, **kw):
             '-Wconversion',
             '-Wsign-conversion',
             '-Wpedantic',
-            #'-mmitigate-rop'
-            #'-Wunreacheable-code',
+            # '-mmitigate-rop'
+            # '-Wunreacheable-code',
             '-ansi',
             '-O3',
             '-m64',
             '-fomit-frame-pointer',
-            #'-fno-rtti',
+            # '-fno-rtti',
             '-fexceptions',
-            #'-Wno-deprecated',
-            #'-Wno-ctor-dtor-privacy',
+            # '-Wno-deprecated',
+            # '-Wno-ctor-dtor-privacy',
             '-Dlinux',
             '-DNDEBUG',  # assert
             '-pedantic',
             '-pedantic-errors',
-            #'-fstrict-aliasing',
+            # '-fstrict-aliasing',
             '-DACE_HAS_EXCEPTIONS',
             '-DuseTao',
             '-fPIC',
-            #'-D_TEMPLATES_ENABLE_',
-            #'-include','/usr/include/stdio.h',
-            #'-include','/usr/include/stdlib.h',
+            # '-D_TEMPLATES_ENABLE_',
+            # '-include','/usr/include/stdio.h',
+            # '-include','/usr/include/stdlib.h',
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/cstring',
             #'-include','/usr/include/c++/' + env['gcc_version'] + '/typeinfo',
-            #'-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
-            #'-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
+            # '-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
+            # '-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
 
         # If not set, -l order on command lines matter
@@ -141,7 +141,7 @@ def generate(env, **kw):
         if env['gcc_version'] >= '9.2.1' and 'use_cpp11' in env and env['use_cpp11']:
             env['LINKFLAGS'] += ['-std=c++11', '-pthread']
 
-        #NOK if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
+        # NOK if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
         if env['gcc_version'] >= '4.9':
             env['LINKFLAGS'] += ['-fdiagnostics-color=always']
 
@@ -162,27 +162,26 @@ def generate(env, **kw):
         if env['gcc_version'] >= '4.8':
             env['CCFLAGS'] += [
                 '-D_FORTIFY_SOURCE=2',
-                #'-fstack-protector', # Gives warnings
+                # '-fstack-protector', # Gives warnings
                 '-fstack-protector-all',
                 '-Wno-error=maybe-uninitialized',
                 '-Wno-unused-local-typedefs',
                 '-Wno-conversion-null',
                 '-Wno-invalid-offsetof',
-                #'-fmudflap', #http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
-                #'-pie -fPIE', # For ASLR
+                # '-fmudflap', #http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
+                # '-pie -fPIE', # For ASLR
             ]
-
 
         if not env['use_asan']:
             env['LINKFLAGS'] += ['-Wl,--no-undefined']
 
-        #if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
+        # if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
         #    env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
 
-            #'-std=gnu++98',
-            #'-std=gnu++11',
-            #'-std=gnu++0x',
-            #'-std=c++0x',
+            # '-std=gnu++98',
+            # '-std=gnu++11',
+            # '-std=gnu++0x',
+            # '-std=c++0x',
 
         # if env['gcc_version'] >= '5.2':
         #    env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=0']
@@ -196,9 +195,9 @@ def generate(env, **kw):
         env.Append(CORECFLAGS='-Wextra')
 
         if 'use_gcov' in env and env['use_gcov']:
-            #'-fprofile-generate',
-            #'-fprofile-arcs',
-            #'-ftest-coverage',
+            # '-fprofile-generate',
+            # '-fprofile-arcs',
+            # '-ftest-coverage',
             env['CCFLAGS'] += ['-fprofile-arcs', '-ftest-coverage']
             env['LINKFLAGS'] += ['-lgcov', '--coverage']
             #env['LINKFLAGS'] += ['-g --coverage']
@@ -258,7 +257,10 @@ def generate(env, **kw):
 
     if env['color']:
 
-        print(colored('Platform :', 'magenta'), colored(platform.platform(), 'cyan'))
+        print(
+            colored('Platform :', 'magenta'),
+            colored(platform.platform(), 'cyan'),
+        )
         print(colored('System :', 'magenta'), colored(system, 'cyan'))
         print(colored('Machine :', 'magenta'), colored(machine, 'cyan'))
         print(colored('Dist :', 'magenta'), colored(dist, 'cyan'))
@@ -269,14 +271,29 @@ def generate(env, **kw):
         if env['verbose']:
             print(colored('ENV ENV :', 'magenta'), colored(env['ENV'], 'cyan'))
 
-        print(colored('ENV TERM :', 'magenta'), colored(env['ENV']['TERM'], 'cyan'))
-        print(colored('ENV PATH :', 'magenta'), colored(env['ENV']['PATH'], 'cyan'))
-        print(colored('ENV HOME :', 'magenta'), colored(env['ENV']['HOME'], 'cyan'))
+        print(
+            colored('ENV TERM :', 'magenta'),
+            colored(env['ENV']['TERM'], 'cyan'),
+        )
+        print(
+            colored('ENV PATH :', 'magenta'),
+            colored(env['ENV']['PATH'], 'cyan'),
+        )
+        print(
+            colored('ENV HOME :', 'magenta'),
+            colored(env['ENV']['HOME'], 'cyan'),
+        )
 
-        print(colored('CXXVERSION :', 'magenta'), colored(env['CXXVERSION'], 'cyan'))
+        print(
+            colored('CXXVERSION :', 'magenta'),
+            colored(env['CXXVERSION'], 'cyan'),
+        )
         print(colored('CC:', 'magenta'), colored(env['CC'], 'cyan'))
         print(colored('CXX :', 'magenta'), colored(env['CXX'], 'cyan'))
-        print(colored('CCCOM :', 'magenta'), colored(env.subst('$CCCOM'), 'cyan'))
+        print(
+            colored('CCCOM :', 'magenta'),
+            colored(env.subst('$CCCOM'), 'cyan'),
+        )
 
 
 def exists(env):
