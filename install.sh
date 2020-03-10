@@ -9,6 +9,8 @@ cd rats-2.4
 ./rats
 ls -lrta /usr/local/bin/rats
 
+sudo apt install g++-8
+
 sudo apt-get install scons scons-doc
 sudo apt-get install colormake
 #sudo apt-get install findbugs

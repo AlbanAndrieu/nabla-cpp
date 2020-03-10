@@ -211,45 +211,71 @@ if [ "${OS}" == "Debian" ]; then
     #LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
-if [ -n "${CC}" ]; then
-  echo -e "${green} CC is defined ${happy_smiley} : ${CC} ${NC}"
+#if [ -n "${CC}" ]; then
+#  echo -e "${green} CC is defined ${happy_smiley} : ${CC} ${NC}"
+#else
+#  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CC, use default one ${NC}"
+#  if [ -n "${ENABLE_CLANG}" ]; then
+#    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+#    export CC="/usr/bin/clang"
+#  else
+#    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+#    if [ "$(uname -s)" == "SunOS" ]; then
+#      export CC="cc"
+#    elif [ "$(uname -s)" == "Linux" ]; then
+#      export CC="/usr/bin/gcc-8"
+#    else
+#      export CC="/usr/bin/gcc"
+#    fi
+#  fi
+#  echo -e "${magenta} CC : ${CC} ${NC}"
+#fi
+#
+#if [ -n "${CXX}" ]; then
+#  echo -e "${green} COMPILER is defined ${happy_smiley} : ${CXX} ${NC}"
+#else
+#  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CXX, use default one ${NC}"
+#  if [ -n "${ENABLE_CLANG}" ]; then
+#    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+#    export CXX="/usr/bin/clang++"
+#    export COMPILER=${CXX}
+#  else
+#    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+#    if [ "$(uname -s)" == "SunOS" ]; then
+#      export CXX="CC"
+#    elif [ "$(uname -s)" == "Linux" ]; then
+#      export CXX="/usr/bin/g++-8"
+#    else
+#      export CXX="/usr/bin/g++"
+#    fi
+#    export COMPILER=${CXX}
+#  fi
+#  echo -e "${magenta} COMPILER : ${COMPILER} ${NC}"
+#fi
+
+if [ -n "${ENABLE_CLANG}" ]; then
+  echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+  export CC="/usr/bin/clang"
+  export CXX="/usr/bin/clang++"
 else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CC, use default one ${NC}"
-  if [ -n "${ENABLE_CLANG}" ]; then
-    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
-    export CC="/usr/bin/clang"
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
+  if [ "$(uname -s)" == "SunOS" ]; then
+    export CC="cc"
+    export CXX="CC"
+  elif [ "$(uname -s)" == "Linux" ]; then
+    export CC="/usr/bin/gcc-8"
+    export CXX="/usr/bin/g++-8"
   else
-    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
-    if [ "$(uname -s)" == "SunOS" ]; then
-      export CC="cc"
-    elif [ "$(uname -s)" == "Linux" ]; then
-      export CC="/usr/bin/gcc-6"
-    else
-      export CC="/usr/bin/gcc"
-    fi
+    export CC="/usr/bin/gcc"
+    export CXX="/usr/bin/g++"
   fi
-  echo -e "${magenta} CC : ${CC} ${NC}"
 fi
 
-if [ -n "${CXX}" ]; then
-  echo -e "${green} COMPILER is defined ${happy_smiley} : ${CXX} ${NC}"
+if [ -n "${COMPILER}" ]; then
+  echo -e "${green} COMPILER is defined ${happy_smiley} : ${COMPILER} ${CC} ${CXX} ${NC}"
 else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CXX, use default one ${NC}"
-  if [ -n "${ENABLE_CLANG}" ]; then
-    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
-    export CXX="/usr/bin/clang++"
-    export COMPILER=${CXX}
-  else
-    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
-    if [ "$(uname -s)" == "SunOS" ]; then
-      export CXX="CC"
-    elif [ "$(uname -s)" == "Linux" ]; then
-      export CXX="/usr/bin/g++-6"
-    else
-      export CXX="/usr/bin/g++"
-    fi
-    export COMPILER=${CXX}
-  fi
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : COMPILER, use default one ${NC}"
+  export COMPILER=${CXX}
   echo -e "${magenta} COMPILER : ${COMPILER} ${NC}"
 fi
 
@@ -271,32 +297,6 @@ else
   export BITS
   #echo -e "${yellow} Override BITS ${BITS} upon you choice ${NC}"
   echo -e "${magenta} BITS : ${BITS} ${NC}"
-fi
-
-if [ -n "${ENABLE_CLANG}" ]; then
-  echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
-  export CC="/usr/bin/clang"
-  export CXX="/usr/bin/clang++"
-else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
-  if [ "$(uname -s)" == "SunOS" ]; then
-    export CC="cc"
-    export CXX="CC"
-  elif [ "$(uname -s)" == "Linux" ]; then
-    export CC="/usr/bin/gcc-9"
-    export CXX="/usr/bin/g++-9"
-  else
-    export CC="/usr/bin/gcc"
-    export CXX="/usr/bin/g++"
-  fi
-fi
-
-if [ -n "${COMPILER}" ]; then
-  echo -e "${green} COMPILER is defined ${happy_smiley} : ${COMPILER} ${CC} ${CXX} ${NC}"
-else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : COMPILER, use default one ${NC}"
-  export COMPILER=${CXX}
-  echo -e "${magenta} COMPILER : ${COMPILER} ${NC}"
 fi
 
 if [ -n "${ANSIBLE_CMD}" ]; then

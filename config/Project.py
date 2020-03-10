@@ -141,7 +141,7 @@ def generate(env, **kw):
 
         # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-        if env['gcc_version'] >= '9.2.1' and 'use_cpp11' in env and env['use_cpp11']:
+        if env['gcc_version'] >= '8' and 'use_cpp11' in env and env['use_cpp11']:
             env['LINKFLAGS'] += ['-std=c++11', '-pthread']
 
         # NOK if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
@@ -189,7 +189,7 @@ def generate(env, **kw):
         # if env['gcc_version'] >= '5.2':
         #    env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=0']
 
-        if env['gcc_version'] >= '9.2.1' and 'use_cpp11' in env and env['use_cpp11']:
+        if env['gcc_version'] >= '8' and 'use_cpp11' in env and env['use_cpp11']:
             env['CCFLAGS'] += ['-std=c++11']
 
         # Activate for debug purpose (when we integrate and we have error with symbols resolutions)

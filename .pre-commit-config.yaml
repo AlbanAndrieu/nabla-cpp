@@ -33,11 +33,11 @@ repos:
     -   id: sort-simple-yaml
 #    -   id: flake8
 -   repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: ''  # Use the sha / tag you want to point at
+    rev: v1.5
     hooks:
     -   id: autopep8
 -   repo: https://gitlab.com/pycqa/flake8
-    rev: ''  # Use the sha / tag you want to point at
+    rev: 3.7.9  # Use the sha / tag you want to point at
     hooks:
     -   id: flake8
         args: [--max-line-length=120]

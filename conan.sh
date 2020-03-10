@@ -9,6 +9,10 @@ source "${WORKING_DIR}/step-0-color.sh"
 
 echo -e "${cyan} ${double_arrow} Conan install ${NC}"
 
+conan user
+conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan || true
+conan user -r nabla albanandrieu
+
 #conan profile new test --detect
 conan profile list
 echo "conan profile update settings.compiler.libcxx=libstdc++11 default"

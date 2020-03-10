@@ -294,7 +294,7 @@ echo -e "${green} Clang tidy/format ${NC}"
 #clang-tidy -dump-config
 clang-tidy $PROJECT_SRC/sample/microsoft/src/main/app/run_app.cpp
 
-echo "http://192.168.0.28/cdash/user.php"
+echo "http://192.168.1.61/cdash/user.php"
 echo "http://maven.nabla.mobi/cpp/microsoft/index.html"
 
 exit 0
