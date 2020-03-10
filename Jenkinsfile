@@ -58,7 +58,6 @@ node ('albandri'){
 	 }
 	 success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
    }
-
    stage('SonarQube analysis') {
        environment {
            SONAR_SCANNER_OPTS = "-Xmx1g"

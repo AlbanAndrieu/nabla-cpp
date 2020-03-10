@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 # SCons tool set-arch.py
 import os
@@ -24,7 +25,7 @@ def generate(env, **kw):
 
     if Arch in ['x86Linux', 'cygwin']:
         if not 'gcc_version' in env:
-            env['gcc_version'] = '9.2.1'
+            env['gcc_version'] = '8'
             env['gcc_version'] = subprocess.check_output(
                 ['gcc', '-dumpversion'],
             )[:3]
@@ -35,9 +36,11 @@ def generate(env, **kw):
         env['ENV']['LD_LIBRARY_PATH'] = ''
 
         if 'CLANG' in os.environ:  # set by scan-build
-            env['ENV'].update(x for x in list(os.environ.items()) if (
-                x[0].startswith('CCC_') or x[0].startswith('CLANG')
-            ))
+            env['ENV'].update(
+                x for x in list(os.environ.items()) if (
+                    x[0].startswith('CCC_') or x[0].startswith('CLANG')
+                )
+            )
             env['use_clangsa'] = True
         if 'use_clangsa' in env and env['use_clangsa']:
             env['CC'] = os.environ.get('CC')

@@ -19,11 +19,7 @@ ADD_EXECUTABLE(run_app run_app.cpp)
 
 TARGET_LINK_LIBRARIES(run_app --coverage main_library)
 
-IF(CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    TARGET_LINK_LIBRARIES(gcov)
-ELSE()
-    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
-ENDIF()
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 
 INSTALL(TARGETS run_app
   EXPORT  microsoft-install

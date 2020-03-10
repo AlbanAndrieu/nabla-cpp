@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 # Helper functions for the scons build
 # inspired from SconsBuilder.py
@@ -9,7 +10,6 @@ import re
 import string
 import time
 
-import SCons
 import SCons.Scanner.IDL
 
 ######################################################
@@ -29,8 +29,10 @@ def listDirectories(path, skip=[]):
     if path == '':
         path = '.'
     dirlist = sorted(
-        [item for item in os.listdir(path)
-         if os.path.isdir(os.path.join(path, item))],
+        [
+            item for item in os.listdir(path)
+            if os.path.isdir(os.path.join(path, item))
+        ],
     )
     for npath in dirlist:
         dirs.append(npath)
@@ -82,11 +84,13 @@ def getFileNodesRecursively(aPath, aSconsEnv, aListOfPatterns, aListOfFoldersToS
     )
 #   theFolderList = listDirectories(aPath, aListOfFoldersToSkip)
     for theFolder in theFolderList:
-        theNodeList.extend(getFileNodesRecursively(
-            os.path.join(
-                aPath, theFolder,
-            ), aSconsEnv, aListOfPatterns, aListOfFoldersToSkip,
-        ))
+        theNodeList.extend(
+            getFileNodesRecursively(
+                os.path.join(
+                    aPath, theFolder,
+                ), aSconsEnv, aListOfPatterns, aListOfFoldersToSkip,
+            ),
+        )
     return theNodeList
 
 
@@ -161,11 +165,13 @@ def registerIDLBuilders(env, thirdPartyDir, arch):
     static_obj.src_builder.append(idl2many_bld)
     shared_obj.src_builder.append(idl2many_bld)
 
-    env.Append(BUILDERS={
-        'CorbaIdl': idl2many_bld,
-        'CorbaGetCCFiles': idl2cc_bld,
-        'CorbaGetHHFiles': idl2hh_bld,
-    })
+    env.Append(
+        BUILDERS={
+            'CorbaIdl': idl2many_bld,
+            'CorbaGetCCFiles': idl2cc_bld,
+            'CorbaGetHHFiles': idl2hh_bld,
+        },
+    )
 
 
 ###################################
@@ -222,10 +228,12 @@ def display_build_status(env):
             print('Build succeeded.')
 
     if env['color']:
-        print(colored(
-            '[Timestamp] FINISH SCONS AT %s' %
-            time.strftime('%H:%M:%S'), 'red',
-        ))
+        print(
+            colored(
+                '[Timestamp] FINISH SCONS AT %s' %
+                time.strftime('%H:%M:%S'), 'red',
+            ),
+        )
     else:
         print(failures_message)
 

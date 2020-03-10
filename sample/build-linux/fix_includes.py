@@ -8,8 +8,6 @@
 # License. See LICENSE.TXT for details.
 #
 ##===----------------------------------------------------------------------===##
-from __future__ import print_function
-
 """Update files with the 'correct' #include and forward-declare lines.
 
 Given the output of include_what_you_use on stdin -- when run at the
@@ -60,6 +58,7 @@ cannot leave its current reorder span.
 All this moving messes up the blank lines, which we then need to fix
 up.  Then we're done!
 """
+from __future__ import print_function
 
 __author__ = 'csilvers@google.com (Craig Silverstein)'
 
@@ -280,15 +279,17 @@ class IWYUOutputRecord(object):
         )
 
     def __str__(self):
-        return ('--- iwyu record ---\n  FILENAME: %s\n  LINES TO DELETE: %s\n'
-                '  (SOME) INCLUDE LINES: %s\n  (SOME) FWD-DECL LINES: %s\n'
-                '  TO ADD: %s\n  ALL INCLUDES: %s\n---\n'
-                % (
-                    self.filename, self.lines_to_delete,
-                    self.some_include_lines, self.seen_forward_declare_lines,
-                    self.includes_and_forward_declares_to_add,
-                    self.full_include_lines,
-                ))
+        return (
+            '--- iwyu record ---\n  FILENAME: %s\n  LINES TO DELETE: %s\n'
+            '  (SOME) INCLUDE LINES: %s\n  (SOME) FWD-DECL LINES: %s\n'
+            '  TO ADD: %s\n  ALL INCLUDES: %s\n---\n'
+            % (
+                self.filename, self.lines_to_delete,
+                self.some_include_lines, self.seen_forward_declare_lines,
+                self.includes_and_forward_declares_to_add,
+                self.full_include_lines,
+            )
+        )
 
 
 class IWYUOutputParser(object):
@@ -367,25 +368,31 @@ class IWYUOutputParser(object):
                         self.current_section is not None and
                         this_filename != self.filename
                     ):
-                        raise FixIncludesError('"%s" section for %s comes after "%s" for %s'
-                                               % (
-                                                   section_name, this_filename,
-                                                   self._RE_TO_NAME[self.current_section],
-                                                   self.filename,
-                                               ))
+                        raise FixIncludesError(
+                            '"%s" section for %s comes after "%s" for %s'
+                            % (
+                                section_name, this_filename,
+                                self._RE_TO_NAME[self.current_section],
+                                self.filename,
+                            ),
+                        )
                     self.filename = this_filename
 
                 # Check and set the new section we're entering.
                 if section_re not in self._EXPECTED_NEXT_RE[self.current_section]:
                     if self.current_section is None:
-                        raise FixIncludesError('%s: "%s" section unexpectedly comes first'
-                                               % (self.filename, section_name))
+                        raise FixIncludesError(
+                            '%s: "%s" section unexpectedly comes first'
+                            % (self.filename, section_name),
+                        )
                     else:
-                        raise FixIncludesError('%s: "%s" section unexpectedly follows "%s"'
-                                               % (
-                                                   self.filename, section_name,
-                                                   self._RE_TO_NAME[self.current_section],
-                                               ))
+                        raise FixIncludesError(
+                            '%s: "%s" section unexpectedly follows "%s"'
+                            % (
+                                self.filename, section_name,
+                                self._RE_TO_NAME[self.current_section],
+                            ),
+                        )
                 self.current_section = section_re
                 # We're done parsing this record if this section has nothing after it.
                 return self._EXPECTED_NEXT_RE[self.current_section] is not None
@@ -435,15 +442,19 @@ class IWYUOutputParser(object):
         for line in self.lines_by_section.get(self._REMOVE_SECTION_RE, []):
             m = self._LINE_NUMBERS_COMMENT_RE.search(line)
             if not m:
-                raise FixIncludesError('line "%s" (for %s) has no line number'
-                                       % (line, self.filename))
+                raise FixIncludesError(
+                    'line "%s" (for %s) has no line number'
+                    % (line, self.filename),
+                )
             # The RE is of the form [start_line, end_line], inclusive.
             for line_number in range(int(m.group(1)), int(m.group(2)) + 1):
                 retval.lines_to_delete.add(line_number)
 
         # IWYUOutputRecord.some_include_lines
-        for line in (self.lines_by_section.get(self._REMOVE_SECTION_RE, []) +
-                     self.lines_by_section.get(self._TOTAL_SECTION_RE, [])):
+        for line in (
+            self.lines_by_section.get(self._REMOVE_SECTION_RE, []) +
+            self.lines_by_section.get(self._TOTAL_SECTION_RE, [])
+        ):
             if not _INCLUDE_RE.match(line):
                 continue
             m = self._LINE_NUMBERS_COMMENT_RE.search(line)
@@ -453,8 +464,10 @@ class IWYUOutputParser(object):
                 retval.some_include_lines.add(line_number)
 
         # IWYUOutputRecord.seen_forward_declare_lines
-        for line in (self.lines_by_section.get(self._REMOVE_SECTION_RE, []) +
-                     self.lines_by_section.get(self._TOTAL_SECTION_RE, [])):
+        for line in (
+            self.lines_by_section.get(self._REMOVE_SECTION_RE, []) +
+            self.lines_by_section.get(self._TOTAL_SECTION_RE, [])
+        ):
             # Everything that's not an #include is a forward-declare.
             # the 'remove' lines all start with '- '.
             if line.startswith('- '):
@@ -535,8 +548,10 @@ class LineInfo(object):
             type_id = None
         else:
             type_id = _LINE_TYPES.index(self.type)
-        return ('%s\n  -- type: %s (key: %s).  move_span: %s.  reorder_span: %s'
-                % (line, type_id, self.key, self.move_span, self.reorder_span))
+        return (
+            '%s\n  -- type: %s (key: %s).  move_span: %s.  reorder_span: %s'
+            % (line, type_id, self.key, self.move_span, self.reorder_span)
+        )
 
 
 def _ReadFile(filename):
@@ -674,11 +689,13 @@ def _MarkHeaderGuardIfPresent(file_lines):
     # Pass over blank lines, pragmas and comments at the top of the file.
     i = 0
     for i in range(len(file_lines)):
-        if (not file_lines[i].deleted and
+        if (
+            not file_lines[i].deleted and
             file_lines[i].type not in [
                 _COMMENT_LINE_RE, _BLANK_LINE_RE,
                 _PRAGMA_ONCE_LINE_RE,
-            ]):
+            ]
+        ):
             break
     else:     # for/else: got to EOF without finding any non-blank/comment lines
         return
@@ -705,8 +722,10 @@ def _MarkHeaderGuardIfPresent(file_lines):
 
     # Finally, all the lines after the end of the ifdef must be blank or comments.
     for i in range(ifdef_end + 1, len(file_lines)):
-        if (not file_lines[i].deleted and
-                file_lines[i].type not in [_COMMENT_LINE_RE, _BLANK_LINE_RE]):
+        if (
+            not file_lines[i].deleted and
+            file_lines[i].type not in [_COMMENT_LINE_RE, _BLANK_LINE_RE]
+        ):
             return
 
     # We passed the gauntlet!
@@ -790,35 +809,43 @@ def _CalculateLineTypesAndKeys(file_lines, iwyu_record):
     # Now double-check against iwyu that we got all the #include lines right.
     for line_number in iwyu_record.some_include_lines:
         if file_lines[line_number].type != _INCLUDE_RE:
-            raise FixIncludesError('iwyu line number %s:%d (%s) is not an #include'
-                                   % (
-                                       iwyu_record.filename, line_number,
-                                       file_lines[line_number].line,
-                                   ))
+            raise FixIncludesError(
+                'iwyu line number %s:%d (%s) is not an #include'
+                % (
+                    iwyu_record.filename, line_number,
+                    file_lines[line_number].line,
+                ),
+            )
 
     # We depend entirely on the iwyu_record for the forward-declare lines.
     for (start_line, end_line) in iwyu_record.seen_forward_declare_lines:
         for line_number in range(start_line, end_line):
             if line_number >= len(file_lines):
-                raise FixIncludesError('iwyu line number %s:%d is past file-end'
-                                       % (iwyu_record.filename, line_number))
+                raise FixIncludesError(
+                    'iwyu line number %s:%d is past file-end'
+                    % (iwyu_record.filename, line_number),
+                )
             file_lines[line_number].type = _FORWARD_DECLARE_RE
 
     # While we're at it, let's do a bit more sanity checking on iwyu_record.
     for line_number in iwyu_record.lines_to_delete:
         if line_number >= len(file_lines):
-            raise FixIncludesError('iwyu line number %s:%d is past file-end'
-                                   % (iwyu_record.filename, line_number))
+            raise FixIncludesError(
+                'iwyu line number %s:%d is past file-end'
+                % (iwyu_record.filename, line_number),
+            )
         elif file_lines[line_number].type not in (
             _INCLUDE_RE,
             _FORWARD_DECLARE_RE,
         ):
-            raise FixIncludesError('iwyu line number %s:%d (%s) is not'
-                                   ' an #include or forward declare'
-                                   % (
-                                       iwyu_record.filename, line_number,
-                                       file_lines[line_number].line,
-                                   ))
+            raise FixIncludesError(
+                'iwyu line number %s:%d (%s) is not'
+                ' an #include or forward declare'
+                % (
+                    iwyu_record.filename, line_number,
+                    file_lines[line_number].line,
+                ),
+            )
 
     # Check if this file has a header guard, which for our purposes is
     # an #ifdef (or #if) that covers an entire source file.  Usually
@@ -915,8 +942,10 @@ def _CalculateMoveSpans(file_lines, forward_declare_spans):
 def _ContainsBarrierInclude(file_lines, line_range):
     """Returns true iff some line in [line_range[0], line_range[1]) is BARRIER."""
     for line_number in range(*line_range):
-        if (not file_lines[line_number].deleted and
-                _BARRIER_INCLUDES.search(file_lines[line_number].line)):
+        if (
+            not file_lines[line_number].deleted and
+            _BARRIER_INCLUDES.search(file_lines[line_number].line)
+        ):
             return True
     return False
 
@@ -978,8 +1007,12 @@ def _CalculateReorderSpans(file_lines):
             while i < len(sorted_move_spans) - 1:
                 move_span_end = sorted_move_spans[i][1]
                 next_move_span_start = sorted_move_spans[i+1][0]
-                if (_LinesAreAllBlank(file_lines, move_span_end, next_move_span_start)
-                        and not _ContainsBarrierInclude(file_lines, sorted_move_spans[i+1])):
+                if (
+                    _LinesAreAllBlank(
+                        file_lines, move_span_end, next_move_span_start,
+                    )
+                    and not _ContainsBarrierInclude(file_lines, sorted_move_spans[i+1])
+                ):
                     i += 1
                 else:
                     break
@@ -1281,8 +1314,10 @@ def _ShouldInsertBlankLine(
             file_lines[next_line].type == _COMMENT_LINE_RE
         ):
             next_line += 1
-        return (next_line and next_line < len(file_lines) and
-                file_lines[next_line].type in (_NAMESPACE_START_RE, None))
+        return (
+            next_line and next_line < len(file_lines) and
+            file_lines[next_line].type in (_NAMESPACE_START_RE, None)
+        )
 
     # We never insert a blank line between two spans of the same kind.
     # Nor do we ever insert a blank line at EOF.
@@ -1294,8 +1329,10 @@ def _ShouldInsertBlankLine(
 
     # We also never insert a blank line between C and C++-style #includes,
     # no matter what the flag value.
-    if (this_kind in [_C_SYSTEM_INCLUDE_KIND, _CXX_SYSTEM_INCLUDE_KIND] and
-            next_kind in [_C_SYSTEM_INCLUDE_KIND, _CXX_SYSTEM_INCLUDE_KIND]):
+    if (
+        this_kind in [_C_SYSTEM_INCLUDE_KIND, _CXX_SYSTEM_INCLUDE_KIND] and
+        next_kind in [_C_SYSTEM_INCLUDE_KIND, _CXX_SYSTEM_INCLUDE_KIND]
+    ):
         return False
 
     # Handle the case we're going from an include to fwd declare or
@@ -1532,8 +1569,10 @@ def _IsMainCUInclude(line_info, filename):
     if canonical_file in (canonical_include, canonical_include2):
         return True
     # Rule 2:
-    if (line_info.is_first_line_of_this_type and
-            os.path.basename(canonical_file) == os.path.basename(canonical_include)):
+    if (
+        line_info.is_first_line_of_this_type and
+        os.path.basename(canonical_file) == os.path.basename(canonical_include)
+    ):
         return True
 
     return False
@@ -1594,8 +1633,10 @@ def _GetLineKind(file_line, filename, separate_project_includes):
     elif _IsSystemInclude(file_line):
         return _CXX_SYSTEM_INCLUDE_KIND
     elif file_line.type == _INCLUDE_RE:
-        if (separate_project_includes and
-                _IsSameProject(file_line, filename, separate_project_includes)):
+        if (
+            separate_project_includes and
+            _IsSameProject(file_line, filename, separate_project_includes)
+        ):
             return _PROJECT_INCLUDE_KIND
         return _NONSYSTEM_INCLUDE_KIND
     elif file_line.type == _FORWARD_DECLARE_RE:
@@ -1832,8 +1873,10 @@ def _DecoratedMoveSpanLines(iwyu_record, file_lines, move_span_lines, flags):
     """
     # Get to the first contentful line.
     for i in range(len(move_span_lines)):
-        if (not move_span_lines[i].deleted and
-                move_span_lines[i].type in (_INCLUDE_RE, _FORWARD_DECLARE_RE)):
+        if (
+            not move_span_lines[i].deleted and
+            move_span_lines[i].type in (_INCLUDE_RE, _FORWARD_DECLARE_RE)
+        ):
             first_contentful_line = i
             break
     else:       # for/else
@@ -1880,8 +1923,10 @@ def _DecoratedMoveSpanLines(iwyu_record, file_lines, move_span_lines, flags):
         if kind == _FORWARD_DECLARE_KIND:
             (namespace_prefix, possible_reorder_span) = \
                 _GetFirstNamespaceLevelReorderSpan(file_lines)
-            if (namespace_prefix and possible_reorder_span and
-                    firstline.line.startswith(namespace_prefix)):
+            if (
+                namespace_prefix and possible_reorder_span and
+                firstline.line.startswith(namespace_prefix)
+            ):
                 # Great, we can go into this reorder_span.  We also need to
                 # modify all-lines because this line doesn't need the
                 # namespace prefix anymore.  Make sure we can do that before
@@ -2123,11 +2168,13 @@ def FixFileLines(iwyu_record, file_lines, flags):
             decorated_move_spans[0][0] == current_reorder_span
         ):
             new_lines.extend(decorated_move_spans[0][3])   # the full content
-            if (len(decorated_move_spans) > 1 and
+            if (
+                len(decorated_move_spans) > 1 and
                 _ShouldInsertBlankLine(
                     decorated_move_spans[0],
                     decorated_move_spans[1], file_lines, flags,
-                )):
+                )
+            ):
                 new_lines.append('')
             decorated_move_spans = decorated_move_spans[1:]   # pop
 
@@ -2283,8 +2330,10 @@ def FixManyFiles(iwyu_records, flags):
             fixed_lines = GetFixedFile(iwyu_record, flags)
             if not flags.dry_run and fixed_lines is not None:
                 file_and_fix_pairs.append((iwyu_record.filename, fixed_lines))
-                if (flags.checkout_command and
-                        not os.access(iwyu_record.filename, os.W_OK)):
+                if (
+                    flags.checkout_command and
+                    not os.access(iwyu_record.filename, os.W_OK)
+                ):
                     files_to_checkout.append(iwyu_record.filename)
         except FixIncludesError as why:
             print('ERROR: %s - skipping file %s' % (why, iwyu_record.filename))
@@ -2296,8 +2345,10 @@ def FixManyFiles(iwyu_records, flags):
         # need fixing are not writable (not opened for edit in this
         # client), try to create a CL to contain those edits.  This is to
         # avoid inadvertently creating multiple CLs.
-        if (flags.create_cl_if_possible and
-                len(files_to_checkout) == len(file_and_fix_pairs)):
+        if (
+            flags.create_cl_if_possible and
+            len(files_to_checkout) == len(file_and_fix_pairs)
+        ):
             cl = CreateCLForCheckoutCommand(
                 flags.checkout_command,
                 flags.invoking_command_line,
@@ -2360,9 +2411,11 @@ def ProcessIWYUOutput(f, files_to_process, flags):
             print('(skipping %s: not listed on commandline)' % filename)
             continue
         if flags.ignore_re and re.search(flags.ignore_re, filename):
-            print('(skipping %s: it matches --ignore_re, which is %s)' % (
-                filename, flags.ignore_re,
-            ))
+            print(
+                '(skipping %s: it matches --ignore_re, which is %s)' % (
+                    filename, flags.ignore_re,
+                ),
+            )
             continue
 
         if filename in iwyu_output_records:
@@ -2553,11 +2606,13 @@ def main(argv):
     else:
         files_to_modify = None
 
-    if (flags.separate_project_includes and
+    if (
+        flags.separate_project_includes and
         # 'special' vals
         not flags.separate_project_includes.startswith('<') and
         not flags.separate_project_includes.endswith(os.path.sep) and
-            not flags.separate_project_includes.endswith('/')):
+        not flags.separate_project_includes.endswith('/')
+    ):
         flags.separate_project_includes += os.path.sep
 
     if flags.append_to_cl and flags.create_cl_if_possible:

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3.7
 # -*- coding: utf-8 -*-
 #
 # cpplint.py is Copyright (C) 2009 Google Inc.
@@ -323,11 +323,13 @@ class _IncludeState(dict):
           error message describing what's wrong.
 
         """
-        error_message = ('Found %s after %s' %
-                         (
-                             self._TYPE_NAMES[header_type],
-                             self._SECTION_NAMES[self._section],
-                         ))
+        error_message = (
+            'Found %s after %s' %
+            (
+                self._TYPE_NAMES[header_type],
+                self._SECTION_NAMES[self._section],
+            )
+        )
 
         if header_type == _C_SYS_HEADER:
             if self._section <= self._C_SECTION:
@@ -580,8 +582,10 @@ class FileInfo:
             # Not SVN? Try to find a git top level directory by searching up from the
             # current path.
             root_dir = os.path.dirname(fullname)
-            while (root_dir != os.path.dirname(root_dir) and
-                   not os.path.exists(os.path.join(root_dir, '.git'))):
+            while (
+                root_dir != os.path.dirname(root_dir) and
+                not os.path.exists(os.path.join(root_dir, '.git'))
+            ):
                 root_dir = os.path.dirname(root_dir)
                 if os.path.exists(os.path.join(root_dir, '.git')):
                     prefix = os.path.commonprefix([root_dir, project_dir])
@@ -667,13 +671,17 @@ def Error(filename, linenum, category, confidence, message):
     if _ShouldPrintError(category, confidence):
         _cpplint_state.IncrementErrorCount()
         if _cpplint_state.output_format == 'vs7':
-            sys.stderr.write('%s(%s):  %s  [%s] [%d]\n' % (
-                filename, linenum, message, category, confidence,
-            ))
+            sys.stderr.write(
+                '%s(%s):  %s  [%s] [%d]\n' % (
+                    filename, linenum, message, category, confidence,
+                ),
+            )
         else:
-            sys.stderr.write('%s:%s:  %s  [%s] [%d]\n' % (
-                filename, linenum, message, category, confidence,
-            ))
+            sys.stderr.write(
+                '%s:%s:  %s  [%s] [%d]\n' % (
+                    filename, linenum, message, category, confidence,
+                ),
+            )
 
 
 # Matches standard C++ escape esequences per 2.13.2.3 of the C++ standard.
@@ -1094,8 +1102,12 @@ def CheckPosixThreading(filename, clean_lines, linenum, error):
     for single_thread_function, multithread_safe_function in threading_list:
         ix = line.find(single_thread_function)
         # Comparisons made explicit for clarity -- pylint: disable-msg=C6403
-        if ix >= 0 and (ix == 0 or (not line[ix - 1].isalnum() and
-                                    line[ix - 1] not in ('_', '.', '>'))):
+        if ix >= 0 and (
+            ix == 0 or (
+                not line[ix - 1].isalnum() and
+                line[ix - 1] not in ('_', '.', '>')
+            )
+        ):
             error(
                 filename, linenum, 'runtime/threadsafe_fn', 2,
                 'Consider using ' + multithread_safe_function +
@@ -1317,12 +1329,14 @@ def CheckForNonStandardConstructs(
         % re.escape(base_classname),
         line,
     )
-    if (args and
-            args.group(1) != 'void' and
-            not Match(
-                r'(const\s+)?%s\s*&' % re.escape(base_classname),
-                args.group(1).strip(),
-            )):
+    if (
+        args and
+        args.group(1) != 'void' and
+        not Match(
+            r'(const\s+)?%s\s*&' % re.escape(base_classname),
+            args.group(1).strip(),
+        )
+    ):
         error(
             filename, linenum, 'runtime/explicit', 5,
             'Single-argument constructors should be marked explicit.',
@@ -1417,8 +1431,10 @@ def CheckSpacingForFunctionCall(filename, line, linenum, error):
                 filename, linenum, 'whitespace/parens', 2,
                 'Extra space after (',
             )
-        if (Search(r'\w\s+\(', fncall) and
-                not Search(r'#\s*define|typedef', fncall)):
+        if (
+            Search(r'\w\s+\(', fncall) and
+            not Search(r'#\s*define|typedef', fncall)
+        ):
             error(
                 filename, linenum, 'whitespace/parens', 4,
                 'Extra space before ( in function call',
@@ -1608,8 +1624,10 @@ def CheckSpacing(filename, clean_lines, linenum, error):
                 # We are looking for the opening column of initializer list, which
                 # should be indented 4 spaces to cause 6 space indentation afterwards.
                 search_position = linenum - 2
-                while (search_position >= 0
-                       and Match(r' {6}\w', elided[search_position])):
+                while (
+                    search_position >= 0
+                    and Match(r' {6}\w', elided[search_position])
+                ):
                     search_position -= 1
                 exception = (
                     search_position >= 0
@@ -1622,11 +1640,13 @@ def CheckSpacing(filename, clean_lines, linenum, error):
                 # or colon (for initializer lists) we assume that it is the last line of
                 # a function header.  If we have a colon indented 4 spaces, it is an
                 # initializer list.
-                exception = (Match(
-                    r' {4}\w[^\(]*\)\s*(const\s*)?(\{\s*$|:)',
-                    prev_line,
+                exception = (
+                    Match(
+                        r' {4}\w[^\(]*\)\s*(const\s*)?(\{\s*$|:)',
+                        prev_line,
+                    )
+                    or Match(r' {4}:', prev_line)
                 )
-                    or Match(r' {4}:', prev_line))
 
             if not exception:
                 error(
@@ -1664,18 +1684,22 @@ def CheckSpacing(filename, clean_lines, linenum, error):
     if commentpos != -1:
         # Check if the // may be in quotes.  If so, ignore it
         # Comparisons made explicit for clarity -- pylint: disable-msg=C6403
-        if (line.count('"', 0, commentpos) -
-                line.count('\\"', 0, commentpos)) % 2 == 0:   # not in quotes
+        if (
+            line.count('"', 0, commentpos) -
+            line.count('\\"', 0, commentpos)
+        ) % 2 == 0:   # not in quotes
             # Allow one space for new scopes, two spaces otherwise:
-            if (not Match(r'^\s*{ //', line) and
-                    ((
-                        commentpos >= 1 and
-                        line[commentpos - 1] not in string.whitespace
-                    ) or
+            if (
+                not Match(r'^\s*{ //', line) and
+                ((
+                    commentpos >= 1 and
+                    line[commentpos - 1] not in string.whitespace
+                ) or
                     (
-                        commentpos >= 2 and
-                        line[commentpos - 2] not in string.whitespace
-                    ))):
+                    commentpos >= 2 and
+                    line[commentpos - 2] not in string.whitespace
+                    ))
+            ):
                 error(
                     filename, linenum, 'whitespace/comments', 2,
                     'At least two spaces is best between code and comments',
@@ -1767,8 +1791,10 @@ def CheckSpacing(filename, clean_lines, linenum, error):
     )
     if match:
         if len(match.group(2)) != len(match.group(4)):
-            if not (match.group(3) == ';' and
-                    len(match.group(2)) == 1 + len(match.group(4))):
+            if not (
+                match.group(3) == ';' and
+                len(match.group(2)) == 1 + len(match.group(4))
+            ):
                 error(
                     filename, linenum, 'whitespace/parens', 5,
                     'Mismatching spaces inside () in %s' % match.group(1),
@@ -1828,8 +1854,10 @@ def CheckSpacing(filename, clean_lines, linenum, error):
             'Line contains only semicolon. If this should be an empty statement, '
             'use { } instead.',
         )
-    elif (Search(r'\s+;\s*$', line) and
-          not Search(r'\bfor\b', line)):
+    elif (
+        Search(r'\s+;\s*$', line) and
+        not Search(r'\bfor\b', line)
+    ):
         error(
             filename, linenum, 'whitespace/semicolon', 5,
             'Extra space before last semicolon. If this should be an empty '
@@ -1941,9 +1969,11 @@ def CheckBraces(filename, clean_lines, linenum, error):
             line = prevline + line
         else:
             break
-    if (Search(r'{.*}\s*;', line) and
+    if (
+        Search(r'{.*}\s*;', line) and
         line.count('{') == line.count('}') and
-            not Search(r'struct|class|enum|\s*=\s*{', line)):
+            not Search(r'struct|class|enum|\s*=\s*{', line)
+    ):
         error(
             filename, linenum, 'readability/braces', 4,
             "You don't need a ; after a }",
@@ -2114,17 +2144,21 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, error):
     is_header_guard = False
     if file_extension == 'h':
         cppvar = GetHeaderGuardCPPVariable(filename)
-        if (line.startswith('#ifndef %s' % cppvar) or
+        if (
+            line.startswith('#ifndef %s' % cppvar) or
             line.startswith('#define %s' % cppvar) or
-                line.startswith('#endif  // %s' % cppvar)):
+                line.startswith('#endif  // %s' % cppvar)
+        ):
             is_header_guard = True
     # #include lines and header guards can be long, since there's no clean way to
     # split them.
     #
     # URLs can be long too.  It's possible to split these, but it makes them
     # harder to cut&paste.
-    if (not line.startswith('#include') and not is_header_guard and
-            not Match(r'^\s*//.*http(s?)://\S*$', line)):
+    if (
+        not line.startswith('#include') and not is_header_guard and
+        not Match(r'^\s*//.*http(s?)://\S*$', line)
+    ):
         line_width = GetLineWidth(line)
         if line_width > 100:
             error(
@@ -2137,7 +2171,8 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, error):
                 'Lines should be <= 80 characters long',
             )
 
-    if (cleansed_line.count(';') > 1 and
+    if (
+        cleansed_line.count(';') > 1 and
         # for loops are allowed two ;'s (and may run over two lines).
         cleansed_line.find('for') == -1 and
         (
@@ -2151,7 +2186,8 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, error):
                 cleansed_line.find('default:') != -1
             ) and
             cleansed_line.find('break;') != -1
-        )):
+        )
+    ):
         error(
             filename, linenum, 'whitespace/newline', 4,
             'More than one command on the same line',
@@ -2196,8 +2232,10 @@ def _DropCommonSuffixes(filename):
         'test.cc', 'regtest.cc', 'unittest.cc',
         'inl.h', 'impl.h', 'internal.h',
     ):
-        if (filename.endswith(suffix) and len(filename) > len(suffix) and
-                filename[-len(suffix) - 1] in ('-', '_')):
+        if (
+            filename.endswith(suffix) and len(filename) > len(suffix) and
+            filename[-len(suffix) - 1] in ('-', '_')
+        ):
             return filename[:-len(suffix) - 1]
     return os.path.splitext(filename)[0]
 
@@ -2211,9 +2249,11 @@ def _IsTestFilename(filename):
     Returns:
       True if 'filename' looks like a test, False otherwise.
     """
-    if (filename.endswith('_test.cc') or
+    if (
+        filename.endswith('_test.cc') or
         filename.endswith('_unittest.cc') or
-            filename.endswith('_regtest.cc')):
+            filename.endswith('_regtest.cc')
+    ):
         return True
     else:
         return False
@@ -2273,9 +2313,11 @@ def _ClassifyInclude(fileinfo, include, is_system):
     # complain if it's not there.
     target_first_component = _RE_FIRST_COMPONENT.match(target_base)
     include_first_component = _RE_FIRST_COMPONENT.match(include_base)
-    if (target_first_component and include_first_component and
+    if (
+        target_first_component and include_first_component and
         target_first_component.group(0) ==
-            include_first_component.group(0)):
+            include_first_component.group(0)
+    ):
         return _POSSIBLE_MY_HEADER
 
     return _OTHER_HEADER
@@ -2386,15 +2428,21 @@ def CheckLanguage(
     # version, we're willing for const to be before typename or after
     # Don't check the implemention on same line.
     fnline = line.split('{', 1)[0]
-    if (len(re.findall(r'\([^()]*\b(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline)) >
-            len(re.findall(
+    if (
+        len(re.findall(r'\([^()]*\b(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline)) >
+        len(
+            re.findall(
                 r'\([^()]*\bconst\s+(?:typename\s+)?(?:struct\s+)?'
                 r'(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline,
-            )) +
-            len(re.findall(
+            ),
+        ) +
+        len(
+            re.findall(
                 r'\([^()]*\b(?:[\w:]|<[^()]*>)+\s+const(\s?&|&\s?)[\w]+',
                 fnline,
-            ))):
+            ),
+        )
+    ):
 
         # We allow non-const references in a few standard places, like functions
         # called "swap()" or iostream operators like "<<" or ">>".
@@ -2754,19 +2802,19 @@ _HEADERS_CONTAINING_TEMPLATES = (
     ),
     ('<limits>', ('numeric_limits',)),
     ('<list>', ('list',)),
-    ('<map>', ('map', 'multimap',)),
+    ('<map>', ('map', 'multimap')),
     ('<memory>', ('allocator',)),
-    ('<queue>', ('queue', 'priority_queue',)),
-    ('<set>', ('set', 'multiset',)),
+    ('<queue>', ('queue', 'priority_queue')),
+    ('<set>', ('set', 'multiset')),
     ('<stack>', ('stack',)),
-    ('<string>', ('char_traits', 'basic_string',)),
+    ('<string>', ('char_traits', 'basic_string')),
     ('<utility>', ('pair',)),
     ('<vector>', ('vector',)),
 
     # gcc extensions.
     # Note: std::hash is their hash, ::hash is our hash
-    ('<hash_map>', ('hash_map', 'hash_multimap',)),
-    ('<hash_set>', ('hash_set', 'hash_multiset',)),
+    ('<hash_map>', ('hash_map', 'hash_multimap')),
+    ('<hash_set>', ('hash_set', 'hash_multiset')),
     ('<slist>', ('slist',)),
 )
 

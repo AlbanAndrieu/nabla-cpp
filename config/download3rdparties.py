@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 import contextlib
 import getpass
@@ -24,7 +24,6 @@ thirdPartyRoot = '%s/3rdparties' % sandbox
 
 # ==============================================================================
 # Lock class
-# ==============================================================================
 
 if os.name == 'nt':
     @contextmanager
@@ -172,9 +171,11 @@ class ThirdParty:
                     )
                     if match:
                         isExpanded = True
-                        timestamp = time.mktime(time.strptime(
-                            match.group(2), '%d-%b-%Y %H:%M',
-                        ))
+                        timestamp = time.mktime(
+                            time.strptime(
+                                match.group(2), '%d-%b-%Y %H:%M',
+                            ),
+                        )
                         digest = match.group(1)
                         break
             if not timestamp:
@@ -185,11 +186,13 @@ class ThirdParty:
             if isExpanded:
                 print(self._serial)
                 self._serial = self.serial(name, version, pkg_arch, digest)
-                print('=> %s (%s)' % (
-                    self._serial, time.strftime(
-                    '%d/%m/%Y %H:%M', time.localtime(timestamp),
+                print(
+                    '=> %s (%s)' % (
+                        self._serial, time.strftime(
+                            '%d/%m/%Y %H:%M', time.localtime(timestamp),
+                        ),
                     ),
-                ))
+                )
 
     # --------------------------------------------------------------------------
     def get_serial_from_file(self, filepath):
@@ -264,9 +267,11 @@ class ThirdParty:
                     break
             if not download_ok and download_count >= try_number:
                 print('-> ABORT')
-                raise SystemExit('Tried to downloaded package %s %s %d times without success' % (
-                    name, version, try_number,
-                ))
+                raise SystemExit(
+                    'Tried to downloaded package %s %s %d times without success' % (
+                        name, version, try_number,
+                    ),
+                )
 
         # package is ok, move it out of unchecked dir
         os.rename(unchecked_pkg, pkg)
@@ -290,14 +295,18 @@ class ThirdParty:
             prev_serial = ''
             # Test the serial
             if not os.path.isfile(installed_serial_file):
-                print('%s %s: found with missing serial -> remove' %
-                      (name, version))
+                print(
+                    '%s %s: found with missing serial -> remove' %
+                    (name, version),
+                )
             else:
                 prev_serial = self.get_serial_from_file(installed_serial_file)
                 if prev_serial == self._serial:
                     return  # package ok, nothing to do
-                print('%s %s: found with bad serial -> remove' %
-                      (name, version))
+                print(
+                    '%s %s: found with bad serial -> remove' %
+                    (name, version),
+                )
 
             shutil.rmtree(installed_thirdPartyPath)
         else:
@@ -340,10 +349,11 @@ class ThirdParty:
             fic.write(self._serial + '\n')
         print('-> done')
 
-
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
+
+
 def getCurrentArch():
     arch = None
     system = platform.system()
@@ -481,9 +491,11 @@ def getSerialList(bom, arch, bit, compiler, serials):
         if count[name] > 1:
             multiple.append(name)
     if multiple:
-        raise SystemExit('ERROR: The following packages are listed more than once in %s: %s\nPlease correct.\n' % (
-            bom, ', '.join(sorted(multiple)),
-        ))
+        raise SystemExit(
+            'ERROR: The following packages are listed more than once in %s: %s\nPlease correct.\n' % (
+                bom, ', '.join(sorted(multiple)),
+            ),
+        )
     return serials
 
 # ------------------------------------------------------------------------------

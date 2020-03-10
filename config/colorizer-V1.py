@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 #
 # Scons Output Colorizer v0.2
@@ -148,11 +149,11 @@ class colorizer:
         static_ob, shared_ob = Tool.createObjBuilders(env)
 
         # Set Static Object actions
-        static_ob.add_action('.c'	, self.cmpCStaticMsg.getAction() 	)
-        static_ob.add_action('.cpp'	, self.cmpCPPStaticMsg.getAction() 	)
+        static_ob.add_action('.c'	, self.cmpCStaticMsg.getAction())
+        static_ob.add_action('.cpp'	, self.cmpCPPStaticMsg.getAction())
         # Set Shared Object actions
-        shared_ob.add_action('.c'	, self.cmpCSharedMsg.getAction()	)
-        shared_ob.add_action('.cpp'	, self.cmpCPPSharedMsg.getAction()	)
+        shared_ob.add_action('.c'	, self.cmpCSharedMsg.getAction())
+        shared_ob.add_action('.cpp'	, self.cmpCPPSharedMsg.getAction())
 
         return True
 

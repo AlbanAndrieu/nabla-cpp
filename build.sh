@@ -7,6 +7,8 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/step-0-color.sh"
 
+unset SCONS
+
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 #export ENABLE_MEMCHECK=true
 export UNIT_TESTS=true
@@ -64,6 +66,8 @@ pwd
 ./clean.sh
 
 echo -e "${magenta} Upgrade python from 2 to 3 : 2to3 -w SConstruct ${NC}"
+
+./conan.sh
 
 echo -e "${green} Building : scons ${NC}"
 

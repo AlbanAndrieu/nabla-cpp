@@ -1,5 +1,5 @@
-
-echo "WORKSPACE ${WORKSPACE}"
+#!/bin/bash
+echo "WORKSPACE : ${WORKSPACE}"
 
 #In Hudson
 #Extract trunk/cpp in Google Code (automatic configuration)
@@ -17,3 +17,5 @@ rm CMakeCache.txt
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE -DCMAKE_INSTALL_PREFIX=${PROJECT_TARGET_PATH}/install/${MACHINE}/debug ../microsoft
 
 make -B clean install test package DoxygenDoc
+
+exit 0

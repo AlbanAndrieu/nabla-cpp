@@ -1,7 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python3.7
 # -*- coding: utf-8 -*-
-#!/usr/bin/python2.4
-#!/usr/bin/python
 """
 ==========================================================================
 scons2dot.py
@@ -97,12 +95,13 @@ TODO
 
 .. |date| date:: %m-%d-%y
 """
-
-import tempfile
-import sets
 import os.path
-import sys
 import re
+import sys
+import tempfile
+
+import sets
+
 cmd_line_usage = \
     """
 Usage: %prog [options]
@@ -169,8 +168,10 @@ class DotBuilder(object):
         Converts a dictionary to a list k="value",...; the format
         used by attributes in dot.
         """
-        return ', '.join(['%s="%s"' % x for
-                          x in attrs.items()])
+        return ', '.join([
+            '%s="%s"' % x for
+            x in attrs.items()
+        ])
 
     def _gather_nodes(self):
         """
@@ -216,7 +217,7 @@ class DotBuilder(object):
         cmd = self.dot_cmd % self.__dict__
         cmd += ' %s' % fname
         if self.verbose:
-            print cmd
+            print(cmd)
         os.system(cmd)
 
     def print_graph(self):
@@ -245,8 +246,10 @@ class DotBuilder(object):
             attrs = {'label': os.path.basename(node.name)}
             if node in self.trees:
                 attrs['color'] = 'red'
-            self.fd.write('\t%s [%s]\n' %
-                          (node.id, self.dict2attrs(attrs)))
+            self.fd.write(
+                '\t%s [%s]\n' %
+                (node.id, self.dict2attrs(attrs)),
+            )
         self.fd.write('\n')
 
     def _print_edges(self):

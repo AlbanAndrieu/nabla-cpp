@@ -2,11 +2,11 @@ PROJECT(MICROSOFT LANGUAGES CXX)
 
 ENABLE_LANGUAGE(C)
 
-CMAKE_MINIMUM_REQUIRED(VERSION "2.8")
+CMAKE_MINIMUM_REQUIRED(VERSION "3.10")
 
 #SET( CTEST_COST_DATA_FILE "TODO" )
-SET( SITE "home.nabla.mobi" )
-SET( DROP_SITE "192.168.0.28" )
+SET( SITE "albandrieu.com" )
+SET( DROP_SITE "192.168.1.61" )
 SET( DROP_LOCATION "/cdash/submit.php?project=MICROSOFT" )
 
 INCLUDE(${PROJECT_SOURCE_DIR}/../../config/Project.cmake)
@@ -16,7 +16,9 @@ SET(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 IF(NOT EXISTS ${CONAN_BUILD_INFO_FILE})
   MESSAGE(STATUS "No conan package information available. Trying to fix that!")
   EXECUTE_PROCESS(COMMAND conan install --build=missing ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_QUIET)
-ENDIF()
+
+#if conanbuildinfo.cmake not found run
+#conan install ../microsoft/ --build boost_system
 
 # Import dependencies via Conan.io
 INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
