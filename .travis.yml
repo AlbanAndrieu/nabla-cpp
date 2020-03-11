@@ -86,11 +86,12 @@ install:
   - conan profile list  
   - conan profile update settings.compiler.libcxx=libstdc++11 nabla
   - conan profile update settings.compiler=gcc nabla
-  - conan install -pr nabla ./sample/microsoft/ --build boost_system
+#  - conan install -pr nabla ./sample/microsoft/ --build boost_system
   
 script:
   - mkdir -p sample/build-${ARCH}/
   - cd sample/build-${ARCH}/
+  - conan install -pr nabla ./sample/microsoft/ --build boost_system  
   - conan profile show nabla
 #  - ./build.sh
   # Download dependencies, build, test and create package
