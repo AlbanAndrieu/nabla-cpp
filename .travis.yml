@@ -245,5 +245,5 @@ matrix:
             - libboost-filesystem-dev
       before_script:
         - conan profile update settings.compiler=clang nabla
-        - conan profile update settings.compiler.version=7 nabla
-      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-7
+        - conan profile update settings.compiler.version=7.0 nabla
+      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++
