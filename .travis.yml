@@ -82,13 +82,16 @@ install:
   - conan user
   - conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
   - conan user -r nabla albanandrieu
+  - conan profile new nabla --detect
   - conan profile list  
-  #- conan profile update settings.compiler.libcxx=libstdc++11 default
-  - conan install ../microsoft/ --build boost_system
+  - conan profile update settings.compiler.libcxx=libstdc++11 nabla
+  - conan profile update settings.compiler=gcc nabla
+  - conan install -pr nabla ./sample/microsoft/ --build boost_system
   
 script:
   - mkdir -p sample/build-${ARCH}/
   - cd sample/build-${ARCH}/
+  - conan profile show nabla
 #  - ./build.sh
   # Download dependencies, build, test and create package
   - export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/sample/build-${ARCH}/target/
@@ -163,7 +166,7 @@ matrix:
             - libboost-date-time-dev
             - libboost-filesystem-dev
       before_script:
-        - conan profile update settings.compiler.version=5 default
+        - conan profile update settings.compiler.version=5 nabla
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-5
     - compiler: gcc
       os: linux
@@ -182,7 +185,7 @@ matrix:
             - libboost-date-time-dev
             - libboost-filesystem-dev
       before_script:
-        - conan profile update settings.compiler.version=8 default
+        - conan profile update settings.compiler.version=8 nabla
       env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-8
     - compiler: gcc
       os: linux
@@ -201,7 +204,7 @@ matrix:
             - libboost-date-time-dev
             - libboost-filesystem-dev
       before_script:
-        - conan profile update settings.compiler.version=9 default
+        - conan profile update settings.compiler.version=9 nabla
       env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-9
     - compiler: clang
       os: linux
@@ -220,8 +223,8 @@ matrix:
             - libboost-date-time-dev
             - libboost-filesystem-dev
       before_script:
-        - conan profile update settings.compiler=clang default
-        - conan profile update settings.compiler.version=3.6 default
+        - conan profile update settings.compiler=clang nabla
+        - conan profile update settings.compiler.version=3.6 nabla
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-3.6
     - compiler: clang
       os: linux
@@ -240,6 +243,6 @@ matrix:
             - libboost-date-time-dev
             - libboost-filesystem-dev
       before_script:
-        - conan profile update settings.compiler=clang default
-        - conan profile update settings.compiler.version=7 default
+        - conan profile update settings.compiler=clang nabla
+        - conan profile update settings.compiler.version=7 nabla
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-7

@@ -14,9 +14,19 @@ conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan ||
 conan user -r nabla albanandrieu
 
 #conan profile new test --detect
+conan profile new nabla --detect
+conan profile update settings.compiler.libcxx=libstdc++11 nabla
+conan profile update settings.compiler=gcc nabla
+conan profile update settings.compiler.version=8 nabla
+conan profile update settings.compiler.libcxx=libstdc++11 nabla
+conan profile show nabla
+
 conan profile list
+
 echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 default ${NC}"
 echo -e "${magenta} conan profile update settings.compiler.version=8 default ${NC}"
+echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 default ${NC}"
+
 conan profile update settings.compiler.version=8 default
 #ls -lrta $HOME/.conan/profiles
 conan profile show default
