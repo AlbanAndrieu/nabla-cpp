@@ -74,23 +74,23 @@ before_install:
   - sudo apt-get install -qq doxygen
 
 install:
- # Install conan
- # - pip install --upgrade pip
- - sudo pip install conan==1.21.1
- #- sudo pip2.7 install -r requirements-current-2.7.txt
- # Automatic detection of your arch, compiler, etc.
- - conan user
-
-script:
-  - mkdir -p sample/build-${ARCH}/
-  - cd sample/build-${ARCH}/
-#  - ./build.sh
-  # Download dependencies, build, test and create package
+  # Install conan
+  # - pip install --upgrade pip
+  - sudo pip install conan==1.21.1
+  #- sudo pip2.7 install -r requirements-current-2.7.txt
+  # Automatic detection of your arch, compiler, etc.
+  - conan user
   - conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
   - conan user -r nabla albanandrieu
   - conan install ../microsoft/ --build boost_system
   - conan profile list
   - conan profile update settings.compiler.libcxx=libstdc++11 default
+  
+script:
+  - mkdir -p sample/build-${ARCH}/
+  - cd sample/build-${ARCH}/
+#  - ./build.sh
+  # Download dependencies, build, test and create package
   - export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/sample/build-${ARCH}/target/
   #- export CMAKE_INSTALL_PREFIX=/usr/local/
   - cmake ${CMAKEFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_CXX_COMPILER=${CXX} ../../sample/microsoft/
