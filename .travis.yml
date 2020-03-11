@@ -82,9 +82,9 @@ install:
   - conan user
   - conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
   - conan user -r nabla albanandrieu
-  - conan profile update settings.compiler.libcxx=libstdc++11 default  
+  - conan profile list  
+  #- conan profile update settings.compiler.libcxx=libstdc++11 default
   - conan install ../microsoft/ --build boost_system
-  - conan profile list
   
 script:
   - mkdir -p sample/build-${ARCH}/
