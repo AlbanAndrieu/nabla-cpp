@@ -79,7 +79,7 @@ ${SONAR_CMD} ${SCONS} ${SCONS_OPTS} 2>&1 > scons.log
 echo -e "${green} Security : hardening-check ${NC}"
 
 echo -e "${magenta} hardening-check target/bin/x86Linux/run_app ${NC}"
-#hardening-check target/bin/x86Linux/run_app
+hardening-check target/bin/x86Linux/run_app
 
 #complexity --histogram --score --thresh=3 `ls sample/microsoft/src/main/*/*.c`
 

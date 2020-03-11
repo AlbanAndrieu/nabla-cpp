@@ -29,6 +29,9 @@ sudo apt install xsltproc
 
 sudo apt-get install checkinstall
 
+#for hardening-check
+sudo apt-get install devscripts
+
 #See https://github.com/include-what-you-use/include-what-you-use
 sudo apt-get install libclang-dev llvm-dev #llvm-3.8-dev
 
