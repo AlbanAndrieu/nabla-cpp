@@ -162,6 +162,8 @@ matrix:
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
+      before_script:
+        - conan profile update settings.compiler.version=5 default
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-5
     - compiler: gcc
       os: linux
@@ -179,6 +181,8 @@ matrix:
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
+      before_script:
+        - conan profile update settings.compiler.version=8 default
       env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-8
     - compiler: gcc
       os: linux
@@ -196,6 +200,8 @@ matrix:
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
+      before_script:
+        - conan profile update settings.compiler.version=9 default
       env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-9
     - compiler: clang
       os: linux
@@ -213,6 +219,9 @@ matrix:
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
+      before_script:
+        - conan profile update settings.compiler=clang default
+        - conan profile update settings.compiler.version=3.6 default
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-3.6
     - compiler: clang
       os: linux
@@ -230,4 +239,7 @@ matrix:
             - libboost-thread-dev
             - libboost-date-time-dev
             - libboost-filesystem-dev
+      before_script:
+        - conan profile update settings.compiler=clang default
+        - conan profile update settings.compiler.version=7 default
       env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-7

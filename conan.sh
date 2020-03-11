@@ -15,7 +15,9 @@ conan user -r nabla albanandrieu
 
 #conan profile new test --detect
 conan profile list
-echo "conan profile update settings.compiler.libcxx=libstdc++11 default"
+echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 default ${NC}"
+echo -e "${magenta} conan profile update settings.compiler.version=8 default ${NC}"
+conan profile update settings.compiler.version=8 default
 #ls -lrta $HOME/.conan/profiles
 conan profile show default
 
