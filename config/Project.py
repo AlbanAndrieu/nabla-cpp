@@ -30,7 +30,8 @@ def generate(env, **kw):
                 ['gcc', '-dumpversion'],
             )[:3]
         #env['debug_flags'] = '-g'
-        env['debug_flags'] = '-gdwarf-3'
+        #env['debug_flags'] = '-gdwarf-3'
+        env['debug_flags'] = '-g3'
         env['opt_flags'] = '-O'
         env['ENV']['PATH'] = '/bin:/usr/bin'
         env['ENV']['LD_LIBRARY_PATH'] = ''
@@ -166,6 +167,7 @@ def generate(env, **kw):
             env['CCFLAGS'] += [
                 '-D_FORTIFY_SOURCE=2',
                 # '-fstack-protector', # Gives warnings
+                # '-fstack-protector-strong', # Gives warnings
                 '-fstack-protector-all',
                 '-Wno-error=maybe-uninitialized',
                 '-Wno-unused-local-typedefs',

@@ -75,6 +75,15 @@ echo -e "${green} Building : scons ${NC}"
 #wget https://sonarcloud.io/projects/static/cpp/build-wrapper-linux-x86.zip
 echo -e "${magenta} ${SONAR_CMD} ${SCONS} ${SCONS_OPTS} ${NC}"
 ${SONAR_CMD} ${SCONS} ${SCONS_OPTS} 2>&1 > scons.log
+RC=$?
+if [ ${RC} -ne 0 ]; then
+  echo ""
+  # shellcheck disable=SC2154
+  echo -e "${red} ${head_skull} Sorry, build failed. ${NC}"
+  exit 1
+else
+  echo -e "${green} The build completed successfully. ${NC}"
+fi
 
 echo -e "${green} Security : hardening-check ${NC}"
 

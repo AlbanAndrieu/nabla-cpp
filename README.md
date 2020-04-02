@@ -1,7 +1,11 @@
 # nabla-cpp
 A project that contains cpp code sample
 
-[![Jenkins build Status](http://home.nabla.mobi:8381/job/nabla-cpp-interview-microsoft-cmake/badge/icon)](http://home.nabla.mobi:8381/job/nabla-cpp-interview-microsoft-cmake/)
+[![License](http://img.shields.io/:license-apache-blue.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Gitter](https://badges.gitter.im/nabla-cpp/Lobby.svg)](https://gitter.im/nabla-cpp/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Minimal java version](https://img.shields.io/badge/java-1.8-yellow.svg)](https://img.shields.io/badge/java-1.8-yellow.svg)
+
+[![Jenkins build Status](http://albandrieu.com:8686/job/nabla-cpp-interview-microsoft-cmake/badge/icon)](http://albandrieu.com:8686/job/nabla-cpp-interview-microsoft-cmake/)
 [![Travis Build Status](https://travis-ci.org/AlbanAndrieu/nabla-cpp.svg?branch=master)](https://travis-ci.org/AlbanAndrieu/nabla-cpp)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=MICROSOFT%3Amaster&metric=alert_status)](https://sonarcloud.io/dashboard/index/MICROSOFT%3Amaster)
 

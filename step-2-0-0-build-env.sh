@@ -652,7 +652,7 @@ if [ -n "${PYTHON_MAJOR_VERSION}" ]; then
   echo -e "${green} PYTHON_MAJOR_VERSION is defined ${happy_smiley} : ${PYTHON_MAJOR_VERSION} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PYTHON_MAJOR_VERSION, use the default one ${NC}"
-  export PYTHON_MAJOR_VERSION=3.5
+  export PYTHON_MAJOR_VERSION=3.7
   echo -e "${magenta} PYTHON_MAJOR_VERSION : ${PYTHON_MAJOR_VERSION} ${NC}"
 fi
 
