@@ -372,7 +372,7 @@ IF(UNIX)
     LINK_DIRECTORIES(${BOOST_OUTPUT_PATH})
 
     #z boost_thread-gcc-mt intl ncurses
-    SET(Boost_LIBRARIES boost_thread-mt boost_system)
+    #SET(Boost_LIBRARIES boost_thread-mt boost_system)
 
     SET(ZLIB_LIBRARY_DIRS z)
     SET(Gettext_LIBRARY_DIRS intl ncurses)
@@ -737,11 +737,12 @@ ELSE(ZLIB_FOUND)
   MESSAGE(STATUS "ZLIB not found")
 ENDIF(ZLIB_FOUND)
 
-#FIND_PACKAGE(
-#	Boost
-#	1.31.0
+FIND_PACKAGE(
+	Boost
+	1.67.0
+   COMPONENTS date_time filesystem system
 #	REQUIRED signals
-#)
+)
 
 if(WITH_BOOST)
   LIST(APPEND COMPILE_FLAGS -DWITH_BOOST)

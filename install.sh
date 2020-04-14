@@ -47,7 +47,9 @@ sudo apt-get install linux-tools-generic linux-cloud-tools-generic
 pip install gprof2dot
 pip install cpplint
 
-sudo apt-get install libboost-filesystem-dev libcppunit-dev libboost-thread-dev
+#sudo apt-get install libboost-filesystem-dev libboost-thread-dev
+sudo apt-get install libboost-filesystem1.67-dev libboost-system1.67-dev libboost-thread1.67-dev # ubuntu 19
+sudo apt-get install libcppunit-dev
 #Below do not work
 #git clone https://github.com/tomtom-international/cpp-dependencies.git
 #cd cpp-dependencies
@@ -68,6 +70,7 @@ sudo apt-get install splint
 #sudo pip install conan==1.5.1
 sudo pip install conan
 #sudo pip install conan_package_tools==0.18.2
+sudo pip install termcolor
 
 sudo apt-get install vera++ gcovr perl lua5.3 tcl tk
 
