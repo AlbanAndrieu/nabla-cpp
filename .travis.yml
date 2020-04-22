@@ -15,6 +15,10 @@ python:
 #  - 3.6
   - 3.7
 
+compiler:
+#  - clang
+  - gcc
+
 virtualenv:
   system_site_packages: false
 
@@ -72,6 +76,9 @@ before_install:
   - sudo apt-get install -qq python-apt python-pycurl
   - sudo apt-get install -qq curl
   - sudo apt-get install -qq doxygen
+  - test -n $CC && unset CC
+  - test -n $CXX && unset CXX
+  - eval "${MATRIX_EVAL}"
 
 install:
   # Install conan
@@ -83,15 +90,15 @@ install:
   - conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
   - conan user -r nabla albanandrieu
   - conan profile new nabla --detect
-  - conan profile list  
+  - conan profile list
   - conan profile update settings.compiler.libcxx=libstdc++11 nabla
   - conan profile update settings.compiler=gcc nabla
 #  - conan install -pr nabla ./sample/microsoft/ --build boost_system
-  
+
 script:
   - mkdir -p sample/build-${ARCH}/
   - cd sample/build-${ARCH}/
-  - conan install -pr nabla ../microsoft/ --build boost_system  
+  - conan install -pr nabla ../microsoft/ --build boost_system
   - conan profile show nabla
 #  - ./build.sh
   # Download dependencies, build, test and create package
@@ -120,36 +127,6 @@ matrix:
     #    - brew update
     #    - brew outdated cmake || brew upgrade cmake
     #  env: CMAKEFLAGS="-DWITH_BOOST=ON -DHAS_MEMRCHR=OFF" CXX=clang++
-    #- compiler: gcc
-    #  os: linux
-    #  dist: precise
-    #  sudo: false
-    #  addons:
-    #    apt:
-    #      sources:
-    #        - george-edison55-precise-backports
-    #      packages:
-    #        - cmake
-    #        - cmake-data
-    #        - libboost-system-dev
-    #        - libboost-filesystem-dev
-    #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.6
-    #- compiler: gcc
-    #  os: linux
-    #  addons:
-    #    apt:
-    #      sources:
-    #        - ubuntu-toolchain-r-test
-    #      packages:
-    #        - cmake
-    #        - colormake
-    #        - libxml2-dev
-    #        - libxml2-utils
-    #        - libcppunit-dev
-    #        - libboost-thread-dev
-    #        - libboost-date-time-dev
-    #        - libboost-filesystem-dev
-    #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-4.8.4
     - compiler: gcc
       os: linux
       addons:
@@ -168,7 +145,9 @@ matrix:
             - libboost-filesystem-dev
       before_script:
         - conan profile update settings.compiler.version=5 nabla
-      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=g++-5
+      env:
+        - CMAKEFLAGS="-DWITH_BOOST=ON"
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
     - compiler: gcc
       os: linux
       addons:
@@ -187,7 +166,9 @@ matrix:
             - libboost-filesystem-dev
       before_script:
         - conan profile update settings.compiler.version=8 nabla
-      env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-8
+      env:
+        - CMAKEFLAGS="-DWITH_BOOST=ON"
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
     - compiler: gcc
       os: linux
       addons:
@@ -206,7 +187,9 @@ matrix:
             - libboost-filesystem-dev
       before_script:
         - conan profile update settings.compiler.version=9 nabla
-      env: CMAKEFLAGS="-DWITH_BOOST=OFF" CXX=g++-9
+      env:
+        - CMAKEFLAGS="-DWITH_BOOST=OFF"
+        - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
     # - compiler: clang
     #   os: linux
     #   addons:
@@ -227,23 +210,23 @@ matrix:
     #     - conan profile update settings.compiler=clang nabla
     #     - conan profile update settings.compiler.version=3.6 nabla
     #   env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++-3.6
-    - compiler: clang
-      os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-7
-          packages:
-            #- clang-7
-            - cmake
-            - libcppunit-dev
-            - libxml2-dev
-            - libxml2-utils
-            - libboost-thread-dev
-            - libboost-date-time-dev
-            - libboost-filesystem-dev
-      before_script:
-        - conan profile update settings.compiler=clang nabla
-        - conan profile update settings.compiler.version=7.0 nabla
-      env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++
+    #- compiler: clang
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #        - ubuntu-toolchain-r-test
+    #        - llvm-toolchain-precise-7
+    #      packages:
+    #        #- clang-7
+    #        - cmake
+    #        - libcppunit-dev
+    #        - libxml2-dev
+    #        - libxml2-utils
+    #        - libboost-thread-dev
+    #        - libboost-date-time-dev
+    #        - libboost-filesystem-dev
+    #  before_script:
+    #    - conan profile update settings.compiler=clang nabla
+    #    - conan profile update settings.compiler.version=7.0 nabla
+    #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++
