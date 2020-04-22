@@ -39,7 +39,7 @@ env:
     - MAKE=make
     - ARCH=linux
 
-# See https://docs.travis-ci.com/user/languages/c/
+# See https://docs.travis-ci.com/user/languages/cpp/
 
 matrix:
   include:
@@ -55,27 +55,27 @@ matrix:
     #    - brew update
     #    - brew outdated cmake || brew upgrade cmake
     #  env: CMAKEFLAGS="-DWITH_BOOST=ON -DHAS_MEMRCHR=OFF" CXX=clang++
-    - compiler: gcc
-      os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-            - cmake
-            - colormake
-            - libxml2-dev
-            - libxml2-utils
-            - libcppunit-dev
-            - libboost-thread-dev
-            - libboost-date-time-dev
-            - libboost-filesystem-dev
-      before_script:
-        - conan profile update settings.compiler.version=5 nabla
-      env:
-        - CMAKEFLAGS="-DWITH_BOOST=ON"
-        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+    #- compiler: gcc
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #        - ubuntu-toolchain-r-test
+    #      packages:
+    #        - g++-5
+    #        - cmake
+    #        - colormake
+    #        - libxml2-dev
+    #        - libxml2-utils
+    #        - libcppunit-dev
+    #        - libboost-thread-dev
+    #        - libboost-date-time-dev
+    #        - libboost-filesystem-dev
+    #  before_script:
+    #    - conan profile update settings.compiler.version=5 nabla
+    #  env:
+    #    - CMAKEFLAGS="-DWITH_BOOST=ON"
+    #    - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
     - compiler: gcc
       os: linux
       addons:
@@ -96,7 +96,7 @@ matrix:
         - conan profile update settings.compiler.version=8 nabla
       env:
         - CMAKEFLAGS="-DWITH_BOOST=ON"
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - MATRIX_EVAL="CC=/usr/bin/gcc-8 && CXX=/usr/bin/g++-8"
     - compiler: gcc
       os: linux
       addons:
@@ -117,7 +117,7 @@ matrix:
         - conan profile update settings.compiler.version=9 nabla
       env:
         - CMAKEFLAGS="-DWITH_BOOST=OFF"
-        - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+        - MATRIX_EVAL="CC=/usr/bin/gcc-9 && CXX=/usr/bin/g++-9"
     # - compiler: clang
     #   os: linux
     #   addons:
@@ -219,7 +219,9 @@ install:
 script:
   - mkdir -p sample/build-${ARCH}/
   - cd sample/build-${ARCH}/
-  - conan install -pr nabla ../microsoft/ --build boost_system
+  - which gcc
+  - which g++-8
+  - conan install -pr nabla ../microsoft/ -s compiler=gcc -s compiler.version=8 --build boost_system
   - conan profile show nabla
 #  - ./build.sh
   # Download dependencies, build, test and create package
