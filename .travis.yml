@@ -19,6 +19,9 @@ python:
 #  - clang
 #  - gcc
 
+services:
+  - docker
+
 virtualenv:
   system_site_packages: false
 
@@ -95,8 +98,8 @@ matrix:
       before_script:
         - conan profile update settings.compiler.version=8 nabla
       env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
         - CMAKEFLAGS="-DWITH_BOOST=ON"
-        - MATRIX_EVAL="CC=/usr/bin/gcc-8 && CXX=/usr/bin/g++-8"
     - compiler: gcc
       os: linux
       addons:
@@ -116,8 +119,8 @@ matrix:
       before_script:
         - conan profile update settings.compiler.version=9 nabla
       env:
+        - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
         - CMAKEFLAGS="-DWITH_BOOST=OFF"
-        - MATRIX_EVAL="CC=/usr/bin/gcc-9 && CXX=/usr/bin/g++-9"
     # - compiler: clang
     #   os: linux
     #   addons:
@@ -159,20 +162,20 @@ matrix:
     #    - conan profile update settings.compiler.version=7.0 nabla
     #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++
 
-addons:
-  apt:
-    packages:
-      - unzip
-      # Java8 Required for Sonar and SQLCL
-      - oracle-java8-installer
-      - oracle-java8-set-default
-  sonarcloud:
-    organization: albanandrieu-github
-    token:
-      secure: "m3pCsPSu3M39JP+8f+WALyDOxRpq2PJERIuyvK/XKVwyvC4hNT/SLIKQayLCAgPzYSEeqRchORr2Y8wKrRHMblfZtZu9XKVdv1cvBe26NHjKZy7xakuvi/7kvKI/Yu22DAcE1a6mBz1XC5WPUiRIm+vm3X4VzWBV6/Y+ptst6o8="
-    branches:
-      - master
-      - develop
+#addons:
+#  apt:
+#    packages:
+#      - unzip
+#      # Java8 Required for Sonar and SQLCL
+#      - oracle-java8-installer
+#      - oracle-java8-set-default
+#  sonarcloud:
+#    organization: albanandrieu-github
+#    token:
+#      secure: "m3pCsPSu3M39JP+8f+WALyDOxRpq2PJERIuyvK/XKVwyvC4hNT/SLIKQayLCAgPzYSEeqRchORr2Y8wKrRHMblfZtZu9XKVdv1cvBe26NHjKZy7xakuvi/7kvKI/Yu22DAcE1a6mBz1XC5WPUiRIm+vm3X4VzWBV6/Y+ptst6o8="
+#    branches:
+#      - master
+#      - develop
 
 cache:
   pip: true
@@ -201,6 +204,7 @@ before_install:
   - eval "${MATRIX_EVAL}"
 
 install:
+  - make get-deps
   - cmake --version
   # Install conan
   # - pip install --upgrade pip
@@ -232,6 +236,3 @@ script:
   - make CTEST_OUTPUT_ON_FAILURE=1 test
   - make package
 #  - sonar-scanner
-
-services:
-  - docker
