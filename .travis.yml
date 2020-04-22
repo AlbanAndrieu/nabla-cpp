@@ -2,7 +2,8 @@
 # Distributed under the GPL-3.0
 # (See accompanying file LICENSE.md)
 
-language: cpp
+#language: cpp
+language: generic
 sudo: required
 dist: travis_lts
 #dist: bionic
@@ -18,6 +19,10 @@ python:
 compiler:
 #  - clang
   - gcc
+
+os:
+ - linux
+# - osx
 
 #services:
 #  - docker
