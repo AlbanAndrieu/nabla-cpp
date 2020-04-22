@@ -85,8 +85,7 @@ matrix:
     #  env:
     #    - CMAKEFLAGS="-DWITH_BOOST=ON"
     #    - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-    - compiler: gcc
-      os: linux
+    - os: linux
       addons:
         apt:
           sources:
@@ -106,8 +105,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
         - CMAKEFLAGS="-DWITH_BOOST=ON"
-    - compiler: gcc
-      os: linux
+    - os: linux
       addons:
         apt:
           sources:
@@ -244,3 +242,12 @@ script:
   - make CTEST_OUTPUT_ON_FAILURE=1 test
   - make package
 #  - sonar-scanner
+
+notifications:
+  email: false
+  webhooks:
+    urls:
+    - https://webhooks.gitter.im/e/47b10b81867bd0063cf5
+    on_success: change
+    on_failure: always
+    on_start: false
