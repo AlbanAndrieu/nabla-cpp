@@ -15,9 +15,9 @@ python:
 #  - 3.6
   - 3.7
 
-compiler:
+#compiler:
 #  - clang
-  - gcc
+#  - gcc
 
 virtualenv:
   system_site_packages: false
@@ -213,7 +213,7 @@ install:
   - conan profile new nabla --detect
   - conan profile list
   - conan profile update settings.compiler.libcxx=libstdc++11 nabla
-  - conan profile update settings.compiler=gcc nabla
+  #- conan profile update settings.compiler=gcc nabla
 #  - conan install -pr nabla ./sample/microsoft/ --build boost_system
 
 script:
