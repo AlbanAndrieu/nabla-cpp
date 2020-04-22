@@ -168,20 +168,23 @@ matrix:
     #    - conan profile update settings.compiler.version=7.0 nabla
     #  env: CMAKEFLAGS="-DWITH_BOOST=ON" CXX=clang++
 
-#addons:
-#  apt:
-#    packages:
-#      - unzip
-#      # Java8 Required for Sonar and SQLCL
-#      - oracle-java8-installer
-#      - oracle-java8-set-default
-#  sonarcloud:
-#    organization: albanandrieu-github
-#    token:
-#      secure: "m3pCsPSu3M39JP+8f+WALyDOxRpq2PJERIuyvK/XKVwyvC4hNT/SLIKQayLCAgPzYSEeqRchORr2Y8wKrRHMblfZtZu9XKVdv1cvBe26NHjKZy7xakuvi/7kvKI/Yu22DAcE1a6mBz1XC5WPUiRIm+vm3X4VzWBV6/Y+ptst6o8="
-#    branches:
-#      - master
-#      - develop
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-8
+      - unzip
+      # Java8 Required for Sonar and SQLCL
+      - oracle-java8-installer
+      - oracle-java8-set-default
+  sonarcloud:
+    organization: albanandrieu-github
+    token:
+      secure: "m3pCsPSu3M39JP+8f+WALyDOxRpq2PJERIuyvK/XKVwyvC4hNT/SLIKQayLCAgPzYSEeqRchORr2Y8wKrRHMblfZtZu9XKVdv1cvBe26NHjKZy7xakuvi/7kvKI/Yu22DAcE1a6mBz1XC5WPUiRIm+vm3X4VzWBV6/Y+ptst6o8="
+    branches:
+      - master
+      - develop
 
 #cache:
 #  pip: true
