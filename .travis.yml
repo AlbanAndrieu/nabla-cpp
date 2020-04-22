@@ -173,7 +173,6 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-8
       - unzip
       # Java8 Required for Sonar and SQLCL
       - oracle-java8-installer
@@ -208,6 +207,7 @@ before_install:
   - sudo apt-get install -qq python-apt python-pycurl
   - sudo apt-get install -qq curl
   - sudo apt-get install -qq doxygen
+  - sudo apt-get install -qq g++-8
   - test -n $CC && unset CC
   - test -n $CXX && unset CXX
   - eval "${MATRIX_EVAL}"
