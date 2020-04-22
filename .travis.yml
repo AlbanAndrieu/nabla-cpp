@@ -206,6 +206,7 @@ before_install:
   - sudo apt-get install -qq curl
   - sudo apt-get install -qq doxygen
   - sudo apt-get install -qq g++-8
+  - sudo apt-get install -qq libcppunit-dev libxml2-dev libboost-thread-dev libboost-filesystem-dev
   - test -n $CC && unset CC
   - test -n $CXX && unset CXX
   - eval "${MATRIX_EVAL}"
