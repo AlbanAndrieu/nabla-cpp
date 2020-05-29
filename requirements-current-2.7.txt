@@ -133,7 +133,7 @@ piston-mini-client==0.7.5
 #ply==3.7
 pre-commit==1.8.2
 pre-commit-hooks==1.2.3
-psutil==5.4.3
+psutil==5.6.6
 py2-ipaddress==3.4.1
 pyasn1==0.4.2
 pyasn1-modules==0.0.7
