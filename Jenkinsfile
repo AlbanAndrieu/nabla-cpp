@@ -1,4 +1,4 @@
-node ('albandri'){
+node ('ubuntu'){
    stage('Preparation') { // for display purposes
       // Get some code from a Git repository
       checkout([$class: 'GitSCM', branches: [[name: '*/master']], browser: [$class: 'Stash', repoUrl: 'https://github.com/AlbanAndrieu/nabla-cpp/browse'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: true, timeout: 30]], gitTool: 'git-latest', submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'nabla', url: 'https://github.com/AlbanAndrieu/nabla-cpp.git']]])
@@ -16,8 +16,8 @@ node ('albandri'){
            script {
                sh "conan remove --system-reqs '*'"
 
-               docker.withRegistry('https://registry.nabla.mobi', 'docker-login') {
-                   def DOCKER_REGISTRY_URI="registry.nabla.mobi"
+               docker.withRegistry('https://index.docker.io/v1', 'docker-login') {
+                   def DOCKER_REGISTRY_URI="index.docker.io/v1"
                    //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                    //sh "docker login --password=${PASSWORD} --username=${USERNAME} ${DOCKER_REGISTRY_URI}"
                    //git '…'
@@ -44,19 +44,21 @@ node ('albandri'){
       } // steps
    }
    post {
-	 always {
-	   recordIssues enabledForFailure: true, filters: [
-	 	 excludeFile('.*qrc_icons\\.cpp.*'),
-	 	 excludeMessage('.*tmpnam.*')],
-	 	 tools: [gcc4(name: 'GCC-GUI', id: 'gcc4-gui',
-	 	 	     pattern: 'build/build*.log'),
-	 	 	     gcc4(name: 'Doxygen', id: 'doxygen',
-                             pattern: 'build/DoxygenWarnings.log'],
-	 	 unstableTotalAll: 1
-	   recordIssues enabledForFailure: true,
-	 	 tools: [cppCheck(pattern: 'build/cppcheck.log')]
-	 }
-	 success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
+     always {
+       recordIssues enabledForFailure: true, filters: [
+         excludeFile('.*qrc_icons\\.cpp.*'),
+         excludeMessage('.*tmpnam.*')],
+         tools: [gcc4(name: 'GCC-GUI', id: 'gcc4-gui',
+                 pattern: 'build/build*.log'),
+                 gcc4(name: 'Doxygen', id: 'doxygen',
+                 pattern: 'build/DoxygenWarnings.log')
+                 ],
+         unstableTotalAll: 1
+
+       recordIssues enabledForFailure: true,
+         tools: [cppCheck(pattern: 'build/cppcheck.log')]
+     }
+     success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
    }
    stage('SonarQube analysis') {
        environment {
