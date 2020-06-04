@@ -2,14 +2,14 @@ node ('ubuntu'){
    stage('Preparation') { // for display purposes
       // Get some code from a Git repository
       checkout([$class: 'GitSCM', branches: [[name: '*/master']], browser: [$class: 'Stash', repoUrl: 'https://github.com/AlbanAndrieu/nabla-cpp/browse'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: true, timeout: 30]], gitTool: 'git-latest', submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'nabla', url: 'https://github.com/AlbanAndrieu/nabla-cpp.git']]])
-      dir('Scripts/ansible') {
-          sh 'ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors'
-          // check quality
-          sh returnStatus: true, script: 'ansible-lint jenkins-slave.yml || true'
-          // check syntax
-          ansiblePlaybook colorized: true, extras: '-c local -vvvv --syntax-check', installation: 'ansible-2.2.0.0', inventory: 'hosts', limit: 'albandri', playbook: 'jenkins-slave.yml', sudoUser: null
-          //ansiblePlaybook colorized: true, extras: '-c local', installation: 'ansible-2.2.0.0', inventory: 'hosts', limit: 'albandri', playbook: 'jenkins-slave.yml', sudoUser: null
-      }
+      //dir('Scripts/ansible') {
+      //    sh 'ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors'
+      //    // check quality
+      //    sh returnStatus: true, script: 'ansible-lint jenkins-slave.yml || true'
+      //    // check syntax
+      //    ansiblePlaybook colorized: true, extras: '-c local -vvvv --syntax-check', installation: 'ansible-2.2.0.0', inventory: 'hosts', limit: 'albandri', playbook: 'jenkins-slave.yml', sudoUser: null
+      //    //ansiblePlaybook colorized: true, extras: '-c local', installation: 'ansible-2.2.0.0', inventory: 'hosts', limit: 'albandri', playbook: 'jenkins-slave.yml', sudoUser: null
+      //}
    }
    stage('Build') {
        steps {

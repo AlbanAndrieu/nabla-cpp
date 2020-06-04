@@ -75,3 +75,10 @@ Run `pre-commit run --all-files`
 pylint --rcfile=.pylintrc SConstruct
 pylint --rcfile=.pylintrc *.py
 ```
+
+## Eclipse
+
+File -> Import -> Existing code as Makefile project
+```
+sample/build-linux/
+```
