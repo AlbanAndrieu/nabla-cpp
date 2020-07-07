@@ -4,8 +4,8 @@ OPTION(BUILD_REFERENCE_DOCS "Build Project reference documentation using doxygen
 
 IF(BUILD_REFERENCE_DOCS)
     SET(BUILD_DOCUMENTATION YES)
-    OPTION(DOCUMENTATION_SEARCHENGINE "Enable doxygen's search engine (requires that documentation to be installed on a php enabled web server)" ON)
-    OPTION(DOCUMENTATION_TAGFILE "Generate a tag file named project.tag on the documentation web server" ON)
+    #OPTION(DOCUMENTATION_SEARCHENGINE "Enable doxygen's search engine (requires that documentation to be installed on a php enabled web server)" ON)
+    #OPTION(DOCUMENTATION_TAGFILE "Generate a tag file named project.tag on the documentation web server" ON)
 ENDIF(BUILD_REFERENCE_DOCS)
 
 #Generation of the documentation using doxygen

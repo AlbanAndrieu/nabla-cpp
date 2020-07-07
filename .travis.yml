@@ -232,7 +232,7 @@ script:
   - cd sample/build-${ARCH}/
   - which gcc
   - which g++-8
-  - conan install -pr nabla ../microsoft/ -s compiler=gcc -s compiler.version=8 --build boost_system
+  - conan install -pr nabla ../microsoft/ -s compiler=gcc -s compiler.version=8 -s compiler.libcxx=libstdc++11 --build boost_system
   - conan profile show nabla
 #  - ./build.sh
   # Download dependencies, build, test and create package

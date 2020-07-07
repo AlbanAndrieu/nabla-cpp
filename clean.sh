@@ -25,6 +25,8 @@ rm -f sample/build-${ARCH}/conan*
 #Scons
 #rm -Rf buildcache-*
 #rm -Rf scons-signatures-*.dblite
+#rm -f sample/microsoft/conanbuildinfo.*
+rm -f conanbuildinfo.*
 
 ${SCONS} clean
 

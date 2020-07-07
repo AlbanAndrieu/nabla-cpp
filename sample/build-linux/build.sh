@@ -16,7 +16,7 @@ export MODE_RELEASE=
 if [ -n "${ENABLE_CLANG}" ]; then
     echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
     #AddressSanitizer to sanitize your code!
-    export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
+    export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-10
     export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 fi
 
@@ -68,8 +68,6 @@ if [ "${OS}" == "Debian" ]; then
 	#LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
-#cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
-
 if [ -n "${MODE_RELEASE}" ]; then
     echo -e "${green} MODE_RELEASE is defined ${happy_smiley} ${NC}"
     export CMAKE_INSTALL_PREFIX=/usr/local
@@ -81,9 +79,15 @@ fi
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
 
+#cmake -GNinja -DCMAKE_BUILD_TYPE=Debug ../microsoft
+
+export CMAKE_GENERATOR="Eclipse CDT4 - Unix Makefiles"
+#export CMAKE_GENERATOR="Ninja"
+
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
-echo -e "${magenta} cmake -G\"Eclipse CDT4 - Unix Makefiles\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
+#-D_ECLIPSE_VERSION=4.4
+echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
+cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
 #-DENABLE_TESTING=true
 cmake_res=$?
 if [[ $cmake_res -ne 0 ]]; then

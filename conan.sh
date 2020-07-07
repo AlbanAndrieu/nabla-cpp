@@ -7,6 +7,8 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/step-0-color.sh"
 
+#rm -Rf /home/albandrieu/.conan/data/boost_system/
+
 echo -e "${cyan} ${double_arrow} Conan install ${NC}"
 
 conan user
@@ -15,7 +17,6 @@ conan user -r nabla albanandrieu
 
 #conan profile new test --detect
 conan profile new nabla --detect
-conan profile update settings.compiler.libcxx=libstdc++11 nabla
 conan profile update settings.compiler=gcc nabla
 conan profile update settings.compiler.version=8 nabla
 conan profile update settings.compiler.libcxx=libstdc++11 nabla
@@ -75,7 +76,9 @@ if [ "$(uname -s)" == "Linux" ]; then
         #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
         echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system ${NC}"
         #conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system
-        conan install ${WORKING_DIR}/sample/microsoft/
+        conan install ${WORKING_DIR}/sample/microsoft/ --build missing
+        # below you can download it IF available
+        #conan install ${WORKING_DIR}/sample/microsoft/
         #conan info${WORKING_DIR}/sample/microsoft/ --graph=file.html
 
         conan profile list
@@ -90,5 +93,10 @@ if [ "$(uname -s)" == "Linux" ]; then
     esac
 
 fi
+
+conan config home
+
+ls -lrta sample/microsoft/conaninfo.txt
+ls -lrta sample/build-linux/conanbuildinfo.cmake
 
 exit 0

@@ -18,6 +18,7 @@ sudo apt-get install colormake
 sudo apt-get install clang clang-tools clang-tidy
 sudo apt-get install flawfinder cppcheck ggcov gcovr gperf doxygen
 sudo apt-get install ninja-build
+ninja --version
 
 sudo apt-get install texlive-latex-extra texlive-xetex
 sudo apt-get install gnuplot latex2html biber

@@ -17,7 +17,7 @@ def generate(env, **kw):
 
     system = platform.system()
     machine = platform.machine()
-    dist = platform.dist()
+    #dist = platform.dist()
 
     Arch = ProjectMacro.getArch()
 
@@ -159,6 +159,8 @@ def generate(env, **kw):
         # export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8
         # export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 
+        # Do not deliver binaries witj use_asan (-fsanitize)
+
         if env['use_clang'] and env['use_asan']:
             env['CCFLAGS'] += ['-fsanitize=address']
             env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
@@ -268,8 +270,8 @@ def generate(env, **kw):
         )
         print(colored('System :', 'magenta'), colored(system, 'cyan'))
         print(colored('Machine :', 'magenta'), colored(machine, 'cyan'))
-        print(colored('Dist :', 'magenta'), colored(dist, 'cyan'))
-        print(colored('Dist-Os :', 'magenta'), colored(dist[0], 'cyan'))
+        #print(colored('Dist :', 'magenta'), colored(dist, 'cyan'))
+        #print(colored('Dist-Os :', 'magenta'), colored(dist[0], 'cyan'))
 
         print(colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan'))
         # print "dump whole env :", env.Dump()
