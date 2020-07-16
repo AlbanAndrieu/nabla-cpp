@@ -22,6 +22,8 @@ def generate(env, **kw):
     Arch = ProjectMacro.getArch()
 
     #env['ENV']['SCONS_BUILD'] = '1'
+    if env['color']:
+        print(colored('Arch :', 'magenta'), colored(Arch, 'cyan'))
 
     if Arch in ['x86Linux', 'cygwin']:
         if not 'gcc_version' in env:
@@ -58,8 +60,6 @@ def generate(env, **kw):
                 env['CXX'] = 'g++-' + env['gcc_version']
             else:
                 env['CXX'] = 'g++'
-
-        env['CXXVERSION'] = env['gcc_version']
 
         if Arch == 'x86Linux':
             env['Suffix64'] = '64'
@@ -231,36 +231,62 @@ def generate(env, **kw):
         env['LINKFLAGS'] = [
             '-zrescan',
         ]
-    elif Arch in ['winnt', 'sun4sol']:
-        env['debug_flags'] = [
-            '/Zd',
-            '/MDd',
-        ]
-        env['opt_flags'] = [
-            '/O2',
-            '/GL',
-            '/MD',
-        ]
+    elif Arch in ['winnt']:
+        if not 'gcc_version' in env:
+            env['gcc_version'] = '10'
+        #if env['opt'] == 'True':
+        #    env.Prepend(CPPDEFINES="NDEBUG")
+        #    env.Append(CXXFLAGS = '/MD /O2')
+        #else:
+        #    env.Append(CXXFLAGS = '/MDd /Zi')
+        #    env.Append(LINKFLAGS = '/DEBUG:FASTLINK')
+        #env['debug_flags'] = [
+        #    '/Zd',
+        #    '/MDd',
+        #]
+        #env['opt_flags'] = [
+        #    '/O2',
+        #    '/GL',
+        #    '/MD',
+        #]
         env['ENV']['PATH'] = env['ENV']['PATH'] + \
-            ';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre6\\bin'
-        env['CCFLAGS'] = [
-            '/nologo',
-            '/W3',
-            '/GX',
-            '/GR',
-            '-DWIN',
-            '-DWIN32',
-            '-DWINNT',
-            '-D_WINDOWS',
-        ]
-        env['LINKFLAGS'] = [
-            '/nologo',
-            '/opt:ref',
-            '/nodefaultlib:libcmt.lib',
-            '/nodefaultlib:libc.lib',
-            '/nodefaultlib:libcd.lib',
-            '/nodefaultlib:libcmtd.lib',
-        ]
+            ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;'
+            #';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
+
+        #env['CCFLAGS'] = [
+        #    '/nologo',
+        #    '/W3',
+        #    '/GX',
+        #    '/GR',
+        #    '-DWIN',
+        #    '-DWIN32',
+        #    '-DWINNT',
+        #    '-D_WINDOWS',
+        #]
+        #env['LINKFLAGS'] = [
+        #    '-static',
+        #    '/nologo',
+        #    '/opt:ref',
+        #    '/nodefaultlib:libcmt.lib',
+        #    '/nodefaultlib:libc.lib',
+        #    '/nodefaultlib:libcd.lib',
+        #    '/nodefaultlib:libcmtd.lib',
+        #]
+
+    if not 'Suffix64' in env:
+        env['Suffix64'] = ''
+    if not 'java_arch' in env:
+        env['java_arch'] = ''
+    if not 'output_folder' in env:
+        env['output_folder'] = 'opt'
+
+    if not 'debug_flags' in env:
+        env['debug_flags'] = ''
+    if not 'opt_flags' in env:
+        env['opt_flags'] = ''
+
+    if not 'CXXVERSION' in env:
+        env['CXXVERSION'] = env['gcc_version']
 
     if env['color']:
 
@@ -290,7 +316,6 @@ def generate(env, **kw):
             colored('ENV HOME :', 'magenta'),
             colored(env['ENV']['HOME'], 'cyan'),
         )
-
         print(
             colored('CXXVERSION :', 'magenta'),
             colored(env['CXXVERSION'], 'cyan'),

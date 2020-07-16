@@ -5,6 +5,9 @@ import ProjectMacro
 Import('env')
 localenv = env.Clone()
 
+Arch = ProjectMacro.getArch()
+print("Arch :", Arch)
+
 # Compile in 32 bits
 #localenv.Prepend(CCFLAGS = ['-m32'])
 #localenv.Prepend(LINKFLAGS = ['-m32'])
@@ -14,17 +17,19 @@ localenv = env.Clone()
 
 #explicit links
 localenv["LIBS"] = [
-	'boost_thread',
-	'boost_date_time',
-	'boost_system',
+    'boost_thread',
+    'boost_date_time',
+    'boost_system',
 ]
 
 localenv.Append(LINKFLAGS = "-Wl,--no-as-needed")
-#https://bugs.launchpad.net/ubuntu/+source/cppunit/+bug/985841
-localenv.Append(LINKFLAGS = "-lcppunit")
 
-#localenv.Append(LINKFLAGS = "-fsanitize=address -lasan")
-localenv.Append(LINKFLAGS = "-fsanitize=address")
+if Arch not in ['winnt']:
+    #https://bugs.launchpad.net/ubuntu/+source/cppunit/+bug/985841
+    localenv.Append(LINKFLAGS = "-lcppunit")
+
+    #localenv.Append(LINKFLAGS = "-fsanitize=address -lasan")
+    localenv.Append(LINKFLAGS = "-fsanitize=address")
 
 #localenv["CXXFLAGS"] = [
 #    "-std=c++11",
@@ -41,10 +46,11 @@ localenv.Append(LIBS=['test_library'], LIBPATH=['#test_library'])
 #localenv.Append(LIBS = ['cppunit'])
 
 localenv.MergeFlags([
-	'-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
+    '-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
 ])
 
-#building Binary
-p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_tests'), Glob('*.cpp'))
+if Arch not in ['winnt']:
+    #building Binary
+    p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_tests'), Glob('*.cpp'))
 
-Default(p)
+    Default(p)

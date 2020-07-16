@@ -82,3 +82,7 @@ File -> Import -> Existing code as Makefile project
 ```
 sample/build-linux/
 ```
+
+## Tools
+
+See [tools](https://linuxfr.org/users/oliver_h/journaux/moi-expert-c-j-abandonne-le-cxx)
