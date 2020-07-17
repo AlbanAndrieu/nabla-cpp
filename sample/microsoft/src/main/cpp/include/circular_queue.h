@@ -125,7 +125,7 @@ public:
    * \return A boolean that says if it was possible to add the data in the
    * queue.
    */
-  const bool enqueue(const int data);
+  bool enqueue(const int data);
 
   /**
    * \fn const int dequeue(const bool reset = false)
@@ -136,7 +136,7 @@ public:
    * the value retrieved. \throw This method throw an exception "Queue is empty"
    * if it was unable to retrieve the value
    */
-  const int dequeue(const bool reset = false);
+  int dequeue(const bool reset = false);
 
   /**
    * \fn std::string values() const

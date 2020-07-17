@@ -8,6 +8,9 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 source "${WORKING_DIR}/step-0-color.sh"
 
 unset SCONS
+echo -e "${red} ${double_arrow} unset SCONS ${head_skull} : SCONS : ${SCONS} ${NC}"
+unalias scons
+echo -e "${red} ${double_arrow} unalias scons ${head_skull}${NC}"
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 #export ENABLE_MEMCHECK=true

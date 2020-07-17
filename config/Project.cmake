@@ -173,7 +173,8 @@ IF(UNIX)
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed")
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
     #SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
-    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Bsymbolic-functions -Wl,-z,relro")
+    #SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Bsymbolic-functions -Wl,-z,relro")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Bsymbolic-functions")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-as-needed")
 
     #-fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2

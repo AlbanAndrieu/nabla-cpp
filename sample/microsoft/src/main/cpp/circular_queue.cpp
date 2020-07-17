@@ -82,7 +82,7 @@ void circular_queue::initialize(const int data) {
   // clear();
 }
 
-const bool circular_queue::enqueue(const int data) {
+bool circular_queue::enqueue(const int data) {
   boost::mutex::scoped_lock lock(m_mutex);
   // p_thread_mutex_lock(&mp);
   // TODO Win32 WaitForSingleObject(hMutex,INFINITE); // wait for ownership
@@ -105,7 +105,7 @@ const bool circular_queue::enqueue(const int data) {
   }
 }
 
-const int circular_queue::dequeue(const bool reset) {
+int circular_queue::dequeue(const bool reset) {
   int res = 0;
 
   boost::mutex::scoped_lock lock(m_mutex);

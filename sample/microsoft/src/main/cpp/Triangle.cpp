@@ -20,7 +20,7 @@ Triangle::Triangle() {}
 
 Triangle::~Triangle() {}
 
-const int Triangle::triangleType(const int a, const int b, const int c) {
+int Triangle::triangleType(const int a, const int b, const int c) {
   std::cout << "\t[a : " << a << ", b : " << b << ", c : " << c << "]"
             << std::endl;
   if ((a + b < c) || (b + c < a) || (a + c < b) ||

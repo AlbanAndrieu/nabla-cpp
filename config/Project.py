@@ -97,7 +97,7 @@ def generate(env, **kw):
             # '-Werror', #Turns all warnings into errors.
             '-Wall',  # Turn on all warnings
             '-fdiagnostics-show-option',  # sonar cxx
-            '-Wl,-z,relro,now',  # Full RELRO
+            #'-Wl,-z,relro,now',  # Full RELRO
             '-Wformat',
             # Warn about uses of format functions that represent possible security problems
             '-Wformat-security',
@@ -171,7 +171,7 @@ def generate(env, **kw):
                 # '-fstack-protector', # Gives warnings
                 # '-fstack-protector-strong', # Gives warnings
                 '-fstack-protector-all',
-                '-Wno-error=maybe-uninitialized',
+                #'-Wno-error=maybe-uninitialized',
                 '-Wno-unused-local-typedefs',
                 '-Wno-conversion-null',
                 '-Wno-invalid-offsetof',

@@ -13,7 +13,7 @@ public:
   Triangle();
   virtual ~Triangle();
 
-  static const int triangleType(const int a, const int b, const int c);
+  static int triangleType(const int a, const int b, const int c);
 
 private:
   // TriangleType type;
