@@ -57,8 +57,8 @@ vars.AddVariables(
     ('install_path', 'Set install path', 'install'),
     ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../buildcache'),
     ('bom', 'bom location of additional 3rdparties.', ''),
-#    ('CC', 'Set C compiler', 'gcc'),
-#    ('CXX', 'Set C++ compiler', 'g++'),
+#    ('CC', 'Set C compiler : gcc, clang', 'gcc'),
+#    ('CXX', 'Set C++ compiler : g++, clang++', 'g++'),
     ('version', 'The version of the component you build', '1.0.0'),
     ('tar', 'tar binary', 'tar'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])

@@ -68,6 +68,8 @@ if [ -n "${ENABLE_CLANG}" ]; then
 
 fi
 
+export CONAN_GENERATOR=${CONAN_GENERATOR:-"scons"}
+
 if [ "$(uname -s)" == "Linux" ]; then
 
     case $(uname -m) in
@@ -83,9 +85,10 @@ if [ "$(uname -s)" == "Linux" ]; then
         #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
         ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
         #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system ${NC}"
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system -g ${CONAN_GENERATOR} ${NC}"
         #conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system
-        conan install ${WORKING_DIR}/sample/microsoft/ --build missing
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} ${NC}"
+        conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR}
         # below you can download it IF available
         #conan install ${WORKING_DIR}/sample/microsoft/
         #conan info${WORKING_DIR}/sample/microsoft/ --graph=file.html

@@ -10,7 +10,8 @@ boost_system:shared=True
 # Take a look for all available options in conanfile.py
 
 [generators]
-#cmake
+cmake
+scons
 
 [imports]
 bin, *.dll -> ./bin # Copies all dll files from packages bin folder to my "bin" folder

@@ -16,8 +16,7 @@ void circular_queueTest::testConstructor() {
 
   std::cout << "START testConstructor..." << std::endl;
 
-  circular_queue *a = new circular_queue(
-      3); // No Exception must be raised here to avoid core dump
+  circular_queue *a = new circular_queue(3); // No Exception must be raised here to avoid core dump
   std::cout << "Free memory circular_queue" << std::endl;
   delete a;
 
@@ -30,7 +29,8 @@ void circular_queueTest::testConstructorWithNegative() {
   circular_queue *a;
 
   try {
-    a = new circular_queue(-1);
+    //a = new circular_queue(-1);
+    a = new circular_queue(0);
     std::cout << "Free memory circular_queue not done" << std::endl;
     delete a;
   } catch (int) {

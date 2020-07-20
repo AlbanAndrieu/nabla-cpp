@@ -42,6 +42,8 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
 ./clean.sh
 
+export CONAN_GENERATOR="cmake"
+
 ./conan.sh
 
 #cd $PROJECT_SRC/sample/microsoft
@@ -145,7 +147,7 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
     fi
 
     #ctest -D Experimental
-    #cd ${WORKSPACE}/sample/build-linux/src/test/cpp
+    #cd ${PROJECT_SRC}/sample/build-linux/src/test/cpp
     #ctest .. -R circular_queueTest
     #cd src/test/app/
     #ctest -V -C Debug
@@ -245,14 +247,18 @@ echo -e "${magenta} find ../.. -name '*.gcda' ${NC}"
 find ../.. -name '*.gcda'
 find ../.. -name '*.gcno'
 
-mkdir ${WORKSPACE}/reports || true
-gcovr -v -r ${WORKSPACE}/sample/microsoft/ -f ${WORKSPACE}/sample/microsoft/
+mkdir ${PROJECT_SRC}/reports || true
+which gcovr
+echo -e "${magenta} gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/ ${NC}"
+gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/
 #xml
-echo -e "${magenta} gcovr --branches --xml-pretty -r ${WORKSPACE}/microsoft/ ${NC}"
-sudo gcovr --branches --xml-pretty -r ${WORKSPACE}/sample/microsoft/ > ${WORKSPACE}/reports/gcovr-report.xml
+echo -e "${magenta} gcovr --branches --xml-pretty -r ${PROJECT_SRC}/microsoft/ ${NC}"
+#sudo
+gcovr --branches --xml-pretty -r ${PROJECT_SRC}/sample/microsoft/ > ${PROJECT_SRC}/reports/gcovr-report.xml
 #html
-echo -e "${magenta} gcovr --branches -r ${WORKSPACE}/microsoft/ --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html ${NC}"
-sudo gcovr --branches -r ${WORKSPACE}/sample/microsoft/ --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
+echo -e "${magenta} gcovr --branches -r ${PROJECT_SRC}/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html ${NC}"
+#sudo
+gcovr --branches -r ${PROJECT_SRC}/sample/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
 
 echo -e "${magenta} sudo perf record -g -- /usr/bin/git --version ${NC}"
 sudo perf record -g -- /usr/bin/git --version

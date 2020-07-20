@@ -70,6 +70,8 @@ pwd
 
 echo -e "${magenta} Upgrade python from 2 to 3 : 2to3 -w SConstruct ${NC}"
 
+export CONAN_GENERATOR="scons"
+
 ./conan.sh
 
 echo -e "${green} Building : scons ${NC}"

@@ -33,19 +33,28 @@ static int triangleType(const int a, const int b, const int c) {
 
 // Security issue
 void copy_and_print_srting(const char *str) {
-  char buf[5];
+  char buf[5]; // TODO buffer overflow
+  //char buf[12];
 
   // TODO buffer overflow
-  strcpy(buf, str);
-  strcpy(buf, "Hello world!");
+  //strcpy(buf, str);
+  //strlcpy(buf, str, sizeof(buf));
+  strncpy(buf, str, sizeof(buf));
+  // TODO buffer overflow
+  //strcpy(buf, "Hello world!");
+  //strlcpy(buf, "Hello world!", sizeof(buf));
+  strncpy(buf, "Hello world!..", sizeof(buf));
   // TODO sprintf
-  printf(buf);
+  //printf(buf); // Error: format string is not a string literal
+  printf("%s", buf);
   printf("\n");
 }
 
 int main(int argc, char **argv) {
 
   copy_and_print_srting(argv[1]);
+
+  (void)argc; // unused parameter ‘argc’ [-Wunused-parameter]
 
   std::cout << "START test case ERROR" << std::endl;
   if (4 == triangleType(0, 0, 0)) {
