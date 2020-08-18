@@ -11,6 +11,8 @@ SET( DROP_LOCATION "/cdash/submit.php?project=MICROSOFT" )
 
 INCLUDE(${PROJECT_SOURCE_DIR}/../../config/Project.cmake)
 
+SET(CONAN_DISABLE_CHECK_COMPILER true)
+
 # Prepare Conan.io packages
 SET(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 IF(NOT EXISTS ${CONAN_BUILD_INFO_FILE})
