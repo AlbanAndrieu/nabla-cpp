@@ -13,20 +13,24 @@ INCLUDE(${PROJECT_SOURCE_DIR}/../../config/Project.cmake)
 
 SET(CONAN_DISABLE_CHECK_COMPILER true)
 
-# Prepare Conan.io packages
-SET(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-IF(NOT EXISTS ${CONAN_BUILD_INFO_FILE})
-  MESSAGE(STATUS "No conan package information available. Trying to fix that!")
-  EXECUTE_PROCESS(COMMAND conan install --build=missing ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_QUIET)
-ENDIF()
-
-#if conanbuildinfo.cmake not found run
-#conan install ../microsoft/ --build boost_system
-
-# Import dependencies via Conan.io
-INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-SET(CONAN_SYSTEM_INCLUDES On)
-CONAN_BASIC_SETUP()
+IF (MINGW)
+  MESSAGE(STATUS "Conan not initialed")
+ELSE(MINGW)
+  # Prepare Conan.io packages
+  SET(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+  IF(NOT EXISTS ${CONAN_BUILD_INFO_FILE})
+    MESSAGE(STATUS "No conan package information available. Trying to fix that!")
+    EXECUTE_PROCESS(COMMAND conan install --build=missing ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_QUIET)
+  ENDIF()
+  
+  #if conanbuildinfo.cmake not found run
+  #conan install ../microsoft/ --build boost_system
+  
+  # Import dependencies via Conan.io
+  INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+  SET(CONAN_SYSTEM_INCLUDES On)
+  CONAN_BASIC_SETUP()
+ENDIF(MINGW)
 
 SET(EXPORT_FILE microsoft-build.cmake)
 

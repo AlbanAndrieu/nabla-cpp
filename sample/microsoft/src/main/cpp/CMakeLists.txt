@@ -21,10 +21,18 @@ SET(main_files_SRCS
 FILE(GLOB main_files_HDRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.h")
 MESSAGE("Found Header Files: ${main_files_HDRS}")
 
-LINK_LIBRARIES(boost_system)
 #LINK_LIBRARIES(${CONAN_LIBS})
+IF (MINGW)
+  LINK_LIBRARIES(libboost_system-mt.a)
+ELSE(MINGW)
+  LINK_LIBRARIES(boost_system)
+ENDIF(MINGW)
 
-ADD_LIBRARY(main_library SHARED ${main_files_SRCS})
+IF (MINGW)
+  ADD_LIBRARY(main_library STATIC ${main_files_SRCS})
+ELSE(MINGW)
+  ADD_LIBRARY(main_library SHARED ${main_files_SRCS})
+ENDIF(MINGW)
 
 SET_TARGET_PROPERTIES(main_library PROPERTIES
   VERSION ${PROJECT_VERSION}

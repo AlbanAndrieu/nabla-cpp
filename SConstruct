@@ -64,41 +64,49 @@ vars.AddVariables(
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
 )
 
-# Import Conans
-from conans.client.conan_api import ConanAPIV1 as conan_api
-from conans import __version__ as conan_version
+if Arch not in ['cygwin','mingw']:
+    # Import Conans
+    from conans.client.conan_api import ConanAPIV1 as conan_api
+    from conans import __version__ as conan_version
 
-conan, _, _ = conan_api.factory()
+    conan, _, _ = conan_api.factory()
 
-build_directory = os.path.join(os.getcwd(), "sample/build-scons")
-if not os.path.exists(build_directory):
-    os.makedirs(build_directory)
+    build_directory = os.path.join(os.getcwd(), "sample/build-scons")
+    if not os.path.exists(build_directory):
+        os.makedirs(build_directory)
 
-src_directory = os.path.join(os.getcwd(), "sample/microsoft")
-#build_hello_directory = os.path.join(src_directory, "hello.c")
+    src_directory = os.path.join(os.getcwd(), "sample/microsoft")
+    #build_hello_directory = os.path.join(src_directory, "hello.c")
 
-conanfile_path = os.path.join(os.getcwd(), src_directory + "/conanfile.txt")
+    conanfile_path = os.path.join(os.getcwd(), src_directory + "/conanfile.txt")
 
-conan.install(conanfile_path,\
-        generators=["scons"],\
-        install_folder=build_directory)
+    # See https://git.ircad.fr/conan/conan-boost/blob/fc812a583a6e88ee7dc378ac2cc47ed1055fb37a/conanfile.py
 
-env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
+    conan.install(conanfile_path,\
+            generators=["scons"],\
+    #        settings=["compiler_libcxx=libstdc++11"],\
+    #        profiles=["nabla"],\
+            install_folder=build_directory)
+
+#env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
+
+#'eclipse'
+env = DefaultEnvironment(ENV = os.environ, variables = vars, tools = ['default', 'mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
 
 if Arch in ['winnt']:
-	#c:\tools\msys64\mingw64\bin> mklink mingw32-gcc.exe gcc.exe
-	#env = Environment(platform = 'cygwin')
-	#env = Environment(platform = 'win32')
-	env = DefaultEnvironment(tools = ['mingw'])
+    #c:\tools\msys64\mingw64\bin> mklink mingw32-gcc.exe gcc.exe
+    #env = Environment(platform = 'cygwin')
+    #env = Environment(platform = 'win32')
+    env = Environment(ENV = os.environ, variables = vars, tools = ['msvc', 'mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
 #env = DefaultEnvironment(tools = ['msvc'])
 # FIXME: Compiler, version, arch are hardcoded, not parametrized
 #env = Environment(MSVC_VERSION="14.0", TARGET_ARCH="x86_64")
 
 if Arch in ['x86sol','sun4sol']:
-    env = Environment(tools=['suncc', 'sunc++', 'sunlink'])
+    env = Environment(ENV = os.environ, variables = vars, tools=['suncc', 'sunc++', 'sunlink', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
 
-#'eclipse'
-env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
+#env = Environment(PLATFORM = 'mingw', ENV = os.environ, variables = vars, tools = ['mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
+#Tool('mingw')(env)
 
 conan_flags = SConscript('{}/SConscript_conan'.format(build_directory))
 if not conan_flags:

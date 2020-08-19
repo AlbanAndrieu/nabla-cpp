@@ -17,30 +17,45 @@ conan user -r nabla albanandrieu
 
 #conan profile new test --detect
 conan profile new nabla --detect
-if [ "$(uname -s)" == "Linux" ]; then
+
+#conan profile remove settings.compiler.libcxx nabla
+
+#conan install mingw_installer/1.0@conan/stable
+#conan install mingw_installer/1.0@conan/stable -s settings.compiler.libcxx=libc++  -s settings.compiler=gcc -s build_type=Debug
+#conan install mingw_installer/1.0@conan/stable -s compiler=gcc -s compiler.version=10
+
+if [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
+    # See https://docs.conan.io/en/latest/systems_cross_building/windows_subsystems.html
+    conan profile new nabla_msys2_mingw --detect
+	# Windows
+	#conan profile update settings.compiler="Visual Studio" nabla
+	#conan profile update settings.compiler.runtime=MD nabla
+	#conan profile update settings.compiler.version=15 nabla
+	conan profile update settings.compiler=gcc nabla_msys2_mingw 
+	conan profile update settings.compiler.version=10 nabla_msys2_mingw 
+elif [ "$(uname -s)" == "Linux" ]; then
 	conan profile update settings.compiler=gcc nabla
 	conan profile update settings.compiler.version=8 nabla
 fi
-# Windows
-#compiler=Visual Studio
-#compiler.runtime=MD
-#compiler.version=15
 
+#libstdc++: Old ABI.
+#libstdc++11: New ABI.
+echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 default ${NC}"
 conan profile update settings.compiler.libcxx=libstdc++11 nabla
 conan profile show nabla
 
 conan profile list
 
-echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 default ${NC}"
+#echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 default ${NC}"
 echo -e "${magenta} conan profile update settings.compiler.version=8 default ${NC}"
-echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 default ${NC}"
 
 if [ "$(uname -s)" == "Linux" ]; then
 	#ls -lrta $HOME/.conan/profiles
 	conan profile update settings.compiler.version=8 default
-	conan profile show default
 fi
 
+conan profile show default
+	
 #See https://conan.io/
 #See https://bintray.com/bincrafters/public-conan
 
@@ -54,7 +69,7 @@ if [ -n "${ENABLE_CLANG}" ]; then
 
             #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
             ##conan install ../microsoft/ -s os="Linux" -s compiler="clang"
-            ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
+            ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=8
 
             ;;
         i*86)
@@ -70,15 +85,31 @@ fi
 
 export CONAN_GENERATOR=${CONAN_GENERATOR:-"scons"}
 
-if [ "$(uname -s)" == "Linux" ]; then
+if [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
+    case $(uname -m) in
+    x86_64)
+        echo -e "${green} Using CONAN ${happy_smiley} ${NC}"
+        conan profile list
+        conan profile update settings.compiler.libcxx=libstdc++11 default
+
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system -g ${CONAN_GENERATOR} ${NC}"
+        #conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} ${NC}"
+        conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR}
+        
+        ;;
+    i*86)
+        ;;
+    *)
+        # leave ARCH as-is
+        ;;
+    esac
+
+elif [ "$(uname -s)" == "Linux" ]; then
 
     case $(uname -m) in
     x86_64)
         echo -e "${green} Using CONAN ${happy_smiley} ${NC}"
-
-        conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan
-        conan user -r nabla albanandrieu
-
         #conan remote add nabla https://api.bintray.com/conan/bincrafters/public-conan || true
         #conan user -p 24809e026911e16eaa40b63acbf05eaec557d963 -r nabla albanandrieu
 

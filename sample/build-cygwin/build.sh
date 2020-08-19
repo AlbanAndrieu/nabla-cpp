@@ -1,5 +1,13 @@
 #!/bin/bash
-echo "WORKSPACE : ${WORKSPACE}"
+
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+
+if [ -z "$WORKSPACE" ]; then
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
+  export WORKSPACE=${WORKING_DIR}/../..
+fi
+
+echo "WORKSPACE ${WORKSPACE}"
 
 #In Hudson
 #Extract trunk/cpp in Google Code (automatic configuration)
@@ -9,7 +17,12 @@ export PROJECT_TARGET_PATH=/cygdrive/c/target
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
-cd $PROJECT_SRC/sample/build-cygwin
+cd ../../
+#cd $PROJECT_SRC/sample/build-cygwin
+
+source ./step-2-0-0-build-env.sh || exit 1
+
+echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
 rm CMakeCache.txt
 
