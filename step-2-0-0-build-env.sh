@@ -33,7 +33,9 @@ echo -e "${magenta} ${underline}PARAMETERS ${NC}"
 source "${WORKING_DIR}/step-1-os.sh"
 
 # shellcheck source=/dev/null
-source "${HOME}/run-python.sh"
+if [ -z "${HOME}/run-python.sh" ]; then
+  source "${HOME}/run-python.sh"
+fi
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 

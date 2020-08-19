@@ -1,5 +1,6 @@
 #!/bin/bash
 
-ccmake ../microsoft
+#ccmake ../microsoft
+echo "Use cmake.sh first"
 
 exit 0
