@@ -366,7 +366,9 @@ else
     SCONS="/usr/local/bin/scons"
   else
     #SCONS="/usr/bin/python2.7 /usr/bin/scons"
-    SCONS="python3 /usr/bin/scons"
+    #SCONS="python3 /usr/bin/scons"
+    #SCONS="python3 /usr/local/bin/scons"
+    SCONS="python3 /opt/ansible/env38/bin/scons"
   fi
   export SCONS
   echo -e "${magenta} SCONS : ${SCONS} ${NC}"

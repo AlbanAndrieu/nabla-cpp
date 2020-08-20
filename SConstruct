@@ -84,14 +84,12 @@ if Arch not in ['cygwin','mingw']:
 
     conan.install(conanfile_path,\
             generators=["scons"],\
-    #        settings=["compiler_libcxx=libstdc++11"],\
-    #        profiles=["nabla"],\
             install_folder=build_directory)
 
 #env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
 
 #'eclipse'
-env = DefaultEnvironment(ENV = os.environ, variables = vars, tools = ['default', 'mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
+env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
 
 if Arch in ['winnt']:
     #c:\tools\msys64\mingw64\bin> mklink mingw32-gcc.exe gcc.exe

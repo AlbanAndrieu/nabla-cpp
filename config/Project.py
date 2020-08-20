@@ -143,7 +143,8 @@ def generate(env, **kw):
         # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
         if 'use_cpp11' in env and env['use_cpp11']: #env['gcc_version'] >= '8'
-            env['LINKFLAGS'] += ['-std=c++11', '-pthread']
+            env['LINKFLAGS'] += ['-std=c++11'] # '-pthread'
+            env['CCFLAGS'] += ['-std=c++11']
 
         # if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
         #    env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
