@@ -33,7 +33,9 @@ echo -e "${magenta} ${underline}PARAMETERS ${NC}"
 source "${WORKING_DIR}/step-1-os.sh"
 
 # shellcheck source=/dev/null
-source "${HOME}/run-python.sh"
+if [ -z "${HOME}/run-python.sh" ]; then
+  source "${HOME}/run-python.sh"
+fi
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
@@ -364,7 +366,9 @@ else
     SCONS="/usr/local/bin/scons"
   else
     #SCONS="/usr/bin/python2.7 /usr/bin/scons"
-    SCONS="python3 /usr/bin/scons"
+    #SCONS="python3 /usr/bin/scons"
+    #SCONS="python3 /usr/local/bin/scons"
+    SCONS="python3 /opt/ansible/env38/bin/scons"
   fi
   export SCONS
   echo -e "${magenta} SCONS : ${SCONS} ${NC}"

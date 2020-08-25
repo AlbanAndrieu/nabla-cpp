@@ -38,7 +38,6 @@ if localenv['color']:
     print(colored('CXXVERSION :', 'magenta'), colored(localenv['CXXVERSION'], 'cyan'))
 
 build_path_relative_to_sconstruct = Dir('../../../../').path
-#build_directory = os.path.join(localenv['sandbox'], 'sample', 'build-scons')
 build_directory = os.path.join(build_path_relative_to_sconstruct, 'build-scons')
 print("build_directory :", build_directory)
 conan = SConscript('#{}/SConscript_conan'.format(build_directory))

@@ -25,7 +25,7 @@ def generate(env, **kw):
     if env['color']:
         print(colored('Arch :', 'magenta'), colored(Arch, 'cyan'))
 
-    if Arch in ['x86Linux', 'cygwin']:
+    if Arch in ['x86Linux']: # 'cygwin'
         if not 'gcc_version' in env:
             env['gcc_version'] = '8'
             env['gcc_version'] = subprocess.check_output(
@@ -142,9 +142,18 @@ def generate(env, **kw):
 
         # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-        if env['gcc_version'] >= '8' and 'use_cpp11' in env and env['use_cpp11']:
-            env['LINKFLAGS'] += ['-std=c++11', '-pthread']
+        if 'use_cpp11' in env and env['use_cpp11']: #env['gcc_version'] >= '8'
+            env['LINKFLAGS'] += ['-std=c++11'] # '-pthread'
+            env['CCFLAGS'] += ['-std=c++11']
 
+        # if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
+        #    env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
+
+            # '-std=gnu++98',
+            # '-std=gnu++11',
+            # '-std=gnu++0x',
+            # '-std=c++0x',
+            
         # NOK if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
         if env['gcc_version'] >= '4.9':
             env['LINKFLAGS'] += ['-fdiagnostics-color=always']
@@ -182,19 +191,8 @@ def generate(env, **kw):
         if not env['use_asan']:
             env['LINKFLAGS'] += ['-Wl,--no-undefined']
 
-        # if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
-        #    env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
-
-            # '-std=gnu++98',
-            # '-std=gnu++11',
-            # '-std=gnu++0x',
-            # '-std=c++0x',
-
         # if env['gcc_version'] >= '5.2':
         #    env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=0']
-
-        if env['gcc_version'] >= '8' and 'use_cpp11' in env and env['use_cpp11']:
-            env['CCFLAGS'] += ['-std=c++11']
 
         # Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
@@ -232,8 +230,10 @@ def generate(env, **kw):
             '-zrescan',
         ]
     elif Arch in ['winnt']:
-        if not 'gcc_version' in env:
-            env['gcc_version'] = '10'
+        #if not 'gcc_version' in env:
+        #    env['gcc_version'] = '10'
+        env['CC'] = 'x86_64-w64-mingw32-gcc'
+        env['CXX'] = 'x86_64-w64-mingw32-g++'
         #if env['opt'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
@@ -253,6 +253,9 @@ def generate(env, **kw):
             ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;'
             #';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
 
+        if 'use_cpp11' in env and env['use_cpp11']: #env['gcc_version'] >= '8'
+            env['LINKFLAGS'] += ['-std=c++11']
+            
         #env['CCFLAGS'] = [
         #    '/nologo',
         #    '/W3',
@@ -263,15 +266,15 @@ def generate(env, **kw):
         #    '-DWINNT',
         #    '-D_WINDOWS',
         #]
-        #env['LINKFLAGS'] = [
-        #    '-static',
+        env['LINKFLAGS'] = [
+            '-static',
         #    '/nologo',
         #    '/opt:ref',
         #    '/nodefaultlib:libcmt.lib',
         #    '/nodefaultlib:libc.lib',
         #    '/nodefaultlib:libcd.lib',
         #    '/nodefaultlib:libcmtd.lib',
-        #]
+        ]
 
     if not 'Suffix64' in env:
         env['Suffix64'] = ''
@@ -304,18 +307,20 @@ def generate(env, **kw):
         if env['verbose']:
             print(colored('ENV ENV :', 'magenta'), colored(env['ENV'], 'cyan'))
 
-        print(
-            colored('ENV TERM :', 'magenta'),
-            colored(env['ENV']['TERM'], 'cyan'),
-        )
+        if 'TERM' in env:
+            print(
+                colored('ENV TERM :', 'magenta'),
+                colored(env['ENV']['TERM'], 'cyan'),
+            )
         print(
             colored('ENV PATH :', 'magenta'),
             colored(env['ENV']['PATH'], 'cyan'),
         )
-        print(
-            colored('ENV HOME :', 'magenta'),
-            colored(env['ENV']['HOME'], 'cyan'),
-        )
+        if 'HOME' in env:
+            print(
+                colored('ENV HOME :', 'magenta'),
+                colored(env['ENV']['HOME'], 'cyan'),
+            )
         print(
             colored('CXXVERSION :', 'magenta'),
             colored(env['CXXVERSION'], 'cyan'),

@@ -88,7 +88,7 @@ SET(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 # cygwin                        CYGWIN_NT-5.1
 # MacOSX                        Darwin
 
-MESSAGE("OS is : ${CMAKE_SYSTEM}-${CMAKE_SYSTEM_VERSION} ${CMAKE_UNAME} ${CMAKE_HOST_UNIX} ${CMAKE_HOST_SYSTEM_NAME} ${CMAKE_HOST_SYSTEM_PROCESSOR} ")
+MESSAGE("OS is : ${CMAKE_SYSTEM}-${CMAKE_SYSTEM_VERSION} ${CMAKE_UNAME} ${CMAKE_HOST_UNIX} CMAKE_HOST_SYSTEM_NAME : ${CMAKE_HOST_SYSTEM_NAME} CMAKE_HOST_SYSTEM_PROCESSOR : ${CMAKE_HOST_SYSTEM_PROCESSOR} ")
 
 #default /usr/local
 #SET(CMAKE_INSTALL_PREFIX  /usr/local)
@@ -100,7 +100,8 @@ IF(DEFINED ENV{PROJECT_SRC})
   SET(DEV_SOURCE_DIR $ENV{PROJECT_SRC})
 ELSE()
   MESSAGE("PROJECT_SRC is NOT defined")
-  SET(DEV_SOURCE_DIR ${CMAKE_SOURCE_DIR}/..)
+  SET(DEV_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../..)
+  SET(PROJECT_SRC ${CMAKE_SOURCE_DIR}/../..)
   MESSAGE(STATUS "DEV_SOURCE_DIR setted to environement values")
 ENDIF()
 
@@ -121,6 +122,8 @@ SET(PROJECT_SOURCE_DIR "${DEV_SOURCE_DIR}")
 MESSAGE("PROJECT_SOURCE_DIR is ${PROJECT_SOURCE_DIR}")
 SET(PROJECT_BINARY_DIR "${DEV_BINARY_DIR}")
 MESSAGE("PROJECT_BINARY_DIR is ${PROJECT_BINARY_DIR}")
+SET(PROJECT_CONFIG_DIR "${DEV_SOURCE_DIR}/config/")
+MESSAGE("PROJECT_CONFIG_DIR is ${PROJECT_CONFIG_DIR}")
 
 IF(DEFINED ENV{PROJECT_THIRDPARTY_PATH})
   MESSAGE("PROJECT_THIRDPARTY_PATH is defined to : $ENV{PROJECT_THIRDPARTY_PATH}")
@@ -240,6 +243,12 @@ IF(MINGW)
   MESSAGE(STATUS "MINGW found")
   SET(ARCH linux)
   SET(MACHINE x86Linux)
+  
+  SET(BUILD_SHARED_LIBS OFF)
+
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -static -static-libgcc -static-libstdc++ -lstdc++ -lgcc")
+  #-lregex -lpng -ljpeg -lzlib -ltiff -lstdc++ -lgcc -lodbc32 -lwsock32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lctl3d32 -lodbc32 -ladvapi32 -lodbc32 -lwsock32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid
+  MESSAGE(STATUS, "CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
   INCLUDE_DIRECTORIES("C:\\cygwin\\usr\\include")
   LINK_DIRECTORIES("C:\\cygwin\\lib")
@@ -277,20 +286,20 @@ OPTION(BUILD_SHARED_LIBS "Build PROJECT shared libraries." OFF)
 MESSAGE(STATUS "Project source directory is ${PROJECT_SOURCE_DIR}")
 MESSAGE(STATUS "Project include directory is ${PROJECT_INCLUDE_DIR}")
 
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/config.h.in ${PROJECT_INCLUDE_DIR}/config.h)
-MESSAGE(STATUS "configured ${PROJECT_SOURCE_DIR}/config/config.h.in --> ${PROJECT_INCLUDE_DIR}/config.h")
+CONFIGURE_FILE(${PROJECT_CONFIG_DIR}/config.h.in ${PROJECT_INCLUDE_DIR}/config.h)
+MESSAGE(STATUS "configured ${PROJECT_CONFIG_DIR}/config.h.in --> ${PROJECT_INCLUDE_DIR}/config.h")
 
 SET(MOVE_FILE_COMMAND mv)
 SET(COPY_FILE_COMMAND cp)
 
-INCLUDE(${PROJECT_SOURCE_DIR}/config/ProjectVersion.cmake)
+INCLUDE(${PROJECT_CONFIG_DIR}/ProjectVersion.cmake)
 
-INCLUDE(${PROJECT_SOURCE_DIR}/config/ProjectMacro.cmake)
+INCLUDE(${PROJECT_CONFIG_DIR}/ProjectMacro.cmake)
 
 OPTION(ENABLE_TESTS "Enable building of tests" ON)
 
 IF( ENABLE_TESTS )
-  INCLUDE(${PROJECT_SOURCE_DIR}/config/FindCppUnit.cmake)
+  INCLUDE(${PROJECT_CONFIG_DIR}/FindCppUnit.cmake)
 ENDIF(ENABLE_TESTS )
 
 #IF(CMAKE_COMPILER_IS_GNUCC)
@@ -306,7 +315,7 @@ MESSAGE(STATUS "PROJECT_NAME ${PROJECT_NAME} = ${CMAKE_PROJECT_NAME}")
 
 #IF(CMAKE_COMPILER_IS_GNUCXX)
 #  #https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
-#  INCLUDE(${PROJECT_SOURCE_DIR}/config/CodeCoverage.cmake)
+#  INCLUDE(${PROJECT_CONFIG_DIR}/CodeCoverage.cmake)
 #  SETUP_TARGET_FOR_COVERAGE_LCOV(${PROJECT_NAME}_coverage test coverage)
 #ENDIF()
 
@@ -314,7 +323,7 @@ MESSAGE(STATUS "PROJECT_NAME ${PROJECT_NAME} = ${CMAKE_PROJECT_NAME}")
 # See ${PROJ_SOURCE_DIR}/config for special inclusion
 INCLUDE(FindBoost)
 INCLUDE(FindGettext)
-INCLUDE(FindLibXml2)
+#INCLUDE(FindLibXml2) # See below FIND_PACKAGE(LibXml2)
 #INCLUDE(FindX11)
 #INCLUDE(FindQt3)
 INCLUDE(FindZLIB)
@@ -741,7 +750,7 @@ ENDIF(ZLIB_FOUND)
 FIND_PACKAGE(
 	Boost
 	1.67.0
-   COMPONENTS date_time filesystem system
+    COMPONENTS date_time filesystem system
 #	REQUIRED signals
 )
 
@@ -774,7 +783,7 @@ ELSE(Boost_FOUND)
 ENDIF(Boost_FOUND)
 
 #FIND_PACKAGE(LibXml2 REQUIRED)
-FIND_PACKAGE(LibXml2)
+#FIND_PACKAGE(LibXml2)
 
 IF(LIBXML2_FOUND)
   MESSAGE(STATUS "LIBXML2 available")
@@ -786,7 +795,7 @@ ENDIF(LIBXML2_FOUND)
 
 OPTION( ENABLE_CORBA "Enable CORBA" ON)
 
-INCLUDE(${PROJECT_SOURCE_DIR}/config/FindTAO.cmake)
+INCLUDE(${PROJECT_CONFIG_DIR}/FindTAO.cmake)
 
 IF(FOUND_TAO)
   MESSAGE(STATUS "TAO available")
@@ -812,10 +821,10 @@ ENDIF(MINGW)
 #SET(EXCLUDE Unittest)
 #SET(EXCLUDE_PATTERNS */*Unittest*/* )
 
-INCLUDE(${PROJECT_SOURCE_DIR}/config/ProjectDoc.cmake)
+INCLUDE(${PROJECT_CONFIG_DIR}/ProjectDoc.cmake)
 
 INCLUDE(CTest)
-INCLUDE(${PROJECT_SOURCE_DIR}/config/CTestConfig.cmake)
+INCLUDE(${PROJECT_CONFIG_DIR}/CTestConfig.cmake)
 
 # C++11
 MACRO(use_cxx11)

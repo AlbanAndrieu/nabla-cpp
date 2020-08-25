@@ -70,6 +70,22 @@ pwd
 
 echo -e "${magenta} Upgrade python from 2 to 3 : 2to3 -w SConstruct ${NC}"
 
+if [ "$(uname -s)" == "Linux" ]; then
+    gcc --version
+    g++ --version
+    gdb --version
+#elif [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
+else
+    # See https://www3.ntu.edu.sg/home/ehchua/programming/howto/Cygwin_HowTo.html
+    # 32-bit Windows
+    i686-w64-mingw32-gcc --version
+    i686-w64-mingw32-g++ --version
+
+    # 64-bit Windows
+    x86_64-w64-mingw32-gcc --version
+    x86_64-w64-mingw32-g++ --version
+fi
+
 export CONAN_GENERATOR="scons"
 
 ./conan.sh
