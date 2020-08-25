@@ -69,6 +69,7 @@ if [ -n "${ENABLE_CLANG}" ]; then
 fi
 
 export CONAN_GENERATOR=${CONAN_GENERATOR:-"scons"}
+echo -e "${green} Using CONAN_GENERATOR : ${CONAN_GENERATOR} ${happy_smiley} ${NC}"
 
 if [ "$(uname -s)" == "Linux" ]; then
 
