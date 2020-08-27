@@ -273,11 +273,11 @@ def generate(env, **kw):
 
         if env['color']:
             print(
-                colored('Targetting :', 'magenta'),
+                colored('Targetting : ', 'magenta'),
                 colored(platform.platform(), 'cyan'),
             )
         else:
-            print('Targetting :' + platform.platform())
+            print('Targetting : ' + platform.platform())
 
         if 'target_bits' in env and env['target_bits'] == '32':
             env['CC'] = 'i686-w64-mingw32-gcc'  # apt-get install gcc-mingw-w64-i686
