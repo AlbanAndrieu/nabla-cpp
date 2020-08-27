@@ -13,21 +13,13 @@ Arch = ProjectMacro.getArch()
 #shared_lib = SConscript('../cpp/SConscript')
 #localenv.Append( LIBS=[shared_lib] )
 
-#explicit links
-localenv["LIBS"] = [
-    'boost_thread',
-    'boost_date_time',
-    'boost_system',
-]
-
 localenv.Append(LINKFLAGS = "-Wl,--no-as-needed")
 
-if Arch not in ['winnt']:
-    #https://bugs.launchpad.net/ubuntu/+source/cppunit/+bug/985841
-    localenv.Append(LINKFLAGS = "-lcppunit")
-
-    #localenv.Append(LINKFLAGS = "-fsanitize=address -lasan")
-    localenv.Append(LINKFLAGS = "-fsanitize=address")
+# Warning mingw do not have asan
+#if env['use_clang'] and env['use_asan']:
+#   #env['CCFLAGS'] += ['-fsanitize=address']
+#   #env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
+#   localenv.Append(LINKFLAGS = "-fsanitize=address")
 
 #localenv["CXXFLAGS"] = [
 #    "-std=c++11",
@@ -47,8 +39,27 @@ localenv.MergeFlags([
     '-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
 ])
 
-if Arch not in ['winnt']:
-    #building Binary
-    p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_tests'), Glob('*.cpp'))
+if localenv['use_mingw']:
+    localenv.Append(LIBPATH = ['/mingw64/lib'])
+    localenv.Append(LIBS = [
+        'boost_thread-mt',
+        'boost_date_time-mt',
+        'boost_system-mt',
+    ])
+else:
+    #explicit links
+    localenv.Append(LIBS = [
+        'boost_thread',
+        'boost_date_time',
+        'boost_system',
+    ])
 
-    Default(p)
+#https://bugs.launchpad.net/ubuntu/+source/cppunit/+bug/985841
+#localenv.Append(LINKFLAGS = "-lcppunit")
+localenv.Append(LIBS = "cppunit")
+
+#if Arch not in ['winnt']:
+#building Binary
+p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_tests'), Glob('*.cpp'))
+
+Default(p)

@@ -258,6 +258,7 @@ def reduceBuildVerbosity(env):
 
 def getArch():
     thePlatform = platform.platform()
+    #print(thePlatform)
     theArch = 'unkown'
     if thePlatform.startswith('Linux'):
         theArch = 'x86Linux'
@@ -265,8 +266,8 @@ def getArch():
         theArch = 'winnt'
     elif thePlatform.startswith('CYGWIN'):
         theArch = 'cygwin'
-    elif thePlatform.startswith('MINGW'):
-        theArch = 'mingw'   
+    elif thePlatform.startswith('MINGW') or thePlatform.startswith('MSYS'):
+        theArch = 'mingw'
     elif thePlatform.startswith('SunOS'):
         if platform.machine() == 'sun4u' or platform.machine() == 'sun4v':
             theArch = 'sun4sol'
