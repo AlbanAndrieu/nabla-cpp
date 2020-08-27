@@ -164,6 +164,7 @@ def generate(env, **kw):
 
         # Do not deliver binaries witj use_asan (-fsanitize)
 
+        # Warning mingw do not have asan
         if env['use_clang'] and env['use_asan']:
             env['CCFLAGS'] += ['-fsanitize=address']
             env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
@@ -223,6 +224,11 @@ def generate(env, **kw):
         env['LINKFLAGS'] = [
             '-zrescan',
         ]
+
+    elif Arch in ['mingw', 'cygwin']:
+        env['use_mingw'] = True
+        #print('Ovverride mingw : ', env['use_mingw'])
+        
     elif Arch in ['winnt']:
         #if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
@@ -277,7 +283,7 @@ def generate(env, **kw):
                 colored(platform.platform(), 'cyan'),
             )
         else:
-            print('Targetting :' + platform.platform())
+            print('Targetting : ' + platform.platform())
 
         if 'target_bits' in env and env['target_bits'] == '32':
             env['CC'] = 'i686-w64-mingw32-gcc'  # apt-get install gcc-mingw-w64-i686
@@ -311,6 +317,8 @@ def generate(env, **kw):
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
             # ---------------------------------------------------------------------------------------
             env['RC'] = 'x86_64-w64-mingw32-windres'
+            
+            #env.Append(LIBPATH = ['/mingw64/lib'])
 
     #if 'use_static' in env:
     #    env.Append(LINKFLAGS = "-static")

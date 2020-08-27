@@ -13,30 +13,20 @@ Arch = ProjectMacro.getArch()
 #exporting headers
 localenv.Install(os.path.join(localenv['PROJECT_INCLUDE_DIR'],''), Glob('include/*.h')+Glob('include/*.ipp'))
 
-#explicit links
-localenv["LIBS"] = [
-    'boost_thread',
-    'boost_date_time',
-    'boost_system',
-    'cppunit',
-]
-
 #localenv['LINKFLAGS'] += ['-std=c++11', '-pthread']
-
-localenv.Append(LIBS=['main_library', 'cppunit'], LIBPATH=['#main_library'])
-
-#localenv.Prepend(LIBS = 'cppunit')
 
 if localenv['color']:
     from termcolor import colored, cprint
 
-    print(colored('CPPDEFINES :', 'magenta'), colored(localenv['CPPDEFINES'], 'cyan'))
+    if 'CPPDEFINES' in localenv:
+        print(colored('CPPDEFINES :', 'magenta'), colored(localenv['CPPDEFINES'], 'cyan'))
     print(colored('CCFLAGS :', 'magenta'), colored(localenv['CCFLAGS'], 'cyan'))
     print(colored('CXXFLAGS :', 'magenta'), colored(localenv['CXXFLAGS'], 'cyan'))
     print(colored('LINKFLAGS :', 'magenta'), colored(localenv['LINKFLAGS'], 'cyan'))
     # print "dump whole env :", localenv.Dump()
     print(colored('CXXVERSION :', 'magenta'), colored(localenv['CXXVERSION'], 'cyan'))
 
+#if env['use_mingw']:
 #build_path_relative_to_sconstruct = Dir('../../../../').path
 #build_directory = os.path.join(build_path_relative_to_sconstruct, 'build-scons')
 #print("build_directory :", build_directory)
@@ -49,6 +39,39 @@ if localenv['color']:
 #flags = conan["conan"]
 #localenv.MergeFlags(flags)
 
+if localenv['use_mingw']:
+    localenv.Append(LIBPATH = ['/mingw64/lib']) 
+    localenv["LIBS"] = [
+        'boost_thread-mt',
+        'boost_date_time-mt',
+        'boost_system-mt',
+    ]
+else:
+    #explicit links
+    localenv["LIBS"] = [
+        'boost_thread',
+        'boost_date_time',
+        'boost_system',
+    ]
+
+#localenv["LIBS"] += [
+#	'main_library',
+#	'cppunit',
+#]
+
+#localenv.Prepend(LIBS = 'cppunit')
+
+localenv.Append(LIBS=['main_library', 'cppunit'], LIBPATH=['#main_library'])
+
+print('LIBS :', localenv['LIBS'])
+
+if env['color']:
+    print(colored('CC :', 'magenta'), colored(env['CC'], 'cyan'))
+    print(colored('CXX :', 'magenta'), colored(env['CXX'], 'cyan'))
+else:
+    print('CC :' + env['CC'])
+    print('CXX :' + env['CXX'])
+    
 #if Arch in ['winnt']:
 if env['use_static']:
     p = localenv.Library(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'test_library'), Glob('*.cpp'))
