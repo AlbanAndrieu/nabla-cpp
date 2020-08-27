@@ -5,8 +5,10 @@ import ProjectMacro
 Import('env')
 localenv = env.Clone()
 
+print("Main application")
+
 Arch = ProjectMacro.getArch()
-print("Arch :", Arch)
+#print("Arch :", Arch)
 
 #explicit links
 localenv["LIBS"] = [
@@ -14,10 +16,6 @@ localenv["LIBS"] = [
     'boost_date_time',
     'boost_system',
 ]
-
-# Compile in 32 bits
-#localenv.Prepend(CCFLAGS = ['-m32'])
-#localenv.Prepend(LINKFLAGS = ['-m32'])
 
 #https://o440.wordpress.com/2011/02/25/scons-and-code-coverage/
 localenv.Append(CCFLAGS = ['-fprofile-arcs', '-ftest-coverage'])

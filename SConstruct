@@ -52,6 +52,8 @@ vars.AddVariables(
     BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', True),
     BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
     BoolVariable('use_asan', 'On linux only and clang: build with address sanitize', False),
+    BoolVariable('use_mingw', 'X compile', False),
+    BoolVariable('use_static', 'Build static libs and binaries', False),
     BoolVariable('color', 'Set to true to build with colorizer', True),
     ('gcc_version', 'Set gcc version to use', '10'),
     ('install_path', 'Set install path', 'install'),
@@ -60,6 +62,7 @@ vars.AddVariables(
 #    ('CC', 'Set C compiler : gcc, clang', 'gcc'),
 #    ('CXX', 'Set C++ compiler : g++, clang++', 'g++'),
     ('version', 'The version of the component you build', '1.0.0'),
+    ('target_bits', '32/64 bits', '64b'),
     ('tar', 'tar binary', 'tar'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
 )
@@ -86,25 +89,40 @@ if Arch not in ['cygwin','mingw']:
             generators=["scons"],\
             install_folder=build_directory)
 
-#env = DefaultEnvironment(tools = ['gcc', 'gnulink'], CC = '/usr/local/bin/gcc')
+env = Environment(variables = vars)
 
-#'eclipse'
-env = Environment(ENV = os.environ, variables = vars, tools = ['default', 'mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
+if env['use_mingw']:
+    target_tools = ['default', 'mingw']
+else:
+    if Arch in ['x86sol','sun4sol']:
+        target_tools = ['default', 'suncc', 'sunc++', 'sunlink']
+    elif Arch in ['winnt']:
+        target_tools = ['default', 'msvc']
+    else:
+        if env['use_clang']:
+            target_tools = ['default', 'clang', 'clangxx']
+        else:
+            target_tools = ['default', 'gcc', 'gnulink']
 
-if Arch in ['winnt']:
+#if Arch in ['winnt']:
     #c:\tools\msys64\mingw64\bin> mklink mingw32-gcc.exe gcc.exe
     #env = Environment(platform = 'cygwin')
     #env = Environment(platform = 'win32')
-    env = Environment(ENV = os.environ, variables = vars, tools = ['msvc', 'mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
 #env = DefaultEnvironment(tools = ['msvc'])
 # FIXME: Compiler, version, arch are hardcoded, not parametrized
 #env = Environment(MSVC_VERSION="14.0", TARGET_ARCH="x86_64")
 
-if Arch in ['x86sol','sun4sol']:
-    env = Environment(ENV = os.environ, variables = vars, tools=['suncc', 'sunc++', 'sunlink', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
+#if Arch in ['x86sol','sun4sol']:
+#    env = Environment(ENV = os.environ, variables = vars, tools=['suncc', 'sunc++', 'sunlink', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
 
-#env = Environment(PLATFORM = 'mingw', ENV = os.environ, variables = vars, tools = ['mingw', 'packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
-#Tool('mingw')(env)
+print('Target tools : ', target_tools)
+
+#'eclipse'
+env = Environment(ENV = os.environ, variables = vars, tools = target_tools + ['packaging', 'Project', 'colorizer-V1'], toolpath = ['config'])
+
+if env['color']:
+    from termcolor import colored, cprint
+    print(colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan'))
 
 conan_flags = SConscript('{}/SConscript_conan'.format(build_directory))
 if not conan_flags:
@@ -114,7 +132,8 @@ if not conan_flags:
 flags = conan_flags["conan"]
 #version = flags.pop("VERSION")
 #print("Version :", version)
-print("Flags :", flags)
+
+print("Conan flags :", flags)
 env.MergeFlags(flags)
 
 if env['color']:
@@ -262,20 +281,20 @@ else:
     env.Prepend(CCFLAGS = '-DDEBUG')
 
 #binaries directory
-thePath=os.path.join(DEV_BINARY_DIR,'bin',Arch)
+thePath=os.path.join(DEV_BINARY_DIR, 'bin', Arch)
 ProjectMacro.mkdir(thePath)
 PROJECT_BINARY_DIR = os.path.abspath(thePath)
 #target directories
-thePath=os.path.join(DEV_BINARY_DIR,'target',Arch)
-ProjectMacro.mkdir(os.path.join(thePath,theOptDbgFolder))
-thePath=os.path.join(DEV_BINARY_DIR,'include',Arch)
+thePath=os.path.join(DEV_BINARY_DIR, 'target', Arch)
+ProjectMacro.mkdir(os.path.join(thePath, theOptDbgFolder))
+thePath=os.path.join(DEV_BINARY_DIR, 'include', Arch)
 ProjectMacro.mkdir(thePath)
 PROJECT_INCLUDE_DIR = os.path.abspath(thePath)
 #lib directories
-thePath=os.path.join(DEV_BINARY_DIR,'lib',Arch,theOptDbgFolder)
+thePath=os.path.join(DEV_BINARY_DIR, 'lib', Arch,theOptDbgFolder)
 ProjectMacro.mkdir(thePath)
 LIBRARY_STATIC_OUTPUT_PATH = Dir(thePath).srcnode().abspath
-thePath=os.path.join(LIBRARY_STATIC_OUTPUT_PATH,'shared')
+thePath=os.path.join(LIBRARY_STATIC_OUTPUT_PATH, 'shared')
 ProjectMacro.mkdir(thePath)
 LIBRARY_OUTPUT_PATH = Dir(thePath).srcnode().abspath
 
@@ -388,6 +407,9 @@ if 'package' in COMMAND_LINE_TARGETS:
     print("Remove nabla-1.2.3 directory")
     env.Execute("rm -Rf nabla-1.2.3")
 
+if env['verbose'] and env['color']:
+    print(colored("env:", 'magenta'), colored(env.Dump(), 'cyan'))
+
 # Clean
 Clean('.', 'target')
 
@@ -470,9 +492,9 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in
     from config import download3rdparties
     shutil.rmtree(os.path.join(env['sandbox'], '3rdparties', Arch, 'nabla'), ignore_errors=True)
 
-    print(('python ' + os.path.join('.', 'config', 'download3rdparties.py') + ' --arch=' + Arch + ' --bom=' + os.path.join(os.sep, env['sandbox'], env['bom'])  + ' --third_parties_dir=' + target_dir + ' --color=' + 'True' if env['color'] else 'False'))
     if env['bom'] != '':
-        download3rdparties.download(Arch, 64, '', 'http://home.nabla.mobi:7072/download/cpp-old/', 'http://home.nabla.mobi:7072/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '', 'True' if env['color'] else 'False')
+        print(('python ' + os.path.join('.', 'config', 'download3rdparties.py') + ' --arch=' + Arch + ' --bom=' + os.path.join(os.sep, env['sandbox'], env['bom'])  + ' --third_parties_dir=' + target_dir + ' --color=' + 'True' if env['color'] else 'False'))
+        download3rdparties.download(Arch, 64, '', 'http://albandrieu.com/download/cpp-old/', 'http://albandrieu.com/download/cpp/', os.path.join(os.sep, env['sandbox'], env['bom']), target_dir, '', 'True' if env['color'] else 'False')
     if env['color']:
         print(colored("Downloading 3rdparties DONE:", 'green'))
     #Exit(0)

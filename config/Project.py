@@ -8,7 +8,6 @@ import sys
 import ProjectMacro
 import SCons.Tool.MSCommon.vc
 
-
 def generate(env, **kw):
 
     if env['color']:
@@ -33,8 +32,9 @@ def generate(env, **kw):
             )[:3]
         #env['debug_flags'] = '-g'
         #env['debug_flags'] = '-gdwarf-3'
+        # Without the '-O0' flag (= do not optimize), we won t be able to print the content of some variables under 'gdb'
         env['debug_flags'] = '-g3'
-        env['opt_flags'] = '-O'
+        env['opt_flags'] = '-O0'
         env['ENV']['PATH'] = '/bin:/usr/bin'
         env['ENV']['LD_LIBRARY_PATH'] = ''
 
@@ -92,7 +92,6 @@ def generate(env, **kw):
 
     if Arch == 'x86Linux':
         env['CCFLAGS'] = [
-            '-pthread',
             '-g',
             # '-Werror', #Turns all warnings into errors.
             '-Wall',  # Turn on all warnings
@@ -110,7 +109,6 @@ def generate(env, **kw):
             # '-Wunreacheable-code',
             '-ansi',
             '-O3',
-            '-m64',
             '-fomit-frame-pointer',
             # '-fno-rtti',
             '-fexceptions',
@@ -122,7 +120,7 @@ def generate(env, **kw):
             '-pedantic-errors',
             # '-fstrict-aliasing',
             '-DACE_HAS_EXCEPTIONS',
-            '-DuseTao',
+            #'-DuseTao',
             '-fPIC',
             # '-D_TEMPLATES_ENABLE_',
             # '-include','/usr/include/stdio.h',
@@ -142,10 +140,6 @@ def generate(env, **kw):
 
         # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-        if 'use_cpp11' in env and env['use_cpp11']: #env['gcc_version'] >= '8'
-            env['LINKFLAGS'] += ['-std=c++11'] # '-pthread'
-            env['CCFLAGS'] += ['-std=c++11']
-
         # if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
         #    env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
 
@@ -153,7 +147,7 @@ def generate(env, **kw):
             # '-std=gnu++11',
             # '-std=gnu++0x',
             # '-std=c++0x',
-            
+
         # NOK if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
         if env['gcc_version'] >= '4.9':
             env['LINKFLAGS'] += ['-fdiagnostics-color=always']
@@ -232,8 +226,8 @@ def generate(env, **kw):
     elif Arch in ['winnt']:
         #if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
-        env['CC'] = 'x86_64-w64-mingw32-gcc'
-        env['CXX'] = 'x86_64-w64-mingw32-g++'
+        env['CC'] = 'x86_64-w64-mingw32-gcc.exe'
+        env['CXX'] = 'x86_64-w64-mingw32-g++.exe'
         #if env['opt'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
@@ -253,9 +247,6 @@ def generate(env, **kw):
             ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;'
             #';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
 
-        if 'use_cpp11' in env and env['use_cpp11']: #env['gcc_version'] >= '8'
-            env['LINKFLAGS'] += ['-std=c++11']
-            
         #env['CCFLAGS'] = [
         #    '/nologo',
         #    '/W3',
@@ -275,6 +266,71 @@ def generate(env, **kw):
         #    '/nodefaultlib:libcd.lib',
         #    '/nodefaultlib:libcmtd.lib',
         ]
+
+    if env['use_mingw']:
+        #env['target_bits'] = '32'
+        #print('Ovverride target_bits :' + env['target_bits'])
+
+        if env['color']:
+            print(
+                colored('Targetting :', 'magenta'),
+                colored(platform.platform(), 'cyan'),
+            )
+        else:
+            print('Targetting :' + platform.platform())
+
+        if 'target_bits' in env and env['target_bits'] == '32':
+            env['CC'] = 'i686-w64-mingw32-gcc'  # apt-get install gcc-mingw-w64-i686
+            env['CXX'] = 'i686-w64-mingw32-g++'  # apt-get install g++-mingw-w64-i686
+            env['RANLIB'] = 'i686-w64-mingw32-ranlib'
+            env['LD'] = 'i686-w64-mingw32-ld'
+            env['LINK'] = 'i686-w64-mingw32-g++'
+            env['AR'] = 'i686-w64-mingw32-ar'
+            env['AS'] = 'i686-w64-mingw32-as'
+            #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
+            # ---------------------------------------------------------------------------------------
+            env['RC'] = 'i686-w64-mingw32-windres'
+            #env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/' # This is pointing to /usr/share/mingw-w64/include
+            #env['RCCOM'] = env['RCCOM'] + ' -DALM_MAJOR=%s -DALM_MIDDLE=%s -DALM_MINOR=%s -DALM_MICRO=%s -DALM_REVISION=%s -DALM_BUILD_YEAR=%s -DALM_BUILD_DATE="%s"' % (
+            #    env['ENV']['AF_BUILD_MAJOR_VERSION'],
+            #    env['ENV']['AF_BUILD_MIDDLE_VERSION'],
+            #    env['ENV']['AF_BUILD_MINOR_VERSION'],
+            #    env['ENV']['AF_BUILD_MICRO_VERSION'],
+            #    env['ENV']['AF_BUILD_SVN_REVISION'],
+            #    env['ENV']['AF_BUILD_YEAR'],
+            #    env['ENV']['AF_BUILD_DATE'],
+            #    )
+        else:
+            env['CC'] = 'x86_64-w64-mingw32-gcc'   # apt-get install gcc-mingw-w64-x86-64
+            env['CXX'] = 'x86_64-w64-mingw32-g++'   # apt-get install g++-mingw-w64-x86-64
+            env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
+            env['LD'] = 'x86_64-w64-mingw32-ld'
+            env['LINK'] = 'x86_64-w64-mingw32-g++'
+            env['AR'] = 'x86_64-w64-mingw32-ar'
+            env['AS'] = 'x86_64-w64-mingw32-as'
+            #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
+            # ---------------------------------------------------------------------------------------
+            env['RC'] = 'x86_64-w64-mingw32-windres'
+
+    #if 'use_static' in env:
+    #    env.Append(LINKFLAGS = "-static")
+
+    #'-mthreads',
+    env['CXXFLAGS'] += ['-pthread']
+    env['LINKFLAGS'] += ['-pthread']
+
+    if 'use_cpp11' in env and env['use_cpp11']: #env['gcc_version'] >= '8'
+        env['LINKFLAGS'] += ['-std=c++11']
+        env['CCFLAGS'] += ['-std=c++11']
+
+    if 'target_bits' in env and env['target_bits'] == '32':
+        env['CCFLAGS'] += ['-m32']
+        env['LINKFLAGS'] += ['-m32']
+        # Compile in 32 bits
+        #localenv.Prepend(CCFLAGS = ['-m32'])
+        #localenv.Prepend(LINKFLAGS = ['-m32'])
+    #else:
+    #    env['CCFLAGS'] += ['-m64']
 
     if not 'Suffix64' in env:
         env['Suffix64'] = ''
@@ -325,7 +381,7 @@ def generate(env, **kw):
             colored('CXXVERSION :', 'magenta'),
             colored(env['CXXVERSION'], 'cyan'),
         )
-        print(colored('CC:', 'magenta'), colored(env['CC'], 'cyan'))
+        print(colored('CC :', 'magenta'), colored(env['CC'], 'cyan'))
         print(colored('CXX :', 'magenta'), colored(env['CXX'], 'cyan'))
         print(
             colored('CCCOM :', 'magenta'),

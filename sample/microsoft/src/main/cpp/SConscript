@@ -6,8 +6,10 @@ import ProjectMacro
 Import('env')
 localenv = env.Clone()
 
+print("Main librairies")
+
 Arch = ProjectMacro.getArch()
-print("Arch :", Arch)
+#print("Arch :", Arch)
 
 #exporting headers
 localenv.Install(os.path.join(localenv['PROJECT_INCLUDE_DIR'],''), Glob('include/*.h')+Glob('include/*.ipp'))
@@ -33,6 +35,9 @@ localenv.MergeFlags([
 if localenv['color']:
     from termcolor import colored, cprint
 
+    print(colored('CPPDEFINES :', 'magenta'), colored(localenv['CPPDEFINES'], 'cyan'))
+    print(colored('CCFLAGS :', 'magenta'), colored(localenv['CCFLAGS'], 'cyan'))
+    print(colored('CXXFLAGS :', 'magenta'), colored(localenv['CXXFLAGS'], 'cyan'))
     print(colored('LINKFLAGS :', 'magenta'), colored(localenv['LINKFLAGS'], 'cyan'))
     # print "dump whole env :", localenv.Dump()
     print(colored('CXXVERSION :', 'magenta'), colored(localenv['CXXVERSION'], 'cyan'))
@@ -49,7 +54,15 @@ if not conan:
 flags = conan["conan"]
 localenv.MergeFlags(flags)
 
-if Arch in ['winnt']:
+if env['color']:
+    print(colored('CC :', 'magenta'), colored(env['CC'], 'cyan'))
+    print(colored('CXX :', 'magenta'), colored(env['CXX'], 'cyan'))
+else:
+    print('CC :' + env['CC'])
+    print('CXX :' + env['CXX'])
+
+#if Arch in ['winnt']:
+if env['use_static']:
     p = localenv.Library(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'main_library'), Glob('*.cpp'))
 else:
     #building shared library

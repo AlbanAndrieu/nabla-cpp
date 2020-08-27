@@ -5,12 +5,10 @@ import ProjectMacro
 Import('env')
 localenv = env.Clone()
 
-Arch = ProjectMacro.getArch()
-print("Arch :", Arch)
+print("Test application")
 
-# Compile in 32 bits
-#localenv.Prepend(CCFLAGS = ['-m32'])
-#localenv.Prepend(LINKFLAGS = ['-m32'])
+Arch = ProjectMacro.getArch()
+#print("Arch :", Arch)
 
 #shared_lib = SConscript('../cpp/SConscript')
 #localenv.Append( LIBS=[shared_lib] )
