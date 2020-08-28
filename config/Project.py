@@ -283,7 +283,7 @@ def generate(env, **kw):
 
         if env['color']:
             print(
-                colored('Targetting :', 'magenta'),
+                colored('Targetting : ', 'magenta'),
                 colored(platform.platform(), 'cyan'),
             )
         else:

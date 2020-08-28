@@ -51,3 +51,9 @@ if Arch not in ['mingw','cygwin'] and env['use_conan']:
 p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_app'), Glob('*.cpp'))
 
 Default(p)
+
+#env.Install( executablePath_,
+#	[
+#		"/usr/lib/gcc/i686-w64-mingw32/" + referenceEnv['ENV']['AF_MINGW_GCC_VERSION'] + "-win32/libgcc_s_sjlj-1.dll",
+#		"/usr/lib/gcc/i686-w64-mingw32/" + referenceEnv['ENV']['AF_MINGW_GCC_VERSION'] + "-win32/libstdc++-6.dll",
+#	])

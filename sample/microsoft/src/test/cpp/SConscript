@@ -40,7 +40,7 @@ if localenv['color']:
 #localenv.MergeFlags(flags)
 
 if localenv['use_mingw']:
-    localenv.Append(LIBPATH = ['/mingw64/lib']) 
+    localenv.Append(LIBPATH = ['/mingw64/lib'])
     localenv["LIBS"] = [
         'boost_thread-mt',
         'boost_date_time-mt',
@@ -71,7 +71,7 @@ if env['color']:
 else:
     print('CC :' + env['CC'])
     print('CXX :' + env['CXX'])
-    
+
 #if Arch in ['winnt']:
 if env['use_static']:
     p = localenv.Library(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'test_library'), Glob('*.cpp'))

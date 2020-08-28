@@ -19,8 +19,7 @@ circular_queue::circular_queue(const unsigned int size, const std::string &name)
       ui_nbElement(0) {
 
   std::cout << "Constructor..." << std::endl;
-  //boost::detail::win32::sleep(2);
-  
+
   if (size <= 0) {
     throw "Size value must be bigger than 0";
   }
