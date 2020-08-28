@@ -232,8 +232,12 @@ def generate(env, **kw):
     elif Arch in ['winnt']:
         #if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
-        env['CC'] = 'x86_64-w64-mingw32-gcc.exe'
-        env['CXX'] = 'x86_64-w64-mingw32-g++.exe'
+        #env['CC'] = 'x86_64-w64-mingw32-gcc.exe'
+        env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+        #env['CXX'] = 'x86_64-w64-mingw32-g++.exe'
+        env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+        env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
+        
         #if env['opt'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
