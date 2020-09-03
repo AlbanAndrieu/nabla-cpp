@@ -228,7 +228,7 @@ def generate(env, **kw):
     elif Arch in ['mingw', 'cygwin']:
         env['use_mingw'] = True
         #print('Ovverride mingw : ', env['use_mingw'])
-        
+
     elif Arch in ['winnt']:
         #if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
@@ -317,7 +317,7 @@ def generate(env, **kw):
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
             # ---------------------------------------------------------------------------------------
             env['RC'] = 'x86_64-w64-mingw32-windres'
-            
+
             #env.Append(LIBPATH = ['/mingw64/lib'])
 
     #if 'use_static' in env:
@@ -328,8 +328,10 @@ def generate(env, **kw):
     env['LINKFLAGS'] += ['-pthread']
 
     if 'use_cpp11' in env and env['use_cpp11']: #env['gcc_version'] >= '8'
-        env['LINKFLAGS'] += ['-std=c++11']
+        env['CFLAGS'] = ['-std=c11']
+        env['CXXFLAGS'] = ['-std=c++11']
         env['CCFLAGS'] += ['-std=c++11']
+        env['LINKFLAGS'] += ['-std=c++11']
 
     if 'target_bits' in env and env['target_bits'] == '32':
         env['CCFLAGS'] += ['-m32']

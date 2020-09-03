@@ -70,6 +70,8 @@ vars.AddVariables(
 
 env = Environment(variables = vars)
 
+Command('/opt/ansible/env38/', None, 'virtualenv $TARGET; source $TARGET/bin/activate; cd $TARGET; pip install termcolor')
+
 print('Mingw : ', env['use_mingw'])
 
 if Arch not in ['mingw','cygwin'] and env['use_conan']:
