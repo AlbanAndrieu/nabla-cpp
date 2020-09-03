@@ -45,7 +45,7 @@ scons CC=clang CXX=clang++
 # Command line variables definition
 vars = Variables('variables.py') # you can store your defaults in this file
 vars.AddVariables(
-    BoolVariable('debug', 'Set to true to build without opt flags', True),
+    BoolVariable('debug', 'Set to true to build without opt flags', True), # Not yet use except in atom targets.ini
     BoolVariable('release', 'Set to true to build with opt flags', False),
     BoolVariable('verbose', 'Show compilation commands', True),
     BoolVariable('use_clang', 'On linux only: replace gcc by clang', True),
