@@ -234,7 +234,7 @@ def generate(env, **kw):
         #    env['gcc_version'] = '10'
         env['CC'] = 'x86_64-w64-mingw32-gcc.exe'
         env['CXX'] = 'x86_64-w64-mingw32-g++.exe'
-        #if env['opt'] == 'True':
+        #if env['release'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
         #else:
