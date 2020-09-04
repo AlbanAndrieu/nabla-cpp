@@ -243,7 +243,7 @@ IF(MINGW)
   MESSAGE(STATUS "MINGW found")
   SET(ARCH linux)
   SET(MACHINE x86Linux)
-  
+
   SET(BUILD_SHARED_LIBS OFF)
 
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -static -static-libgcc -static-libstdc++ -lstdc++ -lgcc")

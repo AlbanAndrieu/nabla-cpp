@@ -8,6 +8,7 @@ import sys
 import ProjectMacro
 import SCons.Tool.MSCommon.vc
 
+
 def generate(env, **kw):
 
     if env['color']:
@@ -24,7 +25,7 @@ def generate(env, **kw):
     if env['color']:
         print(colored('Arch :', 'magenta'), colored(Arch, 'cyan'))
 
-    if Arch in ['x86Linux']: # 'cygwin'
+    if Arch in ['x86Linux']:  # 'cygwin'
         if not 'gcc_version' in env:
             env['gcc_version'] = '8'
             env['gcc_version'] = subprocess.check_output(
@@ -96,7 +97,7 @@ def generate(env, **kw):
             # '-Werror', #Turns all warnings into errors.
             '-Wall',  # Turn on all warnings
             '-fdiagnostics-show-option',  # sonar cxx
-            #'-Wl,-z,relro,now',  # Full RELRO
+            # '-Wl,-z,relro,now',  # Full RELRO
             '-Wformat',
             # Warn about uses of format functions that represent possible security problems
             '-Wformat-security',
@@ -120,7 +121,7 @@ def generate(env, **kw):
             '-pedantic-errors',
             # '-fstrict-aliasing',
             '-DACE_HAS_EXCEPTIONS',
-            #'-DuseTao',
+            # '-DuseTao',
             '-fPIC',
             # '-D_TEMPLATES_ENABLE_',
             # '-include','/usr/include/stdio.h',
@@ -143,10 +144,10 @@ def generate(env, **kw):
         # if env['gcc_version'] >= '4.6' and 'use_cpp11' in env and env['use_cpp11']:
         #    env['CCFLAGS'] += ['-std=c++0x', '-DCPLUSPLUS11']
 
-            # '-std=gnu++98',
-            # '-std=gnu++11',
-            # '-std=gnu++0x',
-            # '-std=c++0x',
+        # '-std=gnu++98',
+        # '-std=gnu++11',
+        # '-std=gnu++0x',
+        # '-std=c++0x',
 
         # NOK if env['gcc_version'] >= '4.9' and env['gcc_version'] <= '6':
         if env['gcc_version'] >= '4.9':
@@ -175,7 +176,7 @@ def generate(env, **kw):
                 # '-fstack-protector', # Gives warnings
                 # '-fstack-protector-strong', # Gives warnings
                 '-fstack-protector-all',
-                #'-Wno-error=maybe-uninitialized',
+                # '-Wno-error=maybe-uninitialized',
                 '-Wno-unused-local-typedefs',
                 '-Wno-conversion-null',
                 '-Wno-invalid-offsetof',
@@ -230,30 +231,30 @@ def generate(env, **kw):
         #print('Ovverride mingw : ', env['use_mingw'])
 
     elif Arch in ['winnt']:
-        #if not 'gcc_version' in env:
+        # if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
         env['CC'] = 'x86_64-w64-mingw32-gcc.exe'
         env['CXX'] = 'x86_64-w64-mingw32-g++.exe'
-        #if env['release'] == 'True':
+        # if env['release'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
-        #else:
+        # else:
         #    env.Append(CXXFLAGS = '/MDd /Zi')
         #    env.Append(LINKFLAGS = '/DEBUG:FASTLINK')
-        #env['debug_flags'] = [
+        # env['debug_flags'] = [
         #    '/Zd',
         #    '/MDd',
-        #]
-        #env['opt_flags'] = [
+        # ]
+        # env['opt_flags'] = [
         #    '/O2',
         #    '/GL',
         #    '/MD',
-        #]
+        # ]
         env['ENV']['PATH'] = env['ENV']['PATH'] + \
             ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;'
-            #';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
+        #';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
 
-        #env['CCFLAGS'] = [
+        # env['CCFLAGS'] = [
         #    '/nologo',
         #    '/W3',
         #    '/GX',
@@ -262,15 +263,15 @@ def generate(env, **kw):
         #    '-DWIN32',
         #    '-DWINNT',
         #    '-D_WINDOWS',
-        #]
+        # ]
         env['LINKFLAGS'] = [
             '-static',
-        #    '/nologo',
-        #    '/opt:ref',
-        #    '/nodefaultlib:libcmt.lib',
-        #    '/nodefaultlib:libc.lib',
-        #    '/nodefaultlib:libcd.lib',
-        #    '/nodefaultlib:libcmtd.lib',
+            #    '/nologo',
+            #    '/opt:ref',
+            #    '/nodefaultlib:libcmt.lib',
+            #    '/nodefaultlib:libc.lib',
+            #    '/nodefaultlib:libcd.lib',
+            #    '/nodefaultlib:libcmtd.lib',
         ]
 
     if env['use_mingw']:
@@ -286,8 +287,10 @@ def generate(env, **kw):
             print('Targetting : ' + platform.platform())
 
         if 'target_bits' in env and env['target_bits'] == '32':
-            env['CC'] = 'i686-w64-mingw32-gcc'  # apt-get install gcc-mingw-w64-i686
-            env['CXX'] = 'i686-w64-mingw32-g++'  # apt-get install g++-mingw-w64-i686
+            # apt-get install gcc-mingw-w64-i686
+            env['CC'] = 'i686-w64-mingw32-gcc'
+            # apt-get install g++-mingw-w64-i686
+            env['CXX'] = 'i686-w64-mingw32-g++'
             env['RANLIB'] = 'i686-w64-mingw32-ranlib'
             env['LD'] = 'i686-w64-mingw32-ld'
             env['LINK'] = 'i686-w64-mingw32-g++'
@@ -296,8 +299,8 @@ def generate(env, **kw):
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
             # ---------------------------------------------------------------------------------------
             env['RC'] = 'i686-w64-mingw32-windres'
-            #env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/' # This is pointing to /usr/share/mingw-w64/include
-            #env['RCCOM'] = env['RCCOM'] + ' -DALM_MAJOR=%s -DALM_MIDDLE=%s -DALM_MINOR=%s -DALM_MICRO=%s -DALM_REVISION=%s -DALM_BUILD_YEAR=%s -DALM_BUILD_DATE="%s"' % (
+            # env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/' # This is pointing to /usr/share/mingw-w64/include
+            # env['RCCOM'] = env['RCCOM'] + ' -DALM_MAJOR=%s -DALM_MIDDLE=%s -DALM_MINOR=%s -DALM_MICRO=%s -DALM_REVISION=%s -DALM_BUILD_YEAR=%s -DALM_BUILD_DATE="%s"' % (
             #    env['ENV']['AF_BUILD_MAJOR_VERSION'],
             #    env['ENV']['AF_BUILD_MIDDLE_VERSION'],
             #    env['ENV']['AF_BUILD_MINOR_VERSION'],
@@ -307,8 +310,10 @@ def generate(env, **kw):
             #    env['ENV']['AF_BUILD_DATE'],
             #    )
         else:
-            env['CC'] = 'x86_64-w64-mingw32-gcc'   # apt-get install gcc-mingw-w64-x86-64
-            env['CXX'] = 'x86_64-w64-mingw32-g++'   # apt-get install g++-mingw-w64-x86-64
+            # apt-get install gcc-mingw-w64-x86-64
+            env['CC'] = 'x86_64-w64-mingw32-gcc'
+            # apt-get install g++-mingw-w64-x86-64
+            env['CXX'] = 'x86_64-w64-mingw32-g++'
             env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
             env['LD'] = 'x86_64-w64-mingw32-ld'
             env['LINK'] = 'x86_64-w64-mingw32-g++'
@@ -320,14 +325,14 @@ def generate(env, **kw):
 
             #env.Append(LIBPATH = ['/mingw64/lib'])
 
-    #if 'use_static' in env:
+    # if 'use_static' in env:
     #    env.Append(LINKFLAGS = "-static")
 
-    #'-mthreads',
+    # '-mthreads',
     env['CXXFLAGS'] += ['-pthread']
     env['LINKFLAGS'] += ['-pthread']
 
-    if 'use_cpp11' in env and env['use_cpp11']: #env['gcc_version'] >= '8'
+    if 'use_cpp11' in env and env['use_cpp11']:  # env['gcc_version'] >= '8'
         env['CFLAGS'] = ['-std=c11']
         env['CXXFLAGS'] = ['-std=c++11']
         env['CCFLAGS'] += ['-std=c++11']
@@ -339,7 +344,7 @@ def generate(env, **kw):
         # Compile in 32 bits
         #localenv.Prepend(CCFLAGS = ['-m32'])
         #localenv.Prepend(LINKFLAGS = ['-m32'])
-    #else:
+    # else:
     #    env['CCFLAGS'] += ['-m64']
 
     if not 'Suffix64' in env:

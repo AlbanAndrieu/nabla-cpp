@@ -31,8 +31,8 @@ if [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
 	#conan profile update settings.compiler="Visual Studio" nabla
 	#conan profile update settings.compiler.runtime=MD nabla
 	#conan profile update settings.compiler.version=15 nabla
-	conan profile update settings.compiler=gcc nabla_msys2_mingw 
-	conan profile update settings.compiler.version=10 nabla_msys2_mingw 
+	conan profile update settings.compiler=gcc nabla_msys2_mingw
+	conan profile update settings.compiler.version=10 nabla_msys2_mingw
 elif [ "$(uname -s)" == "Linux" ]; then
 	conan profile update settings.compiler=gcc nabla
 	conan profile update settings.compiler.version=8 nabla
@@ -55,7 +55,7 @@ if [ "$(uname -s)" == "Linux" ]; then
 fi
 
 conan profile show default
-	
+
 #See https://conan.io/
 #See https://bintray.com/bincrafters/public-conan
 
@@ -97,7 +97,7 @@ if [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
         #conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system
         echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} ${NC}"
         conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR}
-        
+
         ;;
     i*86)
         ;;

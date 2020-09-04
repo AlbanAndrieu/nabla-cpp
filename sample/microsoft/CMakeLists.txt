@@ -22,10 +22,10 @@ ELSE(MINGW)
     MESSAGE(STATUS "No conan package information available. Trying to fix that!")
     EXECUTE_PROCESS(COMMAND conan install --build=missing ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_QUIET)
   ENDIF()
-  
+
   #if conanbuildinfo.cmake not found run
   #conan install ../microsoft/ --build boost_system
-  
+
   # Import dependencies via Conan.io
   INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
   SET(CONAN_SYSTEM_INCLUDES On)
