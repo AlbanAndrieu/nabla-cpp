@@ -45,7 +45,8 @@ scons CC=clang CXX=clang++
 # Command line variables definition
 vars = Variables('variables.py') # you can store your defaults in this file
 vars.AddVariables(
-    BoolVariable('opt', 'Set to true to build with opt flags', True),
+    BoolVariable('debug', 'Set to true to build without opt flags', True), # Not yet use except in atom targets.ini
+    BoolVariable('release', 'Set to true to build with opt flags', False),
     BoolVariable('verbose', 'Show compilation commands', True),
     BoolVariable('use_clang', 'On linux only: replace gcc by clang', True),
     BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
@@ -69,6 +70,8 @@ vars.AddVariables(
 )
 
 env = Environment(variables = vars)
+
+Command('/opt/ansible/env38/', None, 'virtualenv $TARGET; source $TARGET/bin/activate; cd $TARGET; pip install termcolor')
 
 print('Mingw : ', env['use_mingw'])
 
@@ -271,7 +274,7 @@ if env['verbose'] and env['color']:
 CacheDir(env['cache_path']+ Arch)
 SConsignFile(os.path.join(DEV_BINARY_DIR, 'scons-signatures' + Arch))
 
-if env['opt'] == 'True':
+if env['release'] == 'True':
     if env['color']:
         print(colored("Optimized mode activated", 'blue'))
     theOptDbgFolder = 'opt'+env['Suffix64']

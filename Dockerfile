@@ -6,7 +6,8 @@
 #    && apk del build-base linux-headers pcre-dev openssl-dev && \
 #    rm -rf /var/cache/apk/*
 
-FROM ubuntu:bionic AS builder
+# See https://hub.docker.com/_/python
+FROM python:3 AS builder
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive \
@@ -14,6 +15,7 @@ RUN apt-get update \
   cmake \
   git \
   g++ \
+#  python3.8 \
 #  audacious-dev \
 #  libaudclient-dev \
 #  libcairo2-dev \
@@ -35,13 +37,20 @@ RUN apt-get update \
   libxml2-dev \
 #  libxmmsclient-dev \
 #  libxnvctrl-dev \
-  ncurses-dev \
-  libcppunit-dev
 #  libxml2-utils \
-  
+  ncurses-dev \
+  libboost-filesystem-dev \
+  libboost-system-dev \
+  libboost-thread-dev \
+  libcppunit-dev
+
 COPY . /nabla
 WORKDIR /nabla/build
 ARG X11=yes
+
+RUN pip install --no-cache-dir -r ../requirements-current-3.8.txt
+
+RUN ../conan.sh
 
 RUN sh -c 'if [ "$X11" = "yes" ] ; then \
   cmake \
@@ -62,7 +71,7 @@ RUN sh -c 'if [ "$X11" = "yes" ] ; then \
 #  -DBUILD_RSS=ON \
 #  -DBUILD_WLAN=ON \
 #  -DBUILD_XMMS2=ON \
-  ../ \
+  ../sample/microsoft/ \
   ; else \
   cmake \
   -DCMAKE_INSTALL_PREFIX=/opt/nabla \
@@ -82,12 +91,13 @@ RUN sh -c 'if [ "$X11" = "yes" ] ; then \
 #  -DBUILD_WLAN=ON \
 #  -DBUILD_X11=OFF \
 #  -DBUILD_XMMS2=ON \
-  ../ \
+  ../sample/microsoft/ \
   ; fi' \
   && make -j5 all \
   && make -j5 install
 
-FROM ubuntu:bionic
+#FROM ubuntu:bionic
+FROM ubuntu:20.04
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive \
@@ -112,9 +122,12 @@ RUN apt-get update \
 #  libxfixes3 \
 #  libxft2 \
 #  libxinerama1 \
-  libxml2 \
 #  libxmmsclient6 \
 #  libxnvctrl0 \
+  libxml2 \
+  libboost-filesystem1.71.0 \
+  libboost-system1.71.0 \
+  libboost-thread1.71.0 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 

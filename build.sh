@@ -37,7 +37,8 @@ else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
 
   if [ "$(uname -s)" == "Linux" ]; then
-    SCONS_OPTS="target=local --cache-disable gcc_version=9.2.1 CC="${CC}" CXX="${CXX}" color=True package"
+    SCONS_OPTS="target=local --enable-virtualenv --cache-disable color=True package"
+    # gcc_version=9.2.1 CC="${CC}" CXX="${CXX}"
   else
     SCONS_OPTS="--cache-disable opt=True"
   fi

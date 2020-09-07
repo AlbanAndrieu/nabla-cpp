@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
+import argparse
 import contextlib
 import getpass
 import glob
@@ -16,8 +17,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from contextlib import contextmanager
-
-import argparse
 
 sandbox = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 thirdPartyRoot = '%s/3rdparties' % sandbox

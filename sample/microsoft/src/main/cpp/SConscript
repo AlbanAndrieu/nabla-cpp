@@ -50,9 +50,9 @@ if Arch not in ['mingw','cygwin'] and env['use_conan']:
 
     flags = conan["conan"]
     localenv.MergeFlags(flags)
-    
+
 if localenv['use_mingw']:
-    localenv.Append(LIBPATH = ['/mingw64/lib']) 
+    localenv.Append(LIBPATH = ['/mingw64/lib'])
     localenv.Append(LIBS = [
         'boost_thread-mt',
         'boost_date_time-mt',
