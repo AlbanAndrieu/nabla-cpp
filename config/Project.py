@@ -228,7 +228,7 @@ def generate(env, **kw):
     elif Arch in ['mingw', 'cygwin']:
         env['use_mingw'] = True
         #print('Ovverride mingw : ', env['use_mingw'])
-        
+
     elif Arch in ['winnt']:
         #if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
@@ -237,7 +237,7 @@ def generate(env, **kw):
         #env['CXX'] = 'x86_64-w64-mingw32-g++.exe'
         env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
         env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
-        
+
         #if env['opt'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
@@ -298,9 +298,9 @@ def generate(env, **kw):
             env['AR'] = 'i686-w64-mingw32-ar'
             env['AS'] = 'i686-w64-mingw32-as'
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
-            # ---------------------------------------------------------------------------------------
-            env['RC'] = 'i686-w64-mingw32-windres'
-            #env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/' # This is pointing to /usr/share/mingw-w64/include
+            if platform.platform() == 'linux':
+                env['RC'] = 'i686-w64-mingw32-windres'
+                env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/' # This is pointing to /usr/share/mingw-w64/include
             #env['RCCOM'] = env['RCCOM'] + ' -DALM_MAJOR=%s -DALM_MIDDLE=%s -DALM_MINOR=%s -DALM_MICRO=%s -DALM_REVISION=%s -DALM_BUILD_YEAR=%s -DALM_BUILD_DATE="%s"' % (
             #    env['ENV']['AF_BUILD_MAJOR_VERSION'],
             #    env['ENV']['AF_BUILD_MIDDLE_VERSION'],
@@ -321,7 +321,7 @@ def generate(env, **kw):
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
             # ---------------------------------------------------------------------------------------
             env['RC'] = 'x86_64-w64-mingw32-windres'
-            
+
             #env.Append(LIBPATH = ['/mingw64/lib'])
 
     #if 'use_static' in env:

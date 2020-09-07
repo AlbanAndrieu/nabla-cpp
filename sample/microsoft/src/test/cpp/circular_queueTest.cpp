@@ -375,10 +375,11 @@ void circular_queueTest::testEnqueueDequeueThread() {
 
   std::cout << printTime() << " Sleeping for 2 seconds." << std::endl;
   // Sleep(4000);
+  boost::this_thread::sleep(boost::posix_time::milliseconds(100));
   #if defined(__MINGW32__) || defined(__MINGW64__)
-	boost::detail::win32::sleep(2);
+  //sleep(2);
   #else
-    sleep(2);
+  //  sleep(2);
   #endif
 
   // CPPUNIT_ASSERT(a->enqueue(1) == true);
@@ -391,10 +392,11 @@ void circular_queueTest::testEnqueueDequeueThread() {
 
   std::cout << printTime() << " Sleeping for 2 seconds to stop." << std::endl;
   // Sleep(2000);
+  boost::this_thread::sleep(boost::posix_time::milliseconds(100));
   #if defined(__MINGW32__) || defined(__MINGW64__)
-	boost::detail::win32::sleep(2);
+	//boost::detail::win32::sleep(2);
   #else
-    sleep(2);
+    //sleep(2);
   #endif
 
   std::cout << "Result is : " << a->values() << std::endl;

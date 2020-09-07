@@ -244,16 +244,17 @@ IF(MINGW)
   SET(ARCH linux)
   SET(MACHINE x86Linux)
   
-  SET(BUILD_SHARED_LIBS OFF)
-
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -static -static-libgcc -static-libstdc++ -lstdc++ -lgcc")
+  #SET(BUILD_SHARED_LIBS OFF)
+  #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -static -static-libgcc -static-libstdc++ -lstdc++ -lgcc")
+  
   #-lregex -lpng -ljpeg -lzlib -ltiff -lstdc++ -lgcc -lodbc32 -lwsock32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lctl3d32 -lodbc32 -ladvapi32 -lodbc32 -lwsock32 -lopengl32 -lglu32 -lole32 -loleaut32 -luuid
   MESSAGE(STATUS, "CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
-  INCLUDE_DIRECTORIES("C:\\cygwin\\usr\\include")
-  LINK_DIRECTORIES("C:\\cygwin\\lib")
+  #INCLUDE_DIRECTORIES("C:\\cygwin\\usr\\include")
+  #LINK_DIRECTORIES("C:\\cygwin\\lib")
 
-  ADD_DEFINITIONS(-Dlinux -DuseTao -DACE_HAS_EXCEPTIONS -D_TEMPLATES_ENABLE_ -D_REENTRANT -DEffix_Infra_HAS_BOOL)
+  ADD_DEFINITIONS(-Dlinux -DACE_HAS_EXCEPTIONS -D_TEMPLATES_ENABLE_ -D_REENTRANT)
+  ADD_DEFINITIONS(-DuseTao -DEffix_Infra_HAS_BOOL)
 
 ELSE(MINGW)
   MESSAGE(STATUS "MINGW not found")
