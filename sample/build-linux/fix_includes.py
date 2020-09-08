@@ -322,12 +322,12 @@ class IWYUOutputParser(object):
     # state.  value==None means that the key is an end state (that is,
     # its presence indicates the record is finished).
     _EXPECTED_NEXT_RE = {
-        None:               frozenset([_ADD_SECTION_RE, _NO_EDITS_RE]),
-        _ADD_SECTION_RE:    frozenset([_REMOVE_SECTION_RE]),
+        None: frozenset([_ADD_SECTION_RE, _NO_EDITS_RE]),
+        _ADD_SECTION_RE: frozenset([_REMOVE_SECTION_RE]),
         _REMOVE_SECTION_RE: frozenset([_TOTAL_SECTION_RE]),
-        _TOTAL_SECTION_RE:  frozenset([_SECTION_END_RE]),
-        _SECTION_END_RE:    None,
-        _NO_EDITS_RE:       None,
+        _TOTAL_SECTION_RE: frozenset([_SECTION_END_RE]),
+        _SECTION_END_RE: None,
+        _NO_EDITS_RE: None,
     }
 
     def __init__(self):
@@ -478,7 +478,7 @@ class IWYUOutputParser(object):
             if m:
                 retval.seen_forward_declare_lines.add((
                     int(m.group(1)),
-                    int(m.group(2))+1,
+                    int(m.group(2)) + 1,
                 ))
 
         # IWYUOutputRecord.includes_and_forward_declares_to_add
@@ -733,7 +733,7 @@ def _MarkHeaderGuardIfPresent(file_lines):
 
     # And the line after the header guard #ifdef is the '#define' (usually).
     if _HEADER_GUARD_DEFINE_RE.match(file_lines[ifdef_start + 1].line):
-        file_lines[ifdef_start+1].type = _HEADER_GUARD_DEFINE_RE
+        file_lines[ifdef_start + 1].type = _HEADER_GUARD_DEFINE_RE
 
 
 def _CalculateLineTypesAndKeys(file_lines, iwyu_record):
@@ -1006,12 +1006,12 @@ def _CalculateReorderSpans(file_lines):
         if not _ContainsBarrierInclude(file_lines, sorted_move_spans[i]):
             while i < len(sorted_move_spans) - 1:
                 move_span_end = sorted_move_spans[i][1]
-                next_move_span_start = sorted_move_spans[i+1][0]
+                next_move_span_start = sorted_move_spans[i + 1][0]
                 if (
                     _LinesAreAllBlank(
                         file_lines, move_span_end, next_move_span_start,
                     )
-                    and not _ContainsBarrierInclude(file_lines, sorted_move_spans[i+1])
+                    and not _ContainsBarrierInclude(file_lines, sorted_move_spans[i + 1])
                 ):
                     i += 1
                 else:
@@ -1106,7 +1106,7 @@ def _DeleteEmptyNamespaces(file_lines):
                     # And also blank lines.
                     while (
                         start_line > 0 and
-                        file_lines[start_line-1].type == _BLANK_LINE_RE
+                        file_lines[start_line - 1].type == _BLANK_LINE_RE
                     ):
                         start_line -= 1
                     for line_number in range(start_line, end_line):
@@ -1166,7 +1166,7 @@ def _DeleteEmptyIfdefs(file_lines):
                 # And also blank lines.
                 while (
                     start_line > 0 and
-                    file_lines[start_line-1].type == _BLANK_LINE_RE
+                    file_lines[start_line - 1].type == _BLANK_LINE_RE
                 ):
                     start_line -= 1
                 for line_number in range(start_line, end_line):
@@ -1705,7 +1705,7 @@ def _FirstReorderSpanWith(
     # 'good' span, so we skip past header guards and the like).  Basically,
     # the first contentful line is a line not in any reorder span.
     for i in range(len(good_reorder_spans) - 1):
-        if good_reorder_spans[i][1] != good_reorder_spans[i+1][0]:
+        if good_reorder_spans[i][1] != good_reorder_spans[i + 1][0]:
             first_contentful_line = good_reorder_spans[i][1]
             break
     else:     # got to the end of the file without finding a break in the spans

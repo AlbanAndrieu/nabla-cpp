@@ -69,6 +69,16 @@ vars.AddVariables(
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
 )
 
+
+# Assuming you store your defaults in a file
+msvcver = vars.args.get('vc', '9')
+
+# Check command args to force one Microsoft Visual Studio version
+if msvcver == '9' or msvcver == '11':
+  env = Environment(MSVC_VERSION=msvcver+'.0', MSVC_BATCH=False, variables = vars)
+else:
+  env = Environment(variables = vars)
+
 env = Environment(variables = vars)
 
 Command('/opt/ansible/env38/', None, 'virtualenv $TARGET; source $TARGET/bin/activate; cd $TARGET; pip install termcolor')
@@ -101,6 +111,11 @@ if env['use_mingw'] or Arch in ['mingw', 'cygwin']:
     #env['use_mingw'] = True
     #print('Ovverride mingw : ', env['use_mingw'])
     target_tools = ['default', 'mingw']
+
+    env.MSVSSolution(target = 'Microsoft' + env['MSVSSOLUTIONSUFFIX'],
+                     projects = ['Microsoft' + env['MSVSPROJECTSUFFIX']],
+                     variant = 'Release')
+
 else:
     if Arch in ['x86sol','sun4sol']:
         target_tools = ['default', 'suncc', 'sunc++', 'sunlink']
@@ -418,7 +433,7 @@ if 'package' in COMMAND_LINE_TARGETS:
     env.Execute("rm -Rf nabla-1.2.3")
 
 if env['verbose'] and env['color']:
-    print(colored("env : ", 'magenta'), colored(env.Dump(), 'cyan'))
+    print(colored("env: ", 'magenta'), colored(env.Dump(), 'cyan'))
 
 # Clean
 Clean('.', 'target')

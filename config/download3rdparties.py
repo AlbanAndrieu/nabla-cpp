@@ -551,13 +551,13 @@ def main(env, args):
         description='Download and expand third parties defined in a .bom file',
     )
     parser.add_argument(
-        '--arch',     choices=[
+        '--arch', choices=[
             'lin', 'sol', 'solsparc', 'win', 'x86sol',
             'x86Linux', 'sun4sol', 'winnt',
         ], help='arch on which the build is done', required=True,
     )
     parser.add_argument(
-        '--bit',      default='64',
+        '--bit', default='64',
         choices=['32', '64'], help='32 or 64 bit', required=False,
     )
     parser.add_argument(
@@ -573,7 +573,7 @@ def main(env, args):
         help='Base URL where to download third parties from. Use file:// for using a local ESCROW repository', required=False,
     )
     parser.add_argument(
-        '--bom',      default=None,
+        '--bom', default=None,
         help='file listing serials of third parties to download', required=True,
     )
     parser.add_argument(
@@ -581,11 +581,11 @@ def main(env, args):
         help='directory where third parties will be stored', required=False,
     )
     parser.add_argument(
-        '--serials',  action='append',
+        '--serials', action='append',
         help='directly specify some serials (multiple uses are possible', required=False,
     )
     parser.add_argument(
-        '--color',    default=False,
+        '--color', default=False,
         help='set to true to build with colorizer', required=False,
     )
 

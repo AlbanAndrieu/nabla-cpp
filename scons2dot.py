@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 """
 ==========================================================================
@@ -179,7 +179,6 @@ class DotBuilder(object):
         the self.trees data structure.
         """
         results = sets.Set(self.trees)
-        change = True
         work_list = self.trees[:]
         while len(work_list) > 0:
             item = work_list.pop()
@@ -374,7 +373,7 @@ def run(args):
     )
     parser.add_option(
         '--format', default='pdf',
-        help='Format to output when using the --save option, default is pdf. For legal values, see the -T option in dot.',
+        help='Format to output when using the --save option, default is pdf. For legal values, see the -T option in dot.', # noqa: ignore=E501
     )
     parser.add_option(
         '--ignore', default=[], action='append',
@@ -398,13 +397,13 @@ def run(args):
     if opts.infile == '-':
         infd = sys.stdin
     else:
-        infd = file(opts.infile, 'r')
+        infd = open(opts.infile, 'r')
 
     altfd = None
     if opts.altfile == '-':
         altfd = sys.stdout
     else:
-        altfd = file(opts.altfile, 'w')
+        altfd = open(opts.altfile, 'w')
 
     # process dot options
     graph_attrs = {}
@@ -438,7 +437,7 @@ def run(args):
         if opts.outfile == '-':
             outfd = sys.stdout
         else:
-            outfd = file(opts.outfile, 'w')
+            outfd = open(opts.outfile, 'w')
         db.fd = outfd
         db.print_graph()
 

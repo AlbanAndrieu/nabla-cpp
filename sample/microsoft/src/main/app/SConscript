@@ -47,10 +47,17 @@ if Arch not in ['mingw','cygwin'] and env['use_conan']:
     flags = conan["conan"]
     localenv.MergeFlags(flags)
 
+source = Glob('*.cpp')
+
 #building Binary
-p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_app'), Glob('*.cpp'))
+p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_app'), source)
 
 Default(p)
+
+#env.MSVSProject(target = 'example' + env['MSVSPROJECTSUFFIX'],
+#srcs=source,
+#buildtarget = p,
+#variant = 'Debug')
 
 #env.Install( executablePath_,
 #	[

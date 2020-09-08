@@ -368,41 +368,41 @@ def generate(env, **kw):
     if env['color']:
 
         print(
-            colored('Platform :', 'magenta'),
+            colored('Platform : ', 'magenta'),
             colored(platform.platform(), 'cyan'),
         )
-        print(colored('System :', 'magenta'), colored(system, 'cyan'))
-        print(colored('Machine :', 'magenta'), colored(machine, 'cyan'))
-        #print(colored('Dist :', 'magenta'), colored(dist, 'cyan'))
-        #print(colored('Dist-Os :', 'magenta'), colored(dist[0], 'cyan'))
+        print(colored('System : ', 'magenta'), colored(system, 'cyan'))
+        print(colored('Machine : ', 'magenta'), colored(machine, 'cyan'))
+        #print(colored('Dist : ', 'magenta'), colored(dist, 'cyan'))
+        #print(colored('Dist-Os : ', 'magenta'), colored(dist[0], 'cyan'))
 
-        print(colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan'))
+        print(colored('ENV TOOLS : ', 'magenta'), colored(env['TOOLS'], 'cyan'))
         # print "dump whole env :", env.Dump()
         if env['verbose']:
-            print(colored('ENV ENV :', 'magenta'), colored(env['ENV'], 'cyan'))
+            print(colored('ENV ENV : ', 'magenta'), colored(env['ENV'], 'cyan'))
 
         if 'TERM' in env:
             print(
-                colored('ENV TERM :', 'magenta'),
+                colored('ENV TERM : ', 'magenta'),
                 colored(env['ENV']['TERM'], 'cyan'),
             )
         print(
-            colored('ENV PATH :', 'magenta'),
+            colored('ENV PATH : ', 'magenta'),
             colored(env['ENV']['PATH'], 'cyan'),
         )
         if 'HOME' in env:
             print(
-                colored('ENV HOME :', 'magenta'),
+                colored('ENV HOME : ', 'magenta'),
                 colored(env['ENV']['HOME'], 'cyan'),
             )
         print(
-            colored('CXXVERSION :', 'magenta'),
+            colored('CXXVERSION : ', 'magenta'),
             colored(env['CXXVERSION'], 'cyan'),
         )
-        print(colored('CC :', 'magenta'), colored(env['CC'], 'cyan'))
-        print(colored('CXX :', 'magenta'), colored(env['CXX'], 'cyan'))
+        print(colored('CC : ', 'magenta'), colored(env['CC'], 'cyan'))
+        print(colored('CXX : ', 'magenta'), colored(env['CXX'], 'cyan'))
         print(
-            colored('CCCOM :', 'magenta'),
+            colored('CCCOM : ', 'magenta'),
             colored(env.subst('$CCCOM'), 'cyan'),
         )
 

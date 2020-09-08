@@ -140,7 +140,9 @@ fi
 
 conan config home
 
-ls -lrta sample/microsoft/conaninfo.txt
-ls -lrta sample/build-linux/conanbuildinfo.cmake
+find . -name conaninfo.txt
+#ls -lrta sample/microsoft/conaninfo.txt
+find . -name conanbuildinfo.cmake
+#ls -lrta sample/build-linux/conanbuildinfo.cmake
 
 exit 0

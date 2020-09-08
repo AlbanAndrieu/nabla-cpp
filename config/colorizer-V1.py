@@ -136,7 +136,7 @@ class colorizer:
         self.colorizeBuilder(env, 'LoadableModule')
 
         # customize compiling ...
-        self.colorizeObjBuilders(env)
+        #self.colorizeObjBuilders(env)
 
         return True
 
