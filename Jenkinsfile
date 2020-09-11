@@ -149,23 +149,6 @@ pipeline {
                } // script
            } // steps
         } // stage Build
-        post {
-          always {
-            recordIssues enabledForFailure: true, filters: [
-              excludeFile('.*qrc_icons\\.cpp.*'),
-              excludeMessage('.*tmpnam.*')],
-              tools: [gcc4(name: 'GCC-GUI', id: 'gcc4-gui',
-                      pattern: 'build/build*.log'),
-                      gcc4(name: 'Doxygen', id: 'doxygen',
-                      pattern: 'build/DoxygenWarnings.log')
-                      ],
-              unstableTotalAll: 1
-
-            recordIssues enabledForFailure: true,
-              tools: [cppCheck(pattern: 'build/cppcheck.log')]
-          }
-          success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
-        }
         stage('SonarQube analysis') {
             environment {
                 SONAR_SCANNER_OPTS = "-Xmx1g"
@@ -174,13 +157,30 @@ pipeline {
                 sh "pwd"
                 sh "/usr/local/sonar-runner/bin/sonar-scanner -D sonar-project.properties"
             }
-        } // stage Build
+        } // stage SonarQube
+        //stage('Approve image') {
+        // sshagent(['jenkins-ssh']) {
+        ////   def myImg = docker.image('nabla/nabla-cpp:latest')
+        ////   sh "docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz ${myImg.imageName()}"
+         //    sh returnStdout: true, script: 'sudo docker run -it --net host --pid host --cap-add audit_control -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock -v /usr/lib/systemd:/usr/lib/systemd -v /etc:/etc --label docker_bench_security docker/docker-bench-security'
+         //}
+        //}
     } // stages
-    //stage('Approve image') {
-    // sshagent(['jenkins-ssh']) {
-    ////   def myImg = docker.image('nabla/nabla-cpp:latest')
-    ////   sh "docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz ${myImg.imageName()}"
-     //    sh returnStdout: true, script: 'sudo docker run -it --net host --pid host --cap-add audit_control -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock -v /usr/lib/systemd:/usr/lib/systemd -v /etc:/etc --label docker_bench_security docker/docker-bench-security'
-     //}
-    //}
+	post {
+	  always {
+		recordIssues enabledForFailure: true, filters: [
+		  excludeFile('.*qrc_icons\\.cpp.*'),
+		  excludeMessage('.*tmpnam.*')],
+		  tools: [gcc4(name: 'GCC-GUI', id: 'gcc4-gui',
+				  pattern: 'build/build*.log'),
+				  gcc4(name: 'Doxygen', id: 'doxygen',
+				  pattern: 'build/DoxygenWarnings.log')
+				  ],
+		  unstableTotalAll: 1
+
+		recordIssues enabledForFailure: true,
+		  tools: [cppCheck(pattern: 'build/cppcheck.log')]
+	  }
+	  success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
+	} // post
 } // pipeline
