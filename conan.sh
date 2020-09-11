@@ -93,6 +93,7 @@ if [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
         conan profile list
         conan profile update settings.compiler.libcxx=libstdc++11 default
 
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build -g ${CONAN_GENERATOR} ${NC}"
         echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system -g ${CONAN_GENERATOR} ${NC}"
         #conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system
         echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} ${NC}"
@@ -117,6 +118,7 @@ elif [ "$(uname -s)" == "Linux" ]; then
         #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
         ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
         #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build -g ${CONAN_GENERATOR} ${NC}"
         echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system -g ${CONAN_GENERATOR} ${NC}"
         #conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system
         echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} ${NC}"
@@ -140,6 +142,10 @@ fi
 
 conan config home
 
+echo -e "${magenta} conan configuration : ${NC}"
+find . -name conanfile.txt
+
+echo -e "${magenta} conan generated files : ${NC}"
 find . -name conaninfo.txt
 #ls -lrta sample/microsoft/conaninfo.txt
 find . -name conanbuildinfo.cmake

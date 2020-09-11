@@ -38,7 +38,7 @@ if localenv['color']:
 
 print('use_mingw', localenv['use_mingw'])
 
-if Arch not in ['mingw','cygwin'] and env['use_conan']:
+if Arch not in ['mingw', 'cygwin'] and env['use_conan']:
     build_path_relative_to_sconstruct = Dir('../../../../').path
     build_directory = os.path.join(build_path_relative_to_sconstruct, 'build-scons')
     print("build_directory :", build_directory)
@@ -49,6 +49,7 @@ if Arch not in ['mingw','cygwin'] and env['use_conan']:
         sys.exit(1)
 
     flags = conan["conan"]
+    # print("Conan flags :", flags)
     localenv.MergeFlags(flags)
 
 if localenv['use_mingw']:
@@ -75,7 +76,6 @@ else:
     print('CC :' + env['CC'])
     print('CXX :' + env['CXX'])
 
-#if Arch in ['winnt']:
 if env['use_static']:
     p = localenv.Library(os.path.join(localenv['LIBRARY_OUTPUT_PATH'],'main_library'), Glob('*.cpp'))
 else:

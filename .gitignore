@@ -194,6 +194,7 @@ sample/build-linux/Makefile
 sample/build-linux/_CPack_Packages/
 sample/build-linux/cmake_install.cmake
 sample/build-linux/doc/
+sample/build-linux/graphviz.*
 
 #=============
 

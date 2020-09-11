@@ -37,8 +37,8 @@ IF (DOXYGEN_FOUND)
   ENDIF (NOT DVIPS_CONVERTER)
 
   # For Doxygen
-  INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
-  OPTION(BUILD_DOCUMENTATION "Build osg documentation" ON)
+  #INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
+  #OPTION(BUILD_DOCUMENTATION "Build osg documentation" OFF)
   # To build the documention, you will have to enable it
   # and then do the equivalent of "make DoxygenDoc".
   IF(BUILD_DOCUMENTATION)

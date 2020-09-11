@@ -822,7 +822,7 @@ ENDIF(MINGW)
 #SET(EXCLUDE Unittest)
 #SET(EXCLUDE_PATTERNS */*Unittest*/* )
 
-INCLUDE(${PROJECT_CONFIG_DIR}/ProjectDoc.cmake)
+#INCLUDE(${PROJECT_CONFIG_DIR}/ProjectDoc.cmake)
 
 INCLUDE(CTest)
 INCLUDE(${PROJECT_CONFIG_DIR}/CTestConfig.cmake)

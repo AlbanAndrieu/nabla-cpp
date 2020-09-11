@@ -53,7 +53,8 @@ vars.AddVariables(
     BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', True),
     BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
     BoolVariable('use_asan', 'On linux only and clang: build with address sanitize', False),
-    BoolVariable('use_mingw', 'X compile', False),
+    BoolVariable('use_xcompil', 'X compile (for clang)', False),
+    BoolVariable('use_mingw', 'X compile using mingw', False),
     BoolVariable('use_conan', 'Use conan (Not working on mingw)', True),
     BoolVariable('use_static', 'Build static libs and binaries', False),
     BoolVariable('color', 'Set to true to build with colorizer', True),
@@ -64,7 +65,7 @@ vars.AddVariables(
 #    ('CC', 'Set C compiler : gcc, clang', 'gcc'),
 #    ('CXX', 'Set C++ compiler : g++, clang++', 'g++'),
     ('version', 'The version of the component you build', '1.0.0'),
-    ('target_bits', '32/64 bits', '64b'),
+    ('target_bits', '32/64 bits', '64'),
     ('tar', 'tar binary', 'tar'),
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
 )
@@ -83,9 +84,10 @@ env = Environment(variables = vars)
 
 Command('/opt/ansible/env38/', None, 'virtualenv $TARGET; source $TARGET/bin/activate; cd $TARGET; pip install termcolor')
 
-print('Mingw : ', env['use_mingw'])
+print('Xcompil :', env['use_xcompil'])
+print('Mingw :', env['use_mingw'])
 
-if Arch not in ['mingw','cygwin'] and env['use_conan']:
+if Arch not in ['mingw', 'cygwin'] and env['use_conan']:
     # Import Conans
     from conans.client.conan_api import ConanAPIV1 as conan_api
     from conans import __version__ as conan_version
@@ -149,7 +151,7 @@ if env['color']:
     from termcolor import colored, cprint
     print(colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan'))
 
-if Arch not in ['mingw','cygwin'] and env['use_conan']:
+if Arch not in ['mingw', 'cygwin'] and env['use_conan']:
     conan_flags = SConscript('{}/SConscript_conan'.format(build_directory))
     if not conan_flags:
         print("File `SConscript_conan` is missing.")

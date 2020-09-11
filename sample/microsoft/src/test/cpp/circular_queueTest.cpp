@@ -1,7 +1,7 @@
-#include "circular_queueTest.h"
-#include "circular_queueThread.h"
+#include "include/circular_queueTest.h"
+#include "include/circular_queueThread.h"
 
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
 // TODO Win32 #include <windows.h>
 
 #include <circular_queue.h>

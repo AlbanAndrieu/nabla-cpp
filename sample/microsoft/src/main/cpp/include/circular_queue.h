@@ -1,6 +1,6 @@
 /**
  * \file circular_queue.h
- * \brief Programm for answering an interview.
+ * \brief Program for answering an interview.
  * \author Alban Andrieu
  * \version 0.1
  * \date 09 february 2011
