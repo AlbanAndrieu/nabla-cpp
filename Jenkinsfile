@@ -131,6 +131,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    sh "source /opt/ansible/env38/bin/activate"
                     sh "python -V"
                     sh "python3 -V"
                     sh "pip -V"
