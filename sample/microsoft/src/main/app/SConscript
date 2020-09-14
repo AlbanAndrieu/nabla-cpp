@@ -33,7 +33,7 @@ localenv.MergeFlags([
     '-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
 ])
 
-if Arch not in ['mingw','cygwin'] and env['use_conan']:
+if Arch not in ['mingw','cygwin','winnt'] and env['use_conan']:
     build_path_relative_to_sconstruct = Dir('../../../../').path
     #build_directory = os.path.join(localenv['sandbox'], 'sample', 'build-scons')
     build_directory = os.path.join(build_path_relative_to_sconstruct, 'build-scons')

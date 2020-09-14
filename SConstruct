@@ -15,7 +15,7 @@ import sys
 
 from config import ProjectMacro
 
-EnsureSConsVersion(2, 4, 1)
+EnsureSConsVersion(3, 1, 2)
 EnsurePythonVersion(3, 6)
 
 # Hack to ensure that .svn changes don't trigger rebuild where using DirScanner
@@ -71,10 +71,10 @@ vars.AddVariables(
 
 
 # Assuming you store your defaults in a file
-msvcver = vars.args.get('vc', '9')
+msvcver = vars.args.get('vc', '14')
 
 # Check command args to force one Microsoft Visual Studio version
-if msvcver == '9' or msvcver == '11':
+if msvcver == '14' or msvcver == '17':
   env = Environment(MSVC_VERSION=msvcver+'.0', MSVC_BATCH=False, variables = vars)
 else:
   env = Environment(variables = vars)
@@ -85,7 +85,7 @@ Command('/opt/ansible/env38/', None, 'virtualenv $TARGET; source $TARGET/bin/act
 
 print('Mingw : ', env['use_mingw'])
 
-if Arch not in ['mingw','cygwin'] and env['use_conan']:
+if Arch not in ['mingw','cygwin','winnt'] and env['use_conan']:
     # Import Conans
     from conans.client.conan_api import ConanAPIV1 as conan_api
     from conans import __version__ as conan_version
@@ -107,10 +107,12 @@ if Arch not in ['mingw','cygwin'] and env['use_conan']:
             generators=["scons"],\
             install_folder=build_directory)
 
-if env['use_mingw'] or Arch in ['mingw', 'cygwin']:
+if env['use_mingw'] or Arch in ['mingw', 'cygwin', 'winnt']:
     #env['use_mingw'] = True
     #print('Ovverride mingw : ', env['use_mingw'])
     target_tools = ['default', 'mingw']
+    
+    print("MSVSSolution")
 
     env.MSVSSolution(target = 'Microsoft' + env['MSVSSOLUTIONSUFFIX'],
                      projects = ['Microsoft' + env['MSVSPROJECTSUFFIX']],
@@ -149,7 +151,7 @@ if env['color']:
     from termcolor import colored, cprint
     print(colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan'))
 
-if Arch not in ['mingw','cygwin'] and env['use_conan']:
+if Arch not in ['mingw','cygwin','winnt'] and env['use_conan']:
     conan_flags = SConscript('{}/SConscript_conan'.format(build_directory))
     if not conan_flags:
         print("File `SConscript_conan` is missing.")
