@@ -139,7 +139,7 @@ pipeline {
                        "python3.8 -V \n" +
                        "pip -V \n" +
                        "pip list \n" +
-                       "pip3.7 install conan \n" +
+                       "pip3 install conan \n" +
                        "which conan"
 
                     tee("python.log") {
