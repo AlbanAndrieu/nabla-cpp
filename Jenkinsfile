@@ -43,9 +43,20 @@ String ARTIFACTS = ['*_VERSION.TXT',
 
 pipeline {
     //agent none
-    agent {
-        label 'ubuntu'
-    }
+    //agent {
+    //    label 'ubuntu'
+    //}
+	agent {
+		docker {
+			image DOCKER_IMAGE
+			alwaysPull true
+			reuseNode true
+			registryUrl DOCKER_REGISTRY_HUB_URL
+			registryCredentialsId DOCKER_REGISTRY_HUB_CREDENTIAL
+			args DOCKER_OPTS_BASIC
+			label 'ubuntu'
+		}
+	}
     //agent {
     //    // Equivalent to "docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 --build-arg FILEBEAT_VERSION=6.3.0 ./build/
     //    dockerfile {
