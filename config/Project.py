@@ -323,13 +323,14 @@ def generate(env, **kw):
             env['CC'] = 'i686-w64-mingw32-gcc'
             # apt-get install g++-mingw-w64-i686
             env['CXX'] = 'i686-w64-mingw32-g++'
-            env['RANLIB'] = 'i686-w64-mingw32-ranlib'
-            env['LD'] = 'i686-w64-mingw32-ld'
             env['LINK'] = 'i686-w64-mingw32-g++'
-            env['AR'] = 'i686-w64-mingw32-ar'
-            env['AS'] = 'i686-w64-mingw32-as'
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
             if platform.platform() == 'linux':
+                env['RANLIB'] = 'i686-w64-mingw32-ranlib'
+                env['LD'] = 'i686-w64-mingw32-ld'
+                env['AR'] = 'i686-w64-mingw32-ar'
+                env['AS'] = 'i686-w64-mingw32-as'
+                env['RC'] = 'i686-w64-mingw32-windres'
                 env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/' # This is pointing to /usr/share/mingw-w64/include
             #env['RCCOM'] = env['RCCOM'] + ' -DALM_MAJOR=%s -DALM_MIDDLE=%s -DALM_MINOR=%s -DALM_MICRO=%s -DALM_REVISION=%s -DALM_BUILD_YEAR=%s -DALM_BUILD_DATE="%s"' % (
             #    env['ENV']['AF_BUILD_MAJOR_VERSION'],

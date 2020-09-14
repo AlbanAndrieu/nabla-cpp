@@ -258,7 +258,7 @@ def reduceBuildVerbosity(env):
 
 def getArch():
     thePlatform = platform.platform()
-    # print(thePlatform)
+    # print("platform : " + thePlatform)
     theArch = 'unkown'
     if thePlatform.startswith('Linux'):
         theArch = 'x86Linux'
@@ -274,3 +274,27 @@ def getArch():
         elif platform.machine() == 'i86pc':
             theArch = 'x86sol'
     return theArch
+
+################################################################
+# See https://github.com/brave/brave-browser/issues/7328
+class ourSpawn:
+    def ourspawn(self, sh, escape, cmd, args, env):
+        newargs = ' '.join(args[1:])
+        cmdline = cmd + " " + newargs
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, startupinfo=startupinfo, shell = False, env = env)
+        data, err = proc.communicate()
+        rv = proc.wait()
+        if rv:
+            print("=====")
+            print(err)
+            print("=====")
+        return rv
+
+def SetupSpawn( env ):
+    if sys.platform == 'win32':
+        buf = ourSpawn()
+        buf.ourenv = env
+        env['SPAWN'] = buf.ourspawn
