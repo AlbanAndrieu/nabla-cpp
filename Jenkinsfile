@@ -132,8 +132,10 @@ pipeline {
             steps {
                 script {
                     sh "python -V"
+                    sh "python3 -V"
                     sh "pip -V"
-                    sh "pip3.8 install conan"
+                    sh "pip list"
+                    sh "pip3.7 install conan"
                     sh "conan remove --system-reqs '*'"
 
                     docker.withRegistry('https://index.docker.io/v1', 'docker-login') {
