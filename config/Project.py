@@ -366,7 +366,7 @@ def generate(env, **kw):
         env['CFLAGS'] = ['-std=c11']
         env['CCFLAGS'] += ['-std=c++11']
         #env['CXXFLAGS'] = ['-std=c++11']
-        env['LINKFLAGS'] += ['-std=c++11']
+        #env['LINKFLAGS'] += ['-std=c++11']
 
     if 'target_bits' in env and env['target_bits'] == '32':
         env['CCFLAGS'] += ['-m32']
