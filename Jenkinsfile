@@ -131,15 +131,16 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh "ls -lrta /opt/ansible/"
-                    sh "source /opt/ansible/env38/bin/activate"
-                    sh "python -V"
-                    sh "python3 -V"
-                    sh "python3.8 -V"
-                    sh "pip -V"
-                    sh "pip list"
-                    sh "pip3.7 install conan"
-                    sh "which conan"
+                    sh "#!/bin/bash \n" +
+                       "ls -lrta /opt/ansible/ \n" +
+                       "source /opt/ansible/env38/bin/activate \n" +
+                       "python -V \n" +
+                       "python3 -V \n" +
+                       "python3.8 -V \n" +
+                       "pip -V \n" +
+                       "pip list \n" +
+                       "pip3.7 install conan \n" +
+                       "which conan"
 
                     tee("python.log") {
                       sh "#!/bin/bash \n" +
@@ -148,7 +149,8 @@ pipeline {
                          "pre-commit run -a || true"
                     } // tee
 
-                    sh "conan remove --system-reqs '*'"
+                    sh "#!/bin/bash \n" +
+                       "conan remove --system-reqs '*'"
 
                     docker.withRegistry('https://index.docker.io/v1', 'docker-login') {
                         def DOCKER_REGISTRY_URI="index.docker.io/v1"
