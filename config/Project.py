@@ -363,8 +363,8 @@ def generate(env, **kw):
 
     if 'use_cpp11' in env and env['use_cpp11']:  # env['gcc_version'] >= '8'
         env['CFLAGS'] = ['-std=c11']
-        env['CXXFLAGS'] = ['-std=c++11']
         env['CCFLAGS'] += ['-std=c++11']
+        #env['CXXFLAGS'] = ['-std=c++11']
         env['LINKFLAGS'] += ['-std=c++11']
 
     if 'target_bits' in env and env['target_bits'] == '32':
