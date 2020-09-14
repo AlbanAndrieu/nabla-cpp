@@ -10,6 +10,8 @@
 #  CPPUNIT_LIBRARY     - The CppUnit library to link against.
 
 FIND_PATH(CPPUNIT_INCLUDE_DIR cppunit/Test.h)
+#FIND_PATH(CPPUNIT_INCLUDE_DIR /mingw64/include/cppunit/Test.h)
+
 #FIND_LIBRARY(CPPUNIT_LIBRARY NAMES cppunit)
 
 FIND_LIBRARY(CPPUNIT_LIBRARY_DEBUG NAMES cppunit cppunit_dll cppunitd cppunitd_dll
@@ -19,6 +21,7 @@ FIND_LIBRARY(CPPUNIT_LIBRARY_DEBUG NAMES cppunit cppunit_dll cppunitd cppunitd_d
                      /usr/lib64
                      /usr/local/lib
                      /usr/local/lib64
+                     /mingw64/lib/
              PATH_SUFFIXES debug )
 
 FIND_LIBRARY(CPPUNIT_LIBRARY_RELEASE NAMES cppunit cppunit_dll
@@ -28,6 +31,7 @@ FIND_LIBRARY(CPPUNIT_LIBRARY_RELEASE NAMES cppunit cppunit_dll
                      /usr/lib64
                      /usr/local/lib
                      /usr/local/lib64
+                     /mingw64/lib/
              PATH_SUFFIXES release )
 
 if(CPPUNIT_LIBRARY_DEBUG AND NOT CPPUNIT_LIBRARY_RELEASE)

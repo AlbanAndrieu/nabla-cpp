@@ -26,7 +26,7 @@ SET( CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
 #ENDIF(COVERAGE)
 
 if (WIN32)
-  SET(DEFAULT_BOOST OFF)
+  SET(DEFAULT_BOOST OFF) # WITH_BOOST will make boost not mandatory
 else()
   SET(DEFAULT_BOOST ON)
 endif()
@@ -324,6 +324,7 @@ MESSAGE(STATUS "PROJECT_NAME ${PROJECT_NAME} = ${CMAKE_PROJECT_NAME}")
 
 #Inclusion
 # See ${PROJ_SOURCE_DIR}/config for special inclusion
+INCLUDE(FindCxxTest)
 INCLUDE(FindBoost)
 INCLUDE(FindGettext)
 #INCLUDE(FindLibXml2) # See below FIND_PACKAGE(LibXml2)
