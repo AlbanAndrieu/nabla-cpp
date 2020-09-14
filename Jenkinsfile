@@ -139,8 +139,9 @@ pipeline {
                        "python3.8 -V \n" +
                        "pip -V \n" +
                        "pip list \n" +
-                       "pip3 install conan \n" +
-                       "which conan"
+                       "pip3.8 install conan \n" +
+                       "which conan \n" +
+                       "conan remove --system-reqs '*'"
 
                     tee("python.log") {
                       sh "#!/bin/bash \n" +
@@ -149,8 +150,8 @@ pipeline {
                          "pre-commit run -a || true"
                     } // tee
 
-                    sh "#!/bin/bash \n" +
-                       "conan remove --system-reqs '*'"
+                    //sh "#!/bin/bash \n" +
+                    //   "conan remove --system-reqs '*'"
 
                     docker.withRegistry('https://index.docker.io/v1', 'docker-login') {
                         def DOCKER_REGISTRY_URI="index.docker.io/v1"
