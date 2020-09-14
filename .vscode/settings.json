@@ -1,0 +1,17 @@
+{    
+    "window.zoomLevel": 1,
+    "files.autoSave": "off",
+    "workbench.sideBar.location": "left",
+    "git.confirmSync": false,
+    "cmake.configureOnOpen": true,
+    "cmake.mingwSearchDirs": [
+        "C:\\tools\\msys64\\mingw64"
+    ],
+    "cmake.buildDirectory":"${workspaceFolder}/sample/build",
+    "cmake.sourceDirectory":"${workspaceFolder}/sample/microsoft",
+    "cmake.generator": "Unix Makefiles",
+    "cmake.parallelJobs": 8,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.intelliSenseMode": "gcc-x64",
+
+}

@@ -5,7 +5,9 @@
 #COPY_HEADER_LIST(${PROJECT_INCLUDE_DIR} h)
 
 MESSAGE(STATUS "TEST CPP: " ${CMAKE_SOURCE_DIR}/src/test/cpp )
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/test/cpp/include")
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+MESSAGE(STATUS "TEST CPP 2: " ${CMAKE_SOURCE_DIR}/src/main/cpp/include)
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/main/cpp/include")
 
 # ########## TestLibrary executable ##########
@@ -19,7 +21,7 @@ SET(test_files_to_run_SRCS
 SET(test_files_SRCS
     ${test_files_to_run_SRCS}
     circular_queueThread.cpp
-    cppunitTest.cpp #use to test failure in CPPUnit
+    cppunitTest.cpp  # use to test failure in CPPUnit
 )
 
 # Headers:

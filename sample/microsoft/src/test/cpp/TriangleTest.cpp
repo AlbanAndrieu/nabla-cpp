@@ -1,4 +1,4 @@
-#include "TriangleTest.h"
+#include "include/TriangleTest.h"
 #include <Triangle.h>
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TriangleTest, "TriangleTest");

@@ -5,7 +5,7 @@
 #COPY_HEADER_LIST(${PROJECT_INCLUDE_DIR} h)
 
 MESSAGE(STATUS "MAIN CPP: " ${CMAKE_SOURCE_DIR}/src/main/cpp )
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/main/cpp/include")
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # ########## MainLibrary executable ##########
 # Sources:

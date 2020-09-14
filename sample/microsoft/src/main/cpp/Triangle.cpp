@@ -5,7 +5,7 @@
  *      Author: Alban
  */
 
-#include "Triangle.h"
+#include "include/Triangle.h"
 #include <iostream>
 
 // Equilateral Triangle

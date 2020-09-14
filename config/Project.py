@@ -121,8 +121,8 @@ def generate(env, **kw):
             '-pedantic-errors',
             # '-fstrict-aliasing',
             '-DACE_HAS_EXCEPTIONS',
+            #'-fno-PIC',
             # '-DuseTao',
-            '-fPIC',
             # '-D_TEMPLATES_ENABLE_',
             # '-include','/usr/include/stdio.h',
             # '-include','/usr/include/stdlib.h',
@@ -131,6 +131,9 @@ def generate(env, **kw):
             # '-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
             # '-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
+
+        if not env['use_xcompil']:
+            env['CCFLAGS'] += ['-fPIC']
 
         # If not set, -l order on command lines matter
         env['LINKFLAGS'] = [
@@ -169,6 +172,25 @@ def generate(env, **kw):
         if env['use_clang'] and env['use_asan']:
             env['CCFLAGS'] += ['-fsanitize=address']
             env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
+
+        if env['use_clang'] and env['use_xcompil'] and not env['use_mingw']:
+            if 'target_bits' in env and env['target_bits'] == '32':
+                env['CCFLAGS'] += ['-target', 'i686-pc-windows-gnu']
+                env['LINKFLAGS'] += ['-target', 'i686-pc-windows-gnu']
+            else:
+                env['CCFLAGS'] += ['-target', 'x86_64-pc-windows-gnu ']
+                env['LINKFLAGS'] += ['-target', 'x86_64-pc-windows-gnu ']
+
+            #env['CCFLAGS'] += ['-fgnu-runtime', '-fno-objc-nonfragile-abi']   # for objc
+            #env['LINKFLAGS'] += [''-fgnu-runtime', '-fno-objc-nonfragile-abi']   # for objc
+
+            # i386-pc-linux-gnu
+            # i686-w64-windows-gnu # same as i686-w64-mingw32
+            # x86_64-pc-linux-gnu # from ubuntu 64 bit
+            # x86_64-unknown-windows-cygnus # cygwin 64-bit
+            # x86_64-w64-windows-gnu # same as x86_64-w64-mingw32
+            # i686-pc-windows-gnu # MSVC
+            # x86_64-pc-windows-gnu # MSVC 64-BIT
 
         if env['gcc_version'] >= '4.8':
             env['CCFLAGS'] += [
@@ -277,7 +299,14 @@ def generate(env, **kw):
             #    '/nodefaultlib:libcmtd.lib',
         ]
 
-    if env['use_mingw']:
+    if platform.platform() == 'linux':
+        env['RC'] = 'i686-w64-mingw32-windres'
+
+    if env['use_clang'] and env['use_xcompil']:
+        env['CXXFLAGS'] += [ '-D__MINGW32__' ]
+        env['CXXFLAGS'] += [ '-gdwarf-2', '-gstrict-dwarf' ] # Dwarf Error: found dwarf version '4', this reader only handles version 2 information.
+
+    if env['use_xcompil'] and env['use_mingw']:
         #env['target_bits'] = '32'
         #print('Ovverride target_bits :' + env['target_bits'])
 
@@ -323,8 +352,6 @@ def generate(env, **kw):
             env['AR'] = 'x86_64-w64-mingw32-ar'
             env['AS'] = 'x86_64-w64-mingw32-as'
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
-            # ---------------------------------------------------------------------------------------
-            env['RC'] = 'x86_64-w64-mingw32-windres'
 
             #env.Append(LIBPATH = ['/mingw64/lib'])
 

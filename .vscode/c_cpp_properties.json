@@ -1,0 +1,61 @@
+{
+    "env": {
+        "myDefaultIncludePath": [
+            "${workspaceFolder}",
+            "${workspaceFolder}/include"
+        ],
+        "myCompilerPath": "/usr/bin/gcc-8"
+    },
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "/usr/include",
+                "/usr/local/include",
+                "${workspaceRoot}/**"
+            ],
+            "defines": [],
+            "intelliSenseMode": "clang-x64",
+            "browse": {
+                "path": [
+                    "/usr/include",
+                    "/usr/local/include",
+                    "${workspaceRoot}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "macFrameworkPath": [
+                "/System/Library/Frameworks",
+                "/Library/Frameworks"
+            ]
+        },
+        {
+            "name": "Linux GCC",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/sample/microsoft/src/main/cpp/include/"
+            ],
+            "forcedInclude": ["${workspaceFolder}/build/include/config.h"],
+            "defines": [
+                "_DEBUG",
+                "VERSION=1.0.0"
+            ],
+            "compilerPath": "/usr/bin/gcc-8",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "gcc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compilerArgs": [
+                "-m64"
+            ],
+            "browse": {
+                "path": [
+                    "/usr/include/",
+                ],
+                "limitSymbolsToIncludedHeaders": false
+            }
+        }
+    ],
+    "version": 4
+}

@@ -4,7 +4,7 @@
  *  Created on: 1 fevr. 2012
  *      Author: Alban
  */
-#include "circular_queueThread.h"
+#include "include/circular_queueThread.h"
 
 #include <iostream>
 

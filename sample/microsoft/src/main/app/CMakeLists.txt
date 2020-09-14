@@ -5,7 +5,7 @@
 #COPY_HEADER_LIST(${PROJECT_INCLUDE_DIR} h)
 
 MESSAGE(STATUS "MAIN APP: " ${CMAKE_SOURCE_DIR}/src/main/app )
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/main/cpp/include")
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 #ADD_COMPILE_OPTIONS(-lgcov --coverage)
 #ADD_COMPILE_OPTIONS(-fprofile-arcs -ftest-coverage)

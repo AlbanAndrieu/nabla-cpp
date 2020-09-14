@@ -1,4 +1,4 @@
-#include "cppunitTest.h"
+#include "include/cppunitTest.h"
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(cppunitTest, "cppunitTest");
 

@@ -20,7 +20,9 @@ ELSE(MINGW)
   SET(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
   IF(NOT EXISTS ${CONAN_BUILD_INFO_FILE})
     MESSAGE(STATUS "No conan package information available. Trying to fix that!")
-    EXECUTE_PROCESS(COMMAND conan install --build=missing ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_QUIET)
+    #EXECUTE_PROCESS(COMMAND conan install --build=missing ${CMAKE_CURRENT_SOURCE_DIR} OUTPUT_QUIET)
+    EXECUTE_PROCESS(COMMAND conan install --build=missing ${CMAKE_CURRENT_SOURCE_DIR}
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
   ENDIF()
 
   #if conanbuildinfo.cmake not found run
