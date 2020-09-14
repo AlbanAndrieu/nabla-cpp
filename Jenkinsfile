@@ -131,6 +131,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    sh "python -V"
+                    sh "pip -V"
+                    sh "pip3.8 install conan"
                     sh "conan remove --system-reqs '*'"
 
                     docker.withRegistry('https://index.docker.io/v1', 'docker-login') {

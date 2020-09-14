@@ -53,7 +53,7 @@ localenv.MergeFlags([
     '-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
 ])
 
-if localenv['use_mingw']:
+if Arch not in ['x86Linux'] and localenv['use_mingw']:
     localenv.Append(LIBPATH = ['/mingw64/lib'])
     localenv.Append(LIBS = [
         'boost_thread-mt',
