@@ -188,4 +188,6 @@ echo -e "${magenta} gcovr --branches -r . --html --html-details -o ${WORKSPACE}/
 
 #gprof exampleapp gmon.out > gprof_output.txt
 
+echo -e "${magenta} X-compile : scons use_mingw=True use_xcompil=True use_conan=False ${NC}"
+
 exit 0
