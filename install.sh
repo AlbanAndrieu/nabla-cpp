@@ -48,6 +48,7 @@ sudo apt-get install linux-tools-generic linux-cloud-tools-generic
 pip install gprof2dot
 pip install cpplint
 
+#sudo apt-get install libboost-all-dev
 #sudo apt-get install libboost-filesystem-dev libboost-thread-dev
 sudo apt-get install libboost-filesystem1.67-dev libboost-system1.67-dev libboost-thread1.67-dev # ubuntu 19
 sudo apt-get install libcppunit-dev

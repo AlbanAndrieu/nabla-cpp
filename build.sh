@@ -188,4 +188,6 @@ python3.8 /usr/local/bin/gcovr --branches -r . --html --html-details -o ${WORKSP
 
 #gprof exampleapp gmon.out > gprof_output.txt
 
+echo -e "${magenta} X-compile : scons use_mingw=True use_xcompil=True use_conan=False ${NC}"
+
 exit 0
