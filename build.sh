@@ -5,7 +5,7 @@
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # shellcheck source=/dev/null
-source "${WORKING_DIR}/step-0-color.sh"
+source "${WORKING_DIR}/scripts/step-0-color.sh"
 
 unset SCONS
 echo -e "${red} ${double_arrow} unset SCONS ${head_skull} : SCONS : ${SCONS} ${NC}"
@@ -29,7 +29,7 @@ fi
 
 export WORKSPACE="${WORKING_DIR}"
 
-source ./step-2-0-0-build-env.sh || exit 1
+source ${WORKING_DIR}/scripts/step-2-0-0-build-env.sh || exit 1
 
 if [ -n "${SCONS_OPTS}" ]; then
   echo -e "${green} SCONS_OPTS is defined ${happy_smiley} ${NC}"
@@ -67,7 +67,7 @@ pwd
 #sudo nano /proc/sys/kernel/perf_event_paranoid
 #-1
 
-./clean.sh
+${WORKING_DIR}/clean.sh
 
 echo -e "${magenta} Upgrade python from 2 to 3 : 2to3 -w SConstruct ${NC}"
 
@@ -89,7 +89,7 @@ fi
 
 export CONAN_GENERATOR="scons"
 
-./conan.sh
+${WORKING_DIR}/conan.sh
 
 echo -e "${green} Building : scons ${NC}"
 
@@ -181,10 +181,10 @@ mkdir "${WORKSPACE}/reports"
 
 #xml
 echo -e "${magenta} gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml ${NC}"
-/usr/bin/python3.6 /usr/local/bin/gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml
+python3.8 /usr/local/bin/gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml
 #html
 echo -e "${magenta} gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html ${NC}"
-/usr/bin/python3.6 /usr/local/bin/gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
+python3.8 /usr/local/bin/gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
 
 #gprof exampleapp gmon.out > gprof_output.txt
 

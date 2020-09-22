@@ -8,7 +8,8 @@ set -eo pipefail
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 export DOCKER_NAME=${DOCKER_NAME:-"nabla-cpp"}
-export DOCKER_FILE="../docker/ubuntu18/Dockerfile"
+#export DOCKER_FILE="../docker/ubuntu18/Dockerfile"
+export DOCKER_FILE="../Dockerfile"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/docker-env.sh"
