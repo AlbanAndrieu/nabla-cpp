@@ -13,9 +13,14 @@ import subprocess
 import sys
 import tempfile
 import time
-import urllib.error
-import urllib.parse
-import urllib.request
+try:
+    import urllib
+    import urllib2
+    import urlparse
+except:
+    import urllib.error
+    import urllib.parse
+    import urllib.request
 from contextlib import contextmanager
 
 sandbox = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))

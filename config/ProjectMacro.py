@@ -6,8 +6,9 @@ import fnmatch
 import glob
 import os
 import platform
-import re
 import string
+import tempfile
+import re
 import time
 
 import SCons.Scanner.IDL
@@ -255,6 +256,15 @@ def reduceBuildVerbosity(env):
 ################################################################
 # define the arch
 
+# https://github.com/SGpp/SGpp/issues/186
+def getDistribution():
+    print(sys.version_info)
+    if sys.version_info<(3,5,0):
+        dist = platform.dist() # Deprecated since version 3.5, will be removed in version 3.8
+    else :
+        import distro
+        dist = distro.linux_distribution()
+    return dist
 
 def getArch():
     thePlatform = platform.platform()
@@ -276,7 +286,6 @@ def getArch():
     return theArch
 
 ################################################################
-# See https://github.com/brave/brave-browser/issues/7328
 class ourSpawn:
     def ourspawn(self, sh, escape, cmd, args, env):
         newargs = ' '.join(args[1:])
@@ -298,3 +307,22 @@ def SetupSpawn( env ):
         buf = ourSpawn()
         buf.ourenv = env
         env['SPAWN'] = buf.ourspawn
+
+def myWin32Spawn(sh, escape, cmd, args, env):
+
+    import SCons.Platform.win32
+
+    args = fixArguments(args)
+    mystring = string.join(args)
+
+    print("spawning " + SCons.Platform.win32.escape(mystring))
+
+    if len(mystring) > 10000:
+        filename = tempfile.mktemp()
+        newFile = open(filename, "w")
+        newFile.write(mystring)
+        newFile.close()
+
+        return SCons.Platform.win32.exec_spawn([sh, filename], env)
+
+    return SCons.Platform.win32.exec_spawn([sh, "-c", SCons.Platform.win32.escape(mystring)], env)

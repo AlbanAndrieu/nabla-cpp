@@ -171,7 +171,7 @@ if [ "$(uname -s)" == "Linux" ]; then
 	/usr/bin/google-chrome-stable --version || true #RedHat AND #Ubuntu
   fi
   echo "========== JAVASCRIPT =========="
-  phantomjs --version || true
+  #phantomjs --version || true
   #nodejs --version || true #Ubuntu
   node --version || true
   bower --version || true

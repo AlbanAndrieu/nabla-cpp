@@ -116,18 +116,6 @@ pipeline {
         timestamps()
     }
     stages {
-        //stage('Preparation') { // for display purposes
-        //   // Get some code from a Git repository
-        //   checkout([$class: 'GitSCM', branches: [[name: '*/master']], browser: [$class: 'Stash', repoUrl: 'https://github.com/AlbanAndrieu/nabla-cpp/browse'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: true, timeout: 30]], gitTool: 'git-latest', submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'nabla', url: 'https://github.com/AlbanAndrieu/nabla-cpp.git']]])
-        //   //dir('Scripts/ansible') {
-        //   //    sh 'ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors'
-        //   //    // check quality
-        //   //    sh returnStatus: true, script: 'ansible-lint jenkins-slave.yml || true'
-        //   //    // check syntax
-        //   //    ansiblePlaybook colorized: true, extras: '-c local -vvvv --syntax-check', installation: 'ansible-2.2.0.0', inventory: 'hosts', limit: 'albandri', playbook: 'jenkins-slave.yml', sudoUser: null
-        //   //    //ansiblePlaybook colorized: true, extras: '-c local', installation: 'ansible-2.2.0.0', inventory: 'hosts', limit: 'albandri', playbook: 'jenkins-slave.yml', sudoUser: null
-        //   //}
-        //}
         stage('Build') {
             steps {
                 script {
@@ -153,8 +141,8 @@ pipeline {
                     //sh "#!/bin/bash \n" +
                     //   "conan remove --system-reqs '*'"
 
-                    docker.withRegistry('https://index.docker.io/v1', 'docker-login') {
-                        def DOCKER_REGISTRY_URI="index.docker.io/v1"
+                    docker.withRegistry(DOCKER_REGISTRY_HUB_URL, DOCKER_REGISTRY_HUB_CREDENTIAL) {
+                        //def DOCKER_REGISTRY_URI="index.docker.io/v1"
                         //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                         //sh "docker login --password=${PASSWORD} --username=${USERNAME} ${DOCKER_REGISTRY_URI}"
                         //git '…'
@@ -212,6 +200,6 @@ pipeline {
 		recordIssues enabledForFailure: true,
 		  tools: [cppCheck(pattern: 'build/cppcheck.log')]
 	  }
-	  success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
+	  success { archiveArtifacts 'build/*.tar.gz, build/conaninfo.txt, *.log' }
 	} // post
 } // pipeline

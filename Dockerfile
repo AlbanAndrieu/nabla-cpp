@@ -52,8 +52,13 @@ RUN pip install --no-cache-dir -r ../requirements-current-3.8.txt
 
 RUN ../conan.sh
 
+RUN pwd
+RUN ls -lrta
+RUN ls -lrta ..
+
 RUN sh -c 'if [ "$X11" = "yes" ] ; then \
-  cmake \
+  export PROJECT_SRC=/nabla \
+  && cmake \
   -DCMAKE_INSTALL_PREFIX=/opt/nabla \
 #  -DBUILD_AUDACIOUS=ON \
 #  -DBUILD_HTTP=ON \
@@ -73,7 +78,8 @@ RUN sh -c 'if [ "$X11" = "yes" ] ; then \
 #  -DBUILD_XMMS2=ON \
   ../sample/microsoft/ \
   ; else \
-  cmake \
+  export PROJECT_SRC=/nabla \
+  && cmake \
   -DCMAKE_INSTALL_PREFIX=/opt/nabla \
 #  -DBUILD_AUDACIOUS=ON \
 #  -DBUILD_HTTP=ON \

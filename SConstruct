@@ -113,7 +113,7 @@ if env['use_mingw'] or Arch in ['mingw', 'cygwin', 'winnt']:
     #env['use_mingw'] = True
     #print('Ovverride mingw : ', env['use_mingw'])
     target_tools = ['default', 'mingw']
-    
+
     #print("MSVSSolution")
 
     #env.MSVSSolution(target = 'Microsoft' + env['MSVSSOLUTIONSUFFIX'],

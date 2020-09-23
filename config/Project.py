@@ -33,6 +33,7 @@ def generate(env, **kw):
             )[:3]
         #env['debug_flags'] = '-g'
         #env['debug_flags'] = '-gdwarf-3'
+        #env['CXXFLAGS'] += [ '-gdwarf-2', '-gstrict-dwarf' ] # Dwarf Error: found dwarf version '4', this reader only handles version 2 information.
         # Without the '-O0' flag (= do not optimize), we won t be able to print the content of some variables under 'gdb'
         env['debug_flags'] = '-g3'
         env['opt_flags'] = '-O0'
@@ -93,7 +94,7 @@ def generate(env, **kw):
 
     if Arch == 'x86Linux':
         env['CCFLAGS'] = [
-            '-g',
+            #'-g',
             # '-Werror', #Turns all warnings into errors.
             '-Wall',  # Turn on all warnings
             '-fdiagnostics-show-option',  # sonar cxx
@@ -255,11 +256,9 @@ def generate(env, **kw):
     elif Arch in ['winnt']:
         # if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
-        #env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
-        #env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
-        #env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
-        env['CC'] = 'x86_64-w64-mingw32-gcc'
-        env['CXX'] = 'x86_64-w64-mingw32-g++'
+        env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+        env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+        env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
         # if env['release'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
@@ -289,24 +288,23 @@ def generate(env, **kw):
         #    '-DWINNT',
         #    '-D_WINDOWS',
         # ]
-        env['LINKFLAGS'] = [
-            '-static',
-            #    '/nologo',
-            #    '/opt:ref',
-            #    '/nodefaultlib:libcmt.lib',
-            #    '/nodefaultlib:libc.lib',
-            #    '/nodefaultlib:libcd.lib',
-            #    '/nodefaultlib:libcmtd.lib',
-        ]
+        #env['LINKFLAGS'] = [
+        #    '-static',
+        #    #    '/nologo',
+        #    #    '/opt:ref',
+        #    #    '/nodefaultlib:libcmt.lib',
+        #    #    '/nodefaultlib:libc.lib',
+        #    #    '/nodefaultlib:libcd.lib',
+        #    #    '/nodefaultlib:libcmtd.lib',
+        #]
 
     if platform.platform() == 'linux':
         env['RC'] = 'i686-w64-mingw32-windres'
 
     if env['use_clang'] and env['use_xcompil']:
-        env['CXXFLAGS'] += [ '-D__MINGW32__' ]
-        env['CXXFLAGS'] += [ '-gdwarf-2', '-gstrict-dwarf' ] # Dwarf Error: found dwarf version '4', this reader only handles version 2 information.
+        env['CXXFLAGS'] += ['-D__MINGW32__']
 
-    if env['use_xcompil'] and env['use_mingw']:
+    if env['use_xcompil'] or env['use_mingw']:
         #env['target_bits'] = '32'
         #print('Ovverride target_bits :' + env['target_bits'])
 
