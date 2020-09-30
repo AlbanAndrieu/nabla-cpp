@@ -119,24 +119,22 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh "#!/bin/bash \n" +
-                       "ls -lrta /opt/ansible/ \n" +
-                       "source /opt/ansible/env38/bin/activate \n" +
-                       "python -V \n" +
-                       "python3 -V \n" +
-                       "python3.8 -V \n" +
-                       "pip -V \n" +
-                       "pip list \n" +
-                       "pip3.8 install conan \n" +
-                       "which conan \n" +
-                       "conan remove --system-reqs '*'"
-
-                    tee("python.log") {
-                      sh "#!/bin/bash \n" +
-                         "whoami \n" +
-                         "source ./scripts/run-python.sh\n" +
-                         "pre-commit run -a || true"
-                    } // tee
+                    //tee("python.log") {
+					sh "#!/bin/bash \n" +
+					   "ls -lrta /opt/ansible/ \n" +
+					   "source /opt/ansible/env38/bin/activate \n" +
+					   "python -V \n" +
+					   "python3 -V \n" +
+					   "python3.8 -V \n" +
+					   "pip -V \n" +
+					   "pip list \n" +
+					   "pip3.8 install conan pre-commit \n" +
+					   "which conan \n" +
+					   "conan remove --system-reqs '*' \n" +
+					   "whoami \n" +
+					   "source ./scripts/run-python.sh\n" +
+					   "pre-commit run -a || true"
+                    //} // tee
 
                     //sh "#!/bin/bash \n" +
                     //   "conan remove --system-reqs '*'"
