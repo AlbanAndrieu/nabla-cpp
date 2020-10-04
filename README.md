@@ -54,10 +54,37 @@ You can convert a rpm to a deb with alien
 sudo apt-get install alien
 ```
 
+### Wine
+
+See https://doc.ubuntu-fr.org/wine_trucs_et_astuces
+
+
 ```
-ldd target/bin/x86Linux/run_app
+# For 32 bits do first
+export WINEARCH="win32"
+# Start the program
+WINEDEBUG=-all target/bin/x86Linux/run_app.exe
+# shows dynamically linked libraries
+ldd target/bin/x86Linux/run_app.exe
+# shows the symbols in the file.
+nm target/bin/x86Linux/run_app.exe
+#convert PE32+ to ELF
+strip -O elf32-i386 -o myprogram.elf -N xxxxxxx target/bin/x86Linux/run_app.exe
+readelf -a -W  myprogram.elf
+i686-w64-mingw32-objdump -h myprogram.elf
+
+# See https://wiki.winehq.org/Wine_Developer%27s_Guide/Debugging_Wine
+WINEDEBUG=+relay,-debug wine target/bin/x86Linux/run_app.exe
+WINEDEBUG=+relay wine target/bin/x86Linux/run_app.exe 2>&1 | less -i
+winedbg target/bin/x86Linux/run_app.exe
+
+```
+
+
+```
 
 ldconfig -v | grep libstdc
+g++ -print-file-name=libstdc++.a
 
 file /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.22
 #readelf -a -W /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.22

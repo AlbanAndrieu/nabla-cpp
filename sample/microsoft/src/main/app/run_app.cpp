@@ -31,21 +31,47 @@ static int triangleType(const int a, const int b, const int c) {
   }
 }
 
-// Security issue
+// Security issue and crash test
+// https://www.geeksforgeeks.org/why-strcpy-and-strncpy-are-not-safe-to-use/
 void copy_and_print_srting(const char *str) {
-  char buf[5]; // TODO buffer overflow
-  //char buf[12];
+  size_t LEN=12;
+  //char buf[5]; // TODO buffer overflow
+  char buf[5];
 
-  // TODO buffer overflow
-  //strcpy(buf, str);
-  //strlcpy(buf, str, sizeof(buf));
-  strncpy(buf, str, sizeof(buf));
-  // TODO buffer overflow
-  //strcpy(buf, "Hello world!");
-  //strlcpy(buf, "Hello world!", sizeof(buf));
-  strncpy(buf, "Hello world!..", sizeof(buf));
   // TODO sprintf
   //printf(buf); // Error: format string is not a string literal
+
+  buf[LEN - 1] = '\0';
+  memset(buf, 0, LEN);
+
+  // No NULLs allowed.
+  if (str == NULL) {
+    printf("Empty argument\n");
+	// TODO below is crashing the app with mingw when str is null
+	//strncpy(buf, str, sizeof(buf));
+  } else {
+	printf("Max argument(s) : %lld\n", LEN);
+	printf("Max argument(s) : %lld\n", sizeof(buf));
+	size_t srclen =strlen(str);
+	printf("Argument size : %lld\n", srclen);
+	printf("%s", str);
+	printf("\n");
+
+    if (LEN) {
+	  *buf = '\0';
+	  // TODO buffer overflow
+      // Here destination is not large
+      // enough to store the src. so the
+      // behaviour of strcpy is unspecified.
+      // program may crashed, but its
+	  //strcpy(buf, str);
+	  // OK no buffer overflow
+	  strncat(buf, str, LEN-1);
+    }
+	// TODO buffer overflow
+	//strcpy(buf, "Hello world!");
+	//strncpy(buf, "Hello world!..", sizeof(buf));
+  }
   printf("%s", buf);
   printf("\n");
 }

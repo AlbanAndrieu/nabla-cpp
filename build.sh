@@ -30,6 +30,7 @@ fi
 export WORKSPACE="${WORKING_DIR}"
 
 source ${WORKING_DIR}/scripts/step-2-0-0-build-env.sh || exit 1
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 if [ -n "${SCONS_OPTS}" ]; then
   echo -e "${green} SCONS_OPTS is defined ${happy_smiley} ${NC}"
@@ -67,7 +68,7 @@ pwd
 #sudo nano /proc/sys/kernel/perf_event_paranoid
 #-1
 
-${WORKING_DIR}/clean.sh
+${WORKING_DIR}/scripts/clean.sh
 
 echo -e "${magenta} Upgrade python from 2 to 3 : 2to3 -w SConstruct ${NC}"
 
@@ -188,6 +189,7 @@ python3.8 /usr/local/bin/gcovr --branches -r . --html --html-details -o ${WORKSP
 
 #gprof exampleapp gmon.out > gprof_output.txt
 
-echo -e "${magenta} X-compile : scons use_mingw=True use_xcompil=True use_conan=False ${NC}"
+echo -e "${magenta} X-compile : scons use_mingw=True use_static=True use_xcompil=True use_conan=False ${NC}"
+echo -e "${magenta} X-compile : scripts/run-wine.sh ${NC}"
 
 exit 0

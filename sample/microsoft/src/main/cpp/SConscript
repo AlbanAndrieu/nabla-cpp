@@ -52,6 +52,20 @@ if Arch not in ['mingw', 'cygwin', 'winnt'] and env['use_conan']:
     # print("Conan flags :", flags)
     localenv.MergeFlags(flags)
 
+if Arch in ['x86Linux'] and env['use_mingw']:
+    #LINKFLAGS
+    #-m64 -mthreads -O3 -finline-functions -Wno-inline -Wall -pedantic -Wextra -Wno-long-long -Wno-unused-parameter -Wunused-function -fPIC -pedantic
+    localenv.Prepend(CPPDEFINES="BOOST_ALL_NO_LIB=1")
+    localenv.Prepend(CPPDEFINES="BOOST_CHRONO_STATIC_LINK=1")
+    localenv.Prepend(CPPDEFINES="BOOST_SYSTEM_NO_DEPRECATED")
+    localenv.Prepend(CPPDEFINES="BOOST_SYSTEM_STATIC_LINK=1")
+    localenv.Prepend(CPPDEFINES="BOOST_THREAD_USES_CHRONO")
+    localenv.Prepend(CPPDEFINES="BOOST_THREAD_WIN32")
+    localenv.Prepend(CPPDEFINES="BOOST_USE_WINDOWS_H")
+    localenv.Prepend(CPPDEFINES="WIN32_LEAN_AND_MEAN")
+    localenv.Prepend(CPPDEFINES="_GLIBCXX_USE_CXX11_ABI=1")
+
+
 if Arch not in ['x86Linux'] and localenv['use_mingw']:
     localenv.Append(LIBPATH = ['/mingw64/lib'])
     localenv.Append(LIBS = [
