@@ -132,6 +132,7 @@ pipeline {
 					   "which conan \n" +
 					   "conan remove --system-reqs '*' \n" +
 					   "whoami \n" +
+					   "./scripts/cppcheck.sh\n" +
 					   "source ./scripts/run-python.sh\n" +
 					   "pre-commit run -a || true"
                     //} // tee
@@ -195,8 +196,9 @@ pipeline {
 				  ],
 		  unstableTotalAll: 1
 
-		recordIssues enabledForFailure: true,
-		  tools: [cppCheck(pattern: 'build/cppcheck.log')]
+		//recordIssues enabledForFailure: true,
+		//  tools: [cppCheck(pattern: 'build/cppcheck.log')]
+		//publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml.xml'
 	  }
 	  success { archiveArtifacts 'build/*.tar.gz, build/conaninfo.txt, *.log' }
 	} // post
