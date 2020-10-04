@@ -189,7 +189,7 @@ pipeline {
 		  tools: [cmake(),
 		          gcc(),
 				  doxygen(),
-				  clangTidy())
+				  clangTidy()
 				  ],
 		  unstableTotalAll: 1
 
