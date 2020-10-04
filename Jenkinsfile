@@ -182,19 +182,19 @@ pipeline {
     } // stages
 	post {
 	  always {
-	    // https://www.jenkins.io/doc/pipeline/steps/warnings-ng/
-		recordIssues enabledForFailure: true, filters: [
-		  excludeFile('.*qrc_icons\\.cpp.*'),
-		  excludeMessage('.*tmpnam.*')],
-		  tools: [cmake(),
-		          gcc(),
-				  doxygen(),
-				  clangTidy()
-				  ],
-		  unstableTotalAll: 1
+	    // tools
+		//recordIssues enabledForFailure: true, filters: [
+		//  excludeFile('.*qrc_icons\\.cpp.*'),
+		//  excludeMessage('.*tmpnam.*')],
+		//  tools: [cmake(),
+		//          gcc(),
+		//		  doxygen(),
+		//		  clangTidy()
+		//		  ],
+		//  unstableTotalAll: 1
 
-		//recordIssues enabledForFailure: true,
-		//  tools: [cppCheck(pattern: 'build/cppcheck.log')]
+		recordIssues enabledForFailure: true,
+		  tools: [cppCheck(pattern: 'reports/cppcheck-result.xml')]
 		//publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
 	  }
 	  success { archiveArtifacts 'build/*.tar.gz, build/conaninfo.txt, *.log' }
