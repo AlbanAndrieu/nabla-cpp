@@ -141,10 +141,6 @@ pipeline {
                     //   "conan remove --system-reqs '*'"
 
                     docker.withRegistry(DOCKER_REGISTRY_HUB_URL, DOCKER_REGISTRY_HUB_CREDENTIAL) {
-                        //def DOCKER_REGISTRY_URI="index.docker.io/v1"
-                        //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                        //sh "docker login --password=${PASSWORD} --username=${USERNAME} ${DOCKER_REGISTRY_URI}"
-                        //git '…'
                         def ansible = docker.build 'nabla/jenkins-slave-ubuntu:latest'
                         ansible.inside {
                           sh 'echo test'
@@ -178,7 +174,7 @@ pipeline {
         } // stage SonarQube
         //stage('Approve image') {
         // sshagent(['jenkins-ssh']) {
-        ////   def myImg = docker.image('nabla/nabla-cpp:latest')
+        ////   def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
         ////   sh "docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz ${myImg.imageName()}"
          //    sh returnStdout: true, script: 'sudo docker run -it --net host --pid host --cap-add audit_control -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock -v /usr/lib/systemd:/usr/lib/systemd -v /etc:/etc --label docker_bench_security docker/docker-bench-security'
          //}
@@ -186,19 +182,22 @@ pipeline {
     } // stages
 	post {
 	  always {
+	    // https://www.jenkins.io/doc/pipeline/steps/warnings-ng/
 		recordIssues enabledForFailure: true, filters: [
 		  excludeFile('.*qrc_icons\\.cpp.*'),
 		  excludeMessage('.*tmpnam.*')],
-		  tools: [gcc4(name: 'GCC-GUI', id: 'gcc4-gui',
+		  tools: [cmake(),
+		          gcc(name: 'GCC', id: 'gcc',
 				  pattern: 'build/build*.log'),
-				  gcc4(name: 'Doxygen', id: 'doxygen',
-				  pattern: 'build/DoxygenWarnings.log')
+				  gcc(name: 'Doxygen', id: 'doxygen',
+				  pattern: 'build/DoxygenWarnings.log',
+				  clangTidy())
 				  ],
 		  unstableTotalAll: 1
 
 		//recordIssues enabledForFailure: true,
 		//  tools: [cppCheck(pattern: 'build/cppcheck.log')]
-		//publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml.xml'
+		//publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
 	  }
 	  success { archiveArtifacts 'build/*.tar.gz, build/conaninfo.txt, *.log' }
 	} // post
