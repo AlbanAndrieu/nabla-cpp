@@ -142,9 +142,9 @@ pipeline {
 
                     docker.withRegistry(DOCKER_REGISTRY_HUB_URL, DOCKER_REGISTRY_HUB_CREDENTIAL) {
                         def ansible = docker.build 'nabla/jenkins-slave-ubuntu:latest'
-                        ansible.inside {
-                          sh 'echo test'
-                        }
+                        //ansible.inside {
+                        //  sh 'echo test'
+                        //}
                         ansible.push()  // record this latest (optional)
                         //stage 'Test image'
                         stage('Test image') {
