@@ -29,10 +29,14 @@ if [ -n "${ENABLE_CLANG}" ]; then
     export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 fi
 
-cd ../../
-#cd $PROJECT_SRC/
+if [ -z "$PROJECT_SRC" ]; then
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PROJECT_SRC ${NC}"
+  export PROJECT_SRC=${WORKSPACE}/nabla-cpp
+fi
 
-source ./step-2-0-0-build-env.sh || exit 1
+cd ${PROJECT_SRC}
+
+source ${PROJECT_SRC}/scripts/step-2-0-0-build-env.sh || exit 1
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
@@ -47,11 +51,11 @@ pwd
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
-./clean.sh
+${PROJECT_SRC}/clean.sh
 
 export CONAN_GENERATOR="cmake"
 
-./conan.sh
+${PROJECT_SRC}/conan.sh
 
 #cd $PROJECT_SRC/sample/microsoft
 
@@ -95,8 +99,8 @@ export CMAKE_GENERATOR="Eclipse CDT4 - Unix Makefiles"
 
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
 #-D_ECLIPSE_VERSION=4.4
-echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
-cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
+echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft ${NC}"
+cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft
 #-DENABLE_TESTING=true
 cmake_res=$?
 if [[ $cmake_res -ne 0 ]]; then
@@ -104,9 +108,9 @@ if [[ $cmake_res -ne 0 ]]; then
     exit 1
 fi
 
-if [[ -f ../microsoft/compile_commands.json ]]; then
-    rm ../microsoft/compile_commands.json
-    ln -s $PWD/compile_commands.json ../microsoft/
+if [[ -f ${PROJECT_SRC}/sample/microsoft/compile_commands.json ]]; then
+    rm ${PROJECT_SRC}/sample/microsoft/compile_commands.json
+    ln -s $PWD/compile_commands.json ${PROJECT_SRC}/sample/microsoft/
 fi
 
 echo -e "${green} Building : CMake ${NC}"
