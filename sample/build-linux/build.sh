@@ -31,7 +31,7 @@ fi
 
 if [ -z "$PROJECT_SRC" ]; then
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PROJECT_SRC ${NC}"
-  export PROJECT_SRC=${WORKSPACE}/nabla-cpp
+  export PROJECT_SRC=${WORKSPACE}
 fi
 
 cd ${PROJECT_SRC}

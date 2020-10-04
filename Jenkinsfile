@@ -53,7 +53,7 @@ pipeline {
 			reuseNode true
 			registryUrl DOCKER_REGISTRY_HUB_URL
 			registryCredentialsId DOCKER_REGISTRY_HUB_CREDENTIAL
-			args DOCKER_OPTS_BASIC
+			args DOCKER_OPTS_COMPOSE
 			label 'ubuntu'
 		}
 	}
@@ -107,7 +107,7 @@ pipeline {
         DOCKER_TAG = dockerTag()
     }
     options {
-        skipDefaultCheckout()
+        //skipDefaultCheckout()
         disableConcurrentBuilds()
         skipStagesAfterUnstable()
         parallelsAlwaysFailFast()

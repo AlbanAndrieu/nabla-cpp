@@ -1,0 +1,48 @@
+toolchain=/usr/x86_64-w64-mingw32 # Adjust this path
+target_host=x86_64-w64-mingw32
+cc_compiler=gcc
+cxx_compiler=g++
+
+[env]
+CONAN_CMAKE_FIND_ROOT_PATH=$toolchain
+CHOST=$target_host
+AR=$target_host-ar
+AS=$target_host-as
+RANLIB=$target_host-ranlib
+CC=$target_host-$cc_compiler
+CXX=$target_host-$cxx_compiler
+STRIP=$target_host-strip
+RC=$target_host-windres
+
+#[settings]
+#os=Linux
+#os_build=Linux
+#arch=x86_64
+#arch_build=x86_64
+#compiler=gcc
+#compiler.version=8
+#compiler.libcxx=libstdc++
+#build_type=Release
+
+[settings]
+# We are cross-building to Windows
+os=Windows
+#os_build=Windows
+arch=x86_64
+arch_build=x86_64
+compiler=gcc
+# Adjust to the gcc version of your MinGW package
+#compiler.version=4.9
+#x86_64-w64-mingw32-gcc --version
+compiler.version=9.3
+compiler.exception=seh
+compiler.libcxx=libstdc++11
+compiler.threads=posix
+build_type=Release
+
+#[options]
+#[build_requires]
+#mingw_installer/1.0@conan/stable
+#msys2/20190524
+##cygwin_installer/2.9.0@bincrafters/stable
+#[env]
