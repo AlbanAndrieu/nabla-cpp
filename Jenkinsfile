@@ -169,6 +169,8 @@ pipeline {
             }
             steps {
                 sh "pwd"
+                sh "ls -lrta /usr/local/"
+                sh "ls -lrta /usr/local/sonar-runner/"
                 sh "/usr/local/sonar-runner/bin/sonar-scanner -D sonar-project.properties"
             }
         } // stage SonarQube
