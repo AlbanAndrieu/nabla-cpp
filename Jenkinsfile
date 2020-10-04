@@ -187,10 +187,8 @@ pipeline {
 		  excludeFile('.*qrc_icons\\.cpp.*'),
 		  excludeMessage('.*tmpnam.*')],
 		  tools: [cmake(),
-		          gcc(name: 'GCC', id: 'gcc',
-				  pattern: 'build/build*.log'),
-				  gcc(name: 'Doxygen', id: 'doxygen',
-				  pattern: 'build/DoxygenWarnings.log',
+		          gcc(),
+				  doxygen(),
 				  clangTidy())
 				  ],
 		  unstableTotalAll: 1
