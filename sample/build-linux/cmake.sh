@@ -17,6 +17,7 @@ echo "Using Clang"
 
 #Eclipse CDT4 - Unix Makefiles
 #Eclipse CDT4 - Ninja
+#MSYS Makefiles
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_CROSSCOMPILING=True --config Debug --target Continuous -j10 --graphviz=graphviz.dot "$@" -S ../microsoft -B ./
 dot -Tpng graphviz.dot -o graphviz.png
 

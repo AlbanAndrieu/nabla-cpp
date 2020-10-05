@@ -13,10 +13,11 @@ if [ ! -e "${WORKING_DIR}/../${reports_directory}" ]; then
     mkdir "${WORKING_DIR}/../${reports_directory}"
 fi
 
-cppcheck --enable=all --inconclusive --xml --xml-version=2 -I${WORKING_DIR}/../sample/microsoft sample/microsoft 2> ${WORKING_DIR}/../${report_filename}.xml
+echo "cppcheck --enable=all --inconclusive --xml --xml-version=2 -I${WORKING_DIR}/../sample/microsoft sample/microsoft 2> ${WORKING_DIR}/../${reports_directory}/${report_filename}.xml"
+cppcheck --enable=all --inconclusive --xml --xml-version=2 -I${WORKING_DIR}/../sample/microsoft sample/microsoft 2> ${WORKING_DIR}/../${reports_directory}/${report_filename}.xml
 
-#cppcheck --enable=all --inconclusive --html sample/microsoft 2> ${report_filename}.html
+#cppcheck --enable=all --inconclusive --html sample/microsoft 2> ${WORKING_DIR}/../${reports_directory}/${report_filename}.html
 
-mv ${WORKING_DIR}/../${report_filename}* ${WORKING_DIR}/../${reports_directory}
+#mv ${WORKING_DIR}/../${report_filename}* ${WORKING_DIR}/../${reports_directory}
 
 exit 0
