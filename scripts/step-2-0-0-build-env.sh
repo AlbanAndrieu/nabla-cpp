@@ -183,48 +183,6 @@ if [ "${OS}" == "Debian" ]; then
     #LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
-#if [ -n "${CC}" ]; then
-#  echo -e "${green} CC is defined ${happy_smiley} : ${CC} ${NC}"
-#else
-#  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CC, use default one ${NC}"
-#  if [ -n "${ENABLE_CLANG}" ]; then
-#    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
-#    export CC="/usr/bin/clang"
-#  else
-#    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
-#    if [ "$(uname -s)" == "SunOS" ]; then
-#      export CC="cc"
-#    elif [ "$(uname -s)" == "Linux" ]; then
-#      export CC="/usr/bin/gcc-8"
-#    else
-#      export CC="/usr/bin/gcc"
-#    fi
-#  fi
-#  echo -e "${magenta} CC : ${CC} ${NC}"
-#fi
-#
-#if [ -n "${CXX}" ]; then
-#  echo -e "${green} COMPILER is defined ${happy_smiley} : ${CXX} ${NC}"
-#else
-#  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CXX, use default one ${NC}"
-#  if [ -n "${ENABLE_CLANG}" ]; then
-#    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
-#    export CXX="/usr/bin/clang++"
-#    export COMPILER=${CXX}
-#  else
-#    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
-#    if [ "$(uname -s)" == "SunOS" ]; then
-#      export CXX="CC"
-#    elif [ "$(uname -s)" == "Linux" ]; then
-#      export CXX="/usr/bin/g++-8"
-#    else
-#      export CXX="/usr/bin/g++"
-#    fi
-#    export COMPILER=${CXX}
-#  fi
-#  echo -e "${magenta} COMPILER : ${COMPILER} ${NC}"
-#fi
-
 if [ -n "${BITS}" ]; then
   echo -e "${green} BITS is defined ${happy_smiley} : ${BITS} ${NC}"
 else
@@ -245,7 +203,15 @@ else
   echo -e "${magenta} BITS : ${BITS} ${NC}"
 fi
 
-if [ -n "${ENABLE_CLANG}" ]; then
+if [ -n "${ENABLE_MINGW_64}" ]; then
+  echo -e "${green} ENABLE_MINGW_64 is defined ${happy_smiley} ${NC}"
+  export CC="x86_64-w64-mingw32-gcc"
+  export CXX="x86_64-w64-mingw32-g++"
+elif [ -n "${ENABLE_MINGW_32}" ]; then
+  echo -e "${green} ENABLE_MINGW_32 is defined ${happy_smiley} ${NC}"
+  export CC="i686-w64-mingw32-gcc"
+  export CXX="i686-w64-mingw32-g++"
+elif [ -n "${ENABLE_CLANG}" ]; then
   echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
   export CC="/usr/bin/clang"
   export CXX="/usr/bin/clang++"
@@ -366,9 +332,9 @@ else
     SCONS="/usr/local/bin/scons"
   else
     #SCONS="/usr/bin/python2.7 /usr/bin/scons"
-    SCONS="python3 /usr/bin/scons"
+    #SCONS="python3 /usr/bin/scons"
     #SCONS="python3 /usr/local/bin/scons"
-    #SCONS="python3 /opt/ansible/env38/bin/scons"
+    SCONS="/opt/ansible/env38/bin/python3.8 /opt/ansible/env38/bin/scons"
   fi
   export SCONS
   echo -e "${magenta} SCONS : ${SCONS} ${NC}"
