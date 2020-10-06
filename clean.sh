@@ -28,7 +28,7 @@ rm -f sample/build-${ARCH}/conan*
 #rm -f sample/microsoft/conanbuildinfo.*
 rm -f conanbuildinfo.*
 
-scons clean
+echo -e "${magenta} ${double_arrow} scons clean ${NC}"
 
 #git clean --quiet -fdx --exclude="*.tgz" --exclude="*md5" --exclude="*VERSION.TXT"
 #git checkout -f .

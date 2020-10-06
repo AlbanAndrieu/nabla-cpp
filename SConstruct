@@ -506,7 +506,7 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COM
     shutil.rmtree(os.path.join(env['sandbox'], 'target'), ignore_errors=True)
     shutil.rmtree(os.path.join(env['sandbox'], 'install'), ignore_errors=True)
     shutil.rmtree(os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch), ignore_errors=True)
-    env.Execute("rm -Rf variables.py " + os.path.join(env['ENV']['WORKSPACE'], "download3rdparties-cache*") + " " + "scons-signatures-x86Linux.dblite *.tgz *.zip" + " " + os.path.join(env['sandbox'], 'buildcache'  + Arch) + " " + os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch))
+    env.Execute("rm -Rf variables.py " + os.path.join(env['ENV']['WORKSPACE'], "download3rdparties-cache*") + " " + "scons-signatures*.dblite *.tgz *.zip" + " " + os.path.join(env['sandbox'], 'buildcache'  + Arch) + " " + os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch))
     if env['color']:
         print(colored("Cache/3rdparties cleaning DONE:", 'green'))
     SetOption("clean", 1)

@@ -14,12 +14,12 @@ fi
 echo "WORKSPACE ${WORKSPACE}"
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
-export ENABLE_MEMCHECK=true
-export UNIT_TESTS=true
-export CHECK_FORMATTING=true
-#export ENABLE_CLANG=true
-#export ENABLE_EXPERIMENTAL=true
-#export SONAR_PROCESSOR="x86-64"
+export ENABLE_MEMCHECK=${ENABLE_MEMCHECK:-"true"}
+export UNIT_TESTS=${UNIT_TESTS:-"true"}
+export CHECK_FORMATTING=${CHECK_FORMATTING:-"true"}
+#export ENABLE_CLANG=${ENABLE_CLANG:-"true"}
+#export ENABLE_EXPERIMENTAL=${ENABLE_EXPERIMENTAL:-"true"}
+#export SONAR_PROCESSOR=${SONAR_PROCESSOR:-"x86-64"}
 export MODE_RELEASE=
 
 if [ -n "${ENABLE_CLANG}" ]; then
@@ -53,7 +53,7 @@ echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
 ${PROJECT_SRC}/clean.sh
 
-export CONAN_GENERATOR="cmake"
+export CONAN_GENERATOR=${CONAN_GENERATOR:-"cmake"}
 
 ${PROJECT_SRC}/conan.sh
 
@@ -94,7 +94,7 @@ fi
 
 #cmake -GNinja -DCMAKE_BUILD_TYPE=Debug ../microsoft
 
-export CMAKE_GENERATOR="Eclipse CDT4 - Unix Makefiles"
+export CMAKE_GENERATOR=${CMAKE_GENERATOR:-"Eclipse CDT4 - Unix Makefiles"}
 #export CMAKE_GENERATOR="Ninja"
 
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
@@ -290,8 +290,8 @@ if [[ "${CHECK_FORMATTING}" == "true" ]]; then
 
     echo -e "${magenta} cd ../../sample/microsoft ${NC}"
     cd $PROJECT_SRC/sample/microsoft
-    echo -e "${magenta} $PROJECT_SRC/cpplint.sh ${NC}"
-    $PROJECT_SRC/cpplint.sh
+    echo -e "${magenta} $PROJECT_SRC/scripts/cpplint.sh ${NC}"
+    $PROJECT_SRC/scripts/cpplint.sh
 
     # Find non-ASCII characters in headers
     hpps=$(find $PROJECT_SRC/sample/microsoft/src -name \*\.h)

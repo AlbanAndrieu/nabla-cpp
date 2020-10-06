@@ -122,7 +122,7 @@ pipeline {
                     //tee("python.log") {
 					sh "#!/bin/bash \n" +
 					   "ls -lrta /opt/ansible/ \n" +
-					   "source /opt/ansible/env38/bin/activate \n" +
+					   ". /opt/ansible/env38/bin/activate \n" +
 					   "python -V \n" +
 					   "python3 -V \n" +
 					   "python3.8 -V \n" +

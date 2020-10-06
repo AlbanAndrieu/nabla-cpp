@@ -14,9 +14,9 @@ echo -e "${red} ${double_arrow} unalias scons ${head_skull}${NC}"
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 #export ENABLE_MEMCHECK=true
-export UNIT_TESTS=true
-export CHECK_FORMATTING=true
-export ENABLE_CLANG=true
+export UNIT_TESTS=${UNIT_TESTS:-"true"}
+export CHECK_FORMATTING=${CHECK_FORMATTING:-"true"}
+export ENABLE_CLANG=${ENABLE_CLANG:-"true"}
 #export ENABLE_EXPERIMENTAL=true
 #export SONAR_CMD=""
 
@@ -88,7 +88,7 @@ else
     x86_64-w64-mingw32-g++ --version
 fi
 
-export CONAN_GENERATOR="scons"
+export CONAN_GENERATOR=${CONAN_GENERATOR:-"scons"}
 
 ${WORKING_DIR}/conan.sh
 

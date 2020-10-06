@@ -50,10 +50,10 @@ void copy_and_print_srting(const char *str) {
 	// TODO below is crashing the app with mingw when str is null
 	//strncpy(buf, str, sizeof(buf));
   } else {
-	printf("Max argument(s) : %lld\n", LEN);
-	printf("Max argument(s) : %lld\n", sizeof(buf));
+	printf("Max argument(s) : %zu\n", LEN);
+	printf("Max argument(s) : %zu\n", sizeof(buf));
 	size_t srclen =strlen(str);
-	printf("Argument size : %lld\n", srclen);
+	printf("Argument size : %zu\n", srclen);
 	printf("%s", str);
 	printf("\n");
 

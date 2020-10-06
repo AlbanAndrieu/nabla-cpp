@@ -9,6 +9,7 @@ conan==1.29.0
 #docker-compose==1.25.5
 gcovr==4.2
 #meld==3.20.2
+numpy==1.19.2
 pylint==2.4.4
 scons==4.0.1
 termcolor==1.1.0
