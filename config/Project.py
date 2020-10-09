@@ -21,6 +21,16 @@ def generate(env, **kw):
 
     Arch = ProjectMacro.getArch()
 
+    # Normalize the VERBOSE Option, and make its value available as a function.
+    if env['VERBOSE'] == "auto":
+        env['VERBOSE'] = not sys.stdout.isatty()
+    else:
+        try:
+            env['VERBOSE'] = to_boolean(env['VERBOSE'])
+        except ValueError as e:
+            env.FatalError(f"Error setting VERBOSE variable: {e}")
+    env.AddMethod(lambda env: env['VERBOSE'], 'Verbose')
+
     #env['ENV']['SCONS_BUILD'] = '1'
     if env['color']:
         print(colored('Arch :', 'magenta'), colored(Arch, 'cyan'))
@@ -132,6 +142,7 @@ def generate(env, **kw):
             # '-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
             # '-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
+        #env.Prepend(CPPDEFINES="ACE_HAS_EXCEPTIONS")
 
         if not env['use_xcompil']:
             env['CCFLAGS'] += ['-fPIC']
@@ -206,12 +217,15 @@ def generate(env, **kw):
                 # '-fmudflap', #http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
                 # '-pie -fPIE', # For ASLR
             ]
+            #env['CPPDEFINES'] += ['_FORTIFY_SOURCE=2']
 
         if not env['use_asan']:
             env['LINKFLAGS'] += ['-Wl,--no-undefined']
 
-        # if env['gcc_version'] >= '5.2':
-        #    env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=0']
+        if env['gcc_version'] >= '5.1':
+           env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=1']
+        #    env['CPPDEFINES'] += ['GLIBCXX_USE_CXX11_ABI=1']
+        # _GLIBCXX_USE_CXX11_ABI value 0 (old ABI) or 1 (new ABI)
 
         # Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
@@ -395,6 +409,8 @@ def generate(env, **kw):
         print(
             colored('Platform : ', 'magenta'),
             colored(platform.platform(), 'cyan'),
+            colored('Sys platform  : ', 'magenta'),
+            colored(sys.platform, 'cyan'),
         )
         print(colored('System : ', 'magenta'), colored(system, 'cyan'))
         print(colored('Machine : ', 'magenta'), colored(machine, 'cyan'))
@@ -403,7 +419,7 @@ def generate(env, **kw):
 
         print(colored('ENV TOOLS : ', 'magenta'), colored(env['TOOLS'], 'cyan'))
         # print "dump whole env :", env.Dump()
-        if env['verbose']:
+        if env.Verbose():
             print(colored('ENV ENV : ', 'magenta'), colored(env['ENV'], 'cyan'))
 
         if 'TERM' in env:

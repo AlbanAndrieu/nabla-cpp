@@ -18,7 +18,8 @@
 #-DCMAKE_INSTALL_PREFIX=/target/install/${ARCH}/debug
 #-DECLIPSE_CDT4_GENERATE_SOURCE_PROJECT=TRUE
 
-cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=/mingw64/bin/gcc -DCMAKE_CXX_COMPILER=/mingw64/bin/g++ ../microsoft
+#MSYS Makefiles
+cmake -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=/mingw64/bin/gcc -DCMAKE_CXX_COMPILER=/mingw64/bin/g++ ../microsoft
 #cmake -G"Eclipse CDT4 - Ninja " -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../microsoft
 
 exit 0

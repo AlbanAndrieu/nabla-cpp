@@ -18,6 +18,7 @@ export ENABLE_MEMCHECK=${ENABLE_MEMCHECK:-"true"}
 export UNIT_TESTS=${UNIT_TESTS:-"true"}
 export CHECK_FORMATTING=${CHECK_FORMATTING:-"true"}
 #export ENABLE_CLANG=${ENABLE_CLANG:-"true"}
+#export ENABLE_MINGW_64=${ENABLE_MINGW_64:-"true"}
 #export ENABLE_EXPERIMENTAL=${ENABLE_EXPERIMENTAL:-"true"}
 #export SONAR_PROCESSOR=${SONAR_PROCESSOR:-"x86-64"}
 export MODE_RELEASE=
@@ -85,7 +86,7 @@ if [ -n "${MODE_RELEASE}" ]; then
     echo -e "${green} MODE_RELEASE is defined ${happy_smiley} ${NC}"
     export CMAKE_INSTALL_PREFIX=/usr/local
 else
-    export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug
+    export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/debug
 fi
 
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3

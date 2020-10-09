@@ -47,8 +47,6 @@ if Arch not in ['mingw','cygwin'] and env['use_conan']:
 #localenv['LIBS'].extend(localenv['OSDependentLibs'])
 localenv.Append(LIBS=['test_library'], LIBPATH=['#test_library'])
 
-#localenv.Append(LIBS = ['cppunit'])
-
 localenv.MergeFlags([
     '-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
 ])

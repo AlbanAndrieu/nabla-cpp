@@ -4,6 +4,8 @@
 # Scons build script
 ######################
 
+#TODO https://github.com/mongodb/mongo/blob/master/SConstruct
+
 import os
 import shutil
 import re
@@ -42,19 +44,49 @@ For example, for a clang build, use:
 scons CC=clang CXX=clang++
 ''')
 
+def get_option(name):
+    return GetOption(name)
+
+def find_nabla_custom_variables():
+    files = []
+    paths = [path for path in sys.path if 'site_scons' in path]
+    for path in paths:
+        probe = os.path.join(path, 'nabla_custom_variables.py')
+        if os.path.isfile(probe):
+            files.append(probe)
+    return files
+
+# Apply the default variables files, and walk the provided
+# arguments. Interpret any falsy argument (like the empty string) as
+# resetting any prior state. This makes the argument
+# --variables-files= destructive of any prior variables files
+# arguments, including the default.
+#variables_files_args = get_option('variables-files')
+variables_files_args = ""
+variables_files = find_nabla_custom_variables()
+for variables_file in variables_files_args:
+    if variables_file:
+        variables_files.append(variables_file)
+    else:
+        variables_files = []
+for vf in variables_files:
+    if not os.path.isfile(vf):
+        fatal_error(None, f"Specified variables file '{vf}' does not exist")
+    print(f"Using variable customization file {vf}")
+
+
 # Command line variables definition
-vars = Variables('variables.py') # you can store your defaults in this file
+vars = Variables(variables_files, args=ARGUMENTS) # you can store your defaults in this file
 vars.AddVariables(
     BoolVariable('debug', 'Set to true to build without opt flags', True), # Not yet use except in atom targets.ini
     BoolVariable('release', 'Set to true to build with opt flags', False),
-    BoolVariable('verbose', 'Show compilation commands', True),
     BoolVariable('use_clang', 'On linux only: replace gcc by clang', False),
     BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
     BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', True),
     BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
     BoolVariable('use_asan', 'On linux only and clang: build with address sanitize', False),
     BoolVariable('use_xcompil', 'X compile (for clang)', False),
-    BoolVariable('use_mingw', 'X compile using mingw', True),
+    BoolVariable('use_mingw', 'X compile using mingw', False),
     BoolVariable('use_conan', 'Use conan (Not working on mingw)', True),
     BoolVariable('use_static', 'Build static libs and binaries', False),
     BoolVariable('color', 'Set to true to build with colorizer', True),
@@ -70,6 +102,10 @@ vars.AddVariables(
     EnumVariable('target', 'Target platform', 'local', ['default', 'local'])
 )
 
+vars.Add('VERBOSE',
+    help='Control build verbosity (auto, on/off true/false 1/0)',
+    default='auto',
+)
 
 # Assuming you store your defaults in a file
 msvcver = vars.args.get('vc', '14')
@@ -173,9 +209,12 @@ system = platform.system()
 
 print("System :", system)
 if system == 'Linux' or system.startswith('CYGWIN') or system.startswith('MSYS'):
-    env['ENV']['TERM'] = os.environ['TERM']
-    env['ENV']['PATH'] = os.environ['PATH']
-    env['ENV']['HOME'] = os.environ['HOME']
+    if 'TERM' in os.environ:
+        env['ENV']['TERM'] = os.environ['TERM']
+    if 'PATH' in os.environ:
+        env['ENV']['PATH'] = os.environ['PATH']
+    if 'HOME' in os.environ:
+        env['ENV']['HOME'] = os.environ['HOME']
 
 machine = platform.machine()
 print("Machine :", machine)
@@ -188,6 +227,8 @@ if 'CXX' in ARGUMENTS: env.Replace(CXX = ARGUMENTS['CXX'])
 if 'CCFLAGS' in ARGUMENTS: env.Append(CCFLAGS = ARGUMENTS['CCFLAGS'])
 if 'CXXFLAGS' in ARGUMENTS: env.Append(CXXFLAGS = ARGUMENTS['CXXFLAGS'])
 
+ProjectMacro.CheckVars(env)
+
 vars.Update(env)
 Help(vars.GenerateHelpText(env))
 unknown = vars.UnknownVariables()
@@ -198,7 +239,7 @@ if unknown:
         print("Unknown variables :", list(unknown.keys()))
     Exit(1)
 
-if env['verbose']:
+if env.Verbose():
     if env['color']:
         print(colored("vars :", 'green'), colored(vars.GenerateHelpText(env), 'green'))
     else:
@@ -216,7 +257,7 @@ AddOption('--createtar', action="store_true",
 
 # Paths deduced from sandbox location
 env['sandbox'] = Dir("#").srcnode().abspath
-if env['verbose'] and env['color']:
+if env.Verbose() and env['color']:
     print(colored("sandbox:", 'magenta'), colored(env['sandbox'], 'cyan'))
 
 if 'WORKSPACE' in os.environ:
@@ -270,7 +311,7 @@ else:
 #if re.search('dev\/', DEV_BINARY_DIR):
 #  DEV_BINARY_DIR = re.sub(r'dev\/', 'dev_target/', DEV_BINARY_DIR)
 
-if env['verbose'] and env['color']:
+if env.Verbose() and env['color']:
     print(colored("DEV_BINARY_DIR:", 'grey'), colored(DEV_BINARY_DIR, 'cyan'))
 
 if env['target'] == 'local':
@@ -278,16 +319,16 @@ if env['target'] == 'local':
 else:
     PROJECT_THIRDPARTY_PATH = ProjectMacro.getEnvVariable('PROJECT_THIRDPARTY_PATH','/thirdparty')
 
-if env['verbose'] and env['color']:
+if env.Verbose() and env['color']:
     print(colored("PROJECT_THIRDPARTY_PATH:", 'grey'), colored(PROJECT_THIRDPARTY_PATH, 'cyan'))
 
 # might not WORK in eclipse (hard code it)
 PROJECT_JAVA_PATH = ProjectMacro.getEnvVariable('JAVA_HOME', PROJECT_THIRDPARTY_PATH + 'java' + Arch)
-if env['verbose'] and env['color']:
+if env.Verbose() and env['color']:
     print(colored("PROJECT_JAVA_PATH:", 'grey'), colored(PROJECT_JAVA_PATH, 'cyan'))
 
 #env['cache_path'] = DEV_BINARY_DIR + '/buildcache-' + Arch
-if env['verbose'] and env['color']:
+if env.Verbose() and env['color']:
     print(colored("nv['cache_path']:", 'magenta'), colored(env['cache_path'], 'cyan'))
 CacheDir(env['cache_path']+ Arch)
 SConsignFile(os.path.join(DEV_BINARY_DIR, 'scons-signatures' + Arch))
@@ -338,7 +379,7 @@ env['LIBRARY_OUTPUT_PATH'] = LIBRARY_OUTPUT_PATH
 env['PROJECT_BINARY_DIR'] = PROJECT_BINARY_DIR
 env['PROJECT_INCLUDE_DIR'] = PROJECT_INCLUDE_DIR
 
-if env['verbose'] and env['color']:
+if env.Verbose() and env['color']:
     print(colored("static lib dir:", 'magenta'), colored(LIBRARY_STATIC_OUTPUT_PATH, 'cyan'))
     print(colored("shared lib dir:", 'magenta'), colored(LIBRARY_OUTPUT_PATH, 'cyan'))
     print(colored("bin dir:", 'magenta'), colored(PROJECT_BINARY_DIR, 'cyan'))
@@ -435,7 +476,7 @@ if 'package' in COMMAND_LINE_TARGETS:
     print("Remove nabla-1.2.3 directory")
     env.Execute("rm -Rf nabla-1.2.3")
 
-if env['verbose'] and env['color']:
+if env.Verbose() and env['color']:
     print(colored("env: ", 'magenta'), colored(env.Dump(), 'cyan'))
 
 # Clean
@@ -545,8 +586,10 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in
         DEV_SOURCE_DIR+'/sample/microsoft/src/main/app/SConscript',
     ])
 
-SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/cpp/SConscript')
-SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/app/SConscript')
+# Disable cppunit on Linux for mingw as we do not have mingw librairies of cppunit
+if not env['use_mingw'] and not platform.platform().startswith('Linux'):
+    env.SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/cpp/SConscript')
+    env.SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/app/SConscript')
 
 # post build stuff
 
@@ -614,7 +657,7 @@ if 'package' in COMMAND_LINE_TARGETS:
 
 #TODO : http://v8.googlecode.com/svn/trunk/SConstruct
 
-if not env['verbose']:
+if not env.Verbose():
    ProjectMacro.reduceBuildVerbosity(env)
 else:
    if env['color']:
