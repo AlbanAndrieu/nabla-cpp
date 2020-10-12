@@ -46,17 +46,17 @@ pipeline {
     //agent {
     //    label 'ubuntu'
     //}
-	agent {
-		docker {
-			image DOCKER_IMAGE
-			alwaysPull true
-			reuseNode true
-			registryUrl DOCKER_REGISTRY_HUB_URL
-			registryCredentialsId DOCKER_REGISTRY_HUB_CREDENTIAL
-			args DOCKER_OPTS_COMPOSE
-			label 'ubuntu'
-		}
-	}
+    agent {
+        docker {
+            image DOCKER_IMAGE
+            alwaysPull true
+            reuseNode true
+            registryUrl DOCKER_REGISTRY_HUB_URL
+            registryCredentialsId DOCKER_REGISTRY_HUB_CREDENTIAL
+            args DOCKER_OPTS_COMPOSE
+            label 'ubuntu'
+        }
+    }
     //agent {
     //    // Equivalent to "docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 --build-arg FILEBEAT_VERSION=6.3.0 ./build/
     //    dockerfile {
@@ -120,21 +120,21 @@ pipeline {
             steps {
                 script {
                     //tee("python.log") {
-					sh "#!/bin/bash \n" +
-					   "ls -lrta /opt/ansible/ \n" +
-					   ". /opt/ansible/env38/bin/activate \n" +
-					   "python -V \n" +
-					   "python3 -V \n" +
-					   "python3.8 -V \n" +
-					   "pip -V \n" +
-					   "pip list \n" +
-					   "pip3.8 install conan pre-commit \n" +
-					   "which conan \n" +
-					   "conan remove --system-reqs '*' \n" +
-					   "whoami \n" +
-					   "./scripts/cppcheck.sh\n" +
-					   "source ./scripts/run-python.sh\n" +
-					   "pre-commit run -a || true"
+                    sh "#!/bin/bash \n" +
+                       "ls -lrta /opt/ansible/ \n" +
+                       ". /opt/ansible/env38/bin/activate \n" +
+                       "python -V \n" +
+                       "python3 -V \n" +
+                       "python3.8 -V \n" +
+                       "pip -V \n" +
+                       "pip list \n" +
+                       "pip3.8 install conan pre-commit \n" +
+                       "which conan \n" +
+                       "conan remove --system-reqs '*' \n" +
+                       "whoami \n" +
+                       "./scripts/cppcheck.sh\n" +
+                       "source ./scripts/run-python.sh\n" +
+                       "pre-commit run -a || true"
                     //} // tee
 
                     //sh "#!/bin/bash \n" +
@@ -166,24 +166,26 @@ pipeline {
         stage('Build-CMake') {
             steps {
                 script {
-					dir("sample/build-linux") {
-					    sh "#!/bin/bash \n" +
-					       "ls -lrta /opt/ansible/ \n" +
-					       ". /opt/ansible/env38/bin/activate \n" +
-					       "python -V \n" +
-					       "python3 -V \n" +
-					       "python3.8 -V \n" +
-					       "pip -V \n" +
-					       "pip list \n" +
-					       "pip3.8 install conan pre-commit \n" +
-					       "which conan \n" +
-					       "conan remove --system-reqs '*' \n" +
-					       "whoami \n" +
-					       "./scripts/cppcheck.sh\n" +
-					       "source ./scripts/run-python.sh\n" +
-					       "pre-commit run -a || true\n" +
-					       "./cmake.sh"
-					}
+                    sh "#!/bin/bash \n" +
+                       "ls -lrta /opt/ansible/ \n" +
+                       ". /opt/ansible/env38/bin/activate \n" +
+                       "python -V \n" +
+                       "python3 -V \n" +
+                       "python3.8 -V \n" +
+                       "pip -V \n" +
+                       "pip list \n" +
+                       "pip3.8 install conan pre-commit cmake \n" +
+                       "which conan \n" +
+                       "conan remove --system-reqs '*' \n" +
+                       "whoami \n" +
+                       "./scripts/cppcheck.sh\n" +
+                       "source ./scripts/run-python.sh\n" +
+                       "pre-commit run -a || true"
+
+                    dir("sample/build-linux") {
+                        sh "#!/bin/bash \n" +
+                           "./cmake.sh"
+                    }
                } // script
            } // steps
         } // stage Build-CMake
@@ -206,23 +208,28 @@ pipeline {
          //}
         //}
     } // stages
-	post {
-	  always {
-	    // tools
-		//recordIssues enabledForFailure: true, filters: [
-		//  excludeFile('.*qrc_icons\\.cpp.*'),
-		//  excludeMessage('.*tmpnam.*')],
-		//  tools: [cmake(),
-		//          gcc(),
-		//		  doxygen(),
-		//		  clangTidy()
-		//		  ],
-		//  unstableTotalAll: 1
+    post {
+      always {
+        // tools
+        //recordIssues enabledForFailure: true, filters: [
+        //  excludeFile('.*qrc_icons\\.cpp.*'),
+        //  excludeMessage('.*tmpnam.*')],
+        //  tools: [cmake(),
+        //          gcc(),
+        //        doxygen(),
+        //        clangTidy()
+        //        ],
+        //  unstableTotalAll: 1
 
-		recordIssues enabledForFailure: true,
-		  tools: [cppCheck(pattern: 'reports/cppcheck-result.xml')]
-		//publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
-	  }
-	  success { archiveArtifacts 'build/*.tar.gz, build/conaninfo.txt, *.log' }
-	} // post
+        recordIssues enabledForFailure: true,
+          tools: [cppCheck(pattern: 'reports/cppcheck-result.xml')]
+        //publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
+
+        // sample/build/conaninfo.txt sample/build-linux/CMakeFiles/CMakeOutput.log
+        archiveArtifacts artifacts: '**/conaninfo.txt, , *.log, sample/build*/CMakeFiles/CMakeOutput.log, sample/build*/CMakeFiles/CMakeError.log', excludes: null, fingerprint: false, onlyIfSuccessful: false
+      }
+
+      success {
+          archiveArtifacts 'build/*.tar.gz, *.log, conaninfo.txt'
+    } // post
 } // pipeline

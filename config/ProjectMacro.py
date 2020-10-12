@@ -260,13 +260,33 @@ def reduceBuildVerbosity(env):
 
 # https://github.com/SGpp/SGpp/issues/186
 def getDistribution():
-    print(sys.version_info)
+  try:
+    with open("/etc/os-release") as osr:
+      osReleaseLines = osr.readlines()
+    hasOsRelease = True
+  except (IOError,OSError):
+    osReleaseLines = []
+    hasOsRelease = False
+  try:
+    import platform
+    if platform.system() == "Darwin":
+      return ["osx_x86-64", "", ""]
+  except:
+    pass
+  try:
+    import platform, distro
+    # print(sys.version_info)
     if sys.version_info<(3,5,0):
         dist = platform.dist() # Deprecated since version 3.5, will be removed in version 3.8
     else :
-        import distro
-        dist = distro.linux_distribution()
+        if sys.platform == 'win32':
+            dist = ["unknown", "", ""]
+        else:
+            import distro
+            dist = distro.linux_distribution()
     return dist
+  except:
+    return ["unknown", "", ""]
 
 def getArch():
     thePlatform = platform.platform()

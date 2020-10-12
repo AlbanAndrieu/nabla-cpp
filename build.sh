@@ -20,7 +20,7 @@ export ENABLE_CLANG=${ENABLE_CLANG:-"true"}
 #export ENABLE_EXPERIMENTAL=true
 #export SONAR_CMD=""
 
-if [ -n "${ENABLE_CLANG}" ]; then
+if [ "${ENABLE_CLANG}" == "true" ]; then
     echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
     #AddressSanitizer to sanitize your code!
     export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-3.8

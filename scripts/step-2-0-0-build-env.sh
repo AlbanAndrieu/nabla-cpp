@@ -1,6 +1,11 @@
 #!/bin/bash
 #set -xv
 
+if [ "$0" = "${BAHS_SOURCE[0]}" ]; then
+    echo "This script has to be sourced and not executed..."
+    exit 1
+fi
+
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # shellcheck source=/dev/null
@@ -227,6 +232,14 @@ else
     export CC="/usr/bin/gcc"
     export CXX="/usr/bin/g++"
   fi
+fi
+
+if [ -n "${ENABLE_NINJA}" ]; then
+  echo -e "${green} ENABLE_NINJA is defined ${happy_smiley} : ${ENABLE_NINJA} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_NINJA, use default one ${NC}"
+  export ENABLE_NINJA=false
+  echo -e "${magenta} ENABLE_NINJA : ${ENABLE_NINJA} ${NC}"
 fi
 
 if [ -n "${COMPILER}" ]; then

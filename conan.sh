@@ -33,7 +33,7 @@ conan profile list
 #See https://conan.io/
 #See https://bintray.com/bincrafters/public-conan
 
-if [ -n "${ENABLE_CLANG}" ]; then
+if [ "${ENABLE_CLANG}" == "true" ]; then
 
     if [ "$(uname -s)" == "Linux" ]; then
 
@@ -55,7 +55,7 @@ if [ -n "${ENABLE_CLANG}" ]; then
         esac
 
     fi
-elif [ -n "${ENABLE_MINGW_64}" ]; then
+elif [ "${ENABLE_MINGW_64}" == "true" ]; then
 
     if [ "$(uname -s)" == "Linux" ]; then
         # See https://docs.conan.io/en/latest/systems_cross_building/cross_building.html

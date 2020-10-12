@@ -5,12 +5,12 @@
 
 SET(CMAKE_BUILD_TYPE "debug")
 
-#TODO Clang https://git.moeryn.com/Moeryn/cppskeleton/blob/d7f2655222c105ef5437483d5a576fb7d8c35b51/cmake/CppToolchain.cmake
+#TODO Clang https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html
 
 SET(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-SET( CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
+SET(CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind")
 #SET( CTEST_MEMORYCHECK_COMMAND_OPTIONS "--tool=callgrind -v" )
 #SET( CTEST_MEMORYCHECK_COMMAND_OPTIONS, "--trace-children=yes --leak-check=full" )
 #SET(MEMORYCHECK_COMMAND_OPTIONS "--xml=yes --xml-file=test.xml")
@@ -25,11 +25,11 @@ SET( CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
 #						  LINK_FLAGS "-lgcov --coverage")
 #ENDIF(COVERAGE)
 
-if (WIN32)
-  SET(DEFAULT_BOOST OFF)
-else()
-  SET(DEFAULT_BOOST ON)
-endif()
+#if (WIN32)
+#  SET(DEFAULT_BOOST OFF)
+#else()
+#  SET(DEFAULT_BOOST ON)
+#endif()
 
 # Running with Boost filesystem is typically faster, until platform specific std::filesystem comes out that is faster yet.
 # Note that Boost::filesystem needs to be installed for this to be used.
@@ -88,7 +88,7 @@ SET(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 # cygwin                        CYGWIN_NT-5.1
 # MacOSX                        Darwin
 
-MESSAGE("OS is : ${CMAKE_SYSTEM}-${CMAKE_SYSTEM_VERSION} ${CMAKE_UNAME} ${CMAKE_HOST_UNIX} CMAKE_HOST_SYSTEM_NAME : ${CMAKE_HOST_SYSTEM_NAME} CMAKE_HOST_SYSTEM_PROCESSOR : ${CMAKE_HOST_SYSTEM_PROCESSOR} ")
+MESSAGE("OS is : ${CMAKE_SYSTEM}-${CMAKE_SYSTEM_VERSION} CMAKE_UNAME : ${CMAKE_UNAME} CMAKE_HOST_UNIX : ${CMAKE_HOST_UNIX} CMAKE_HOST_SYSTEM_NAME : ${CMAKE_HOST_SYSTEM_NAME} CMAKE_HOST_SYSTEM_PROCESSOR : ${CMAKE_HOST_SYSTEM_PROCESSOR} ")
 
 #default /usr/local
 #SET(CMAKE_INSTALL_PREFIX  /usr/local)
@@ -241,10 +241,16 @@ ELSE(UNIX)
 ENDIF(UNIX)
 
 IF(MINGW)
-
   MESSAGE(STATUS "MINGW found")
-  SET(ARCH linux)
-  SET(MACHINE x86Linux)
+  IF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+    MESSAGE(STATUS "X compiling from ${CMAKE_HOST_SYSTEM_NAME} found")
+    SET(ARCH winnt)
+    SET(MACHINE win32)
+  ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+    MESSAGE(STATUS "X compiling from Unix found")
+    SET(ARCH linux)
+    SET(MACHINE x86Linux)
+  ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
 
   #SET(BUILD_SHARED_LIBS OFF)
   #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -static -static-libgcc -static-libstdc++ -lstdc++ -lgcc")
@@ -260,7 +266,6 @@ IF(MINGW)
 
 ELSE(MINGW)
   MESSAGE(STATUS "MINGW not found")
-
 ENDIF(MINGW)
 
 SET(PROJECT_INCLUDE_DIR ${PROJECT_BINARY_DIR}/include)
@@ -301,7 +306,15 @@ INCLUDE(${PROJECT_CONFIG_DIR}/ProjectMacro.cmake)
 
 OPTION(ENABLE_TESTS "Enable building of tests" ON)
 
-IF( ENABLE_TESTS )
+IF(CMAKE_CROSSCOMPILING)
+    MESSAGE(STATUS "X compiling so skipping unit tests.")
+    SET(ENABLE_TESTS OFF)
+ELSE(CMAKE_CROSSCOMPILING)
+    MESSAGE(STATUS "Enabling unit testing of code")
+    SET(ENABLE_TESTS ON)
+ENDIF(CMAKE_CROSSCOMPILING)
+
+IF(ENABLE_TESTS)
   INCLUDE(${PROJECT_CONFIG_DIR}/FindCppUnit.cmake)
 ENDIF(ENABLE_TESTS )
 

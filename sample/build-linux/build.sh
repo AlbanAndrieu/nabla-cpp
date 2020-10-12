@@ -93,16 +93,23 @@ fi
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
 
-#cmake -GNinja -DCMAKE_BUILD_TYPE=Debug ../microsoft
+if [ "${ENABLE_NINJA}" == "true" ]; then
+    echo -e "${magenta} cmake -G\"Ninja\" -DCMAKE_BUILD_TYPE=Debug ${PROJECT_SRC}/sample/microsoft ${NC}"
+    export CMAKE_GENERATOR="Ninja"
+fi
 
 export CMAKE_GENERATOR=${CMAKE_GENERATOR:-"Eclipse CDT4 - Unix Makefiles"}
-#export CMAKE_GENERATOR="Ninja"
 
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
 #-D_ECLIPSE_VERSION=4.4
-echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft ${NC}"
-cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft
-#-DENABLE_TESTING=true
+if [ "${ENABLE_CLANG}" == "true" ]; then
+    echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft ${NC}"
+    cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft
+elif [ "${ENABLE_MINGW_64}" == "true" ]; then
+    echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=Toolchain-cross-mingw32-linux.cmake ${PROJECT_SRC}/sample/microsoft ${NC}"
+    cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=Toolchain-cross-mingw32-linux.cmake ${PROJECT_SRC}/sample/microsoft
+fi
+#-DENABLE_TESTING=true # for Dart
 cmake_res=$?
 if [[ $cmake_res -ne 0 ]]; then
     echo -e "${red} ---> CMake failed : $cmake_res ${NC}"

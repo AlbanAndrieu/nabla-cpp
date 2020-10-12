@@ -12,15 +12,18 @@ echo "WORKSPACE ${WORKSPACE}"
 #In Hudson
 #Extract trunk/cpp in Google Code (automatic configuration)
 #Batch Windows command : %WORKSPACE%\sample\build-cygwin\cmake.bat
-export PROJECT_SRC=${WORKSPACE}
 export PROJECT_TARGET_PATH=/cygdrive/c/target
+
+if [ -z "$PROJECT_SRC" ]; then
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PROJECT_SRC ${NC}"
+  export PROJECT_SRC=${WORKSPACE}
+fi
+
+cd ${PROJECT_SRC}
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
-cd ../../
-#cd $PROJECT_SRC/sample/build-cygwin
-
-source ./step-2-0-0-build-env.sh || exit 1
+source ${PROJECT_SRC}/scripts/step-2-0-0-build-env.sh || exit 1
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
