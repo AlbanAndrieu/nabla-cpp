@@ -14,12 +14,13 @@ fi
 echo "WORKSPACE ${WORKSPACE}"
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
-export ENABLE_MEMCHECK=true
-export UNIT_TESTS=true
-export CHECK_FORMATTING=true
-#export ENABLE_CLANG=true
-#export ENABLE_EXPERIMENTAL=true
-#export SONAR_PROCESSOR="x86-64"
+export ENABLE_MEMCHECK=${ENABLE_MEMCHECK:-"true"}
+export UNIT_TESTS=${UNIT_TESTS:-"true"}
+export CHECK_FORMATTING=${CHECK_FORMATTING:-"true"}
+#export ENABLE_CLANG=${ENABLE_CLANG:-"true"}
+#export ENABLE_MINGW_64=${ENABLE_MINGW_64:-"true"}
+#export ENABLE_EXPERIMENTAL=${ENABLE_EXPERIMENTAL:-"true"}
+#export SONAR_PROCESSOR=${SONAR_PROCESSOR:-"x86-64"}
 export MODE_RELEASE=
 
 if [ -n "${ENABLE_CLANG}" ]; then
@@ -29,10 +30,14 @@ if [ -n "${ENABLE_CLANG}" ]; then
     export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 fi
 
-cd ../../
-#cd $PROJECT_SRC/
+if [ -z "$PROJECT_SRC" ]; then
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PROJECT_SRC ${NC}"
+  export PROJECT_SRC=${WORKSPACE}
+fi
 
-source ./step-2-0-0-build-env.sh || exit 1
+cd ${PROJECT_SRC}
+
+source ${PROJECT_SRC}/scripts/step-2-0-0-build-env.sh || exit 1
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
@@ -47,11 +52,11 @@ pwd
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
-./clean.sh
+${PROJECT_SRC}/clean.sh
 
-export CONAN_GENERATOR="cmake"
+export CONAN_GENERATOR=${CONAN_GENERATOR:-"cmake"}
 
-./conan.sh
+${PROJECT_SRC}/conan.sh
 
 #cd $PROJECT_SRC/sample/microsoft
 
@@ -81,32 +86,39 @@ if [ -n "${MODE_RELEASE}" ]; then
     echo -e "${green} MODE_RELEASE is defined ${happy_smiley} ${NC}"
     export CMAKE_INSTALL_PREFIX=/usr/local
 else
-    export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug
+    export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/debug
 fi
 
 #-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
 #-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
 
-#cmake -GNinja -DCMAKE_BUILD_TYPE=Debug ../microsoft
+if [ "${ENABLE_NINJA}" == "true" ]; then
+    echo -e "${magenta} cmake -G\"Ninja\" -DCMAKE_BUILD_TYPE=Debug ${PROJECT_SRC}/sample/microsoft ${NC}"
+    export CMAKE_GENERATOR="Ninja"
+fi
 
-export CMAKE_GENERATOR="Eclipse CDT4 - Unix Makefiles"
-#export CMAKE_GENERATOR="Ninja"
+export CMAKE_GENERATOR=${CMAKE_GENERATOR:-"Eclipse CDT4 - Unix Makefiles"}
 
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
 #-D_ECLIPSE_VERSION=4.4
-echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
-cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
-#-DENABLE_TESTING=true
+if [ "${ENABLE_CLANG}" == "true" ]; then
+    echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft ${NC}"
+    cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft
+elif [ "${ENABLE_MINGW_64}" == "true" ]; then
+    echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32-linux.cmake ${PROJECT_SRC}/sample/microsoft ${NC}"
+    cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32-linux.cmake ${PROJECT_SRC}/sample/microsoft
+fi
+#-DENABLE_TESTING=true # for Dart
 cmake_res=$?
 if [[ $cmake_res -ne 0 ]]; then
     echo -e "${red} ---> CMake failed : $cmake_res ${NC}"
     exit 1
 fi
 
-if [[ -f ../microsoft/compile_commands.json ]]; then
-    rm ../microsoft/compile_commands.json
-    ln -s $PWD/compile_commands.json ../microsoft/
+if [[ -f ${PROJECT_SRC}/sample/microsoft/compile_commands.json ]]; then
+    rm ${PROJECT_SRC}/sample/microsoft/compile_commands.json
+    ln -s $PWD/compile_commands.json ${PROJECT_SRC}/sample/microsoft/
 fi
 
 echo -e "${green} Building : CMake ${NC}"
@@ -286,8 +298,8 @@ if [[ "${CHECK_FORMATTING}" == "true" ]]; then
 
     echo -e "${magenta} cd ../../sample/microsoft ${NC}"
     cd $PROJECT_SRC/sample/microsoft
-    echo -e "${magenta} $PROJECT_SRC/cpplint.sh ${NC}"
-    $PROJECT_SRC/cpplint.sh
+    echo -e "${magenta} $PROJECT_SRC/scripts/cpplint.sh ${NC}"
+    $PROJECT_SRC/scripts/cpplint.sh
 
     # Find non-ASCII characters in headers
     hpps=$(find $PROJECT_SRC/sample/microsoft/src -name \*\.h)
