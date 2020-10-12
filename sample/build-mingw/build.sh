@@ -123,8 +123,8 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package ${NC}"
-${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package
+echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc ${NC}"
+${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
@@ -203,15 +203,17 @@ if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
 
 fi
 
-echo -e "${green} Packaging : CPack ${NC}"
+if [ `uname -s` == "Linux" and "${ENABLE_MINGW_64}" != "true" ]; then
+  echo -e "${green} Packaging : CPack ${NC}"
 
-#cmake --help-module CPackDeb
-#cpack
+  #cmake --help-module CPackDeb
+  #cpack
 
-echo -e "${magenta} cd $PROJECT_SRC/sample/build-${ARCH} ${NC}"
-cd $PROJECT_SRC/sample/build-${ARCH}
-echo -e "${magenta} ${MAKE} package ${NC}"
-${MAKE} package
+  echo -e "${magenta} cd $PROJECT_SRC/sample/build-${ARCH} ${NC}"
+  cd $PROJECT_SRC/sample/build-${ARCH}
+  echo -e "${magenta} ${MAKE} package ${NC}"
+  ${MAKE} package
+fi
 # To use this:
 # ${MAKE} package
 # sudo dpkg -i MICROSOFT-10.02-Linux.deb
@@ -280,9 +282,9 @@ echo -e "${magenta} gcovr --branches -r ${PROJECT_SRC}/microsoft/ --html --html-
 gcovr --branches -r ${PROJECT_SRC}/sample/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
 
 echo -e "${magenta} sudo perf record -g -- /usr/bin/git --version ${NC}"
-sudo perf record -g -- /usr/bin/git --version
+${USE_SUDO} perf record -g -- /usr/bin/git --version
 echo -e "${magenta} sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
-sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
+${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
 #eog output.png
 
 #bash -c 'find src -regex ".*\.cc\|.*\.hh" | vera++ - -showrules -nodup |& vera++Report2checkstyleReport.perl > $(BUILD_DIR)/vera++-report.xml'
