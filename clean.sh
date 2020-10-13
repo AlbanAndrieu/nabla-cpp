@@ -20,7 +20,7 @@ find . -name 'CMakeFiles' -type d | xargs rm -Rf
 rm -f sample/build-linux/Makefile
 rm -Rf sample/build-linux/_CPack_Packages/
 rm -f sample/build-linux/MICROSOFT*.deb
-rm -f sample/build-${ARCH}/conan*
+rm -f sample/build-linux/conan*
 #rm -Rf sample/build-linux/nabla_*_amd64.deb
 #Scons
 #rm -Rf buildcache-*
