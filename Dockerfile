@@ -145,4 +145,7 @@ COPY --from=builder /opt/nabla /opt/nabla
 ENV PATH="/opt/nabla/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/opt/nabla/lib:${LD_LIBRARY_PATH}"
 
+RUN ls -lrta /opt/nabla/bin/
+RUN ls -lrta /opt/nabla/lib/
+
 ENTRYPOINT [ "/opt/nabla/bin/run_app" ]

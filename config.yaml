@@ -17,7 +17,7 @@ fileExistenceTests:
 #   uid: 2000
 
  - name: 'bin test file'
-   path: '/opt/nabla/bin/run_test'
+   path: '/opt/nabla/bin/run_tests'
    shouldExist: true
    permissions: '-rwxr-xr-x'
    uid: 0

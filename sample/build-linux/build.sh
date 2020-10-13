@@ -203,7 +203,7 @@ if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
 
 fi
 
-if [ `uname -s` == "Linux" and "${ENABLE_MINGW_64}" != "true" ]; then
+if [ `uname -s` == "Linux" -a "${ENABLE_MINGW_64}" != "true" ]; then
   echo -e "${green} Packaging : CPack ${NC}"
 
   #cmake --help-module CPackDeb
@@ -254,7 +254,7 @@ if [ `uname -s` == "Linux" ]; then
     #http://clang-analyzer.llvm.org/installation.html
     #http://clang-analyzer.llvm.org/scan-build.html
     echo -e "${magenta} scan-build make ${NC}"
-    scan-build make
+    scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang make
     #scan-view
 fi
 
