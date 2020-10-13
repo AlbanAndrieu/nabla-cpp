@@ -185,7 +185,7 @@ pipeline {
                     dir("sample/build-linux") {
                         sh "#!/bin/bash \n" +
                            "./cmake.sh"
-                    }
+                    } // dir
                } // script
            } // steps
         } // stage Build-CMake
@@ -227,9 +227,9 @@ pipeline {
 
         // sample/build/conaninfo.txt sample/build-linux/CMakeFiles/CMakeOutput.log
         archiveArtifacts artifacts: '**/conaninfo.txt, , *.log, sample/build*/CMakeFiles/CMakeOutput.log, sample/build*/CMakeFiles/CMakeError.log', excludes: null, fingerprint: false, onlyIfSuccessful: false
-      }
-
+      } // always
       success {
           archiveArtifacts 'build/*.tar.gz, *.log, conaninfo.txt'
+      } // success
     } // post
 } // pipeline
