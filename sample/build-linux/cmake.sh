@@ -44,7 +44,7 @@ elif [ "${ENABLE_MINGW_64}" == "true" ]; then
 fi
 dot -Tpng graphviz.dot -o graphviz.png
 
-echo -e "${magenta} sudo make install ${NC}"
+echo -e "${magenta} ${USE_SUDO} make install ${NC}"
 echo -e "${magenta} make tests ${NC}"
 
 if [ "${ENABLE_NINJA}" == "true" ]; then

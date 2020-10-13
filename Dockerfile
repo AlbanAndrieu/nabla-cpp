@@ -45,12 +45,15 @@ RUN apt-get update \
   libcppunit-dev
 
 COPY . /nabla
-WORKDIR /nabla/build
+WORKDIR /nabla
 ARG X11=yes
 
-RUN pip install --no-cache-dir -r ../requirements-current-3.8.txt
+RUN pip install --no-cache-dir -r ./requirements-current-3.8.txt
 
-RUN ../conan.sh
+RUN ./conan.sh
+RUN find ./ -name 'conanbuildinfo.cmake'
+
+WORKDIR /nabla/build
 
 RUN pwd
 RUN ls -lrta
@@ -99,8 +102,8 @@ RUN sh -c 'if [ "$X11" = "yes" ] ; then \
 #  -DBUILD_XMMS2=ON \
   ../sample/microsoft/ \
   ; fi' \
-  && make -j5 all \
-  && make -j5 install
+  && make all \
+  && make install
 
 #FROM ubuntu:bionic
 FROM ubuntu:20.04

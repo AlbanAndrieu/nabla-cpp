@@ -623,6 +623,10 @@ export M2_HOME=""
 
 if [ -n "${USE_SUDO}" ]; then
   echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
+  if [ "${USE_SUDO}" == "false" ]; then
+    unset USE_SUDO
+    echo -e "${green} USE_SUDO is disabled ${happy_smiley} : ${USE_SUDO} ${NC}"
+  fi
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : USE_SUDO, use the default one ${NC}"
   if [ "${OS}" == "Ubuntu" ]; then

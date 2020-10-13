@@ -61,7 +61,7 @@ ${PROJECT_SRC}/conan.sh
 #cd $PROJECT_SRC/sample/microsoft
 
 #wget https://cppan.org/client/cppan-master-Linux-client.deb
-#sudo dpkg -i cppan-master-Linux-client.deb
+#${USE_SUDO} dpkg -i cppan-master-Linux-client.deb
 #cppan
 
 cd "${PROJECT_SRC}/sample/build-${ARCH}"
@@ -219,7 +219,7 @@ fi
 
 # To use this:
 # ${MAKE} package
-# sudo dpkg -i MICROSOFT-10.02-Linux.deb
+# ${USE_SUDO} dpkg -i MICROSOFT-10.02-Linux.deb
 
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Packaging : checkinstall ${NC}"
@@ -227,9 +227,9 @@ if [ `uname -s` == "Linux" ]; then
     echo -e "${magenta} checkinstall --version ${NC}"
     checkinstall --version
 
-    #sudo dpkg -r nabla-microsoft || true
+    # ${USE_SUDO} dpkg -r nabla-microsoft || true
 
-#sudo -k checkinstall \
+# ${USE_SUDO} -k checkinstall \
 #--install=no
 #--pkgsource="https://github.com/AlbanAndrieu/nabla-cpp" \
 #--pkglicense="GPL2" \
@@ -277,16 +277,14 @@ echo -e "${magenta} gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SR
 gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/
 #xml
 echo -e "${magenta} gcovr --branches --xml-pretty -r ${PROJECT_SRC}/microsoft/ ${NC}"
-#sudo
 gcovr --branches --xml-pretty -r ${PROJECT_SRC}/sample/microsoft/ > ${PROJECT_SRC}/reports/gcovr-report.xml
 #html
 echo -e "${magenta} gcovr --branches -r ${PROJECT_SRC}/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html ${NC}"
-#sudo
 gcovr --branches -r ${PROJECT_SRC}/sample/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
 
-echo -e "${magenta} sudo perf record -g -- /usr/bin/git --version ${NC}"
+echo -e "${magenta} ${USE_SUDO} perf record -g -- /usr/bin/git --version ${NC}"
 ${USE_SUDO} perf record -g -- /usr/bin/git --version
-echo -e "${magenta} sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
+echo -e "${magenta} ${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
 ${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
 #eog output.png
 
