@@ -12,7 +12,7 @@ echo -e "${red} Findbugs ${NC}"
 
 findbugs -version
 
-reports_directory="findbugs-reports"
+reports_directory="reports"
 report_filename="findbugs-result-SAMPLE"
 if [ ! -e "${WORKING_DIR}/../${reports_directory}" ]; then
     mkdir "${WORKING_DIR}/../${reports_directory}"
