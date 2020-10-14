@@ -246,6 +246,7 @@ if [ `uname -s` == "Linux" ]; then
 
     echo -e "${magenta} xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
     xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml || true
+    xsltproc valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml || true
 fi
 
 if [ `uname -s` == "Linux" ]; then

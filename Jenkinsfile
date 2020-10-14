@@ -133,7 +133,8 @@ pipeline {
                        "conan remove --system-reqs '*' \n" +
                        "whoami \n" +
                        "./scripts/cppcheck.sh\n" +
-                       "source ./scripts/run-python.sh\n" +
+                       //"source ./scripts/run-python.sh\n" +
+                       ". ./scripts/run-python.sh\n" +
                        "pre-commit run -a || true"
                     //} // tee
 
