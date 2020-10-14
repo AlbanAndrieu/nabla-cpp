@@ -180,11 +180,12 @@ pipeline {
                        "conan remove --system-reqs '*' \n" +
                        "whoami \n" +
                        "./scripts/cppcheck.sh\n" +
-                       "source ./scripts/run-python.sh\n" +
-                       "pre-commit run -a || true"
+                       "source ./scripts/run-python.sh\n"
+                       //"pre-commit run -a || true"
 
                     dir("sample/build-linux") {
                         sh "#!/bin/bash \n" +
+                           "source ./scripts/run-python.sh\n" +
                            "./build.sh"
                     } // dir
                } // script

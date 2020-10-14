@@ -192,7 +192,7 @@ fi
 echo "========== SCM =========="
 git --version || true
 git config --global --list || true
-svn --version || true
+#svn --version || true
 
 echo "========== ENV =========="
 #env is already displayed in jenkins
