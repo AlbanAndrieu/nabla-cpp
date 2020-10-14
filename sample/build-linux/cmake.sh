@@ -10,6 +10,18 @@ fi
 
 echo "WORKSPACE ${WORKSPACE}"
 
+if [ -n "${ENABLE_CLANG}" ]; then
+    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
+    #AddressSanitizer to sanitize your code!
+    export ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-10
+    export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
+fi
+
+if [ -z "$PROJECT_SRC" ]; then
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PROJECT_SRC ${NC}"
+  export PROJECT_SRC=${WORKSPACE}
+fi
+
 source ${PROJECT_SRC}/scripts/step-2-0-0-build-env.sh || exit 1
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
