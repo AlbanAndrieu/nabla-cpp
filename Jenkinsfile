@@ -185,7 +185,7 @@ pipeline {
 
                     dir("sample/build-linux") {
                         sh "#!/bin/bash \n" +
-                           "./cmake.sh"
+                           "./build.sh"
                     } // dir
                } // script
            } // steps
@@ -227,7 +227,7 @@ pipeline {
         //publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
 
         // sample/build/conaninfo.txt sample/build-linux/CMakeFiles/CMakeOutput.log
-        archiveArtifacts artifacts: '**/conaninfo.txt, , *.log, sample/build*/CMakeFiles/CMakeOutput.log, sample/build*/CMakeFiles/CMakeError.log', excludes: null, fingerprint: false, onlyIfSuccessful: false
+        archiveArtifacts artifacts: '**/conaninfo.txt, , *.log, sample/build*/CMakeFiles/CMakeOutput.log, sample/build*/CMakeFiles/CMakeError.log, bw-outputs/build-wrapper.log, bw-outputs/build-wrapper-dump.json', excludes: null, fingerprint: false, onlyIfSuccessful: false
       } // always
       success {
           archiveArtifacts 'build/*.tar.gz, *.log, conaninfo.txt'
