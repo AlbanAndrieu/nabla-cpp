@@ -33,10 +33,10 @@ rm -Rf CMakeCache.txt CMakeFiles/
 export ENABLE_MINGW_64=true
 
 #MSYS Makefiles
-if [ "${ENABLE_CLANG}" == "true" ]; then
-    cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} --config Debug --target Continuous -j10 --graphviz=graphviz.dot "$@" -S ../microsoft -B ./
-elif [ "${ENABLE_MINGW_64}" == "true" ]; then
+if [ "${ENABLE_MINGW_64}" == "true" ]; then
     cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32-linux.cmake --config Debug --target Continuous -j10 --graphviz=graphviz.dot "$@" -S ../microsoft -B ./
+else
+    cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} --config Debug --target Continuous -j10 --graphviz=graphviz.dot "$@" -S ../microsoft -B ./
 fi
 dot -Tpng graphviz.dot -o graphviz.png
 

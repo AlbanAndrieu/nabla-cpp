@@ -34,8 +34,6 @@ rm -Rf CMakeCache.txt CMakeFiles/
 #-DCMAKE_INSTALL_PREFIX=/target/install/${ARCH}/debug
 #-DECLIPSE_CDT4_GENERATE_SOURCE_PROJECT=TRUE
 
-echo "Using GCC"
-
 if [ "${ENABLE_CLANG}" == "true" ]; then
     echo -e "${magenta} cmake -G\"Eclipse CDT4 - Unix Makefiles\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S ../microsoft -B ./ ${NC}"
 elif [ "${ENABLE_MINGW_64}" == "true" ]; then
@@ -43,16 +41,14 @@ elif [ "${ENABLE_MINGW_64}" == "true" ]; then
     echo -e "${magenta} cmake -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32-linux.cmake -S ../microsoft -B ./ ${NC}"
 fi
 
-echo "Using Clang"
-
 #Eclipse CDT4 - Unix Makefiles
 #Eclipse CDT4 - Ninja
 #MSYS Makefiles
 #-DCMAKE_CROSSCOMPILING=True
-if [ "${ENABLE_CLANG}" == "true" ]; then
-    cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} --config Debug --target Continuous -j10 --graphviz=graphviz.dot "$@" -S ../microsoft -B ./
-elif [ "${ENABLE_MINGW_64}" == "true" ]; then
+if [ "${ENABLE_MINGW_64}" == "true" ]; then
     cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=Toolchain-cross-mingw32-linux.cmake --config Debug --target Continuous -j10 --graphviz=graphviz.dot "$@" -S ../microsoft -B ./
+else
+    cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} --config Debug --target Continuous -j10 --graphviz=graphviz.dot "$@" -S ../microsoft -B ./
 fi
 dot -Tpng graphviz.dot -o graphviz.png
 

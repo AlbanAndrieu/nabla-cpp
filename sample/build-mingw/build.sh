@@ -15,7 +15,7 @@ echo "WORKSPACE ${WORKSPACE}"
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 export ENABLE_MEMCHECK=${ENABLE_MEMCHECK:-"true"}
-export UNIT_TESTS=${UNIT_TESTS:-"true"}
+export UNIT_TESTS=${UNIT_TESTS:-"false"}
 export CHECK_FORMATTING=${CHECK_FORMATTING:-"true"}
 #export ENABLE_CLANG=${ENABLE_CLANG:-"true"}
 #export ENABLE_MINGW_64=${ENABLE_MINGW_64:-"true"}
@@ -102,12 +102,12 @@ export CMAKE_GENERATOR=${CMAKE_GENERATOR:-"Eclipse CDT4 - Unix Makefiles"}
 
 #-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
 #-D_ECLIPSE_VERSION=4.4
-if [ "${ENABLE_CLANG}" == "true" ]; then
-    echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft ${NC}"
-    cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft
-elif [ "${ENABLE_MINGW_64}" == "true" ]; then
+if [ "${ENABLE_MINGW_64}" == "true" ]; then
     echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32-linux.cmake ${PROJECT_SRC}/sample/microsoft ${NC}"
     cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32-linux.cmake ${PROJECT_SRC}/sample/microsoft
+else
+    echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft ${NC}"
+    cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft
 fi
 #-DENABLE_TESTING=true # for Dart
 cmake_res=$?
@@ -123,8 +123,8 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc ${NC}"
-${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc
+echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc ${NC}"
+${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
@@ -181,8 +181,8 @@ fi
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Fixing include : IWYU ${NC}"
 
-    echo -e "${magenta} ${MAKE} clean ${NC}"
-    ${MAKE} clean
+    #echo -e "${magenta} ${MAKE} clean ${NC}"
+    #${MAKE} clean
     echo -e "${magenta} ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out ${NC}"
     ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out
     echo -e "${magenta} fix_includes.py < ./iwyu.out ${NC}"

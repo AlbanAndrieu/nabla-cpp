@@ -210,7 +210,8 @@ pipeline {
 
                     dir("sample/build-linux") {
                         sh "#!/bin/bash \n" +
-                           "source ./scripts/run-python.sh\n" +
+                           //"source ../../scripts/run-python.sh\n" +
+                           ". /opt/ansible/env38/bin/activate \n" +
                            "bash ./build.sh"
 
                         //sh 'ctest -T test --no-compress-output'
