@@ -121,6 +121,7 @@ pipeline {
                 script {
                     //tee("python.log") {
                     sh "#!/bin/bash \n" +
+                       "cd $WORKSPACE \n" +
                        "ls -lrta /opt/ansible/ \n" +
                        ". /opt/ansible/env38/bin/activate \n" +
                        "python -V \n" +
@@ -132,8 +133,8 @@ pipeline {
                        "which conan \n" +
                        "conan remove --system-reqs '*' \n" +
                        "whoami \n" +
-                       "./scripts/cppcheck.sh\n" +
-                       //"source ./scripts/run-python.sh\n" +
+                       "bash ./scripts/cppcheck.sh\n" +
+                       "source ./scripts/run-python.sh\n" +
                        ". ./scripts/run-python.sh\n" +
                        "pre-commit run -a || true"
                     //} // tee
@@ -168,6 +169,7 @@ pipeline {
             steps {
                 script {
                     sh "#!/bin/bash \n" +
+                       "cd $WORKSPACE \n" +
                        "ls -lrta /opt/ansible/ \n" +
                        ". /opt/ansible/env38/bin/activate \n" +
                        "python -V \n" +
@@ -179,14 +181,15 @@ pipeline {
                        "which conan \n" +
                        "conan remove --system-reqs '*' \n" +
                        "whoami \n" +
-                       "./scripts/cppcheck.sh\n" +
+                       "bash ./scripts/cppcheck.sh\n" +
                        "source ./scripts/run-python.sh\n"
                        //"pre-commit run -a || true"
 
                     dir("sample/build-linux") {
                         sh "#!/bin/bash \n" +
+                           "cd $WORKSPACE \n" +
                            "source ./scripts/run-python.sh\n" +
-                           "./build.sh"
+                           "bash ./build.sh"
                     } // dir
                } // script
            } // steps
