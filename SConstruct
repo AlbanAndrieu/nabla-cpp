@@ -92,7 +92,7 @@ vars.AddVariables(
     BoolVariable('color', 'Set to true to build with colorizer', True),
     ('gcc_version', 'Set gcc version to use', '10'),
     ('install_path', 'Set install path', 'install'),
-    ('cache_path', 'Set scons cache path', Dir("#").abspath + '/../buildcache'),
+    ('cache_path', 'Set scons cache path', Dir("#").abspath + 'buildcache'),
     ('bom', 'bom location of additional 3rdparties.', ''),
 #    ('CC', 'Set C compiler : gcc, clang', 'gcc'),
 #    ('CXX', 'Set C++ compiler : g++, clang++', 'g++'),
@@ -327,11 +327,11 @@ PROJECT_JAVA_PATH = ProjectMacro.getEnvVariable('JAVA_HOME', PROJECT_THIRDPARTY_
 if env.Verbose() and env['color']:
     print(colored("PROJECT_JAVA_PATH:", 'grey'), colored(PROJECT_JAVA_PATH, 'cyan'))
 
-#env['cache_path'] = DEV_BINARY_DIR + '/buildcache-' + Arch
+env['cache_dir'] = env['cache_path'] + '-' + Arch
 if env.Verbose() and env['color']:
-    print(colored("nv['cache_path']:", 'magenta'), colored(env['cache_path'], 'cyan'))
-CacheDir(env['cache_path']+ Arch)
-SConsignFile(os.path.join(DEV_BINARY_DIR, 'scons-signatures' + Arch))
+    print(colored("env['cache_dir']:", 'magenta'), colored(env['cache_dir'], 'cyan'))
+CacheDir(env['cache_dir'])
+SConsignFile(os.path.join(DEV_BINARY_DIR, 'scons-signatures' + '-' + Arch))
 
 if env['release'] == 'True':
     if env['color']:
@@ -546,8 +546,8 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COM
     shutil.rmtree(os.path.join(env['sandbox'], 'nabla-1.2.3'), ignore_errors=True)
     shutil.rmtree(os.path.join(env['sandbox'], 'target'), ignore_errors=True)
     shutil.rmtree(os.path.join(env['sandbox'], 'install'), ignore_errors=True)
-    shutil.rmtree(os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch), ignore_errors=True)
-    env.Execute("rm -Rf variables.py " + os.path.join(env['ENV']['WORKSPACE'], "download3rdparties-cache*") + " " + "scons-signatures*.dblite *.tgz *.zip" + " " + os.path.join(env['sandbox'], 'buildcache'  + Arch) + " " + os.path.join(env['ENV']['WORKSPACE'], '..', 'buildcache' + Arch))
+    shutil.rmtree(os.path.join(env['ENV']['WORKSPACE'], env['cache_dir']), ignore_errors=True)
+    env.Execute("rm -Rf variables.py " + os.path.join(env['ENV']['WORKSPACE'], "download3rdparties-cache*") + " " + "scons-signatures*.dblite *.tgz *.zip" + " ")
     if env['color']:
         print(colored("Cache/3rdparties cleaning DONE:", 'green'))
     SetOption("clean", 1)

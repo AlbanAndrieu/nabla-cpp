@@ -190,6 +190,8 @@ pipeline {
                            "cd $WORKSPACE \n" +
                            "source ./scripts/run-python.sh\n" +
                            "bash ./build.sh"
+
+                        //sh 'ctest -T test --no-compress-output'
                     } // dir
                } // script
            } // steps
@@ -232,6 +234,30 @@ pipeline {
 
         // sample/build/conaninfo.txt sample/build-linux/CMakeFiles/CMakeOutput.log
         archiveArtifacts artifacts: '**/conaninfo.txt, , *.log, sample/build*/CMakeFiles/CMakeOutput.log, sample/build*/CMakeFiles/CMakeError.log, bw-outputs/build-wrapper.log, bw-outputs/build-wrapper-dump.json', excludes: null, fingerprint: false, onlyIfSuccessful: false
+
+        // Archive the CTest xml output
+        archiveArtifacts (
+          artifacts: 'build/Testing/**/*.xml',
+          fingerprint: true
+        )
+
+        // Process the CTest xml output with the xUnit plugin
+        xunit (
+          testTimeMargin: '3000',
+          thresholdMode: 1,
+          thresholds: [
+            skipped(failureThreshold: '0'),
+            failed(failureThreshold: '0')
+          ],
+        tools: [CTest(
+            pattern: 'build/Testing/**/*.xml',
+            deleteOutputFiles: true,
+            failIfNotNew: false,
+            skipNoTestFiles: true,
+            stopProcessingIfError: true
+          )]
+        )
+
       } // always
       success {
           archiveArtifacts 'build/*.tar.gz, *.log, conaninfo.txt'

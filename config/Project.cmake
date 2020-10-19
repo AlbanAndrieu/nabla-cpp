@@ -887,7 +887,8 @@ COMMENT "Running cppcheck to produce code analysis report."
 #ADD_CUSTOM_TARGET(tags etags --members --declarations  `find ${CMAKE_CURRENT_SOURCE_DIR} -name *.cxx -or -name *.h`)
 #ADD_CUSTOM_TARGET(etags DEPENDS tags)
 
-#ENABLE_TESTING(true)
+#For test --no-compress-output -T Test
+ENABLE_TESTING(true)
 
 SET(CTEST_BINARY_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
 #SET(CTEST_SOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/src/test/cpp")
