@@ -165,7 +165,7 @@ pipeline {
                } // script
            } // steps
         } // stage Build-Dcoker
-        stage('Build-CMake') {
+       stage('Build-Scons') {
             steps {
                 script {
                     sh "#!/bin/bash \n" +
@@ -182,12 +182,34 @@ pipeline {
                        "conan remove --system-reqs '*' \n" +
                        "whoami \n" +
                        "bash ./scripts/cppcheck.sh\n" +
-                       "source ./scripts/run-python.sh\n"
-                       //"pre-commit run -a || true"
+                       "source ./scripts/run-python.sh\n" +
+                       //"pre-commit run -a || true\n" +
+                       "bash ./build.sh"
+
+               } // script
+           } // steps
+        } // stage Build-CMake
+        stage('Build-CMake') {
+            steps {
+                script {
+                    //sh "#!/bin/bash \n" +
+                    //   "cd $WORKSPACE \n" +
+                    //   "ls -lrta /opt/ansible/ \n" +
+                    //   ". /opt/ansible/env38/bin/activate \n" +
+                    //   "python -V \n" +
+                    //   "python3 -V \n" +
+                    //   "python3.8 -V \n" +
+                    //   "pip -V \n" +
+                    //   "pip list \n" +
+                    //   "pip3.8 install conan pre-commit cmake \n" +
+                    //   "which conan \n" +
+                    //   "conan remove --system-reqs '*' \n" +
+                    //   "whoami \n" +
+                    //   "bash ./scripts/cppcheck.sh\n" +
+                    //   "source ./scripts/run-python.sh\n"
 
                     dir("sample/build-linux") {
                         sh "#!/bin/bash \n" +
-                           "cd $WORKSPACE \n" +
                            "source ./scripts/run-python.sh\n" +
                            "bash ./build.sh"
 
@@ -201,9 +223,6 @@ pipeline {
                 SONAR_SCANNER_OPTS = "-Xmx1g"
             }
             steps {
-                //sh "pwd"
-                //sh "ls -lrta /usr/local/"
-                //sh "ls -lrta /usr/local/sonar-runner/"
                 sh "/usr/local/sonar-runner/bin/sonar-scanner -D sonar-project.properties"
             }
         } // stage SonarQube
@@ -260,7 +279,7 @@ pipeline {
 
       } // always
       success {
-          archiveArtifacts 'build/*.tar.gz, *.log, conaninfo.txt'
+          archiveArtifacts '**/*.tar.gz, *.log, conaninfo.txt, sample/build-linux/DartConfiguration.tcl, sample/build-linux/install_manifest.txt, sample/build-linux/CMakeCache.txt'
       } // success
     } // post
 } // pipeline

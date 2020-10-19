@@ -157,7 +157,7 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
 
          echo -e "${magenta} ctest --output-on-failure -j2 -N -D ExperimentalMemCheck ${NC}"
          #ctest -T memcheck
-         ctest --output-on-failure -j2 -N -D ExperimentalMemCheck
+         ctest --output-on-failure -j2 -N -D ExperimentalMemCheck || true
       fi
 
     else
@@ -170,7 +170,7 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
     #cd src/test/app/
     #ctest -V -C Debug
     echo -e "${magenta} ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true ${NC}"
-    ctest -V --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
+    ctest -V --force-new-ctest-process --no-compress-output -T Test -O Test.log || /bin/true
 
     #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheckctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
 

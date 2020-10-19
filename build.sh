@@ -68,7 +68,7 @@ pwd
 #sudo nano /proc/sys/kernel/perf_event_paranoid
 #-1
 
-${WORKING_DIR}/scripts/clean.sh
+${WORKING_DIR}/clean.sh
 
 echo -e "${magenta} Upgrade python from 2 to 3 : 2to3 -w SConstruct ${NC}"
 
