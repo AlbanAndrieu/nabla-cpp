@@ -92,7 +92,7 @@ vars.AddVariables(
     BoolVariable('color', 'Set to true to build with colorizer', True),
     ('gcc_version', 'Set gcc version to use', '10'),
     ('install_path', 'Set install path', 'install'),
-    ('cache_path', 'Set scons cache path', Dir("#").abspath + 'buildcache'),
+    ('cache_path', 'Set scons cache path', os.path.join(Dir("#").abspath, 'buildcache')),
     ('bom', 'bom location of additional 3rdparties.', ''),
 #    ('CC', 'Set C compiler : gcc, clang', 'gcc'),
 #    ('CXX', 'Set C++ compiler : g++, clang++', 'g++'),
