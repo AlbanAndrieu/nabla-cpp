@@ -237,7 +237,7 @@ pipeline {
 
         // Archive the CTest xml output
         archiveArtifacts (
-          artifacts: 'build/Testing/**/*.xml',
+          artifacts: 'sample/build-linux/Testing/**/*.xml, sample/build-linux/Testing/Temporary/*',
           fingerprint: true
         )
 
@@ -250,7 +250,7 @@ pipeline {
             failed(failureThreshold: '0')
           ],
         tools: [CTest(
-            pattern: 'build/Testing/**/*.xml',
+            pattern: 'sample/build-linux/Testing/**/Test.xml',
             deleteOutputFiles: true,
             failIfNotNew: false,
             skipNoTestFiles: true,

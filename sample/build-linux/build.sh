@@ -123,8 +123,8 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package ${NC}"
-${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc
+echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc ${NC}"
+${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
@@ -162,7 +162,6 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
 
     else
       echo -e "${magenta} ctest --output-on-failure -j2 ${NC}"
-      ctest --output-on-failure -j2
     fi
 
     #ctest -D Experimental
