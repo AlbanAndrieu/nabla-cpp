@@ -42,6 +42,7 @@ rm -Rf target
 rm -Rf bin
 rm -Rf include
 rm -Rf Testing/
+#rm -Rf ${HOME}/.conan/
 
 echo -e "${magenta} ${double_arrow} Cleaning DONE ${NC}"
 

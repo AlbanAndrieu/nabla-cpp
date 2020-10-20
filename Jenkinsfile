@@ -189,6 +189,7 @@ pipeline {
                            "whoami \n" +
                            "bash ./scripts/cppcheck.sh\n" +
                            "source ./scripts/run-python.sh\n" +
+                           "rm -Rf /home/jenkins/.conan/\n" +
                            //"pre-commit run -a || true\n" +
                            "bash ./build.sh"
                     } // tee
@@ -220,6 +221,7 @@ pipeline {
                             sh "#!/bin/bash \n" +
                                //"source ../../scripts/run-python.sh\n" +
                                ". /opt/ansible/env38/bin/activate \n" +
+                               "rm -Rf /home/jenkins/.conan/\n" +
                                "bash ./build.sh"
 
                             //sh 'ctest -T test --no-compress-output'

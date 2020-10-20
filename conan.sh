@@ -151,6 +151,12 @@ elif [ "$(uname -s)" == "Linux" ]; then
 
 fi
 
+conan_res=$?
+if [[ $conan_res -ne 0 ]]; then
+    echo -e "${red} ---> Conan failed : $conan_res ${NC}"
+    exit 1
+fi
+
 conan profile list
 conan config home
 
