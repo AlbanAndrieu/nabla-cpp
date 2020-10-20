@@ -203,15 +203,15 @@ else
   echo -e "${magenta} BITS : ${BITS} ${NC}"
 fi
 
-if [ -n "${ENABLE_MINGW_64}" ]; then
+if [ "${ENABLE_MINGW_64}" == "true" ]; then
   echo -e "${green} ENABLE_MINGW_64 is defined ${happy_smiley} ${NC}"
   export CC="x86_64-w64-mingw32-gcc"
   export CXX="x86_64-w64-mingw32-g++"
-elif [ -n "${ENABLE_MINGW_32}" ]; then
+elif [ "${ENABLE_MINGW_32}" == "true" ]; then
   echo -e "${green} ENABLE_MINGW_32 is defined ${happy_smiley} ${NC}"
   export CC="i686-w64-mingw32-gcc"
   export CXX="i686-w64-mingw32-g++"
-elif [ -n "${ENABLE_CLANG}" ]; then
+elif [ "${ENABLE_CLANG}" == "true" ]; then
   echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
   export CC="/usr/bin/clang"
   export CXX="/usr/bin/clang++"
@@ -229,7 +229,7 @@ else
   fi
 fi
 
-if [ -n "${ENABLE_NINJA}" ]; then
+if [ "${ENABLE_NINJA}" == "true" ]; then
   echo -e "${green} ENABLE_NINJA is defined ${happy_smiley} : ${ENABLE_NINJA} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_NINJA, use default one ${NC}"
