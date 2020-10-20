@@ -353,24 +353,27 @@ else
   echo -e "${magenta} SCONS : ${SCONS} ${NC}"
 fi
 
-#if [ -n "${SCONS_OPTS}" ]; then
-#  echo -e "${green} SCONS_OPTS is defined ${happy_smiley} : ${SCONS_OPTS} ${NC}"
-#else
-#  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
-#
-#  if [ "$(uname -s)" == "SunOS" ]; then
-#    SCONS_OPTS="-j8 opt=True"
-#  elif [ "$(uname -s)" == "Linux" ]; then
-#    SCONS_OPTS="-j32 opt=True"
-#  else
-#    SCONS_OPTS="--cache-disable"
-#  fi
-#  #-j32 --cache-disable gcc_version=4.8.5 opt=True
-#  #--debug=time,explain
-#  #count, duplicate, explain, findlibs, includes, memoizer, memory, objects, pdb, prepare, presub, stacktrace, time
-#  export SCONS_OPTS
-#  echo -e "${magenta} SCONS_OPTS : ${SCONS_OPTS} ${NC}"
-#fi
+if [ -n "${SCONS_OPTS}" ]; then
+  echo -e "${green} SCONS_OPTS is defined ${happy_smiley} : ${SCONS_OPTS} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
+
+  if [ "$(uname -s)" == "SunOS" ]; then
+    #SCONS_OPTS="-j8 opt=True"
+    SCONS_OPTS="-Q"
+  elif [ "$(uname -s)" == "Linux" ]; then
+    #SCONS_OPTS="-j32 opt=True"
+    SCONS_OPTS="-Q"
+  else
+    #SCONS_OPTS="--cache-disable"
+    SCONS_OPTS="-Q"
+  fi
+  #-j32 --cache-disable gcc_version=4.8.5 opt=True
+  #--debug=time,explain
+  #count, duplicate, explain, findlibs, includes, memoizer, memory, objects, pdb, prepare, presub, stacktrace, time
+  export SCONS_OPTS
+  echo -e "${magenta} SCONS_OPTS : ${SCONS_OPTS} ${NC}"
+fi
 
 if [ -n "${GIT_CMD}" ]; then
   echo -e "${green} GIT_CMD is defined ${happy_smiley} : ${GIT_CMD} ${NC}"

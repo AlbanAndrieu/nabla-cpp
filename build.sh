@@ -90,7 +90,7 @@ fi
 
 export CONAN_GENERATOR=${CONAN_GENERATOR:-"scons"}
 
-${WORKING_DIR}/conan.sh
+#${WORKING_DIR}/conan.sh
 
 echo -e "${green} Building : scons ${NC}"
 

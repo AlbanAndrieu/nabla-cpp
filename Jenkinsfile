@@ -249,7 +249,11 @@ pipeline {
         //  unstableTotalAll: 1
 
         recordIssues enabledForFailure: true,
-          tools: [cppCheck(pattern: 'reports/cppcheck-result.xml')]
+          tools: [cppCheck(pattern: 'reports/cppcheck-result.xml'),
+                  junitParser(pattern: 'sample/build-linux/Testing/JUnitTestResults.xml'),
+                  sonarQube(pattern: '**/sonar-report.json'),
+                  cmake()
+          ]
         //publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
 
         // sample/build/conaninfo.txt sample/build-linux/CMakeFiles/CMakeOutput.log
@@ -277,6 +281,9 @@ pipeline {
             stopProcessingIfError: true
           )]
         )
+
+        //junit 'sample/build-linux/Testing/JUnitTestResults.xml'
+        //step([$class: 'JUnitResultArchiver', testResults: 'sample/build-linux/Testing/JUnitTestResults.xml'])
 
       } // always
       success {
