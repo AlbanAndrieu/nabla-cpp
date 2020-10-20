@@ -62,12 +62,12 @@ elif [ "${ENABLE_MINGW_64}" == "true" ]; then
         #conan profile new nabla_msys2_mingw
 
         #conan install ../microsoft/ --build=boost*@conan/stable -pr ../nabla_msys2_mingw_linux
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build=missing -pr ${WORKING_DIR}/sample/nabla_msys2_mingw_linux -if ./sample/build-${ARC} ${NC}"
-        conan install ${WORKING_DIR}/sample/microsoft/ --build=missing -pr ${WORKING_DIR}/sample/nabla_msys2_mingw_linux -if ./sample/build-${ARC}
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build=missing -pr ${WORKING_DIR}/sample/nabla_msys2_mingw_linux -if ./sample/build-${ARCH} ${NC}"
+        conan install ${WORKING_DIR}/sample/microsoft/ --build=missing -pr ${WORKING_DIR}/sample/nabla_msys2_mingw_linux -if ./sample/build-${ARCH}
         #-s zlib:compiler="MinGW"
 
     elif [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
-        conan install mingw_installer/1.0@conan/stable -if ./sample/build-${ARC}
+        conan install mingw_installer/1.0@conan/stable -if ./sample/build-${ARCH}
         #conan install mingw_installer/1.0@conan/stable -s settings.compiler.libcxx=libc++  -s settings.compiler=gcc -s build_type=Debug
         #conan install mingw_installer/1.0@conan/stable -s compiler=gcc -s compiler.version=10
     fi
@@ -105,10 +105,10 @@ echo -e "${green} Using CONAN_GENERATOR : ${CONAN_GENERATOR} ${happy_smiley} ${N
 if [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
     case $(uname -m) in
     x86_64)
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build -g ${CONAN_GENERATOR} -if ./sample/build-${ARC} ${NC}"
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost -g ${CONAN_GENERATOR} -if ./sample/build-${ARC} ${NC}"
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} -if ./sample/build-${ARC} ${NC}"
-        conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} -if ./sample/build-${ARC}
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH} ${NC}"
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH} ${NC}"
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH} ${NC}"
+        conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH}
 
         ;;
     i*86)
@@ -129,11 +129,11 @@ elif [ "$(uname -s)" == "Linux" ]; then
         #conan install ../microsoft/ -s os="Linux" -s compiler="gcc"
         ##conan install ../microsoft/ boost/1.67.0@conan/stable -s compiler.version=6.4
         #conan install boost_system/1.66.0@bincrafters/stable --build boost_system
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build -g ${CONAN_GENERATOR} -if ./sample/build-${ARC} ${NC}"
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost -g ${CONAN_GENERATOR} -if ./sample/build-${ARC} ${NC}"
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH} ${NC}"
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build boost -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH} ${NC}"
         #conan install ${WORKING_DIR}/sample/microsoft/ --build boost_system
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} -if ./sample/build-${ARC} ${NC}"
-        conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} -if ./sample/build-${ARC}
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH} ${NC}"
+        conan install ${WORKING_DIR}/sample/microsoft/ --build missing -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH}
         # below you can download it IF available
         #conan install ${WORKING_DIR}/sample/microsoft/
         #conan info${WORKING_DIR}/sample/microsoft/ --graph=file.html
