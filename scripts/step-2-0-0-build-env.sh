@@ -100,10 +100,6 @@ elif [ "$(uname -s)" == "Darwin" ]; then
   echo -e "${magenta} PATH : ${PATH} ${NC}"
 fi
 
-if [ -z "$WORKSPACE" ]; then
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
-  exit 1
-fi
 if [ -n "${WORKSPACE}" ]; then
   if [ "${SYSTEM}" == "MSYS" -o "${SYSTEM}" == "Cygwin" ]; then
       WORKSPACE=$(cygpath -u "${WORKSPACE}")
@@ -111,8 +107,7 @@ if [ -n "${WORKSPACE}" ]; then
   fi
   echo -e "${green} WORKSPACE is defined ${happy_smiley} : ${WORKSPACE} ${NC}"
 else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE, use default one ${NC}"
-  exit 1
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
   #echo -e "${magenta} WORKSPACE : ${WORKSPACE} ${NC}"
 fi
 
