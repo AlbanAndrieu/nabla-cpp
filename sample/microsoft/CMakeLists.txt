@@ -63,8 +63,8 @@ IF(ENABLE_CONAN)
   #conan install ../microsoft/ --build boost_system
 
   # Import dependencies via Conan.io
-  #INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  INCLUDE(${PROJECT_SOURCE_DIR}/conanbuildinfo.cmake)
+  INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+  #INCLUDE(${PROJECT_SOURCE_DIR}/conanbuildinfo.cmake)
 
   SET(CONAN_SYSTEM_INCLUDES ON)
   CONAN_BASIC_SETUP()
