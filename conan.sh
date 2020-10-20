@@ -7,6 +7,9 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/scripts/step-0-color.sh"
 
+source "${WORKING_DIR}/scripts/step-2-0-0-build-env.sh" || exit 1
+WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
+
 #rm -Rf /home/albandrieu/.conan/data/boost_system/
 
 echo -e "${cyan} ${double_arrow} Conan install ${NC}"

@@ -82,39 +82,9 @@ if [ "${OS}" == "Debian" ]; then
 	#LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
-if [ -n "${MODE_RELEASE}" ]; then
-    echo -e "${green} MODE_RELEASE is defined ${happy_smiley} ${NC}"
-    export CMAKE_INSTALL_PREFIX=/usr/local
-else
-    export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/debug
-fi
+export ENABLE_MINGW_64=true
 
-#-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
-#-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
-#-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
-
-if [ "${ENABLE_NINJA}" == "true" ]; then
-    echo -e "${magenta} cmake -G\"Ninja\" -DCMAKE_BUILD_TYPE=Debug ${PROJECT_SRC}/sample/microsoft ${NC}"
-    export CMAKE_GENERATOR="Ninja"
-fi
-
-export CMAKE_GENERATOR=${CMAKE_GENERATOR:-"Eclipse CDT4 - Unix Makefiles"}
-
-#-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
-#-D_ECLIPSE_VERSION=4.4
-if [ "${ENABLE_MINGW_64}" == "true" ]; then
-    echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32-linux.cmake ${PROJECT_SRC}/sample/microsoft ${NC}"
-    cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=../Toolchain-cross-mingw32-linux.cmake ${PROJECT_SRC}/sample/microsoft
-else
-    echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft ${NC}"
-    cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ${PROJECT_SRC}/sample/microsoft
-fi
-#-DENABLE_TESTING=true # for Dart
-cmake_res=$?
-if [[ $cmake_res -ne 0 ]]; then
-    echo -e "${red} ---> CMake failed : $cmake_res ${NC}"
-    exit 1
-fi
+${WORKING_DIR}/cmake.sh
 
 if [[ -f ${PROJECT_SRC}/sample/microsoft/compile_commands.json ]]; then
     rm ${PROJECT_SRC}/sample/microsoft/compile_commands.json

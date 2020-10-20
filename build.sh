@@ -29,7 +29,7 @@ fi
 
 export WORKSPACE="${WORKING_DIR}"
 
-source ${WORKING_DIR}/scripts/step-2-0-0-build-env.sh || exit 1
+source "${WORKING_DIR}/scripts/step-2-0-0-build-env.sh" || exit 1
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 if [ -n "${SCONS_OPTS}" ]; then
