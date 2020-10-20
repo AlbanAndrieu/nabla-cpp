@@ -105,6 +105,7 @@ pipeline {
         GIT_BROWSE_URL = "https://github.com/AlbanAndrieu/${GIT_PROJECT}/"
         GIT_URL = "ssh://git@github.com/AlbanAndrieu/${GIT_PROJECT}.git"
         DOCKER_TAG = dockerTag()
+        ARCH = "linux"
     }
     options {
         //skipDefaultCheckout()
@@ -119,72 +120,78 @@ pipeline {
         stage('Build-Docker') {
             steps {
                 script {
-                    //tee("python.log") {
-                    sh "#!/bin/bash \n" +
-                       "cd $WORKSPACE \n" +
-                       "ls -lrta /opt/ansible/ \n" +
-                       ". /opt/ansible/env38/bin/activate \n" +
-                       "python -V \n" +
-                       "python3 -V \n" +
-                       "python3.8 -V \n" +
-                       "pip -V \n" +
-                       "pip list \n" +
-                       "pip3.8 install conan pre-commit \n" +
-                       "which conan \n" +
-                       "conan remove --system-reqs '*' \n" +
-                       "whoami \n" +
-                       "bash ./scripts/cppcheck.sh\n" +
-                       "source ./scripts/run-python.sh\n" +
-                       ". ./scripts/run-python.sh\n" +
-                       "pre-commit run -a || true"
-                    //} // tee
+                    tee("python.log") {
+                        sh "#!/bin/bash \n" +
+                           "cd $WORKSPACE \n" +
+                           "ls -lrta /opt/ansible/ \n" +
+                           ". /opt/ansible/env38/bin/activate \n" +
+                           "python -V \n" +
+                           "python3 -V \n" +
+                           "python3.8 -V \n" +
+                           "pip -V \n" +
+                           "pip list \n" +
+                           "pip3.8 install conan pre-commit \n" +
+                           "which conan \n" +
+                           "conan remove --system-reqs '*' \n" +
+                           "whoami \n" +
+                           "bash ./scripts/cppcheck.sh\n" +
+                           "source ./scripts/run-python.sh\n" +
+                           ". ./scripts/run-python.sh\n" +
+                           "pre-commit run -a || true"
+                    } // tee
 
-                    //sh "#!/bin/bash \n" +
-                    //   "conan remove --system-reqs '*'"
+                    tee("build-docker.log") {
 
-                    docker.withRegistry(DOCKER_REGISTRY_HUB_URL, DOCKER_REGISTRY_HUB_CREDENTIAL) {
-                        def ansible = docker.build 'nabla/jenkins-slave-ubuntu:latest'
-                        //ansible.inside {
-                        //  sh 'echo test'
-                        //}
-                        ansible.push()  // record this latest (optional)
-                        //stage 'Test image'
-                        stage('Test image') {
-                         //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
-                           docker.image('nabla/jenkins-slave-ubuntu:latest').withRun {c ->
-                           sh "docker logs ${c.id}"
-                          }
-                        }
-                        // run some tests on it (see below), then if everything looks good:
-                        //stage 'Approve image'
-                        ansible.push 'latest'
-                        //def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
-                        //sh "docker push ${myImg.imageName()}"
-                        //} // withCredentials
-                    } // withRegistry
+                        //sh "#!/bin/bash \n" +
+                        //   "conan remove --system-reqs '*'"
+
+                        docker.withRegistry(DOCKER_REGISTRY_HUB_URL, DOCKER_REGISTRY_HUB_CREDENTIAL) {
+                            def ansible = docker.build 'nabla/jenkins-slave-ubuntu:latest'
+                            //ansible.inside {
+                            //  sh 'echo test'
+                            //}
+                            ansible.push()  // record this latest (optional)
+                            //stage 'Test image'
+                            stage('Test image') {
+                             //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
+                               docker.image('nabla/jenkins-slave-ubuntu:latest').withRun {c ->
+                               sh "docker logs ${c.id}"
+                              }
+                            }
+                            // run some tests on it (see below), then if everything looks good:
+                            //stage 'Approve image'
+                            ansible.push 'latest'
+                            //def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
+                            //sh "docker push ${myImg.imageName()}"
+                            //} // withCredentials
+                        } // withRegistry
+
+                    } // tee
                } // script
            } // steps
         } // stage Build-Dcoker
        stage('Build-Scons') {
             steps {
                 script {
-                    sh "#!/bin/bash \n" +
-                       "cd $WORKSPACE \n" +
-                       "ls -lrta /opt/ansible/ \n" +
-                       ". /opt/ansible/env38/bin/activate \n" +
-                       "python -V \n" +
-                       "python3 -V \n" +
-                       "python3.8 -V \n" +
-                       "pip -V \n" +
-                       "pip list \n" +
-                       "pip3.8 install conan pre-commit cmake \n" +
-                       "which conan \n" +
-                       "conan remove --system-reqs '*' \n" +
-                       "whoami \n" +
-                       "bash ./scripts/cppcheck.sh\n" +
-                       "source ./scripts/run-python.sh\n" +
-                       //"pre-commit run -a || true\n" +
-                       "bash ./build.sh"
+                    tee("build-scons.log") {
+                        sh "#!/bin/bash \n" +
+                           "cd $WORKSPACE \n" +
+                           "ls -lrta /opt/ansible/ \n" +
+                           ". /opt/ansible/env38/bin/activate \n" +
+                           "python -V \n" +
+                           "python3 -V \n" +
+                           "python3.8 -V \n" +
+                           "pip -V \n" +
+                           "pip list \n" +
+                           "pip3.8 install conan pre-commit cmake \n" +
+                           "which conan \n" +
+                           "conan remove --system-reqs '*' \n" +
+                           "whoami \n" +
+                           "bash ./scripts/cppcheck.sh\n" +
+                           "source ./scripts/run-python.sh\n" +
+                           //"pre-commit run -a || true\n" +
+                           "bash ./build.sh"
+                    } // tee
 
                } // script
            } // steps
@@ -192,30 +199,32 @@ pipeline {
         stage('Build-CMake') {
             steps {
                 script {
-                    //sh "#!/bin/bash \n" +
-                    //   "cd $WORKSPACE \n" +
-                    //   "ls -lrta /opt/ansible/ \n" +
-                    //   ". /opt/ansible/env38/bin/activate \n" +
-                    //   "python -V \n" +
-                    //   "python3 -V \n" +
-                    //   "python3.8 -V \n" +
-                    //   "pip -V \n" +
-                    //   "pip list \n" +
-                    //   "pip3.8 install conan pre-commit cmake \n" +
-                    //   "which conan \n" +
-                    //   "conan remove --system-reqs '*' \n" +
-                    //   "whoami \n" +
-                    //   "bash ./scripts/cppcheck.sh\n" +
-                    //   "source ./scripts/run-python.sh\n"
+                    tee("build-cmake.log") {
+                        //sh "#!/bin/bash \n" +
+                        //   "cd $WORKSPACE \n" +
+                        //   "ls -lrta /opt/ansible/ \n" +
+                        //   ". /opt/ansible/env38/bin/activate \n" +
+                        //   "python -V \n" +
+                        //   "python3 -V \n" +
+                        //   "python3.8 -V \n" +
+                        //   "pip -V \n" +
+                        //   "pip list \n" +
+                        //   "pip3.8 install conan pre-commit cmake \n" +
+                        //   "which conan \n" +
+                        //   "conan remove --system-reqs '*' \n" +
+                        //   "whoami \n" +
+                        //   "bash ./scripts/cppcheck.sh\n" +
+                        //   "source ./scripts/run-python.sh\n"
 
-                    dir("sample/build-linux") {
-                        sh "#!/bin/bash \n" +
-                           //"source ../../scripts/run-python.sh\n" +
-                           ". /opt/ansible/env38/bin/activate \n" +
-                           "bash ./build.sh"
+                        dir("sample/build-linux") {
+                            sh "#!/bin/bash \n" +
+                               //"source ../../scripts/run-python.sh\n" +
+                               ". /opt/ansible/env38/bin/activate \n" +
+                               "bash ./build.sh"
 
-                        //sh 'ctest -T test --no-compress-output'
-                    } // dir
+                            //sh 'ctest -T test --no-compress-output'
+                        } // dir
+                    } // tee
                } // script
            } // steps
         } // stage Build-CMake
