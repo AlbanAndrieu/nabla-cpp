@@ -211,9 +211,9 @@ fi
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Reporting : Junit ${NC}"
 
-    echo -e "${magenta} xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
-    xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml || true
-    xsltproc valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml || true
+    echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
+    xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml || true
+    xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml || true
 fi
 
 if [ `uname -s` == "Linux" ]; then
@@ -222,6 +222,8 @@ if [ `uname -s` == "Linux" ]; then
     #http://clang-analyzer.llvm.org/installation.html
     #http://clang-analyzer.llvm.org/scan-build.html
     echo -e "${magenta} scan-build make ${NC}"
+    apt-get install clang-tools || true
+    which scan-build
     scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang make
     #scan-view
 fi

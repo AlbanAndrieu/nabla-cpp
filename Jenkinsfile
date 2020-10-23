@@ -263,7 +263,13 @@ pipeline {
           tools: [cppCheck(pattern: 'reports/cppcheck-result.xml'),
                   junitParser(pattern: 'sample/build-linux/Testing/JUnitTestResults.xml'),
                   sonarQube(pattern: '**/sonar-report.json'),
-                  cmake()
+                  cmake(),
+                  clang(),
+                  clangAnalyzer(),
+                  clangTidy(),
+                  dockerLint(),
+                  flawfinder()
+
           ]
         //publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
 
@@ -298,7 +304,7 @@ pipeline {
 
       } // always
       success {
-          archiveArtifacts '**/*.tar.gz, *.log, conaninfo.txt, sample/build-linux/DartConfiguration.tcl, sample/build-linux/install_manifest.txt, sample/build-linux/CMakeCache.txt'
+          archiveArtifacts '**/*.tar.gz, *.log, conaninfo.txt, sample/build-linux/DartConfiguration.tcl, sample/build-linux/install_manifest.txt, sample/build-linux/CMakeCache.txt, sample/build-linux/graphviz.png, sample/build-linux/iwyu.out, sample/build-linux/bin/*, sample/build-linux/lib/*, sample/build-linux/_CPack_Packages/Linux/DEB/*'
       } // success
     } // post
 } // pipeline

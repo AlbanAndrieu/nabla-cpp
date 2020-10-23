@@ -546,7 +546,7 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and ('clean' in COM
     shutil.rmtree(os.path.join(env['sandbox'], 'nabla-1.2.3'), ignore_errors=True)
     shutil.rmtree(os.path.join(env['sandbox'], 'target'), ignore_errors=True)
     shutil.rmtree(os.path.join(env['sandbox'], 'install'), ignore_errors=True)
-    shutil.rmtree(os.path.join(env['ENV']['WORKSPACE'], env['cache_dir']), ignore_errors=True)
+    shutil.rmtree(env['cache_dir'], ignore_errors=True)
     env.Execute("rm -Rf variables.py " + os.path.join(env['ENV']['WORKSPACE'], "download3rdparties-cache*") + " " + "scons-signatures*.dblite *.tgz *.zip" + " ")
     if env['color']:
         print(colored("Cache/3rdparties cleaning DONE:", 'green'))
