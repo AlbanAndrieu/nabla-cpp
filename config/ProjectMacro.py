@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Helper functions for the scons build
 # inspired from SconsBuilder.py
+import sys
 import fnmatch
 import glob
 import sys
@@ -257,7 +258,6 @@ def reduceBuildVerbosity(env):
 
 ################################################################
 # define the arch
-
 # https://github.com/SGpp/SGpp/issues/186
 def getDistribution():
   try:
@@ -282,7 +282,7 @@ def getDistribution():
         if sys.platform == 'win32':
             dist = ["unknown", "", ""]
         else:
-            import distro
+            import distro        
             dist = distro.linux_distribution()
     return dist
   except:
@@ -308,24 +308,24 @@ def getArch():
     return theArch
 
 ################################################################
-################################################################
 # See https://github.com/SCons/scons/wiki/LongCmdLinesOnWin32
 # Search also for TempFileMunge
 # /c/Python27/Scripts/pip2.7.exe install pywin32==228
-def ourspawn(self, sh, escape, cmd, args, env):
-	newargs = ' '.join(args[1:])
-	cmdline = cmd + " " + newargs
-	startupinfo = subprocess.STARTUPINFO()
-	startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-	proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-		stderr=subprocess.PIPE, startupinfo=startupinfo, shell = False, env = env)
-	data, err = proc.communicate()
-	rv = proc.wait()
-	if rv:
-		print("=====")
-		print(err)
-		print("=====")
-	return rv
+def ourspawn(sh, escape, cmd, args, env):
+    newargs = ' '.join(args[1:])
+    cmdline = cmd + " " + newargs
+    print("spawning - ourspawn : " + SCons.Platform.win32.escape(cmdline))
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, startupinfo=startupinfo, shell = False, env = env)
+    data, err = proc.communicate()
+    rv = proc.wait()
+    if rv:
+        print("=====")
+        print(err)
+        print("=====")
+    return rv
 
 def myWin32Spawn(sh, escape, cmd, args, env):
 
@@ -334,11 +334,12 @@ def myWin32Spawn(sh, escape, cmd, args, env):
     args = fixArguments(args)
     mystring = string.join(args)
 
-    #print("spawning " + SCons.Platform.win32.escape(mystring))
+    print("spawning - myWin32Spawn : " + SCons.Platform.win32.escape(mystring))
 
     if len(mystring) > 10000:
         filename = tempfile.mktemp()
         newFile = open(filename, "w")
+        print("spawning - myWin32Spawn to file : " + SCons.Platform.win32.escape(filename))
         newFile.write(mystring)
         newFile.close()
 
@@ -356,7 +357,7 @@ if sys.platform == 'win32':
         for var in env:
             env[var] = env[var].encode('ascii', 'replace')
 
-        #print("spawning cmd : " + SCons.Platform.win32.escape(cmd))
+        print("spawning cmd : " + SCons.Platform.win32.escape(cmd))
         sAttrs = win32security.SECURITY_ATTRIBUTES()
         StartupInfo = win32process.STARTUPINFO()
         newargs = ' '.join(map(escape, args[1:]))
@@ -370,8 +371,8 @@ if sys.platform == 'win32':
                 win32file.DeleteFile(arg)
             exit_code = 0
         else:
-            if not cmd == 'windres' and not cmd == 'flex' and not cmd == 'bash':
-                if cmd == 'i686-w64-mingw32-g++':
+            if not cmd == 'windres-NOK' and not cmd == 'flex' and not cmd == 'bash' and not cmd == 'rm-NOK':
+                if cmd == 'i686-w64-mingw32-g++' or cmd == 'x86_64-w64-mingw32-g++' or cmd == 'i686-w64-mingw32-gcc' or cmd == 'x86_64-w64-mingw32-gcc':
                     return ourspawn(sh, escape, cmd, args, env)
                 else:
                     # otherwise execute the command.
@@ -385,9 +386,17 @@ if sys.platform == 'win32':
         return exit_code
 
 def SetupSpawn( env ):
+    print("SetupSpawn : " + sys.platform)
     if sys.platform == 'win32':
         env['SPAWN'] = my_spawn
+        
+def fixArguments(args):
 
+    newArgs = []
+    for arg in args:
+        newArgs.append(arg.replace('\\', '/'))
+    return newArgs
+    
 def CheckVars( env ):
     for var in ['CC', 'CXX']:
         if var not in env:

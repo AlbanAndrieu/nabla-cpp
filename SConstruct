@@ -83,6 +83,7 @@ vars.AddVariables(
     BoolVariable('use_clang', 'On linux only: replace gcc by clang', False),
     BoolVariable('use_clangsa', 'On linux only: replace gcc by whatever clang scan-build provided', False),
     BoolVariable('use_cpp11', 'On linux only: ask to compile using C++11', True),
+    BoolVariable('use_pthread', 'On linux only: ask to compile using pthread', True),
     BoolVariable('use_gcov', 'On linux only: build with gcov flags', False),
     BoolVariable('use_asan', 'On linux only and clang: build with address sanitize', False),
     BoolVariable('use_xcompil', 'X compile (for clang)', False),
@@ -130,20 +131,22 @@ if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in
 
     conan, _, _ = conan_api.factory()
 
-    build_directory = os.path.join(os.getcwd(), "sample/build-scons")
+    build_directory = os.path.join(os.getcwd(), "sample", "build-scons")
     if not os.path.exists(build_directory):
         os.makedirs(build_directory)
 
-    src_directory = os.path.join(os.getcwd(), "sample/microsoft")
+    src_directory = os.path.join(os.getcwd(), "sample", "microsoft")
     #build_hello_directory = os.path.join(src_directory, "hello.c")
 
-    conanfile_path = os.path.join(os.getcwd(), src_directory + "/conanfile.txt")
+    conanfile_path = os.path.join(os.getcwd(), src_directory, "conanfile.txt")
 
     # See https://git.ircad.fr/conan/conan-boost/blob/fc812a583a6e88ee7dc378ac2cc47ed1055fb37a/conanfile.py
 
     conan.install(conanfile_path,\
             generators=["scons"],\
             install_folder=build_directory)
+
+ProjectMacro.SetupSpawn(env)
 
 if env['use_mingw'] or Arch in ['mingw', 'cygwin', 'winnt']:
     #env['use_mingw'] = True
@@ -152,13 +155,16 @@ if env['use_mingw'] or Arch in ['mingw', 'cygwin', 'winnt']:
 
     #print("MSVSSolution")
 
-    #env.MSVSSolution(target = 'Microsoft' + env['MSVSSOLUTIONSUFFIX'],
-    #                 projects = ['Microsoft' + env['MSVSPROJECTSUFFIX']],
-    #                 variant = 'Release')
+#env.MSVSSolution(target = 'Microsoft' + env['MSVSSOLUTIONSUFFIX'],
+#                 projects = ['Microsoft' + env['MSVSPROJECTSUFFIX']],
+#                 variant = 'Release')
+
+if env['use_mingw'] == True and Arch in ['mingw', 'cygwin', 'winnt']:
+    target_tools = ['default', 'mingw']
 else:
     if Arch in ['x86sol','sun4sol']:
         target_tools = ['default', 'suncc', 'sunc++', 'sunlink']
-    elif Arch in ['winnt']:
+    elif env['use_clang'] == False and Arch in ['mingw', 'cygwin', 'winnt']:
         target_tools = ['default', 'msvc']
     else:
         if env['use_clang']:
@@ -303,10 +309,10 @@ env.AddMethod(TreatWarningsAsErrors, "TreatWarningsAsErrors")
 # Default values setted when no environment defined (like jenkins)
 if env['target'] == 'local':
   DEV_SOURCE_DIR = env['sandbox']
-  DEV_BINARY_DIR = env['sandbox'] + '/target'
+  DEV_BINARY_DIR = os.path.join(env['sandbox'], 'target')
 else:
   DEV_SOURCE_DIR = ProjectMacro.getEnvVariable('PROJECT_SRC', os.path.dirname(env['sandbox']))
-  DEV_BINARY_DIR = ProjectMacro.getEnvVariable('PROJECT_TARGET_PATH', os.path.dirname(env['sandbox'])) + '/sample'
+  DEV_BINARY_DIR = os.path.join(ProjectMacro.getEnvVariable('PROJECT_TARGET_PATH', os.path.dirname(env['sandbox'])), 'sample')
 
 #if re.search('dev\/', DEV_BINARY_DIR):
 #  DEV_BINARY_DIR = re.sub(r'dev\/', 'dev_target/', DEV_BINARY_DIR)
@@ -315,9 +321,9 @@ if env.Verbose() and env['color']:
     print(colored("DEV_BINARY_DIR:", 'grey'), colored(DEV_BINARY_DIR, 'cyan'))
 
 if env['target'] == 'local':
-    PROJECT_THIRDPARTY_PATH = env['sandbox'] + '/thirdparty'
+    PROJECT_THIRDPARTY_PATH = os.path.join(env['sandbox'], 'thirdparty')
 else:
-    PROJECT_THIRDPARTY_PATH = ProjectMacro.getEnvVariable('PROJECT_THIRDPARTY_PATH','/thirdparty')
+    PROJECT_THIRDPARTY_PATH = ProjectMacro.getEnvVariable('PROJECT_THIRDPARTY_PATH', 'thirdparty')
 
 if env.Verbose() and env['color']:
     print(colored("PROJECT_THIRDPARTY_PATH:", 'grey'), colored(PROJECT_THIRDPARTY_PATH, 'cyan'))
@@ -386,7 +392,7 @@ if env.Verbose() and env['color']:
     print(colored("include dir:", 'magenta'), colored(PROJECT_INCLUDE_DIR, 'cyan'))
 
 env['CPPPATH'] = [
-    '.',
+#    '.',
 # published headers
     PROJECT_INCLUDE_DIR,
 # 3rd parties
@@ -582,14 +588,16 @@ Export('env', 'Versions')
 #Sconscript calls
 if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')):
     env.SConscript([
-        DEV_SOURCE_DIR+'/sample/microsoft/src/main/cpp/SConscript',
-        DEV_SOURCE_DIR+'/sample/microsoft/src/main/app/SConscript',
+        'sample/microsoft/src/main/cpp/SConscript',
+        'sample/microsoft/src/main/app/SConscript',
+        #os.path.join(DEV_SOURCE_DIR, 'sample/microsoft/src/main/cpp/SConscript'),
+        #os.path.join(DEV_SOURCE_DIR, 'sample/microsoft/src/main/app/SConscript'),
     ])
 
 # Disable cppunit on Linux for mingw as we do not have mingw librairies of cppunit
 if not env['use_mingw'] and not platform.platform().startswith('Linux'):
-    env.SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/cpp/SConscript')
-    env.SConscript(DEV_SOURCE_DIR+'/sample/microsoft/src/test/app/SConscript')
+    env.SConscript(os.path.join(DEV_SOURCE_DIR, 'sample/microsoft/src/test/cpp/SConscript'))
+    env.SConscript(os.path.join(DEV_SOURCE_DIR, 'sample/microsoft/src/test/app/SConscript'))
 
 # post build stuff
 
@@ -625,7 +633,7 @@ def finish(target, source, env):
         else:
             rev = 'rev'
         ver = '_%s'%env['version'] if 'version' in env else ''
-        createTar(env['tar'], 'nabla-1.2.3/target/', '%s%s_%s_%s.tgz' % (name, ver, rev, arch))
+        createTar(env['tar'], os.path.join('nabla-1.2.3', 'target'), '%s%s_%s_%s.tgz' % (name, ver, rev, arch))
 
 #finishCommand = env.Command('/finish', None, Action(finish, "Starting post build actions"))
 #BUILD_TARGETS += finishCommand
