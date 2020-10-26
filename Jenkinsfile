@@ -222,7 +222,7 @@ pipeline {
                                //"source ../../scripts/run-python.sh\n" +
                                ". /opt/ansible/env38/bin/activate \n" +
                                "rm -Rf /home/jenkins/.conan/\n" +
-                               "export SONAR_CMD=;\n" +
+                               //"export SONAR_CMD=;\n" +
                                "bash ./build.sh"
 
                             //sh 'ctest -T test --no-compress-output'

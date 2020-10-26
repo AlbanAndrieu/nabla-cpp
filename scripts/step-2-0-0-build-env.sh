@@ -314,13 +314,12 @@ if [ -n "${SONAR_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
   echo -e "${magenta} ${double_arrow} /usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR} ${NC}"
-  if [ -f "/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR}" ]; then
-    SONAR_CMD="/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
-  else
-    echo -e "${red} ${double_arrow} Undefined directory ${head_skull} : SONAR_CMD failed ${NC}"
-    #exit 1
-  fi
-  export SONAR_CMD
+  #if [ -f "/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR}" ]; then
+  #  SONAR_CMD="/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
+  #else
+  #  echo -e "${red} ${double_arrow} Undefined directory ${head_skull} : SONAR_CMD failed ${NC}"
+  #fi
+  #export SONAR_CMD
   echo -e "${magenta} SONAR_CMD : ${SONAR_CMD} ${NC}"
 fi
 
