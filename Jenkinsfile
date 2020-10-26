@@ -106,6 +106,7 @@ pipeline {
         GIT_URL = "ssh://git@github.com/AlbanAndrieu/${GIT_PROJECT}.git"
         DOCKER_TAG = dockerTag()
         ARCH = "linux"
+        USE_SUDO = "false"
     }
     options {
         //skipDefaultCheckout()

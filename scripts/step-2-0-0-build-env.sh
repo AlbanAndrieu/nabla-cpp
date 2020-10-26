@@ -314,12 +314,12 @@ if [ -n "${SONAR_CMD}" ]; then
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SONAR_CMD, use default one ${NC}"
   echo -e "${magenta} ${double_arrow} /usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR} ${NC}"
-  #if [ -f "/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR}" ]; then
-  #  SONAR_CMD="/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
-  #else
-  #  echo -e "${red} ${double_arrow} Undefined directory ${head_skull} : SONAR_CMD failed ${NC}"
-  #fi
-  #export SONAR_CMD
+  if [ -f "/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR}" ]; then
+    SONAR_CMD="/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
+  else
+    echo -e "${red} ${double_arrow} Undefined directory ${head_skull} : SONAR_CMD failed ${NC}"
+  fi
+  export SONAR_CMD
   echo -e "${magenta} SONAR_CMD : ${SONAR_CMD} ${NC}"
 fi
 
@@ -626,12 +626,13 @@ fi
 #export PATH="${JAVA_HOME}/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/kgr/dev/kgr_maven/nexus/bin/jsw/linux-x86-64:/kgr-mvn/hudson/etc/init.d:/home/kgr_mvn/bin"
 export M2_HOME=""
 
+if [ "${USE_SUDO}" == "false" ]; then
+  unset USE_SUDO
+  echo -e "${green} USE_SUDO is disabled ${happy_smiley} : ${USE_SUDO} ${NC}"
+fi
+
 if [ -n "${USE_SUDO}" ]; then
   echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
-  if [ "${USE_SUDO}" == "false" ]; then
-    unset USE_SUDO
-    echo -e "${green} USE_SUDO is disabled ${happy_smiley} : ${USE_SUDO} ${NC}"
-  fi
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : USE_SUDO, use the default one ${NC}"
   if [ "${OS}" == "Ubuntu" ]; then
