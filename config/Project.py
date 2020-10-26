@@ -248,18 +248,22 @@ def generate(env, **kw):
             '-zrescan',
         ]
 
-    elif Arch in ['mingw', 'cygwin']:
-        env['use_mingw'] = True
+#    elif Arch in ['mingw', 'cygwin']:
+#        env['use_mingw'] = True
         #print('Ovverride mingw : ', env['use_mingw'])
 
-    elif Arch in ['winnt']:
+    elif Arch in ['winnt', 'mingw', 'cygwin']:
         # if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
-        #env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
-        #env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
-        #env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
-        env['CC'] = 'x86_64-w64-mingw32-gcc'
-        env['CXX'] = 'x86_64-w64-mingw32-g++'
+        if env['use_mingw'] == False:
+            print("TODO")
+            #env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+            ##env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+            #env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
+            #mklink /j "C:\VS" "C:\Program Files (x86)\Microsoft Visual Studio"
+            #env['CC'] = 'C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe'
+            ##env['CXX'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe"'
+            #env['LINK'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/link.exe"'
         # if env['release'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
@@ -276,9 +280,12 @@ def generate(env, **kw):
         #    '/MD',
         # ]
         env['ENV']['PATH'] = env['ENV']['PATH'] + \
-            ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;'
+            ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;C:\\VS\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\;'
         #';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
-
+        if Arch not in ['winnt']:
+            env['SHELL'] = 'c:/tools/msys64/usr/bin/bash.exe'
+        #env['LEX'] = 'c:\\tools\\msys64\\usr\\bin\\flex.exe'
+        #env['SPAWN'] = ProjectMacro.myWin32Spawn
         # env['CCFLAGS'] = [
         #    '/nologo',
         #    '/W3',
@@ -289,15 +296,14 @@ def generate(env, **kw):
         #    '-DWINNT',
         #    '-D_WINDOWS',
         # ]
-        env['LINKFLAGS'] = [
-            '-static',
-            #    '/nologo',
-            #    '/opt:ref',
-            #    '/nodefaultlib:libcmt.lib',
-            #    '/nodefaultlib:libc.lib',
-            #    '/nodefaultlib:libcd.lib',
-            #    '/nodefaultlib:libcmtd.lib',
-        ]
+        #env['LINKFLAGS'] = [
+        #        '/nologo',
+        #        '/opt:ref',
+        #        '/nodefaultlib:libcmt.lib',
+        #        '/nodefaultlib:libc.lib',
+        #        '/nodefaultlib:libcd.lib',
+        #        '/nodefaultlib:libcmtd.lib',
+        #]
 
     if platform.platform() == 'linux':
         env['RC'] = 'i686-w64-mingw32-windres'
@@ -323,13 +329,17 @@ def generate(env, **kw):
             env['CC'] = 'i686-w64-mingw32-gcc'
             # apt-get install g++-mingw-w64-i686
             env['CXX'] = 'i686-w64-mingw32-g++'
-            env['LINK'] = 'i686-w64-mingw32-g++'
+            if referenceEnv['verbose']:
+                env['LINK'] = 'i686-w64-mingw32-g++ -v'
+            else:
+                env['LINK'] = 'i686-w64-mingw32-g++'
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
+            env['RANLIB'] = 'i686-w64-mingw32-ranlib'
+            env['LD'] = 'i686-w64-mingw32-ld'
+            env['AR'] = 'i686-w64-mingw32-ar'
+            env['AS'] = 'i686-w64-mingw32-as'
+            env['RC'] = 'windres --target=pe-i386' #elf32-i386
             if platform.platform() == 'linux':
-                env['RANLIB'] = 'i686-w64-mingw32-ranlib'
-                env['LD'] = 'i686-w64-mingw32-ld'
-                env['AR'] = 'i686-w64-mingw32-ar'
-                env['AS'] = 'i686-w64-mingw32-as'
                 env['RC'] = 'i686-w64-mingw32-windres'
                 env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/' # This is pointing to /usr/share/mingw-w64/include
             #env['RCCOM'] = env['RCCOM'] + ' -DALM_MAJOR=%s -DALM_MIDDLE=%s -DALM_MINOR=%s -DALM_MICRO=%s -DALM_REVISION=%s -DALM_BUILD_YEAR=%s -DALM_BUILD_DATE="%s"' % (
@@ -345,13 +355,20 @@ def generate(env, **kw):
             # apt-get install gcc-mingw-w64-x86-64
             env['CC'] = 'x86_64-w64-mingw32-gcc'
             # apt-get install g++-mingw-w64-x86-64
-            env['CXX'] = 'x86_64-w64-mingw32-g++'
+            if referenceEnv['verbose']:
+                env['CXX'] = 'x86_64-w64-mingw32-g++ -v'
+            else:
+                env['CXX'] = 'x86_64-w64-mingw32-g++'
             env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
             env['LD'] = 'x86_64-w64-mingw32-ld'
             env['LINK'] = 'x86_64-w64-mingw32-g++'
             env['AR'] = 'x86_64-w64-mingw32-ar'
             env['AS'] = 'x86_64-w64-mingw32-as'
+            env['RC'] = 'x86_64-w64-mingw32-windres'
             #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
+            if platform.platform() == 'linux':
+                env['RCFLAGS'] = '-I/usr/x86_64-w64-mingw32/include/'
+                env['RC'] = 'x86_64-w64-mingw32-windres'
 
             #env.Append(LIBPATH = ['/mingw64/lib'])
 
@@ -359,8 +376,9 @@ def generate(env, **kw):
     #    env.Append(LINKFLAGS = "-static")
 
     # '-mthreads',
-    env['CXXFLAGS'] += ['-pthread']
-    env['LINKFLAGS'] += ['-pthread']
+    if 'use_pthread' in env and env['use_pthread']:
+        env['CXXFLAGS'] += ['-pthread']
+        env['LINKFLAGS'] += ['-pthread']
 
     if 'use_cpp11' in env and env['use_cpp11']:  # env['gcc_version'] >= '8'
         env['CFLAGS'] = ['-std=c11']
@@ -391,6 +409,8 @@ def generate(env, **kw):
 
     if not 'CXXVERSION' in env:
         env['CXXVERSION'] = env['gcc_version']
+    #TODO override
+    env['CXXVERSION'] = env['gcc_version']
 
     if env['color']:
 

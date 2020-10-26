@@ -15,6 +15,8 @@ echo "JAVA_HOME : %JAVA_HOME%"
 call java -version
 call scons --version
 call gcc --version
+REM call clang --version
+call i686-w64-mingw32-g++ --version
 REM call perl -V
 
 echo "==============="
@@ -23,6 +25,7 @@ call date /T && ECHO date succeeded!
 call time /T
 cd %project_dir%\ || ECHO command return code %ERRORLEVEL%
 echo "cd %project_dir%\"
+
 REM /c/Python38/python.exe /c/Python38/Scripts/scons.exe
 echo "call C:\Python38\python.exe C:\Python38\Scripts\scons.exe %SCONS_OPTS%"
 REM call scons %SCONS_OPTS% || EXIT /B 1
@@ -45,6 +48,8 @@ if not exist %project_dir%\install\winnt\debug\bin\run_app.exe (
   REM exit 1
 )
 
+pause
+
 echo "==============="
 cd %project_dir%\install\winnt || EXIT /B 1
 del ..\winnt.zip
@@ -53,6 +58,9 @@ del ..\winnt.zip
 echo "==============="
 cd %WORKSPACE% || EXIT /B 1
 echo NABLA #%BUILD_NUMBER%-sha1:%GIT_COMMIT:~0,6% > NABLA_WINDOWS_VERSION.TXT || EXIT /B 1
+
+echo "==============="
+echo "scons use_mingw=False use_cpp11=False use_pthread=False"
 
 pause
 REM exit 0

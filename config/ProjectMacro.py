@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Helper functions for the scons build
 # inspired from SconsBuilder.py
+import sys
 import fnmatch
 import glob
 import os
@@ -254,7 +255,34 @@ def reduceBuildVerbosity(env):
 
 ################################################################
 # define the arch
-
+def getDistribution():
+  try:
+    with open("/etc/os-release") as osr:
+      osReleaseLines = osr.readlines()
+    hasOsRelease = True
+  except (IOError,OSError):
+    osReleaseLines = []
+    hasOsRelease = False
+  try:
+    import platform
+    if platform.system() == "Darwin":
+      return "osx_x86-64"
+  except:
+    pass
+  try:
+    import platform, distro
+    # print(sys.version_info)
+    if sys.version_info<(3,5,0):
+        dist = platform.dist() # Deprecated since version 3.5, will be removed in version 3.8
+    else :
+        if sys.platform == 'win32':
+            dist = ["unknown", "", ""]
+        else:
+            import distro        
+            dist = distro.linux_distribution()
+    return dist
+  except:
+    return ["unknown", "", ""]
 
 def getArch():
     thePlatform = platform.platform()
@@ -298,3 +326,31 @@ def SetupSpawn( env ):
         buf = ourSpawn()
         buf.ourenv = env
         env['SPAWN'] = buf.ourspawn
+        
+# ---------------------------------------------------------------------------------------
+
+def fixArguments(args):
+
+    newArgs = []
+    for arg in args:
+        newArgs.append(arg.replace('\\', '/'))
+    return newArgs
+
+def myWin32Spawn(sh, escape, cmd, args, env):
+
+    import SCons.Platform.win32
+
+    args = fixArguments(args)
+    mystring = string.join(args)
+
+    #print("spawning " + SCons.Platform.win32.escape(mystring))
+
+    if len(mystring) > 10000:
+        filename = tempfile.mktemp()
+        newFile = open(filename, "w")
+        newFile.write(mystring)
+        newFile.close()
+
+        return SCons.Platform.win32.exec_spawn([sh, filename], env)
+
+    return SCons.Platform.win32.exec_spawn([sh, "-c", SCons.Platform.win32.escape(mystring)], env)
