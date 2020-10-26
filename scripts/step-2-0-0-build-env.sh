@@ -231,10 +231,10 @@ fi
 
 if [ "${ENABLE_CLANG_SCAN}" == "true" ]; then
   echo -e "${green} ENABLE_CLANG_SCAN is defined ${happy_smiley} : ${ENABLE_CLANG_SCAN} ${NC}"
-else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG_SCAN, use default one ${NC}"
   export CLANG_SCAN="scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang"
   echo -e "${magenta} ENABLE_CLANG_SCAN : ${ENABLE_CLANG_SCAN} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} ${NC}"
 fi
 
 if [ "${ENABLE_NINJA}" == "true" ]; then
