@@ -264,8 +264,8 @@ pipeline {
                   junitParser(pattern: 'sample/build-linux/Testing/JUnitTestResults.xml'),
                   sonarQube(pattern: '**/sonar-report.json'),
                   cmake(),
-                  clang(),
-                  clangAnalyzer(),
+                  //clang(),
+                  //clangAnalyzer(),
                   clangTidy(),
                   dockerLint(),
                   flawfinder()

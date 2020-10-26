@@ -22,6 +22,8 @@ export CHECK_FORMATTING=${CHECK_FORMATTING:-"true"}
 #export ENABLE_EXPERIMENTAL=${ENABLE_EXPERIMENTAL:-"true"}
 #export SONAR_PROCESSOR=${SONAR_PROCESSOR:-"x86-64"}
 export MODE_RELEASE=
+export ENABLE_CLANG_SCAN=${ENABLE_CLANG_SCAN:-"false"}
+#export CLANG_SCAN=${ENABLE_CLANG_SCAN:-"scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang"}
 
 if [ -n "${ENABLE_CLANG}" ]; then
     echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
@@ -82,6 +84,18 @@ if [ "${OS}" == "Debian" ]; then
 	#LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
+if [ `uname -s` == "Linux" -a "${ENABLE_CLANG}" != "true" -a "${ENABLE_CLANG_SCAN}" != "true" ]; then
+    echo -e "${green} Reporting : Clang analyzer ${NC}"
+
+    #http://clang-analyzer.llvm.org/installation.html
+    #http://clang-analyzer.llvm.org/scan-build.html
+    echo -e "${magenta} scan-build make ${NC}"
+    #apt-get install clang-tools || true
+    which scan-build || true
+    #${ENABLE_CLANG_SCAN} make
+    #scan-view
+fi
+
 ${WORKING_DIR}/cmake.sh
 
 if [[ -f ${PROJECT_SRC}/sample/microsoft/compile_commands.json ]]; then
@@ -92,7 +106,7 @@ fi
 echo -e "${green} Building : CMake ${NC}"
 
 echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc ${NC}"
-${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc
+${SONAR_CMD} ${ENABLE_CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
@@ -213,19 +227,8 @@ if [ `uname -s` == "Linux" ]; then
 
     echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
     xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml || true
+    echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml ${NC}"
     xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml || true
-fi
-
-if [ `uname -s` == "Linux" ]; then
-    echo -e "${green} Reporting : Clang analyzer ${NC}"
-
-    #http://clang-analyzer.llvm.org/installation.html
-    #http://clang-analyzer.llvm.org/scan-build.html
-    echo -e "${magenta} scan-build make ${NC}"
-    apt-get install clang-tools || true
-    which scan-build
-    scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang make
-    #scan-view
 fi
 
 echo -e "${green} Reporting : Coverage ${NC}"
