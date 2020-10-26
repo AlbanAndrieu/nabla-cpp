@@ -47,13 +47,11 @@ if Arch not in ['mingw','cygwin'] and env['use_conan']:
 #localenv['LIBS'].extend(localenv['OSDependentLibs'])
 localenv.Append(LIBS=['test_library'], LIBPATH=['#test_library'])
 
-#localenv.Append(LIBS = ['cppunit'])
-
 localenv.MergeFlags([
     '-Wl,-rpath=' + localenv['LIBRARY_OUTPUT_PATH'],
 ])
 
-if localenv['use_mingw']:
+if Arch not in ['x86Linux'] and localenv['use_mingw']:
     localenv.Append(LIBPATH = ['/mingw64/lib'])
     localenv.Append(LIBS = [
         'boost_thread-mt',

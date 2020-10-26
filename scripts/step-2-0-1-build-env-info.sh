@@ -171,7 +171,7 @@ if [ "$(uname -s)" == "Linux" ]; then
 	/usr/bin/google-chrome-stable --version || true #RedHat AND #Ubuntu
   fi
   echo "========== JAVASCRIPT =========="
-  phantomjs --version || true
+  #phantomjs --version || true
   #nodejs --version || true #Ubuntu
   node --version || true
   bower --version || true
@@ -192,7 +192,7 @@ fi
 echo "========== SCM =========="
 git --version || true
 git config --global --list || true
-svn --version || true
+#svn --version || true
 
 echo "========== ENV =========="
 #env is already displayed in jenkins

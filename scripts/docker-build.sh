@@ -8,7 +8,8 @@ set -eo pipefail
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 export DOCKER_NAME=${DOCKER_NAME:-"nabla-cpp"}
-export DOCKER_FILE="../docker/ubuntu18/Dockerfile"
+#export DOCKER_FILE="../docker/ubuntu18/Dockerfile"
+export DOCKER_FILE="../Dockerfile"
 
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/docker-env.sh"
@@ -88,7 +89,7 @@ echo -e "docker run -p 8080:8080 -t ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest
 echo -e "docker run -p 8080:8080 -t ${DOCKER_ORGANISATION}/${DOCKER_NAME}:latest /home/jenkins/test.war"
 echo -e ""
 
-export CST_CONFIG="docker/ubuntu18/config.yaml"
+export CST_CONFIG="config.yaml"
 
 "${WORKING_DIR}/docker-test.sh" "${DOCKER_NAME}"
 

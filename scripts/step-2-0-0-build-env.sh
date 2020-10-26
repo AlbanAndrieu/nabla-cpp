@@ -1,6 +1,11 @@
 #!/bin/bash
 #set -xv
 
+if [ "$0" = "${BAHS_SOURCE[0]}" ]; then
+    echo "This script has to be sourced and not executed..."
+    exit 1
+fi
+
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # shellcheck source=/dev/null
@@ -95,10 +100,6 @@ elif [ "$(uname -s)" == "Darwin" ]; then
   echo -e "${magenta} PATH : ${PATH} ${NC}"
 fi
 
-if [ -z "$WORKSPACE" ]; then
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
-  exit 1
-fi
 if [ -n "${WORKSPACE}" ]; then
   if [ "${SYSTEM}" == "MSYS" -o "${SYSTEM}" == "Cygwin" ]; then
       WORKSPACE=$(cygpath -u "${WORKSPACE}")
@@ -106,8 +107,7 @@ if [ -n "${WORKSPACE}" ]; then
   fi
   echo -e "${green} WORKSPACE is defined ${happy_smiley} : ${WORKSPACE} ${NC}"
 else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE, use default one ${NC}"
-  exit 1
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
   #echo -e "${magenta} WORKSPACE : ${WORKSPACE} ${NC}"
 fi
 
@@ -183,48 +183,6 @@ if [ "${OS}" == "Debian" ]; then
     #LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
-#if [ -n "${CC}" ]; then
-#  echo -e "${green} CC is defined ${happy_smiley} : ${CC} ${NC}"
-#else
-#  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CC, use default one ${NC}"
-#  if [ -n "${ENABLE_CLANG}" ]; then
-#    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
-#    export CC="/usr/bin/clang"
-#  else
-#    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
-#    if [ "$(uname -s)" == "SunOS" ]; then
-#      export CC="cc"
-#    elif [ "$(uname -s)" == "Linux" ]; then
-#      export CC="/usr/bin/gcc-8"
-#    else
-#      export CC="/usr/bin/gcc"
-#    fi
-#  fi
-#  echo -e "${magenta} CC : ${CC} ${NC}"
-#fi
-#
-#if [ -n "${CXX}" ]; then
-#  echo -e "${green} COMPILER is defined ${happy_smiley} : ${CXX} ${NC}"
-#else
-#  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : CXX, use default one ${NC}"
-#  if [ -n "${ENABLE_CLANG}" ]; then
-#    echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
-#    export CXX="/usr/bin/clang++"
-#    export COMPILER=${CXX}
-#  else
-#    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG, use default one ${NC}"
-#    if [ "$(uname -s)" == "SunOS" ]; then
-#      export CXX="CC"
-#    elif [ "$(uname -s)" == "Linux" ]; then
-#      export CXX="/usr/bin/g++-8"
-#    else
-#      export CXX="/usr/bin/g++"
-#    fi
-#    export COMPILER=${CXX}
-#  fi
-#  echo -e "${magenta} COMPILER : ${COMPILER} ${NC}"
-#fi
-
 if [ -n "${BITS}" ]; then
   echo -e "${green} BITS is defined ${happy_smiley} : ${BITS} ${NC}"
 else
@@ -245,7 +203,15 @@ else
   echo -e "${magenta} BITS : ${BITS} ${NC}"
 fi
 
-if [ -n "${ENABLE_CLANG}" ]; then
+if [ "${ENABLE_MINGW_64}" == "true" ]; then
+  echo -e "${green} ENABLE_MINGW_64 is defined ${happy_smiley} ${NC}"
+  export CC="x86_64-w64-mingw32-gcc"
+  export CXX="x86_64-w64-mingw32-g++"
+elif [ "${ENABLE_MINGW_32}" == "true" ]; then
+  echo -e "${green} ENABLE_MINGW_32 is defined ${happy_smiley} ${NC}"
+  export CC="i686-w64-mingw32-gcc"
+  export CXX="i686-w64-mingw32-g++"
+elif [ "${ENABLE_CLANG}" == "true" ]; then
   echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
   export CC="/usr/bin/clang"
   export CXX="/usr/bin/clang++"
@@ -261,6 +227,22 @@ else
     export CC="/usr/bin/gcc"
     export CXX="/usr/bin/g++"
   fi
+fi
+
+if [ "${ENABLE_CLANG_SCAN}" == "true" ]; then
+  echo -e "${green} ENABLE_CLANG_SCAN is defined ${happy_smiley} : ${ENABLE_CLANG_SCAN} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG_SCAN, use default one ${NC}"
+  export CLANG_SCAN="scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang"
+  echo -e "${magenta} ENABLE_CLANG_SCAN : ${ENABLE_CLANG_SCAN} ${NC}"
+fi
+
+if [ "${ENABLE_NINJA}" == "true" ]; then
+  echo -e "${green} ENABLE_NINJA is defined ${happy_smiley} : ${ENABLE_NINJA} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_NINJA, use default one ${NC}"
+  export ENABLE_NINJA=false
+  echo -e "${magenta} ENABLE_NINJA : ${ENABLE_NINJA} ${NC}"
 fi
 
 if [ -n "${COMPILER}" ]; then
@@ -366,32 +348,35 @@ else
     SCONS="/usr/local/bin/scons"
   else
     #SCONS="/usr/bin/python2.7 /usr/bin/scons"
-    SCONS="python3 /usr/bin/scons"
+    #SCONS="python3 /usr/bin/scons"
     #SCONS="python3 /usr/local/bin/scons"
-    #SCONS="python3 /opt/ansible/env38/bin/scons"
+    SCONS="/opt/ansible/env38/bin/python3.8 /opt/ansible/env38/bin/scons"
   fi
   export SCONS
   echo -e "${magenta} SCONS : ${SCONS} ${NC}"
 fi
 
-#if [ -n "${SCONS_OPTS}" ]; then
-#  echo -e "${green} SCONS_OPTS is defined ${happy_smiley} : ${SCONS_OPTS} ${NC}"
-#else
-#  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
-#
-#  if [ "$(uname -s)" == "SunOS" ]; then
-#    SCONS_OPTS="-j8 opt=True"
-#  elif [ "$(uname -s)" == "Linux" ]; then
-#    SCONS_OPTS="-j32 opt=True"
-#  else
-#    SCONS_OPTS="--cache-disable"
-#  fi
-#  #-j32 --cache-disable gcc_version=4.8.5 opt=True
-#  #--debug=time,explain
-#  #count, duplicate, explain, findlibs, includes, memoizer, memory, objects, pdb, prepare, presub, stacktrace, time
-#  export SCONS_OPTS
-#  echo -e "${magenta} SCONS_OPTS : ${SCONS_OPTS} ${NC}"
-#fi
+if [ -n "${SCONS_OPTS}" ]; then
+  echo -e "${green} SCONS_OPTS is defined ${happy_smiley} : ${SCONS_OPTS} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : SCONS_OPTS, use default one ${NC}"
+
+  if [ "$(uname -s)" == "SunOS" ]; then
+    #SCONS_OPTS="-j8 opt=True"
+    SCONS_OPTS="-Q"
+  elif [ "$(uname -s)" == "Linux" ]; then
+    #SCONS_OPTS="-j32 opt=True"
+    SCONS_OPTS="-Q"
+  else
+    #SCONS_OPTS="--cache-disable"
+    SCONS_OPTS="-Q"
+  fi
+  #-j32 --cache-disable gcc_version=4.8.5 opt=True
+  #--debug=time,explain
+  #count, duplicate, explain, findlibs, includes, memoizer, memory, objects, pdb, prepare, presub, stacktrace, time
+  export SCONS_OPTS
+  echo -e "${magenta} SCONS_OPTS : ${SCONS_OPTS} ${NC}"
+fi
 
 if [ -n "${GIT_CMD}" ]; then
   echo -e "${green} GIT_CMD is defined ${happy_smiley} : ${GIT_CMD} ${NC}"
@@ -644,6 +629,10 @@ export M2_HOME=""
 
 if [ -n "${USE_SUDO}" ]; then
   echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
+  if [ "${USE_SUDO}" == "false" ]; then
+    unset USE_SUDO
+    echo -e "${green} USE_SUDO is disabled ${happy_smiley} : ${USE_SUDO} ${NC}"
+  fi
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : USE_SUDO, use the default one ${NC}"
   if [ "${OS}" == "Ubuntu" ]; then

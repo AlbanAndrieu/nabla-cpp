@@ -1,5 +1,7 @@
 #imports
 import os
+import sys
+import platform
 import ProjectMacro
 #getting local scons environment
 Import('env')
@@ -47,20 +49,42 @@ if Arch not in ['mingw','cygwin','winnt'] and env['use_conan']:
     flags = conan["conan"]
     localenv.MergeFlags(flags)
 
+
+if env['use_static']:
+    #localenv['CCFLAGS'] += ['-static-libgcc', '-static-libstdc++']
+    localenv['LINKFLAGS'] += ['-static']
+    #localenv['LINKFLAGS'] += ['-Xlinker -Map=a.map']
+
+    print("platform : "  + sys.platform)
+
+    if sys.platform == 'win32':
+        localenv.Install( executablePath_,
+            [
+                "/tools/mingw32/i686-w64-mingw32/lib/libgcc_s_sjlj-1.dll",   #  if not static-libgcc
+                "/tools/mingw32/i686-w64-mingw32/lib/libstdc++-6.dll",    #  if not static-libgcc
+            ])
+    #else:
+
+    print("platform : "  + platform.platform())
+
+    if platform.platform().startswith('Linux'):
+        print("SASFA")
+        localenv.Install( '/workspace/users/albandrieu30/nabla-cpp/target/bin/x86Linux/',
+            [
+                #"/usr/lib/gcc/i686-w64-mingw32/9.3-win32/libgcc_s_sjlj-1.dll",   #  if not static-libgcc
+                "/usr/lib/gcc/x86_64-w64-mingw32/9.3-posix/libgcc_s_seh-1.dll",   #  if not static-libgcc
+                #"/usr/lib/gcc/i686-w64-mingw32/9.3-win32/libstdc++-6.dll",    #  if not static-libgcc
+                "/usr/lib/gcc/x86_64-w64-mingw32/9.3-posix/libstdc++-6.dll",    #  if not static-libgcc
+            ])
+
+    localenv.Alias('install', '/workspace/users/albandrieu30/nabla-cpp/target/bin/x86Linux/')
+
 source = Glob('*.cpp')
 
 #building Binary
 p = localenv.Program(os.path.join(localenv['PROJECT_BINARY_DIR'],'run_app'), source)
 
+localenv.Install('/usr/bin', p)
+#localenv.Alias('install', '/usr/bin')
+
 Default(p)
-
-#env.MSVSProject(target = 'example' + env['MSVSPROJECTSUFFIX'],
-#srcs=source,
-#buildtarget = p,
-#variant = 'Debug')
-
-#env.Install( executablePath_,
-#	[
-#		"/usr/lib/gcc/i686-w64-mingw32/" + referenceEnv['ENV']['AF_MINGW_GCC_VERSION'] + "-win32/libgcc_s_sjlj-1.dll",
-#		"/usr/lib/gcc/i686-w64-mingw32/" + referenceEnv['ENV']['AF_MINGW_GCC_VERSION'] + "-win32/libstdc++-6.dll",
-#	])

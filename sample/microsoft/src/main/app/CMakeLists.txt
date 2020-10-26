@@ -15,12 +15,13 @@ INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 #LINK_LIBRARIES(${CPPUNIT_LIBRARY})
 
-#IF (MINGW)
-#  #SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++ -lstdc++")
+IF (MINGW)
+  #SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++ -lstdc++")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
 # 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -std=c++11 -lstdc++")
 #ELSE(MINGW)
 #  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
-#ENDIF(MINGW)
+ENDIF(MINGW)
 
 ADD_EXECUTABLE(run_app run_app.cpp)
 

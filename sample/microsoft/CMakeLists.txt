@@ -9,13 +9,47 @@ SET( SITE "albandrieu.com" )
 SET( DROP_SITE "192.168.1.61" )
 SET( DROP_LOCATION "/cdash/submit.php?project=MICROSOFT" )
 
+SET(CMAKE_ECLIPSE_VERSION "4.15")
+
 INCLUDE(${PROJECT_SOURCE_DIR}/../../config/Project.cmake)
 
+OPTION(ENABLE_CONAN "Enable building using conan" ON)
 SET(CONAN_DISABLE_CHECK_COMPILER true)
 
-IF (MINGW)
-  MESSAGE(STATUS "Conan not initialed")
-ELSE(MINGW)
+IF(MINGW)
+  IF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+
+    # See https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/CrossCompiling
+    #SET(CMAKE_CROSSCOMPILE ON CACHE BOOL "is crosscompiled" FORCE)
+
+    #SET(CMAKE_SYSTEM_NAME Windows)
+    #SET(CMAKE_SYSTEM_NAME Generic)
+    #SET(CMAKE_SYSTEM_NAME WindowsStore)
+    SET(CMAKE_SYSTEM_VERSION 10.0)
+
+    ## which compilers to use for C and C++
+    #SET(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
+    #SET(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
+    #SET(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
+	#
+    ## here is the target environment located
+    #SET(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32)
+	#
+    ## adjust the default behaviour of the FIND_XXX() commands:
+    ## search headers and libraries in the target environment, search
+    ## programs in the host environment
+    #set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    #set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    #set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+	#
+    #MESSAGE("CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
+    #MESSAGE("CMAKE_SYSTEM: ${CMAKE_SYSTEM}")
+  ELSE(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+    SET(ENABLE_CONAN OFF)
+  ENDIF(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+ENDIF(MINGW)
+
+IF(ENABLE_CONAN)
   # Prepare Conan.io packages
   SET(CONAN_BUILD_INFO_FILE ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
   IF(NOT EXISTS ${CONAN_BUILD_INFO_FILE})
@@ -30,9 +64,13 @@ ELSE(MINGW)
 
   # Import dependencies via Conan.io
   INCLUDE(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  SET(CONAN_SYSTEM_INCLUDES On)
+  #INCLUDE(${PROJECT_SOURCE_DIR}/conanbuildinfo.cmake)
+
+  SET(CONAN_SYSTEM_INCLUDES ON)
   CONAN_BASIC_SETUP()
-ENDIF(MINGW)
+ELSE(ENABLE_CONAN)
+  MESSAGE(STATUS "Conan not initialed")
+ENDIF(ENABLE_CONAN)
 
 SET(EXPORT_FILE microsoft-build.cmake)
 

@@ -4,7 +4,7 @@
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # shellcheck source=/dev/null
-source "${WORKING_DIR}/step-0-color.sh"
+source "${WORKING_DIR}/scripts/step-0-color.sh"
 
 echo -e "${cyan} ${double_arrow} Cleaning started ${NC}"
 
@@ -20,7 +20,7 @@ find . -name 'CMakeFiles' -type d | xargs rm -Rf
 rm -f sample/build-linux/Makefile
 rm -Rf sample/build-linux/_CPack_Packages/
 rm -f sample/build-linux/MICROSOFT*.deb
-rm -f sample/build-${ARCH}/conan*
+rm -f sample/build-linux/conan*
 #rm -Rf sample/build-linux/nabla_*_amd64.deb
 #Scons
 #rm -Rf buildcache-*
@@ -28,6 +28,7 @@ rm -f sample/build-${ARCH}/conan*
 #rm -f sample/microsoft/conanbuildinfo.*
 rm -f conanbuildinfo.*
 
+echo -e "${magenta} ${double_arrow} scons clean ${NC}"
 scons clean
 
 #git clean --quiet -fdx --exclude="*.tgz" --exclude="*md5" --exclude="*VERSION.TXT"
@@ -41,6 +42,7 @@ rm -Rf target
 rm -Rf bin
 rm -Rf include
 rm -Rf Testing/
+#rm -Rf ${HOME}/.conan/
 
 echo -e "${magenta} ${double_arrow} Cleaning DONE ${NC}"
 

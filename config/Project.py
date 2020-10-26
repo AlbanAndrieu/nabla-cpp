@@ -21,6 +21,16 @@ def generate(env, **kw):
 
     Arch = ProjectMacro.getArch()
 
+    # Normalize the VERBOSE Option, and make its value available as a function.
+    if env['VERBOSE'] == "auto":
+        env['VERBOSE'] = not sys.stdout.isatty()
+    else:
+        try:
+            env['VERBOSE'] = to_boolean(env['VERBOSE'])
+        except ValueError as e:
+            env.FatalError(f"Error setting VERBOSE variable: {e}")
+    env.AddMethod(lambda env: env['VERBOSE'], 'Verbose')
+
     #env['ENV']['SCONS_BUILD'] = '1'
     if env['color']:
         print(colored('Arch :', 'magenta'), colored(Arch, 'cyan'))
@@ -33,6 +43,7 @@ def generate(env, **kw):
             )[:3]
         #env['debug_flags'] = '-g'
         #env['debug_flags'] = '-gdwarf-3'
+        #env['CXXFLAGS'] += [ '-gdwarf-2', '-gstrict-dwarf' ] # Dwarf Error: found dwarf version '4', this reader only handles version 2 information.
         # Without the '-O0' flag (= do not optimize), we won t be able to print the content of some variables under 'gdb'
         env['debug_flags'] = '-g3'
         env['opt_flags'] = '-O0'
@@ -93,7 +104,7 @@ def generate(env, **kw):
 
     if Arch == 'x86Linux':
         env['CCFLAGS'] = [
-            '-g',
+            #'-g',
             # '-Werror', #Turns all warnings into errors.
             '-Wall',  # Turn on all warnings
             '-fdiagnostics-show-option',  # sonar cxx
@@ -131,6 +142,7 @@ def generate(env, **kw):
             # '-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
             # '-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
+        #env.Prepend(CPPDEFINES="ACE_HAS_EXCEPTIONS")
 
         if not env['use_xcompil']:
             env['CCFLAGS'] += ['-fPIC']
@@ -205,12 +217,15 @@ def generate(env, **kw):
                 # '-fmudflap', #http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
                 # '-pie -fPIE', # For ASLR
             ]
+            #env['CPPDEFINES'] += ['_FORTIFY_SOURCE=2']
 
         if not env['use_asan']:
             env['LINKFLAGS'] += ['-Wl,--no-undefined']
 
-        # if env['gcc_version'] >= '5.2':
-        #    env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=0']
+        if env['gcc_version'] >= '5.1':
+           env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=1']
+        #    env['CPPDEFINES'] += ['GLIBCXX_USE_CXX11_ABI=1']
+        # _GLIBCXX_USE_CXX11_ABI value 0 (old ABI) or 1 (new ABI)
 
         # Activate for debug purpose (when we integrate and we have error with symbols resolutions)
         #env['LINKFLAGS'] = ['-Wl,-z,defs']
@@ -256,7 +271,6 @@ def generate(env, **kw):
         # if not 'gcc_version' in env:
         #    env['gcc_version'] = '10'
         if env['use_mingw'] == False:
-            print("TODO")
             #env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
             ##env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
             #env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
@@ -264,6 +278,10 @@ def generate(env, **kw):
             #env['CC'] = 'C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe'
             ##env['CXX'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe"'
             #env['LINK'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/link.exe"'
+            env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+            env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+            env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
+
         # if env['release'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
         #    env.Append(CXXFLAGS = '/MD /O2')
@@ -309,10 +327,9 @@ def generate(env, **kw):
         env['RC'] = 'i686-w64-mingw32-windres'
 
     if env['use_clang'] and env['use_xcompil']:
-        env['CXXFLAGS'] += [ '-D__MINGW32__' ]
-        env['CXXFLAGS'] += [ '-gdwarf-2', '-gstrict-dwarf' ] # Dwarf Error: found dwarf version '4', this reader only handles version 2 information.
+        env['CXXFLAGS'] += ['-D__MINGW32__']
 
-    if env['use_xcompil'] and env['use_mingw']:
+    if env['use_xcompil'] or env['use_mingw']:
         #env['target_bits'] = '32'
         #print('Ovverride target_bits :' + env['target_bits'])
 
@@ -329,7 +346,7 @@ def generate(env, **kw):
             env['CC'] = 'i686-w64-mingw32-gcc'
             # apt-get install g++-mingw-w64-i686
             env['CXX'] = 'i686-w64-mingw32-g++'
-            if referenceEnv['verbose']:
+            if env['VERBOSE']:
                 env['LINK'] = 'i686-w64-mingw32-g++ -v'
             else:
                 env['LINK'] = 'i686-w64-mingw32-g++'
@@ -355,7 +372,7 @@ def generate(env, **kw):
             # apt-get install gcc-mingw-w64-x86-64
             env['CC'] = 'x86_64-w64-mingw32-gcc'
             # apt-get install g++-mingw-w64-x86-64
-            if referenceEnv['verbose']:
+            if env['VERBOSE']:
                 env['CXX'] = 'x86_64-w64-mingw32-g++ -v'
             else:
                 env['CXX'] = 'x86_64-w64-mingw32-g++'
@@ -382,9 +399,9 @@ def generate(env, **kw):
 
     if 'use_cpp11' in env and env['use_cpp11']:  # env['gcc_version'] >= '8'
         env['CFLAGS'] = ['-std=c11']
-        env['CXXFLAGS'] = ['-std=c++11']
         env['CCFLAGS'] += ['-std=c++11']
-        env['LINKFLAGS'] += ['-std=c++11']
+        #env['CXXFLAGS'] = ['-std=c++11']
+        #env['LINKFLAGS'] += ['-std=c++11']
 
     if 'target_bits' in env and env['target_bits'] == '32':
         env['CCFLAGS'] += ['-m32']
@@ -417,6 +434,8 @@ def generate(env, **kw):
         print(
             colored('Platform : ', 'magenta'),
             colored(platform.platform(), 'cyan'),
+            colored('Sys platform  : ', 'magenta'),
+            colored(sys.platform, 'cyan'),
         )
         print(colored('System : ', 'magenta'), colored(system, 'cyan'))
         print(colored('Machine : ', 'magenta'), colored(machine, 'cyan'))
@@ -425,7 +444,7 @@ def generate(env, **kw):
 
         print(colored('ENV TOOLS : ', 'magenta'), colored(env['TOOLS'], 'cyan'))
         # print "dump whole env :", env.Dump()
-        if env['verbose']:
+        if env.Verbose():
             print(colored('ENV ENV : ', 'magenta'), colored(env['ENV'], 'cyan'))
 
         if 'TERM' in env:

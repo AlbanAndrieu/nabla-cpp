@@ -14,13 +14,16 @@ fi
 echo "WORKSPACE ${WORKSPACE}"
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
-export ENABLE_MEMCHECK=true
-export UNIT_TESTS=true
-export CHECK_FORMATTING=true
-#export ENABLE_CLANG=true
-#export ENABLE_EXPERIMENTAL=true
-#export SONAR_PROCESSOR="x86-64"
+export ENABLE_MEMCHECK=${ENABLE_MEMCHECK:-"true"}
+export UNIT_TESTS=${UNIT_TESTS:-"true"}
+export CHECK_FORMATTING=${CHECK_FORMATTING:-"true"}
+#export ENABLE_CLANG=${ENABLE_CLANG:-"true"}
+#export ENABLE_MINGW_64=${ENABLE_MINGW_64:-"true"}
+#export ENABLE_EXPERIMENTAL=${ENABLE_EXPERIMENTAL:-"true"}
+#export SONAR_PROCESSOR=${SONAR_PROCESSOR:-"x86-64"}
 export MODE_RELEASE=
+export ENABLE_CLANG_SCAN=${ENABLE_CLANG_SCAN:-"false"}
+#export CLANG_SCAN=${ENABLE_CLANG_SCAN:-"scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang"}
 
 if [ -n "${ENABLE_CLANG}" ]; then
     echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
@@ -29,10 +32,14 @@ if [ -n "${ENABLE_CLANG}" ]; then
     export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 fi
 
-cd ../../
-#cd $PROJECT_SRC/
+if [ -z "$PROJECT_SRC" ]; then
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PROJECT_SRC ${NC}"
+  export PROJECT_SRC=${WORKSPACE}
+fi
 
-source ./step-2-0-0-build-env.sh || exit 1
+cd ${PROJECT_SRC}
+
+source ${PROJECT_SRC}/scripts/step-2-0-0-build-env.sh || exit 1
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
@@ -47,16 +54,16 @@ pwd
 
 echo "PROJECT_SRC : $PROJECT_SRC - PROJECT_TARGET_PATH : $PROJECT_TARGET_PATH"
 
-./clean.sh
+${PROJECT_SRC}/clean.sh
 
-export CONAN_GENERATOR="cmake"
+export CONAN_GENERATOR=${CONAN_GENERATOR:-"cmake"}
 
-./conan.sh
+${PROJECT_SRC}/conan.sh
 
 #cd $PROJECT_SRC/sample/microsoft
 
 #wget https://cppan.org/client/cppan-master-Linux-client.deb
-#sudo dpkg -i cppan-master-Linux-client.deb
+#${USE_SUDO} dpkg -i cppan-master-Linux-client.deb
 #cppan
 
 cd "${PROJECT_SRC}/sample/build-${ARCH}"
@@ -77,42 +84,29 @@ if [ "${OS}" == "Debian" ]; then
 	#LDFLAGS=$(dpkg-buildflags --get LDFLAGS)
 fi
 
-if [ -n "${MODE_RELEASE}" ]; then
-    echo -e "${green} MODE_RELEASE is defined ${happy_smiley} ${NC}"
-    export CMAKE_INSTALL_PREFIX=/usr/local
-else
-    export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/${MACHINE}/debug
+if [ `uname -s` == "Linux" -a "${ENABLE_CLANG}" != "true" -a "${ENABLE_CLANG_SCAN}" != "true" ]; then
+    echo -e "${green} Reporting : Clang analyzer ${NC}"
+
+    #http://clang-analyzer.llvm.org/installation.html
+    #http://clang-analyzer.llvm.org/scan-build.html
+    echo -e "${magenta} scan-build make ${NC}"
+    #apt-get install clang-tools || true
+    which scan-build || true
+    #${ENABLE_CLANG_SCAN} make
+    #scan-view
 fi
 
-#-DCMAKE_C_COMPILER=i686-pc-cygwin-gcc-3.4.4 -DCMAKE_CXX_COMPILER=i686-pc-cygwin-g++-3
-#-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
-#-DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-3.8
+${WORKING_DIR}/cmake.sh
 
-#cmake -GNinja -DCMAKE_BUILD_TYPE=Debug ../microsoft
-
-export CMAKE_GENERATOR="Eclipse CDT4 - Unix Makefiles"
-#export CMAKE_GENERATOR="Ninja"
-
-#-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="/usr/bin/iwyu"
-#-D_ECLIPSE_VERSION=4.4
-echo -e "${magenta} cmake -G\"${CMAKE_GENERATOR}\" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft ${NC}"
-cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX} ../microsoft
-#-DENABLE_TESTING=true
-cmake_res=$?
-if [[ $cmake_res -ne 0 ]]; then
-    echo -e "${red} ---> CMake failed : $cmake_res ${NC}"
-    exit 1
-fi
-
-if [[ -f ../microsoft/compile_commands.json ]]; then
-    rm ../microsoft/compile_commands.json
-    ln -s $PWD/compile_commands.json ../microsoft/
+if [[ -f ${PROJECT_SRC}/sample/microsoft/compile_commands.json ]]; then
+    rm ${PROJECT_SRC}/sample/microsoft/compile_commands.json
+    ln -s $PWD/compile_commands.json ${PROJECT_SRC}/sample/microsoft/
 fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package ${NC}"
-${SONAR_CMD} ${MAKE} -B clean install test DoxygenDoc package
+echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc ${NC}"
+${SONAR_CMD} ${ENABLE_CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
@@ -145,12 +139,11 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
 
          echo -e "${magenta} ctest --output-on-failure -j2 -N -D ExperimentalMemCheck ${NC}"
          #ctest -T memcheck
-         ctest --output-on-failure -j2 -N -D ExperimentalMemCheck
+         ctest --output-on-failure -j2 -N -D ExperimentalMemCheck || true
       fi
 
     else
       echo -e "${magenta} ctest --output-on-failure -j2 ${NC}"
-      ctest --output-on-failure -j2
     fi
 
     #ctest -D Experimental
@@ -159,7 +152,7 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
     #cd src/test/app/
     #ctest -V -C Debug
     echo -e "${magenta} ctest --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true ${NC}"
-    ctest -V --force-new-ctest-process --no-compress-output -T Test -O Test.xml || /bin/true
+    ctest -V --force-new-ctest-process --no-compress-output -T Test -O Test.log || /bin/true
 
     #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheckctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
 
@@ -191,18 +184,23 @@ if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
 
 fi
 
-echo -e "${green} Packaging : CPack ${NC}"
+if [ `uname -s` == "Linux" -a "${ENABLE_MINGW_64}" != "true" ]; then
+  echo -e "${green} Packaging : CPack ${NC}"
 
-#cmake --help-module CPackDeb
-#cpack
+  #cmake --help-module CPackDeb
+  #cpack
 
-echo -e "${magenta} cd $PROJECT_SRC/sample/build-${ARCH} ${NC}"
-cd $PROJECT_SRC/sample/build-${ARCH}
-echo -e "${magenta} ${MAKE} package ${NC}"
-${MAKE} package
+  # WARNING no https://sourceforge.net/projects/nsis/ on linux
+
+  echo -e "${magenta} cd $PROJECT_SRC/sample/build-${ARCH} ${NC}"
+  cd $PROJECT_SRC/sample/build-${ARCH}
+  echo -e "${magenta} ${MAKE} package ${NC}"
+  ${MAKE} package
+fi
+
 # To use this:
 # ${MAKE} package
-# sudo dpkg -i MICROSOFT-10.02-Linux.deb
+# ${USE_SUDO} dpkg -i MICROSOFT-10.02-Linux.deb
 
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Packaging : checkinstall ${NC}"
@@ -210,9 +208,9 @@ if [ `uname -s` == "Linux" ]; then
     echo -e "${magenta} checkinstall --version ${NC}"
     checkinstall --version
 
-    #sudo dpkg -r nabla-microsoft || true
+    # ${USE_SUDO} dpkg -r nabla-microsoft || true
 
-#sudo -k checkinstall \
+# ${USE_SUDO} -k checkinstall \
 #--install=no
 #--pkgsource="https://github.com/AlbanAndrieu/nabla-cpp" \
 #--pkglicense="GPL2" \
@@ -227,18 +225,10 @@ fi
 if [ `uname -s` == "Linux" ]; then
     echo -e "${green} Reporting : Junit ${NC}"
 
-    echo -e "${magenta} xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
-    xsltproc CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml || true
-fi
-
-if [ `uname -s` == "Linux" ]; then
-    echo -e "${green} Reporting : Clang analyzer ${NC}"
-
-    #http://clang-analyzer.llvm.org/installation.html
-    #http://clang-analyzer.llvm.org/scan-build.html
-    echo -e "${magenta} scan-build make ${NC}"
-    scan-build make
-    #scan-view
+    echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
+    xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml || true
+    echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml ${NC}"
+    xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml || true
 fi
 
 echo -e "${green} Reporting : Coverage ${NC}"
@@ -260,17 +250,15 @@ echo -e "${magenta} gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SR
 gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/
 #xml
 echo -e "${magenta} gcovr --branches --xml-pretty -r ${PROJECT_SRC}/microsoft/ ${NC}"
-#sudo
 gcovr --branches --xml-pretty -r ${PROJECT_SRC}/sample/microsoft/ > ${PROJECT_SRC}/reports/gcovr-report.xml
 #html
 echo -e "${magenta} gcovr --branches -r ${PROJECT_SRC}/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html ${NC}"
-#sudo
 gcovr --branches -r ${PROJECT_SRC}/sample/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
 
-echo -e "${magenta} sudo perf record -g -- /usr/bin/git --version ${NC}"
-sudo perf record -g -- /usr/bin/git --version
-echo -e "${magenta} sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
-sudo perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
+echo -e "${magenta} ${USE_SUDO} perf record -g -- /usr/bin/git --version ${NC}"
+${USE_SUDO} perf record -g -- /usr/bin/git --version
+echo -e "${magenta} ${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
+${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
 #eog output.png
 
 #bash -c 'find src -regex ".*\.cc\|.*\.hh" | vera++ - -showrules -nodup |& vera++Report2checkstyleReport.perl > $(BUILD_DIR)/vera++-report.xml'
@@ -286,8 +274,8 @@ if [[ "${CHECK_FORMATTING}" == "true" ]]; then
 
     echo -e "${magenta} cd ../../sample/microsoft ${NC}"
     cd $PROJECT_SRC/sample/microsoft
-    echo -e "${magenta} $PROJECT_SRC/cpplint.sh ${NC}"
-    $PROJECT_SRC/cpplint.sh
+    echo -e "${magenta} $PROJECT_SRC/scripts/cpplint.sh ${NC}"
+    $PROJECT_SRC/scripts/cpplint.sh
 
     # Find non-ASCII characters in headers
     hpps=$(find $PROJECT_SRC/sample/microsoft/src -name \*\.h)

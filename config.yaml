@@ -1,0 +1,34 @@
+schemaVersion: "2.0.0"
+
+commandTests:
+  - name: "check rooti user"
+    command: "whoami"
+    expectedOutput: ["root"]
+
+#  - name: "check jenkins uid/gid used for config generation"
+#    command: "id"
+#    expectedOutput: ["uid=2000.jenkins. gid=2000.docker. groups=2000.docker.*"]
+
+fileExistenceTests:
+# - name: 'jenkins directory'
+#   path: '/home/jenkins'
+#   shouldExist: true
+#   permissions: 'drwxrwxrwx'
+#   uid: 2000
+
+ - name: 'bin test file'
+   path: '/opt/nabla/bin/run_tests'
+   shouldExist: true
+   permissions: '-rwxr-xr-x'
+   uid: 0
+
+ - name: 'bin file'
+   path: '/opt/nabla/bin/run_app'
+   shouldExist: true
+   permissions: '-rwxr-xr-x'
+   uid: 0
+
+metadataTest:
+  exposedPorts: []
+  volumes: []
+#  cmd: [/opt/nabla/bin/run_app]

@@ -1,7 +1,8 @@
 [requires]
 boost/1.67.0@conan/stable
-#boost_system/1.69.0@bincrafters/stable
-#cppunit/0.1@conan/stable
+#boost/1.66.0@conan/stable
+#https://www.freedesktop.org/wiki/Software/cppunit/
+#cppunit/1.15.1@conan/stable
 
 [options]
 boost_system:shared=True
@@ -14,6 +15,8 @@ boost_system:shared=True
 
 [generators]
 cmake
+cmake_find_package
+cmake_paths
 scons
 
 [imports]

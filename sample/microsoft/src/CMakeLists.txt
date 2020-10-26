@@ -1,6 +1,8 @@
 # Just process the sub directories
 ADD_SUBDIRECTORY(main)
 
-if(BUILD_TESTING)
+IF(ENABLE_TESTS)
   ADD_SUBDIRECTORY(test)
-endif()
+ELSE()
+  MESSAGE("ENABLE_TESTS: ${ENABLE_TESTS}")
+ENDIF()

@@ -39,7 +39,7 @@ if localenv['color']:
 #flags = conan["conan"]
 #localenv.MergeFlags(flags)
 
-if localenv['use_mingw']:
+if Arch not in ['x86Linux'] and localenv['use_mingw']:
     localenv.Append(LIBPATH = ['/mingw64/lib'])
     localenv["LIBS"] = [
         'boost_thread-mt',
@@ -55,13 +55,16 @@ else:
     ]
 
 #localenv["LIBS"] += [
-#	'main_library',
-#	'cppunit',
+#   'main_library',
+#   'cppunit',
 #]
 
 #localenv.Prepend(LIBS = 'cppunit')
 
-localenv.Append(LIBS=['main_library', 'cppunit'], LIBPATH=['#main_library'])
+#if Arch in ['x86Linux'] and localenv['use_mingw']:
+#    localenv.Prepend(CPPPATH = ['/usr/include/', '/usr/include/x86_64-linux-gnu/'])  # for cppunit
+
+localenv.Append(LIBS = ['main_library', 'cppunit'], LIBPATH=['#main_library'])
 
 print('LIBS :', localenv['LIBS'])
 

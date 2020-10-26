@@ -5,10 +5,13 @@
 import sys
 import fnmatch
 import glob
+import sys
 import os
+import shutil
 import platform
-import re
 import string
+import tempfile
+import re
 import time
 
 import SCons.Scanner.IDL
@@ -255,6 +258,7 @@ def reduceBuildVerbosity(env):
 
 ################################################################
 # define the arch
+# https://github.com/SGpp/SGpp/issues/186
 def getDistribution():
   try:
     with open("/etc/os-release") as osr:
@@ -266,7 +270,7 @@ def getDistribution():
   try:
     import platform
     if platform.system() == "Darwin":
-      return "osx_x86-64"
+      return ["osx_x86-64", "", ""]
   except:
     pass
   try:
@@ -304,37 +308,24 @@ def getArch():
     return theArch
 
 ################################################################
-# See https://github.com/brave/brave-browser/issues/7328
-class ourSpawn:
-    def ourspawn(self, sh, escape, cmd, args, env):
-        newargs = ' '.join(args[1:])
-        cmdline = cmd + " " + newargs
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE, startupinfo=startupinfo, shell = False, env = env)
-        data, err = proc.communicate()
-        rv = proc.wait()
-        if rv:
-            print("=====")
-            print(err)
-            print("=====")
-        return rv
-
-def SetupSpawn( env ):
-    if sys.platform == 'win32':
-        buf = ourSpawn()
-        buf.ourenv = env
-        env['SPAWN'] = buf.ourspawn
-        
-# ---------------------------------------------------------------------------------------
-
-def fixArguments(args):
-
-    newArgs = []
-    for arg in args:
-        newArgs.append(arg.replace('\\', '/'))
-    return newArgs
+# See https://github.com/SCons/scons/wiki/LongCmdLinesOnWin32
+# Search also for TempFileMunge
+# /c/Python27/Scripts/pip2.7.exe install pywin32==228
+def ourspawn(sh, escape, cmd, args, env):
+    newargs = ' '.join(args[1:])
+    cmdline = cmd + " " + newargs
+    print("spawning - ourspawn : " + SCons.Platform.win32.escape(cmdline))
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, startupinfo=startupinfo, shell = False, env = env)
+    data, err = proc.communicate()
+    rv = proc.wait()
+    if rv:
+        print("=====")
+        print(err)
+        print("=====")
+    return rv
 
 def myWin32Spawn(sh, escape, cmd, args, env):
 
@@ -343,14 +334,92 @@ def myWin32Spawn(sh, escape, cmd, args, env):
     args = fixArguments(args)
     mystring = string.join(args)
 
-    #print("spawning " + SCons.Platform.win32.escape(mystring))
+    print("spawning - myWin32Spawn : " + SCons.Platform.win32.escape(mystring))
 
     if len(mystring) > 10000:
         filename = tempfile.mktemp()
         newFile = open(filename, "w")
+        print("spawning - myWin32Spawn to file : " + SCons.Platform.win32.escape(filename))
         newFile.write(mystring)
         newFile.close()
 
         return SCons.Platform.win32.exec_spawn([sh, filename], env)
 
     return SCons.Platform.win32.exec_spawn([sh, "-c", SCons.Platform.win32.escape(mystring)], env)
+
+if sys.platform == 'win32':
+    import win32file
+    import win32event
+    import win32process
+    import win32security
+
+    def my_spawn(sh, escape, cmd, args, env):
+        for var in env:
+            env[var] = env[var].encode('ascii', 'replace')
+
+        print("spawning cmd : " + SCons.Platform.win32.escape(cmd))
+        sAttrs = win32security.SECURITY_ATTRIBUTES()
+        StartupInfo = win32process.STARTUPINFO()
+        newargs = ' '.join(map(escape, args[1:]))
+        cmdline = cmd + " " + newargs
+
+        #print("spawning cmdline : " + SCons.Platform.win32.escape(cmdline))
+
+        # check for any special operating system commands
+        if cmd == 'del':
+            for arg in args[1:]:
+                win32file.DeleteFile(arg)
+            exit_code = 0
+        else:
+            if not cmd == 'windres-NOK' and not cmd == 'flex' and not cmd == 'bash' and not cmd == 'rm-NOK':
+                if cmd == 'i686-w64-mingw32-g++' or cmd == 'x86_64-w64-mingw32-g++' or cmd == 'i686-w64-mingw32-gcc' or cmd == 'x86_64-w64-mingw32-gcc':
+                    return ourspawn(sh, escape, cmd, args, env)
+                else:
+                    # otherwise execute the command.
+                    hProcess, hThread, dwPid, dwTid = win32process.CreateProcess(None, cmdline, None, None, 1, 0, env, None, StartupInfo)
+                    win32event.WaitForSingleObject(hProcess, win32event.INFINITE)
+                    exit_code = win32process.GetExitCodeProcess(hProcess)
+                    win32file.CloseHandle(hProcess);
+                    win32file.CloseHandle(hThread);
+            else:
+                return myWin32Spawn(sh, escape, cmd, args, env)
+        return exit_code
+
+def SetupSpawn( env ):
+    print("SetupSpawn : " + sys.platform)
+    if sys.platform == 'win32':
+        env['SPAWN'] = my_spawn
+        
+def fixArguments(args):
+
+    newArgs = []
+    for arg in args:
+        newArgs.append(arg.replace('\\', '/'))
+    return newArgs
+    
+def CheckVars( env ):
+    for var in ['CC', 'CXX']:
+        if var not in env:
+            continue
+        path = env[var]
+        print('{} is {}'.format(var, path))
+        if not os.path.isabs(path):
+            which = shutil.which(path)
+            if which is None:
+                print('{} was not found in $PATH'.format(path))
+            else:
+                print('{} found in $PATH at {}'.format(path, which))
+                path = which
+
+        realpath = os.path.realpath(path)
+        if realpath != path:
+            print('{} resolves to {}'.format(path, realpath))
+
+def to_boolean(s):
+    if isinstance(s, bool):
+        return s
+    elif s.lower() in ('1', "on", "true", "yes"):
+        return True
+    elif s.lower() in ('0', "off", "false", "no"):
+        return False
+    raise ValueError('Invalid value {s}, must be a boolean-like string')

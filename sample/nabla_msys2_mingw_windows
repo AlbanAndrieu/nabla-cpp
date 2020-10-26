@@ -1,0 +1,22 @@
+[settings]
+# We are cross-building to Windows
+os=Windows
+os_build=Windows
+arch=x86_64
+arch_build=x86_64
+compiler=gcc
+# Adjust to the gcc version of your MinGW package
+#x86_64-w64-mingw32-gcc --version
+compiler.version=4.9
+#compiler.version=9.3
+compiler.exception=seh
+compiler.libcxx=libstdc++11
+compiler.threads=posix
+build_type=Release
+
+#[options]
+[build_requires]
+mingw_installer/1.0@conan/stable
+msys2/20190524
+##cygwin_installer/2.9.0@bincrafters/stable
+#[env]

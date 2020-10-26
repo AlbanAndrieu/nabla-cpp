@@ -43,8 +43,19 @@ String ARTIFACTS = ['*_VERSION.TXT',
 
 pipeline {
     //agent none
+    //agent {
+    //    label 'ubuntu'
+    //}
     agent {
-        label 'ubuntu'
+        docker {
+            image DOCKER_IMAGE
+            alwaysPull true
+            reuseNode true
+            registryUrl DOCKER_REGISTRY_HUB_URL
+            registryCredentialsId DOCKER_REGISTRY_HUB_CREDENTIAL
+            args DOCKER_OPTS_COMPOSE
+            label 'ubuntu'
+        }
     }
     //agent {
     //    // Equivalent to "docker build -f Dockerfile-jenkins-slave-ubuntu:16.04 --build-arg FILEBEAT_VERSION=6.3.0 ./build/
@@ -94,9 +105,10 @@ pipeline {
         GIT_BROWSE_URL = "https://github.com/AlbanAndrieu/${GIT_PROJECT}/"
         GIT_URL = "ssh://git@github.com/AlbanAndrieu/${GIT_PROJECT}.git"
         DOCKER_TAG = dockerTag()
+        ARCH = "linux"
     }
     options {
-        skipDefaultCheckout()
+        //skipDefaultCheckout()
         disableConcurrentBuilds()
         skipStagesAfterUnstable()
         parallelsAlwaysFailFast()
@@ -105,82 +117,194 @@ pipeline {
         timestamps()
     }
     stages {
-        //stage('Preparation') { // for display purposes
-        //   // Get some code from a Git repository
-        //   checkout([$class: 'GitSCM', branches: [[name: '*/master']], browser: [$class: 'Stash', repoUrl: 'https://github.com/AlbanAndrieu/nabla-cpp/browse'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: true, timeout: 30]], gitTool: 'git-latest', submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'nabla', url: 'https://github.com/AlbanAndrieu/nabla-cpp.git']]])
-        //   //dir('Scripts/ansible') {
-        //   //    sh 'ansible-galaxy install -r requirements.yml -p ./roles/ --ignore-errors'
-        //   //    // check quality
-        //   //    sh returnStatus: true, script: 'ansible-lint jenkins-slave.yml || true'
-        //   //    // check syntax
-        //   //    ansiblePlaybook colorized: true, extras: '-c local -vvvv --syntax-check', installation: 'ansible-2.2.0.0', inventory: 'hosts', limit: 'albandri', playbook: 'jenkins-slave.yml', sudoUser: null
-        //   //    //ansiblePlaybook colorized: true, extras: '-c local', installation: 'ansible-2.2.0.0', inventory: 'hosts', limit: 'albandri', playbook: 'jenkins-slave.yml', sudoUser: null
-        //   //}
-        //}
-        stage('Build') {
+        stage('Build-Docker') {
             steps {
                 script {
-                    sh "conan remove --system-reqs '*'"
+                    tee("python.log") {
+                        sh "#!/bin/bash \n" +
+                           "cd $WORKSPACE \n" +
+                           "ls -lrta /opt/ansible/ \n" +
+                           ". /opt/ansible/env38/bin/activate \n" +
+                           "python -V \n" +
+                           "python3 -V \n" +
+                           "python3.8 -V \n" +
+                           "pip -V \n" +
+                           "pip list \n" +
+                           "pip3.8 install conan pre-commit \n" +
+                           "which conan \n" +
+                           "conan remove --system-reqs '*' \n" +
+                           "whoami \n" +
+                           "bash ./scripts/cppcheck.sh\n" +
+                           "source ./scripts/run-python.sh\n" +
+                           ". ./scripts/run-python.sh\n" +
+                           "pre-commit run -a || true"
+                    } // tee
 
-                    docker.withRegistry('https://index.docker.io/v1', 'docker-login') {
-                        def DOCKER_REGISTRY_URI="index.docker.io/v1"
-                        //withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                        //sh "docker login --password=${PASSWORD} --username=${USERNAME} ${DOCKER_REGISTRY_URI}"
-                        //git '…'
-                        def ansible = docker.build 'nabla/jenkins-slave-ubuntu:latest'
-                        ansible.inside {
-                          sh 'echo test'
-                        }
-                        ansible.push()  // record this latest (optional)
-                        //stage 'Test image'
-                        stage('Test image') {
-                         //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
-                           docker.image('nabla/jenkins-slave-ubuntu:latest').withRun {c ->
-                           sh "docker logs ${c.id}"
-                          }
-                        }
-                        // run some tests on it (see below), then if everything looks good:
-                        //stage 'Approve image'
-                        ansible.push 'latest'
-                        //def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
-                        //sh "docker push ${myImg.imageName()}"
-                        //} // withCredentials
-                    } // withRegistry
+                    tee("build-docker.log") {
+
+                        //sh "#!/bin/bash \n" +
+                        //   "conan remove --system-reqs '*'"
+
+                        docker.withRegistry(DOCKER_REGISTRY_HUB_URL, DOCKER_REGISTRY_HUB_CREDENTIAL) {
+                            def ansible = docker.build 'nabla/jenkins-slave-ubuntu:latest'
+                            //ansible.inside {
+                            //  sh 'echo test'
+                            //}
+                            ansible.push()  // record this latest (optional)
+                            //stage 'Test image'
+                            stage('Test image') {
+                             //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
+                               docker.image('nabla/jenkins-slave-ubuntu:latest').withRun {c ->
+                               sh "docker logs ${c.id}"
+                              }
+                            }
+                            // run some tests on it (see below), then if everything looks good:
+                            //stage 'Approve image'
+                            ansible.push 'latest'
+                            //def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
+                            //sh "docker push ${myImg.imageName()}"
+                            //} // withCredentials
+                        } // withRegistry
+
+                    } // tee
                } // script
            } // steps
-        } // stage Build
+        } // stage Build-Dcoker
+       stage('Build-Scons') {
+            steps {
+                script {
+                    tee("build-scons.log") {
+                        sh "#!/bin/bash \n" +
+                           "cd $WORKSPACE \n" +
+                           "ls -lrta /opt/ansible/ \n" +
+                           ". /opt/ansible/env38/bin/activate \n" +
+                           "python -V \n" +
+                           "python3 -V \n" +
+                           "python3.8 -V \n" +
+                           "pip -V \n" +
+                           "pip list \n" +
+                           "pip3.8 install conan pre-commit cmake \n" +
+                           "which conan \n" +
+                           "conan remove --system-reqs '*' \n" +
+                           "whoami \n" +
+                           "bash ./scripts/cppcheck.sh\n" +
+                           "source ./scripts/run-python.sh\n" +
+                           "rm -Rf /home/jenkins/.conan/\n" +
+                           //"pre-commit run -a || true\n" +
+                           "bash ./build.sh"
+                    } // tee
+
+               } // script
+           } // steps
+        } // stage Build-CMake
+        stage('Build-CMake') {
+            steps {
+                script {
+                    tee("build-cmake.log") {
+                        //sh "#!/bin/bash \n" +
+                        //   "cd $WORKSPACE \n" +
+                        //   "ls -lrta /opt/ansible/ \n" +
+                        //   ". /opt/ansible/env38/bin/activate \n" +
+                        //   "python -V \n" +
+                        //   "python3 -V \n" +
+                        //   "python3.8 -V \n" +
+                        //   "pip -V \n" +
+                        //   "pip list \n" +
+                        //   "pip3.8 install conan pre-commit cmake \n" +
+                        //   "which conan \n" +
+                        //   "conan remove --system-reqs '*' \n" +
+                        //   "whoami \n" +
+                        //   "bash ./scripts/cppcheck.sh\n" +
+                        //   "source ./scripts/run-python.sh\n"
+
+                        dir("sample/build-linux") {
+                            sh "#!/bin/bash \n" +
+                               //"source ../../scripts/run-python.sh\n" +
+                               ". /opt/ansible/env38/bin/activate \n" +
+                               "rm -Rf /home/jenkins/.conan/\n" +
+                               "bash ./build.sh"
+
+                            //sh 'ctest -T test --no-compress-output'
+                        } // dir
+                    } // tee
+               } // script
+           } // steps
+        } // stage Build-CMake
         stage('SonarQube analysis') {
             environment {
                 SONAR_SCANNER_OPTS = "-Xmx1g"
             }
             steps {
-                sh "pwd"
                 sh "/usr/local/sonar-runner/bin/sonar-scanner -D sonar-project.properties"
             }
         } // stage SonarQube
         //stage('Approve image') {
         // sshagent(['jenkins-ssh']) {
-        ////   def myImg = docker.image('nabla/nabla-cpp:latest')
+        ////   def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
         ////   sh "docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz ${myImg.imageName()}"
          //    sh returnStdout: true, script: 'sudo docker run -it --net host --pid host --cap-add audit_control -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock -v /usr/lib/systemd:/usr/lib/systemd -v /etc:/etc --label docker_bench_security docker/docker-bench-security'
          //}
         //}
     } // stages
-	post {
-	  always {
-		recordIssues enabledForFailure: true, filters: [
-		  excludeFile('.*qrc_icons\\.cpp.*'),
-		  excludeMessage('.*tmpnam.*')],
-		  tools: [gcc4(name: 'GCC-GUI', id: 'gcc4-gui',
-				  pattern: 'build/build*.log'),
-				  gcc4(name: 'Doxygen', id: 'doxygen',
-				  pattern: 'build/DoxygenWarnings.log')
-				  ],
-		  unstableTotalAll: 1
+    post {
+      always {
+        // tools
+        //recordIssues enabledForFailure: true, filters: [
+        //  excludeFile('.*qrc_icons\\.cpp.*'),
+        //  excludeMessage('.*tmpnam.*')],
+        //  tools: [cmake(),
+        //          gcc(),
+        //        doxygen(),
+        //        clangTidy()
+        //        ],
+        //  unstableTotalAll: 1
 
-		recordIssues enabledForFailure: true,
-		  tools: [cppCheck(pattern: 'build/cppcheck.log')]
-	  }
-	  success { archiveArtifacts 'build/*.tar.gz,build/conaninfo.txt' }
-	} // post
+        recordIssues enabledForFailure: true,
+          tools: [cppCheck(pattern: 'reports/cppcheck-result.xml'),
+                  junitParser(pattern: 'sample/build-linux/Testing/JUnitTestResults.xml'),
+                  sonarQube(pattern: '**/sonar-report.json'),
+                  cmake(),
+                  //clang(),
+                  //clangAnalyzer(),
+                  clangTidy(),
+                  dockerLint(),
+                  flawfinder()
+
+          ]
+        //publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
+
+        // sample/build/conaninfo.txt sample/build-linux/CMakeFiles/CMakeOutput.log
+        archiveArtifacts artifacts: '**/conaninfo.txt, , *.log, sample/build*/CMakeFiles/CMakeOutput.log, sample/build*/CMakeFiles/CMakeError.log, bw-outputs/build-wrapper.log, bw-outputs/build-wrapper-dump.json', excludes: null, fingerprint: false, onlyIfSuccessful: false
+
+        // Archive the CTest xml output
+        archiveArtifacts (
+          artifacts: 'sample/build-linux/Testing/**/*.xml, sample/build-linux/Testing/Temporary/*',
+          fingerprint: true
+        )
+
+        // Process the CTest xml output with the xUnit plugin
+        xunit (
+          testTimeMargin: '3000',
+          thresholdMode: 1,
+          thresholds: [
+            skipped(failureThreshold: '0'),
+            failed(failureThreshold: '0')
+          ],
+        tools: [CTest(
+            pattern: 'sample/build-linux/Testing/**/Test.xml',
+            deleteOutputFiles: true,
+            failIfNotNew: false,
+            skipNoTestFiles: true,
+            stopProcessingIfError: true
+          )]
+        )
+
+        //junit 'sample/build-linux/Testing/JUnitTestResults.xml'
+        //step([$class: 'JUnitResultArchiver', testResults: 'sample/build-linux/Testing/JUnitTestResults.xml'])
+
+      } // always
+      success {
+          archiveArtifacts '**/*.tar.gz, *.log, conaninfo.txt, sample/build-linux/DartConfiguration.tcl, sample/build-linux/install_manifest.txt, sample/build-linux/CMakeCache.txt, sample/build-linux/graphviz.png, sample/build-linux/iwyu.out, sample/build-linux/bin/*, sample/build-linux/lib/*, sample/build-linux/_CPack_Packages/Linux/DEB/*'
+      } // success
+    } // post
 } // pipeline
