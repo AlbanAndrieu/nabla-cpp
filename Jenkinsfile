@@ -267,7 +267,7 @@ pipeline {
                   //clang(),
                   //clangAnalyzer(),
                   clangTidy(),
-                  dockerLint(),
+                  //dockerLint(),
                   flawfinder()
 
           ]
