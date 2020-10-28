@@ -249,24 +249,56 @@ def registerBuildFailuresAtExit(env):
 ##############################################################################
 # defined env verbosity
 
-
 def reduceBuildVerbosity(env):
     env['CCCOMSTR'] = 'Compiling $TARGET'
     env['CXXCOMSTR'] = 'Compiling $SOURCE'
     env['LINKCOMSTR'] = 'Linking $TARGET'
     env['IDLCOMSTR'] = 'IDL Generation for: ${SOURCE}'
 
+##############################################################################
+
+def InstallTree(env, dest_dir, src_dir, includes, excludes):
+    destnode = env.Dir(dest_dir)
+    dirs = []
+    dirs.append(fixWindowsPath(src_dir))
+    while len(dirs) > 0:
+        currdir = dirs.pop(0)
+        currdestdir = os.path.join(dest_dir, currdir[len(src_dir):])
+        print("currdir : " + currdir)
+        if os.path.exists(currdir):
+            flist = os.listdir(currdir)
+            for currfile in flist:
+                currpath = os.path.join(currdir, currfile)
+                #currpath = currdir + '/' + currfile
+                match = 0
+                for pattern in includes:
+                    if fnmatch.fnmatchcase(currfile, pattern):
+                        match = 1
+                if (match == 1):
+                    for pattern in excludes:
+                        if fnmatch.fnmatchcase(currfile, pattern):
+                            match = 0
+                    if (match == 1):
+                        if (os.path.isdir(currpath)):
+                            dirs.append(currpath)
+                        else:
+                            print("Install : " + currpath + " to " + currdestdir)
+                            env.Install(currdestdir, currpath)
+        else:
+            print("Directory : " + currdir +" does not exist")
+    return destnode
+
 ################################################################
 # define the arch
 # https://github.com/SGpp/SGpp/issues/186
 def getDistribution():
-  try:
-    with open("/etc/os-release") as osr:
-      osReleaseLines = osr.readlines()
-    hasOsRelease = True
-  except (IOError,OSError):
-    osReleaseLines = []
-    hasOsRelease = False
+  #try:
+  #  with open("/etc/os-release") as osr:
+  #    osReleaseLines = osr.readlines()
+  #  hasOsRelease = True
+  #except (IOError,OSError):
+  #  osReleaseLines = []
+  #  hasOsRelease = False
   try:
     import platform
     if platform.system() == "Darwin":
@@ -282,7 +314,7 @@ def getDistribution():
         if sys.platform == 'win32':
             dist = ["unknown", "", ""]
         else:
-            import distro        
+            import distro
             dist = distro.linux_distribution()
     return dist
   except:
@@ -389,14 +421,14 @@ def SetupSpawn( env ):
     print("SetupSpawn : " + sys.platform)
     if sys.platform == 'win32':
         env['SPAWN'] = my_spawn
-        
+
 def fixArguments(args):
 
     newArgs = []
     for arg in args:
         newArgs.append(arg.replace('\\', '/'))
     return newArgs
-    
+
 def CheckVars( env ):
     for var in ['CC', 'CXX']:
         if var not in env:
