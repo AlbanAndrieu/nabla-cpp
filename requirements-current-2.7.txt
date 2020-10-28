@@ -43,6 +43,7 @@ decorator==4.0.11
 defer==1.0.6
 defusedxml==0.5.0
 dirspec==13.10
+distro==1.5.0
 #distro-info===0.14build1
 dnspython==1.12.0
 docker==2.7.0

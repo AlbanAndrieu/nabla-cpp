@@ -629,19 +629,18 @@ export M2_HOME=""
 if [ "${USE_SUDO}" == "false" ]; then
   unset USE_SUDO
   echo -e "${green} USE_SUDO is disabled ${happy_smiley} : ${USE_SUDO} ${NC}"
-fi
-
-if [ -n "${USE_SUDO}" ]; then
-  echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
 else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : USE_SUDO, use the default one ${NC}"
-  if [ "${OS}" == "Ubuntu" ]; then
-    USE_SUDO="sudo"
+  if [ -n "${USE_SUDO}" ]; then
+    echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
   else
-    USE_SUDO=""
+    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : USE_SUDO, use the default one ${NC}"
+    if [ "${OS}" == "Ubuntu" ]; then
+      export USE_SUDO="sudo" # Only enable sudo on ubuntu
+    else
+      unset USE_SUDO
+    fi
+    echo -e "${magenta} USE_SUDO : ${USE_SUDO} ${NC}"
   fi
-  export USE_SUDO
-  echo -e "${magenta} USE_SUDO : ${USE_SUDO} ${NC}"
 fi
 
 if [ -n "${RELEASE_VERSION}" ]; then

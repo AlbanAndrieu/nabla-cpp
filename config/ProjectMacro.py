@@ -291,6 +291,7 @@ def InstallTree(env, dest_dir, src_dir, includes, excludes):
 ################################################################
 # define the arch
 # https://github.com/SGpp/SGpp/issues/186
+# pip install distro==1.5.0
 def getDistribution():
   #try:
   #  with open("/etc/os-release") as osr:
