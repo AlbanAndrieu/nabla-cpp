@@ -105,8 +105,8 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc ${NC}"
-${SONAR_CMD} ${ENABLE_CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc
+echo -e "${magenta} ${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc ${NC}"
+${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
