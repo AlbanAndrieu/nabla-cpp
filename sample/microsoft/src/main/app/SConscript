@@ -54,11 +54,11 @@ if env['use_static']:
     #localenv['CCFLAGS'] += ['-static-libgcc', '-static-libstdc++']
     localenv['LINKFLAGS'] += ['-static']
     #localenv['LINKFLAGS'] += ['-Xlinker -Map=a.map']
-
+else:
     print("platform : "  + sys.platform)
 
     if sys.platform == 'win32':
-        localenv.Install( executablePath_,
+        localenv.Install( localenv['PROJECT_BINARY_DIR'],
             [
                 "/tools/mingw32/i686-w64-mingw32/lib/libgcc_s_sjlj-1.dll",   #  if not static-libgcc
                 "/tools/mingw32/i686-w64-mingw32/lib/libstdc++-6.dll",    #  if not static-libgcc
@@ -68,8 +68,7 @@ if env['use_static']:
     print("platform : "  + platform.platform())
 
     if platform.platform().startswith('Linux'):
-        print("SASFA")
-        localenv.Install( '/workspace/users/albandrieu30/nabla-cpp/target/bin/x86Linux/',
+        localenv.Install( localenv['PROJECT_BINARY_DIR'],
             [
                 #"/usr/lib/gcc/i686-w64-mingw32/9.3-win32/libgcc_s_sjlj-1.dll",   #  if not static-libgcc
                 "/usr/lib/gcc/x86_64-w64-mingw32/9.3-posix/libgcc_s_seh-1.dll",   #  if not static-libgcc
@@ -77,7 +76,7 @@ if env['use_static']:
                 "/usr/lib/gcc/x86_64-w64-mingw32/9.3-posix/libstdc++-6.dll",    #  if not static-libgcc
             ])
 
-    localenv.Alias('install', '/workspace/users/albandrieu30/nabla-cpp/target/bin/x86Linux/')
+    localenv.Alias('install', localenv['PROJECT_BINARY_DIR'])
 
 source = Glob('*.cpp')
 

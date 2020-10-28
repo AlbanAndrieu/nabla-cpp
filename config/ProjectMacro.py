@@ -313,7 +313,7 @@ def getDistribution():
         dist = platform.dist() # Deprecated since version 3.5, will be removed in version 3.8
     else :
         if sys.platform == 'win32':
-            dist = ["unknown", "", ""]
+            dist = ["windows", "", ""]
         else:
             import distro
             dist = distro.linux_distribution()
@@ -339,6 +339,20 @@ def getArch():
         elif platform.machine() == 'i86pc':
             theArch = 'x86sol'
     return theArch
+
+def getConfiguration(thePlatform):
+
+    env = os.environ
+    # --- The host platform.
+    #print("Platform argument:", thePlatform)
+    import platform
+    system = platform.system()
+    machine = platform.machine()
+    dist = getDistribution()
+
+    print("System : ", system)
+    #print("Machine : ", machine)
+    print("Dist-Os : ", dist[0])
 
 ################################################################
 # See https://github.com/SCons/scons/wiki/LongCmdLinesOnWin32

@@ -26,7 +26,7 @@ def generate(env, **kw):
         env['VERBOSE'] = not sys.stdout.isatty()
     else:
         try:
-            env['VERBOSE'] = to_boolean(env['VERBOSE'])
+            env['VERBOSE'] = ProjectMacro.to_boolean(env['VERBOSE'])
         except ValueError as e:
             env.FatalError(f"Error setting VERBOSE variable: {e}")
     env.AddMethod(lambda env: env['VERBOSE'], 'Verbose')
@@ -151,7 +151,7 @@ def generate(env, **kw):
         env['LINKFLAGS'] = [
             #    '-Wl,--no-as-needed',
             '-Wl,--as-needed',
-            '-Wl,--no-allow-shlib-undefined',
+            '-Wl,--no-allow-shlib-undefined', # TODO
         ]
 
         # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
