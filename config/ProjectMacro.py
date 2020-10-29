@@ -418,7 +418,7 @@ if sys.platform == 'win32':
                 win32file.DeleteFile(arg)
             exit_code = 0
         else:
-            if not cmd == 'windres-NOK' and not cmd == 'flex' and not cmd == 'bash' and not cmd == 'rm-NOK':
+            if not cmd == 'flex' and not cmd == 'bash':
                 if cmd == 'i686-w64-mingw32-g++' or cmd == 'x86_64-w64-mingw32-g++' or cmd == 'i686-w64-mingw32-gcc' or cmd == 'x86_64-w64-mingw32-gcc':
                     return ourspawn(sh, escape, cmd, args, env)
                 else:
