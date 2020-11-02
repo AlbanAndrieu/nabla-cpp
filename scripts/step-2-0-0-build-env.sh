@@ -108,6 +108,8 @@ if [ -n "${WORKSPACE}" ]; then
   echo -e "${green} WORKSPACE is defined ${happy_smiley} : ${WORKSPACE} ${NC}"
 else
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
+  WORKSPACE=$(cygpath -u "${WORKING_DIR}")
+  export WORKSPACE
   #echo -e "${magenta} WORKSPACE : ${WORKSPACE} ${NC}"
 fi
 

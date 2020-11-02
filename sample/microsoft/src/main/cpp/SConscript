@@ -38,7 +38,7 @@ if localenv['color']:
 
 print('use_mingw', localenv['use_mingw'])
 
-if Arch not in ['mingw', 'cygwin', 'winnt'] and env['use_conan']:
+if env['use_conan']:
     build_path_relative_to_sconstruct = Dir('../../../../').path
     build_directory = os.path.join(build_path_relative_to_sconstruct, 'build-scons')
     print("build_directory :", build_directory)

@@ -25,16 +25,20 @@ echo -e "${green} Using CONAN ${happy_smiley} ${NC}"
 
 #conan profile remove settings.compiler.libcxx nabla
 
-#libstdc++: Old ABI.
-#libstdc++11: New ABI.
-echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 nabla ${NC}"
-conan profile update settings.compiler.libcxx=libstdc++11 nabla
 conan profile show nabla
 
 conan profile list
 
 #See https://conan.io/
 #See https://bintray.com/bincrafters/public-conan
+
+
+if [ "$OSTYPE" == "linux" ]; then
+	#libstdc++: Old ABI.
+	#libstdc++11: New ABI.
+	echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 nabla ${NC}"
+	conan profile update settings.compiler.libcxx=libstdc++11 nabla
+fi
 
 if [ "${ENABLE_CLANG}" == "true" ]; then
 
@@ -82,7 +86,7 @@ else  # GCC
     	# Windows
     	#conan profile update settings.compiler="Visual Studio" nabla
     	#conan profile update settings.compiler.runtime=MD nabla
-    	#conan profile update settings.compiler.version=15 nabla
+    	#conan profile update settings.compiler.version=16 nabla
     	conan profile update settings.compiler=gcc nabla_msys2_mingw
     	conan profile update settings.compiler.version=10 nabla_msys2_mingw
     elif [ "$(uname -s)" == "Linux" ]; then
@@ -93,19 +97,28 @@ else  # GCC
 
 fi
 
-if [ "$(uname -s)" == "Linux" ]; then
+#if [ "$(uname -s)" == "Linux" ]; then
+if [ "$OSTYPE" == "linux" ]; then
 	#ls -lrta $HOME/.conan/profiles
 	echo -e "${magenta} conan profile update settings.compiler.version=8 default ${NC}"
 	conan profile update settings.compiler.version=8 default
 	echo -e "${magenta} conan profile update settings.compiler.libcxx=libstdc++11 default ${NC}"
 	conan profile update settings.compiler.libcxx=libstdc++11 default
+elif [ "$OSTYPE" == "msys" ]; then
+	echo -e "${magenta} conan profile update settings.compiler=\"Visual Studio\" default ${NC}"
+    conan profile update settings.compiler="Visual Studio" default
+	echo -e "${magenta} conan profile update settings.runtime=MD default ${NC}"
+    conan profile update settings.compiler.runtime=MD default
+	echo -e "${magenta} conan profile update settings.compiler.version=16 default ${NC}"
+    conan profile update settings.compiler.version=16 default
 fi
 conan profile show default
 
 export CONAN_GENERATOR=${CONAN_GENERATOR:-"scons"}
 echo -e "${green} Using CONAN_GENERATOR : ${CONAN_GENERATOR} ${happy_smiley} ${NC}"
 
-if [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
+#if [ "$(uname -s)" == "MINGW64_NT-10.0-17763" -o "$(uname -s)" == "MSYS_NT-10.0-17763" ]; then
+if [ "$OSTYPE" == "msys" ]; then
     case $(uname -m) in
     x86_64)
         echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build -g ${CONAN_GENERATOR} -if ./sample/build-${ARCH} ${NC}"

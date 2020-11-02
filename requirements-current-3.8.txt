@@ -3,7 +3,8 @@
 #cfgv==3.2.0
 #chardet==3.0.4
 #Click==7.0
-conan==1.29.0
+conan==1.31.0
+#windows conan==1.27.1
 cpplint==1.5.4
 #cryptography==2.8
 #docker==4.2.0

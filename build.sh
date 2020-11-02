@@ -7,6 +7,9 @@ WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 # shellcheck source=/dev/null
 source "${WORKING_DIR}/scripts/step-0-color.sh"
 
+echo "python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pip"
+#Successfully installed pip-20.2.4
+
 unset SCONS
 echo -e "${red} ${double_arrow} unset SCONS ${head_skull} : SCONS : ${SCONS} ${NC}"
 unalias scons
