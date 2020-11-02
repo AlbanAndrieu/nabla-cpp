@@ -278,10 +278,18 @@ def generate(env, **kw):
             #mklink /j "C:\VS" "C:\Program Files (x86)\Microsoft Visual Studio"
             #env['CC'] = 'C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe'
             ##env['CXX'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe"'
-            #env['LINK'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/link.exe"'
-            env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
-            env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
-            env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
+            #env['LINK'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/link.exe
+            if os.getenv("VCINSTALLDIR"):  # MSVC, manual setup
+                print('Check VCINSTALLDIR')
+            if sys.platform == 'msys': # and sys.platform != 'win32':
+                print('You not force VS there, use command prompt for VS 2019 or build.bat or use_mingw=True')
+                env['CC'] = '"/C/VS/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx86/x86/cl.exe"'
+                env['LINK'] = '"/C/VS/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx86/x86/link.exe"'
+                sys.exit(1)
+            #elif sys.platform == 'win32':
+            #    env['CC'] = '"C:\\VS\\2019\\BuildTools\\VC\\Tools\\MSVC\\14.27.29110\\bin\\Hostx86\\x86\\cl.exe"'
+            #    env['CXX'] = '"C:\\VS\\2019\\BuildTools\\VC\Tools\\MSVC\\14.27.29110\\bin\\Hostx86\\x86\\cl.exe"'
+            #    env['LINK'] = '"C:\\VS\\2019\\Professional\\VC\\Tools\\MSVC\\14.27.29110\\bin\\HostX86\\x86\\link.exe"'
 
         # if env['release'] == 'True':
         #    env.Prepend(CPPDEFINES="NDEBUG")
@@ -299,13 +307,17 @@ def generate(env, **kw):
         #    '/MD',
         # ]
         env['ENV']['PATH'] = env['ENV']['PATH'] + \
-            ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;C:\\VS\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\;'
+            ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;C:\\VS\\2019\\BuildTools\\VC\\Tools\\MSVC\\14.27.29110\\bin\\Hostx86\\x86\\;'
         #';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
         if Arch not in ['winnt']:
             env['SHELL'] = 'c:/tools/msys64/usr/bin/bash.exe'
         #env['LEX'] = 'c:\\tools\\msys64\\usr\\bin\\flex.exe'
         #env['SPAWN'] = ProjectMacro.myWin32Spawn
-        # env['CCFLAGS'] = [
+        env['CCFLAGS'] += [
+             '/MT',
+             '/EHsc', #BOOST_NO_EXCEPTIONS
+             '/Z7', '/Od' # https://github.com/godotengine/godot/blob/master/platform/windows/detect.py
+        #     '/MDd',
         #    '/nologo',
         #    '/W3',
         #    '/GX',
@@ -314,15 +326,29 @@ def generate(env, **kw):
         #    '-DWIN32',
         #    '-DWINNT',
         #    '-D_WINDOWS',
-        # ]
-        #env['LINKFLAGS'] = [
-        #        '/nologo',
-        #        '/opt:ref',
+        ]
+        env.AppendUnique(
+            CPPDEFINES=[
+                "WINDOWS_ENABLED",
+                "WASAPI_ENABLED",
+                "WINMIDI_ENABLED",
+                "TYPED_METHOD_BIND",
+                "WIN32",
+                "MSVC",
+                #"WINVER=%s" % env["target_win_version"],
+                #"_WIN32_WINNT=%s" % env["target_win_version"],
+            ]
+        )
+        env['LINKFLAGS'] += [
+                 '-Wl,--subsystem,console',
+        #        '/nologo', # already there
+        #        '/OPT:REF', # release
         #        '/nodefaultlib:libcmt.lib',
         #        '/nodefaultlib:libc.lib',
         #        '/nodefaultlib:libcd.lib',
         #        '/nodefaultlib:libcmtd.lib',
-        #]
+        ]
+        #In your case one was linked against the CRT DLL (/MD) and the other was linked statically Multi-threaded (/MT)
 
     if platform.platform() == 'linux':
         env['RC'] = 'i686-w64-mingw32-windres'
@@ -347,7 +373,7 @@ def generate(env, **kw):
             env['CC'] = 'i686-w64-mingw32-gcc'
             # apt-get install g++-mingw-w64-i686
             env['CXX'] = 'i686-w64-mingw32-g++'
-            if env['VERBOSE']:
+            if env.Verbose():
                 env['LINK'] = 'i686-w64-mingw32-g++ -v'
             else:
                 env['LINK'] = 'i686-w64-mingw32-g++'
@@ -373,7 +399,7 @@ def generate(env, **kw):
             # apt-get install gcc-mingw-w64-x86-64
             env['CC'] = 'x86_64-w64-mingw32-gcc'
             # apt-get install g++-mingw-w64-x86-64
-            if env['VERBOSE']:
+            if env.Verbose():
                 env['CXX'] = 'x86_64-w64-mingw32-g++ -v'
             else:
                 env['CXX'] = 'x86_64-w64-mingw32-g++'
@@ -390,15 +416,20 @@ def generate(env, **kw):
 
             #env.Append(LIBPATH = ['/mingw64/lib'])
 
-    # if 'use_static' in env:
-    #    env.Append(LINKFLAGS = "-static")
+    if 'use_static' in env and env['use_static']:
+        if 'target_bits' in env and env['target_bits'] == '32':
+            env.Append(LINKFLAGS = "-static-libgcc")
+            env.Append(LINKFLAGS = "-static-libstdc++")
+        env.Append(LINKFLAGS = "-static")
 
     # '-mthreads',
-    if 'use_pthread' in env and env['use_pthread']:
+    #if platform.platform() == 'linux':
+    #if system == 'Linux' or system.startswith('CYGWIN') or system.startswith('MSYS'):
+    if 'use_pthread' in env and env['use_pthread'] and sys.platform != 'msys' and sys.platform != 'win32':
         env['CXXFLAGS'] += ['-pthread']
         env['LINKFLAGS'] += ['-pthread']
 
-    if 'use_cpp11' in env and env['use_cpp11']:  # env['gcc_version'] >= '8'
+    if 'use_cpp11' in env and env['use_cpp11'] and sys.platform != 'msys' and sys.platform != 'win32':  # env['gcc_version'] >= '8'
         env['CFLAGS'] = ['-std=c11']
         env['CCFLAGS'] += ['-std=c++11']
         #env['CXXFLAGS'] = ['-std=c++11']

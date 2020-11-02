@@ -357,7 +357,9 @@ def getConfiguration(thePlatform):
 ################################################################
 # See https://github.com/SCons/scons/wiki/LongCmdLinesOnWin32
 # Search also for TempFileMunge
-# /c/Python27/Scripts/pip2.7.exe install pywin32==228
+# /c/Python27/Scripts/pip2.7.exe install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org pywin32==227 distro==1.5.0 conan==1.31.0
+# /c/Python38/Scripts/pip3.8.exe install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org pywin32==227 distro==1.5.0 conan==1.31.0
+# pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org distro==1.5.0 conan==1.31.0
 def ourspawn(sh, escape, cmd, args, env):
     newargs = ' '.join(args[1:])
     cmdline = cmd + " " + newargs
@@ -394,7 +396,7 @@ def myWin32Spawn(sh, escape, cmd, args, env):
 
     return SCons.Platform.win32.exec_spawn([sh, "-c", SCons.Platform.win32.escape(mystring)], env)
 
-if sys.platform == 'win32':
+if sys.platform == 'win32': # or sys.platform == 'msys':
     import win32file
     import win32event
     import win32process
@@ -434,7 +436,7 @@ if sys.platform == 'win32':
 
 def SetupSpawn( env ):
     print("SetupSpawn : " + sys.platform)
-    if sys.platform == 'win32':
+    if sys.platform == 'win32': # or sys.platform == 'msys':
         env['SPAWN'] = my_spawn
 
 def fixArguments(args):

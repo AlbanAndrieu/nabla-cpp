@@ -4,8 +4,6 @@
 # Scons build script
 ######################
 
-#TODO https://github.com/mongodb/mongo/blob/master/SConstruct
-
 import os
 import shutil
 import re
@@ -113,8 +111,8 @@ vars.Add('VERBOSE',
 msvcver = vars.args.get('vc', '14')
 
 # Check command args to force one Microsoft Visual Studio version
-if msvcver == '14' or msvcver == '17':
-  env = Environment(MSVC_VERSION=msvcver+'.0', MSVC_BATCH=False, variables = vars)
+if msvcver == '14' or msvcver == '16' or msvcver == '17':
+  env = Environment(MSVC_VERSION=msvcver+'.0', TARGET_ARCH="x86_64", MSVC_BATCH=False, variables = vars)
 else:
   env = Environment(variables = vars)
 
@@ -125,8 +123,8 @@ Command('/opt/ansible/env38/', None, 'virtualenv $TARGET; source $TARGET/bin/act
 print('Xcompil :', env['use_xcompil'])
 print('Mingw :', env['use_mingw'])
 
-if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')) and Arch not in ['mingw', 'cygwin', 'winnt'] and env['use_conan']:
-    # Import Conans
+if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')) and env['use_conan']: #  and Arch not in ['mingw', 'cygwin', 'winnt'] 
+    # Import Conan
     from conans.client.conan_api import ConanAPIV1 as conan_api
     from conans import __version__ as conan_version
 
@@ -195,7 +193,7 @@ if env['color']:
     from termcolor import colored, cprint
     print(colored('ENV TOOLS :', 'magenta'), colored(env['TOOLS'], 'cyan'))
 
-if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')) and Arch not in ['mingw', 'cygwin', 'winnt'] and env['use_conan']:
+if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')) and env['use_conan']: # and Arch not in ['mingw', 'cygwin', 'winnt']:
     conan_flags = SConscript('{}/SConscript_conan'.format(build_directory))
     if not conan_flags:
         print("File `SConscript_conan` is missing.")
