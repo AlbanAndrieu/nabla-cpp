@@ -19,14 +19,30 @@ A project that contains cpp code sample
 
 See also install.sh
 
+#### Linux or OS X
+
+- Some Python packages: pip install conan termcolor distro pywin32
+
+#### Windows
+
+- [pywin32](http://sourceforge.net/projects/pywin32/) : path conversions (PyInstaller [issue](https://github.com/pyinstaller/pyinstaller/issues/1282); Windows only)
+- Microsoft Visual C++ 2010 Redistributable Package (https://www.microsoft.com/en-US/download/details.aspx?id=5555)
+- Microsoft Visual C++ Compiler for Python 2.7 (https://www.microsoft.com/en-us/download/details.aspx?id=44266): for pylzma
+
+```
+c:\Python27[-x64]\python.exe -m pip install --upgrade pip
+pip.exe install colorama conan termcolor distro pywin32 setuptools==19.2 pyinstaller==2.1
+```
+
+
 ### Install python dependencies
 
 ```
 #sudo pip2.7 freeze > requirements-current-2.7.txt
 sudo pip2.7 install -r requirements-current-2.7.txt
 
-#sudo pip3.7 freeze > requirements-current-3.7.txt
-sudo pip3.7 install -r requirements-current-3.7.txt
+#sudo pip3.8 freeze > requirements-current-3.8.txt
+sudo pip3.8 install -r requirements-current-3.8.txt
 ```
 
 See also build.sh for scons AND sample/build-linux/build.sh for cmake
