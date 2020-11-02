@@ -602,12 +602,6 @@ if not env['use_mingw'] and not platform.platform().startswith('Linux'):
 
 # post build stuff
 
-def createTar(tar, path, artifact):
-    print('Create tar ' + artifact)
-    command = [tar, '-C', path, '-czf', artifact, '.']
-    print(' '.join(command))
-    subprocess.check_call(command)
-
 def finish(target, source, env):
     if GetOption('createtar'):
         import glob
@@ -634,7 +628,7 @@ def finish(target, source, env):
         else:
             rev = 'rev'
         ver = '_%s'%env['version'] if 'version' in env else ''
-        createTar(env['tar'], os.path.join('nabla-1.2.3', 'target'), '%s%s_%s_%s.tgz' % (name, ver, rev, arch))
+        ProjectMacro.createTar(env['tar'], os.path.join('nabla-1.2.3', 'target'), '%s%s_%s_%s.tgz' % (name, ver, rev, arch))
 
 #finishCommand = env.Command('/finish', None, Action(finish, "Starting post build actions"))
 #BUILD_TARGETS += finishCommand

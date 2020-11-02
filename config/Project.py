@@ -268,8 +268,9 @@ def generate(env, **kw):
         #print('Ovverride mingw : ', env['use_mingw'])
 
     elif Arch in ['winnt', 'mingw', 'cygwin']:
-        # if not 'gcc_version' in env:
-        #    env['gcc_version'] = '10'
+        STACKSIZE = 83388608
+        env['LINKFLAGS'] += [ '-Wl,--stack,' +str(STACKSIZE) ]
+
         if env['use_mingw'] == False:
             #env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
             ##env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'

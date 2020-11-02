@@ -470,3 +470,9 @@ def to_boolean(s):
     elif s.lower() in ('0', "off", "false", "no"):
         return False
     raise ValueError('Invalid value {s}, must be a boolean-like string')
+
+def createTar(tar, path, artifact):
+    print('Create tar ' + artifact)
+    command = [tar, '-C', path, '-czf', artifact, '.']
+    print(' '.join(command))
+    subprocess.check_call(command)
