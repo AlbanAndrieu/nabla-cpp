@@ -25,17 +25,6 @@ localenv.MergeFlags([
     '-Wl,-rpath=target/lib/'+ Arch +'/debug64/shared/',
 ])
 
-if localenv['color']:
-    from termcolor import colored, cprint
-
-    if 'CPPDEFINES' in localenv:
-        print(colored('CPPDEFINES :', 'magenta'), colored(localenv['CPPDEFINES'], 'cyan'))
-    print(colored('CCFLAGS :', 'magenta'), colored(localenv['CCFLAGS'], 'cyan'))
-    print(colored('CXXFLAGS :', 'magenta'), colored(localenv['CXXFLAGS'], 'cyan'))
-    print(colored('LINKFLAGS :', 'magenta'), colored(localenv['LINKFLAGS'], 'cyan'))
-    # print "dump whole env :", localenv.Dump()
-    print(colored('CXXVERSION :', 'magenta'), colored(localenv['CXXVERSION'], 'cyan'))
-
 print('use_mingw', localenv['use_mingw'])
 
 if env['use_conan']:
@@ -55,16 +44,29 @@ if env['use_conan']:
 if Arch in ['x86Linux'] and env['use_mingw']:
     #LINKFLAGS
     #-m64 -mthreads -O3 -finline-functions -Wno-inline -Wall -pedantic -Wextra -Wno-long-long -Wno-unused-parameter -Wunused-function -fPIC -pedantic
-    localenv.Prepend(CPPDEFINES="BOOST_ALL_NO_LIB=1")
-    localenv.Prepend(CPPDEFINES="BOOST_CHRONO_STATIC_LINK=1")
-    localenv.Prepend(CPPDEFINES="BOOST_SYSTEM_NO_DEPRECATED")
-    localenv.Prepend(CPPDEFINES="BOOST_SYSTEM_STATIC_LINK=1")
-    localenv.Prepend(CPPDEFINES="BOOST_THREAD_USES_CHRONO")
-    localenv.Prepend(CPPDEFINES="BOOST_THREAD_WIN32")
-    localenv.Prepend(CPPDEFINES="BOOST_USE_WINDOWS_H")
-    localenv.Prepend(CPPDEFINES="WIN32_LEAN_AND_MEAN")
-    localenv.Prepend(CPPDEFINES="_GLIBCXX_USE_CXX11_ABI=1")
+    if env['use_conan']:
+        #print("SDSDS : ", env['use_conan'])
+        localenv.Prepend(CPPDEFINES = [('BOOST_ALL_NO_LIB', '1'), 'BOOST_SYSTEM_NO_DEPRECATED', 'BOOST_THREAD_USES_CHRONO', 'BOOST_THREAD_WIN32', 'BOOST_USE_WINDOWS_H', 'WIN32_LEAN_AND_MEAN' ])
+        localenv.Prepend(CPPDEFINES = ('_GLIBCXX_USE_CXX11_ABI', 1))
+        if env['use_static']:
+            #localenv.Prepend(CPPDEFINES = ('BOOST_USE_STATIC_LIBS'))
+            localenv.Prepend(CPPDEFINES = ('BOOST_CHRONO_STATIC_LINK', 1))
+            localenv.Prepend(CPPDEFINES = ('BOOST_SYSTEM_STATIC_LINK', 1))
+        else:
+            localenv.Prepend(CPPDEFINES = ('BOOST_ERROR_CODE_HEADER_ONLY'))
 
+#if env['use_mingw'] or sys.platform == 'win32':
+#   env.Append( SHLINKFLAGS = ['-Wl,--output-def,'+ os.path.join(env.Dir(buildPath_).get_abspath(), moduleName, moduleName + '.def')  ] )
+if localenv['color']:
+    from termcolor import colored, cprint
+
+    if 'CPPDEFINES' in localenv:
+        print(colored('CPPDEFINES :', 'magenta'), colored(localenv['CPPDEFINES'], 'cyan'))
+    print(colored('CCFLAGS :', 'magenta'), colored(localenv['CCFLAGS'], 'cyan'))
+    print(colored('CXXFLAGS :', 'magenta'), colored(localenv['CXXFLAGS'], 'cyan'))
+    print(colored('LINKFLAGS :', 'magenta'), colored(localenv['LINKFLAGS'], 'cyan'))
+    # print "dump whole env :", localenv.Dump()
+    print(colored('CXXVERSION :', 'magenta'), colored(localenv['CXXVERSION'], 'cyan'))
 
 if Arch not in ['x86Linux'] and localenv['use_mingw']:
     localenv.Append(LIBPATH = ['/mingw64/lib'])
@@ -75,6 +77,13 @@ if Arch not in ['x86Linux'] and localenv['use_mingw']:
     ])
 else:
     #explicit links
+    #/usr/lib/x86_64-linux-gnu/libboost_system.so
+    if not env['use_conan']:
+        localenv.Append(LIBPATH = ['/usr/lib/x86_64-linux-gnu/'])
+        #localenv.Prepend(CPPPATH = ['/usr/include/', '/usr/include/x86_64-linux-gnu/'])  # '/usr/include/x86_64-linux-gnu/' for cppunit, /usr/include/ for boost
+        #localenv.Append(CPPPATH = ['/usr/include/'])
+        #/usr/lib/gcc/x86_64-w64-mingw32/9.3-win32/include/
+        #localenv.Prepend(CPPPATH = ['/usr/x86_64-w64-mingw32/include/', '/usr/include/x86_64-linux-gnu/', '/usr/include/'])  # '/usr/include/x86_64-linux-gnu/' for cppunit, /usr/include/ for boost
     localenv.Append(LIBS = [
         'boost_thread',
         'boost_date_time',
@@ -82,6 +91,7 @@ else:
     ])
 
 print('LIBS :', localenv['LIBS'])
+print('LIBPATH :', localenv['LIBPATH'])
 
 if env['color']:
     print(colored('CC :', 'magenta'), colored(env['CC'], 'cyan'))

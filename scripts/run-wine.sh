@@ -39,6 +39,6 @@ source "${WORKING_DIR}/../step-0-color.sh"
 #     Z:\usr\lib\gcc\x86_64-w64-mingw32\9.3-posix\
 # to the 'PATH' variable.
 
-WINEDEBUG=-all wine target/bin/x86Linux/run_app.exe sdf
+WINEDEBUG=-all wine target/bin/x86Linux/run_app.exe
 
 exit 0

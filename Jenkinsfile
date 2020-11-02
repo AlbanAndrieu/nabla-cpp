@@ -106,6 +106,7 @@ pipeline {
         GIT_URL = "ssh://git@github.com/AlbanAndrieu/${GIT_PROJECT}.git"
         DOCKER_TAG = dockerTag()
         ARCH = "linux"
+        USE_SUDO = "false"
     }
     options {
         //skipDefaultCheckout()
@@ -222,6 +223,7 @@ pipeline {
                                //"source ../../scripts/run-python.sh\n" +
                                ". /opt/ansible/env38/bin/activate \n" +
                                "rm -Rf /home/jenkins/.conan/\n" +
+                               "export USE_SUDO=false\n" +
                                "bash ./build.sh"
 
                             //sh 'ctest -T test --no-compress-output'
@@ -267,7 +269,7 @@ pipeline {
                   //clang(),
                   //clangAnalyzer(),
                   clangTidy(),
-                  dockerLint(),
+                  //dockerLint(),
                   flawfinder()
 
           ]

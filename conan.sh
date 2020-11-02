@@ -69,9 +69,7 @@ elif [ "${ENABLE_MINGW_64}" == "true" ]; then
         #conan profile new nabla_msys2_mingw
 
         #conan install ../microsoft/ --build=boost*@conan/stable -pr ../nabla_msys2_mingw_linux
-        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build=missing -pr ${WORKING_DIR}/sample/nabla_msys2_mingw_linux -if ./sample/build-${ARCH} ${NC}"
-        conan install ${WORKING_DIR}/sample/microsoft/ --build=missing -pr ${WORKING_DIR}/sample/nabla_msys2_mingw_linux -if ./sample/build-${ARCH}
-        #-s zlib:compiler="MinGW"
+        echo -e "${magenta} See profile : ${WORKING_DIR}/sample/nabla_msys2_mingw_linux ${NC}"
 
     elif [ "$(uname -s)" == "MINGW64_NT-10.0-17763" ]; then
         conan install mingw_installer/1.0@conan/stable -if ./sample/build-${ARCH}
@@ -133,7 +131,16 @@ if [ "$OSTYPE" == "msys" ]; then
         # leave ARCH as-is
         ;;
     esac
+elif [ "${ENABLE_MINGW_64}" == "true" ]; then
+    if [ "$(uname -s)" == "Linux" ]; then
+        # See https://docs.conan.io/en/latest/systems_cross_building/cross_building.html
+        #conan profile new nabla_msys2_mingw
 
+        #conan install ../microsoft/ --build=boost*@conan/stable -pr ../nabla_msys2_mingw_linux
+        echo -e "${magenta} conan install ${WORKING_DIR}/sample/microsoft/ --build=missing -pr ${WORKING_DIR}/sample/nabla_msys2_mingw_linux -if ./sample/build-${ARCH} ${NC}"
+        conan install ${WORKING_DIR}/sample/microsoft/ --build=boost -pr ${WORKING_DIR}/sample/nabla_msys2_mingw_linux -if ./sample/build-${ARCH}
+        #-s zlib:compiler="MinGW"
+    fi
 elif [ "$(uname -s)" == "Linux" ]; then
 
     case $(uname -m) in

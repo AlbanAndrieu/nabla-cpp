@@ -105,8 +105,8 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-echo -e "${magenta} ${SONAR_CMD} ${MAKE} -B clean install DoxygenDoc ${NC}"
-${SONAR_CMD} ${ENABLE_CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc
+echo -e "${magenta} ${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc ${NC}"
+${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
@@ -223,12 +223,14 @@ if [ `uname -s` == "Linux" ]; then
 fi
 
 if [ `uname -s` == "Linux" ]; then
-    echo -e "${green} Reporting : Junit ${NC}"
+    if ! command -v xsltproc >/dev/null 2>&1; then
+        echo -e "${green} Reporting : Junit ${NC}"
 
-    echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
-    xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml || true
-    echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml ${NC}"
-    xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml || true
+        echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
+        xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml || true
+        echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml ${NC}"
+        xsltproc ${PROJECT_SRC}/scripts/valgrind.xsl  Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/Valgrind.xml || true
+    fi
 fi
 
 echo -e "${green} Reporting : Coverage ${NC}"
@@ -245,21 +247,24 @@ find ../.. -name '*.gcda'
 find ../.. -name '*.gcno'
 
 mkdir ${PROJECT_SRC}/reports || true
-which gcovr
-echo -e "${magenta} gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/ ${NC}"
-gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/
-#xml
-echo -e "${magenta} gcovr --branches --xml-pretty -r ${PROJECT_SRC}/microsoft/ ${NC}"
-gcovr --branches --xml-pretty -r ${PROJECT_SRC}/sample/microsoft/ > ${PROJECT_SRC}/reports/gcovr-report.xml
-#html
-echo -e "${magenta} gcovr --branches -r ${PROJECT_SRC}/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html ${NC}"
-gcovr --branches -r ${PROJECT_SRC}/sample/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
+if ! command -v gcovr >/dev/null 2>&1; then
+    echo -e "${magenta} gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/ ${NC}"
+    gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/
+    #xml
+    echo -e "${magenta} gcovr --branches --xml-pretty -r ${PROJECT_SRC}/microsoft/ ${NC}"
+    gcovr --branches --xml-pretty -r ${PROJECT_SRC}/sample/microsoft/ > ${PROJECT_SRC}/reports/gcovr-report.xml
+    #html
+    echo -e "${magenta} gcovr --branches -r ${PROJECT_SRC}/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html ${NC}"
+    gcovr --branches -r ${PROJECT_SRC}/sample/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
+fi
 
-echo -e "${magenta} ${USE_SUDO} perf record -g -- /usr/bin/git --version ${NC}"
-${USE_SUDO} perf record -g -- /usr/bin/git --version
-echo -e "${magenta} ${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
-${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
-#eog output.png
+if ! command -v perf >/dev/null 2>&1; then
+    echo -e "${magenta} ${USE_SUDO} perf record -g -- /usr/bin/git --version ${NC}"
+    ${USE_SUDO} perf record -g -- /usr/bin/git --version
+    echo -e "${magenta} ${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"
+    ${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png
+    #eog output.png
+fi
 
 #bash -c 'find src -regex ".*\.cc\|.*\.hh" | vera++ - -showrules -nodup |& vera++Report2checkstyleReport.perl > $(BUILD_DIR)/vera++-report.xml'
 

@@ -233,10 +233,10 @@ fi
 
 if [ "${ENABLE_CLANG_SCAN}" == "true" ]; then
   echo -e "${green} ENABLE_CLANG_SCAN is defined ${happy_smiley} : ${ENABLE_CLANG_SCAN} ${NC}"
-else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : ENABLE_CLANG_SCAN, use default one ${NC}"
   export CLANG_SCAN="scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang"
   echo -e "${magenta} ENABLE_CLANG_SCAN : ${ENABLE_CLANG_SCAN} ${NC}"
+else
+  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} ${NC}"
 fi
 
 if [ "${ENABLE_NINJA}" == "true" ]; then
@@ -320,7 +320,6 @@ else
     SONAR_CMD="/usr/local/sonar-build-wrapper/build-wrapper-linux-${SONAR_PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs/"
   else
     echo -e "${red} ${double_arrow} Undefined directory ${head_skull} : SONAR_CMD failed ${NC}"
-    #exit 1
   fi
   export SONAR_CMD
   echo -e "${magenta} SONAR_CMD : ${SONAR_CMD} ${NC}"
@@ -629,21 +628,21 @@ fi
 #export PATH="${JAVA_HOME}/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/kgr/dev/kgr_maven/nexus/bin/jsw/linux-x86-64:/kgr-mvn/hudson/etc/init.d:/home/kgr_mvn/bin"
 export M2_HOME=""
 
-if [ -n "${USE_SUDO}" ]; then
-  echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
-  if [ "${USE_SUDO}" == "false" ]; then
-    unset USE_SUDO
-    echo -e "${green} USE_SUDO is disabled ${happy_smiley} : ${USE_SUDO} ${NC}"
-  fi
+if [ "${USE_SUDO}" == "false" ]; then
+  unset USE_SUDO
+  echo -e "${green} USE_SUDO is disabled ${happy_smiley} : ${USE_SUDO} ${NC}"
 else
-  echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : USE_SUDO, use the default one ${NC}"
-  if [ "${OS}" == "Ubuntu" ]; then
-    USE_SUDO="sudo"
+  if [ -n "${USE_SUDO}" ]; then
+    echo -e "${green} USE_SUDO is defined ${happy_smiley} : ${USE_SUDO} ${NC}"
   else
-    USE_SUDO=""
+    echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : USE_SUDO, use the default one ${NC}"
+    if [ "${OS}" == "Ubuntu" ]; then
+      export USE_SUDO="sudo" # Only enable sudo on ubuntu
+    else
+      unset USE_SUDO
+    fi
+    echo -e "${magenta} USE_SUDO : ${USE_SUDO} ${NC}"
   fi
-  export USE_SUDO
-  echo -e "${magenta} USE_SUDO : ${USE_SUDO} ${NC}"
 fi
 
 if [ -n "${RELEASE_VERSION}" ]; then

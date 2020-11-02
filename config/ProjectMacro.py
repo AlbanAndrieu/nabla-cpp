@@ -249,24 +249,57 @@ def registerBuildFailuresAtExit(env):
 ##############################################################################
 # defined env verbosity
 
-
 def reduceBuildVerbosity(env):
     env['CCCOMSTR'] = 'Compiling $TARGET'
     env['CXXCOMSTR'] = 'Compiling $SOURCE'
     env['LINKCOMSTR'] = 'Linking $TARGET'
     env['IDLCOMSTR'] = 'IDL Generation for: ${SOURCE}'
 
+##############################################################################
+
+def InstallTree(env, dest_dir, src_dir, includes, excludes):
+    destnode = env.Dir(dest_dir)
+    dirs = []
+    dirs.append(fixWindowsPath(src_dir))
+    while len(dirs) > 0:
+        currdir = dirs.pop(0)
+        currdestdir = os.path.join(dest_dir, currdir[len(src_dir):])
+        print("currdir : " + currdir)
+        if os.path.exists(currdir):
+            flist = os.listdir(currdir)
+            for currfile in flist:
+                currpath = os.path.join(currdir, currfile)
+                #currpath = currdir + '/' + currfile
+                match = 0
+                for pattern in includes:
+                    if fnmatch.fnmatchcase(currfile, pattern):
+                        match = 1
+                if (match == 1):
+                    for pattern in excludes:
+                        if fnmatch.fnmatchcase(currfile, pattern):
+                            match = 0
+                    if (match == 1):
+                        if (os.path.isdir(currpath)):
+                            dirs.append(currpath)
+                        else:
+                            print("Install : " + currpath + " to " + currdestdir)
+                            env.Install(currdestdir, currpath)
+        else:
+            print("Directory : " + currdir +" does not exist")
+    return destnode
+
 ################################################################
 # define the arch
 # https://github.com/SGpp/SGpp/issues/186
+# pip install distro==1.5.0
 def getDistribution():
-  try:
-    with open("/etc/os-release") as osr:
-      osReleaseLines = osr.readlines()
-    hasOsRelease = True
-  except (IOError,OSError):
-    osReleaseLines = []
-    hasOsRelease = False
+  #try:
+  #  with open("/etc/os-release") as osr:
+  #    osReleaseLines = osr.readlines()
+  #  hasOsRelease = True
+  #except (IOError,OSError):
+  #  osReleaseLines = []
+  #  hasOsRelease = False
   try:
     import platform
     if platform.system() == "Darwin":
@@ -280,9 +313,9 @@ def getDistribution():
         dist = platform.dist() # Deprecated since version 3.5, will be removed in version 3.8
     else :
         if sys.platform == 'win32':
-            dist = ["unknown", "", ""]
+            dist = ["windows", "", ""]
         else:
-            import distro        
+            import distro
             dist = distro.linux_distribution()
     return dist
   except:
@@ -306,6 +339,20 @@ def getArch():
         elif platform.machine() == 'i86pc':
             theArch = 'x86sol'
     return theArch
+
+def getConfiguration(thePlatform):
+
+    env = os.environ
+    # --- The host platform.
+    #print("Platform argument:", thePlatform)
+    import platform
+    system = platform.system()
+    machine = platform.machine()
+    dist = getDistribution()
+
+    print("System : ", system)
+    #print("Machine : ", machine)
+    print("Dist-Os : ", dist[0])
 
 ################################################################
 # See https://github.com/SCons/scons/wiki/LongCmdLinesOnWin32
@@ -373,7 +420,7 @@ if sys.platform == 'win32': # or sys.platform == 'msys':
                 win32file.DeleteFile(arg)
             exit_code = 0
         else:
-            if not cmd == 'windres-NOK' and not cmd == 'flex' and not cmd == 'bash' and not cmd == 'rm-NOK':
+            if not cmd == 'flex' and not cmd == 'bash':
                 if cmd == 'i686-w64-mingw32-g++' or cmd == 'x86_64-w64-mingw32-g++' or cmd == 'i686-w64-mingw32-gcc' or cmd == 'x86_64-w64-mingw32-gcc':
                     return ourspawn(sh, escape, cmd, args, env)
                 else:
@@ -391,14 +438,14 @@ def SetupSpawn( env ):
     print("SetupSpawn : " + sys.platform)
     if sys.platform == 'win32': # or sys.platform == 'msys':
         env['SPAWN'] = my_spawn
-        
+
 def fixArguments(args):
 
     newArgs = []
     for arg in args:
         newArgs.append(arg.replace('\\', '/'))
     return newArgs
-    
+
 def CheckVars( env ):
     for var in ['CC', 'CXX']:
         if var not in env:

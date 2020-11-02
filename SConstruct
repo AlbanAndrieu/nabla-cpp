@@ -28,6 +28,7 @@ SCons.Scanner.Dir.skip_entry['.svn'] = 1
 # To be retrieved automatically
 Arch = ProjectMacro.getArch()
 print("Arch :", Arch)
+ProjectMacro.getConfiguration(ARGUMENTS.get('PLATFORM', str(ARGUMENTS.get('OS', Platform()))))
 
 Help('''
 Type 'scons' to build and run all the available test cases.
@@ -157,7 +158,7 @@ if env['use_mingw'] or Arch in ['mingw', 'cygwin', 'winnt']:
 #                 projects = ['Microsoft' + env['MSVSPROJECTSUFFIX']],
 #                 variant = 'Release')
 
-if env['use_mingw'] == True and Arch in ['mingw', 'cygwin', 'winnt']:
+if env['use_mingw'] == True and Arch in ['mingw', 'cygwin', 'winnt', 'x86Linux']:
     target_tools = ['default', 'mingw']
 else:
     if Arch in ['x86sol','sun4sol']:
