@@ -13,12 +13,10 @@ Arch = ProjectMacro.getArch()
 #print("Arch :", Arch)
 
 #https://o440.wordpress.com/2011/02/25/scons-and-code-coverage/
-localenv.Append(CCFLAGS = ['-fprofile-arcs', '-ftest-coverage'])
+#localenv.Append(CCFLAGS = ['-fprofile-arcs', '-ftest-coverage'])
 #localenv.Append(CXXFLAGS = ['-fprofile-arcs', '-ftest-coverage'])
 #if 'use_gcov' in env and env['use_gcov']:
-#localenv.Append(LINKFLAGS = ['-lgcov', '--coverage'])
-
-#localenv.Append(LIBS = ['gcov'])
+#    localenv.Append(LINKFLAGS = ['-lgcov', '--coverage'])
 
 #if platform.platform().startswith('Linux'):
 #    localenv.Append(LINKFLAGS = "-Wl,--no-as-needed")

@@ -3,3 +3,14 @@
 
 # JS files must always use LF for tools to work
 *.js eol=lf
+
+*.sh text eol=lf
+*.m eol=lf
+*.h eol=lf
+*.html eol=lf
+*.js eol=lf
+*.json eol=lf
+*.less eol=lf
+*.md eol=lf
+*.svg eol=lf
+*.xml eol=lf
