@@ -871,16 +871,17 @@ COMMENT "Running gcovr to produce code coverage report."
 
 #target sonarqube
 ADD_CUSTOM_TARGET(sonarqube
-COMMAND sonar-scanner -Dproject.settings=${CMAKE_CURRENT_SOURCE_DIR}
+WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+COMMAND /usr/local/sonar-runner/bin/sonar-scanner -Dproject.settings=${PROJECT_SOURCE_DIR}/sonar-project.properties
 )
 
 #target cppcheck produce report : check/index.html
 ADD_CUSTOM_TARGET(cppcheck
-# Code analysis
-COMMAND cppcheck --enable=all --force --inconclusive --std=posix ${CMAKE_CURRENT_SOURCE_DIR} --xml-version=2  2&> check.xml
-# Run htmlreport
-COMMAND cppcheck-htmlreport --source-dir=${CMAKE_CURRENT_SOURCE_DIR} --report-dir=check --file=check.xml
 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+# Code analysis
+COMMAND cppcheck --enable=all --inconclusive --xml --xml-version=2 -I${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} 2> cppcheck-result.xml
+# Run htmlreport
+COMMAND cppcheck-htmlreport --source-dir=${CMAKE_CURRENT_SOURCE_DIR} --report-dir=check --file=cppcheck-result.xml
 COMMENT "Running cppcheck to produce code analysis report."
 )
 
