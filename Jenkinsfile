@@ -292,11 +292,54 @@ pipeline {
           )]
         )
 
-        publishHTML([reportDir: 'sample/build-linux/coverage/', reportFiles: 'index.html', reportName: 'HTML Coverage Report'])
-        publishHTML([reportDir: 'sample/build-linux/check/', reportFiles: 'index.html', reportName: 'HTML Cppcheck Report'])
-        publishHTML([reportDir: 'sample/build-linux/doc/html/', reportFiles: 'index.html', reportName: 'HTML Doxygen Report'])
-        publishHTML([reportDir: 'reports/', reportFiles: 'flawfinder-result.html', reportName: 'HTML Flawfinder Report'])
-        publishHTML([reportDir: 'reports/', reportFiles: 'rats-result.html', reportName: 'HTML Rats Report'])
+		publishHTML (target: [
+		  allowMissing: true,
+		  alwaysLinkToLastBuild: false,
+		  keepAll: true,
+		  reportDir: 'sample/build-linux/coverage/',
+		  reportFiles: 'index.html',
+		  reportName: "Coverage Report"
+		])
+		publishHTML (target: [
+		  allowMissing: true,
+		  alwaysLinkToLastBuild: false,
+		  keepAll: true,
+		  reportDir: 'sample/build-linux/check/',
+		  reportFiles: 'index.html',
+		  reportName: "Cppcheck Report"
+		])
+		publishHTML (target: [
+		  allowMissing: true,
+		  alwaysLinkToLastBuild: false,
+		  keepAll: true,
+		  reportDir: 'sample/build-linux/doc/html/',
+		  reportFiles: 'index.html',
+		  reportName: "Doxygen Report"
+		])
+		publishHTML (target: [
+		  allowMissing: true,
+		  alwaysLinkToLastBuild: false,
+		  keepAll: true,
+		  reportDir: 'reports/',
+		  reportFiles: 'flawfinder-result.html',
+		  reportName: "Flawfinder Report"
+		])
+		publishHTML (target: [
+		  allowMissing: true,
+		  alwaysLinkToLastBuild: false,
+		  keepAll: true,
+		  reportDir: 'reports/',
+		  reportFiles: 'rats-result.html',
+		  reportName: "Rats Report"
+		])
+		publishHTML (target: [
+		  allowMissing: true,
+		  alwaysLinkToLastBuild: false,
+		  keepAll: true,
+		  reportDir: 'reports/',
+		  reportFiles: 'gcovr-report.html',
+		  reportName: "GCov Report"
+		])
 
         dockerHadoLint(dockerFilePath: "./", skipDockerLintFailure: false, dockerFileId: "1")
 

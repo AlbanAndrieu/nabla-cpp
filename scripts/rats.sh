@@ -16,7 +16,7 @@ fi
 echo "rats -w 3 --xml ${WORKING_DIR}/../sample/microsoft > ${WORKING_DIR}/../${reports_directory}/${report_filename}.xml"
 rats -w 3 --xml ${WORKING_DIR}/../sample/microsoft > ${WORKING_DIR}/../${reports_directory}/${report_filename}.xml
 
-rats --warning 1 --html ${WORKING_DIR}/../sample/microsoft > ${WORKING_DIR}/../${report_filename}.html
+rats --warning 1 --html ${WORKING_DIR}/../sample/microsoft > ${WORKING_DIR}/../${reports_directory}/${report_filename}.html
 
 #mv ${WORKING_DIR}/../${report_filename}* ${WORKING_DIR}/../${reports_directory}
 

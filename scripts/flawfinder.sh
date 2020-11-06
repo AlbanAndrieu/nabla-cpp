@@ -11,7 +11,7 @@ echo -e "${red} Flawfinder ${NC}"
 flawfinder --version
 
 reports_directory="reports"
-report_filename="flawfinder-result-SAMPLE"
+report_filename="flawfinder-result"
 if [ ! -e "${WORKING_DIR}/../${reports_directory}" ]; then
     mkdir "${WORKING_DIR}/../${reports_directory}"
 fi
