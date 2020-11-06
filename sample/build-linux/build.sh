@@ -245,6 +245,7 @@ find . -type f \( -iname \*.gcno -or -iname \*.gcda \) -exec cp {} ../../ \;
 echo -e "${magenta} find ../.. -name '*.gcda' ${NC}"
 find ../.. -name '*.gcda'
 find ../.. -name '*.gcno'
+find ../.. -name '*.gcov'
 
 mkdir ${PROJECT_SRC}/reports || true
 if ! command -v gcovr >/dev/null 2>&1; then

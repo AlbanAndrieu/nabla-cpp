@@ -250,32 +250,23 @@ pipeline {
     } // stages
     post {
       always {
-        // tools
-        //recordIssues enabledForFailure: true, filters: [
-        //  excludeFile('.*qrc_icons\\.cpp.*'),
-        //  excludeMessage('.*tmpnam.*')],
-        //  tools: [cmake(),
-        //          gcc(),
-        //        doxygen(),
-        //        clangTidy()
-        //        ],
-        //  unstableTotalAll: 1
-
         recordIssues enabledForFailure: true,
           tools: [cppCheck(pattern: 'reports/cppcheck-result.xml'),
                   junitParser(pattern: 'sample/build-linux/Testing/JUnitTestResults.xml'),
-                  sonarQube(pattern: '**/sonar-report.json'),
+                  //sonarQube(pattern: '**/sonar-report.json'),
+                  sonarQube(pattern: '.scannerwork/report-task.txt'),
+                  gcc(),
                   cmake(),
+                  doxygen(),
                   //clang(),
                   //clangAnalyzer(),
-                  clangTidy(),
+                  clangTidy(), //**/clang-tidy-result.txt
                   //dockerLint(),
+                  hadoLint(),
                   flawfinder()
 
           ]
-        //publishCppcheck allowNoReport: true, ignoreBlankFiles: true, pattern: 'reports/cppcheck-result.xml'
 
-        // sample/build/conaninfo.txt sample/build-linux/CMakeFiles/CMakeOutput.log
         archiveArtifacts artifacts: '**/conaninfo.txt, , *.log, sample/build*/CMakeFiles/CMakeOutput.log, sample/build*/CMakeFiles/CMakeError.log, bw-outputs/build-wrapper.log, bw-outputs/build-wrapper-dump.json', excludes: null, fingerprint: false, onlyIfSuccessful: false
 
         // Archive the CTest xml output
@@ -301,8 +292,13 @@ pipeline {
           )]
         )
 
-        //junit 'sample/build-linux/Testing/JUnitTestResults.xml'
-        //step([$class: 'JUnitResultArchiver', testResults: 'sample/build-linux/Testing/JUnitTestResults.xml'])
+        publishHTML([reportDir: 'sample/build-linux/coverage/', reportFiles: 'index.html', reportName: 'HTML Coverage Report'])
+        publishHTML([reportDir: 'sample/build-linux/check/', reportFiles: 'index.html', reportName: 'HTML Cppcheck Report'])
+        publishHTML([reportDir: 'sample/build-linux/doc/html/', reportFiles: 'index.html', reportName: 'HTML Doxygen Report'])
+        publishHTML([reportDir: 'reports/', reportFiles: 'flawfinder-result.html', reportName: 'HTML Flawfinder Report'])
+        publishHTML([reportDir: 'reports/', reportFiles: 'rats-result.html', reportName: 'HTML Rats Report'])
+
+        dockerHadoLint(dockerFilePath: "./", skipDockerLintFailure: false, dockerFileId: "1")
 
       } // always
       success {

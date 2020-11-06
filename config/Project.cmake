@@ -862,7 +862,7 @@ COMMENT "Running gcovr to produce code coverage report."
 #target sonarqube
 ADD_CUSTOM_TARGET(sonarqube
 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-COMMAND /usr/local/sonar-runner/bin/sonar-scanner -Dproject.settings=${PROJECT_SOURCE_DIR}/sonar-project.properties
+COMMAND /usr/local/sonar-runner/bin/sonar-scanner -Dproject.settings=${PROJECT_SOURCE_DIR}/sonar-project.properties -Dsonar.report.export.path=${PROJECT_SOURCE_DIR}/reports/sonar-report.json
 )
 
 #target cppcheck produce report : check/index.html
@@ -906,16 +906,21 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   INCLUDE(${PROJECT_CONFIG_DIR}/CodeCoverage.cmake)
   APPEND_COVERAGE_COMPILER_FLAGS()
   #SETUP_TARGET_FOR_COVERAGE_LCOV(${PROJECT_NAME}_coverage test coverage)
-  SETUP_TARGET_FOR_COVERAGE_GCOVR_XML(
-	NAME coverage
-	EXECUTABLE ctest -j ${PROCESSOR_COUNT}
-	DEPENDENCIES run_app
-	BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
-  #SETUP_TARGET_FOR_COVERAGE_GCOVR_HTML(
-  #    NAME coverage
-  #    EXECUTABLE ctest -j ${PROCESSOR_COUNT}
-  #    DEPENDENCIES run_app
-  #    BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
+  #SETUP_TARGET_FOR_COVERAGE_LCOV(
+  # NAME coverage
+  # EXECUTABLE ctest -j ${PROCESSOR_COUNT}
+  # DEPENDENCIES run_app
+  # BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
+  #SETUP_TARGET_FOR_COVERAGE_GCOVR_XML(
+  #  NAME coverage
+  #  EXECUTABLE ctest -j ${PROCESSOR_COUNT}
+  #  DEPENDENCIES run_app
+  #  BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
+  SETUP_TARGET_FOR_COVERAGE_GCOVR_HTML(
+      NAME coverage
+      EXECUTABLE ctest -j ${PROCESSOR_COUNT}
+      DEPENDENCIES run_app
+      BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
 ENDIF()
 
 #IF(CMAKE_COMPILER_IS_GNUCC)

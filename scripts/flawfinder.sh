@@ -26,6 +26,13 @@ flawfinder \
  ${WORKING_DIR}/../sample/microsoft \
  > "${WORKING_DIR}/../${reports_directory}/${report_filename}.html"
 
+flawfinder \
+ --quiet \
+ --context \
+ --falsepositive \
+ --minlevel=3 \
+ ${WORKING_DIR}/../sample/microsoft
+
 #mv "${WORKSPACE}/${report_filename}.html" "${WORKING_DIR}/../${reports_directory}"
 
 exit 0
