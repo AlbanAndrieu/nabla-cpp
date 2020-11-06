@@ -67,20 +67,16 @@ pipeline {
     //    }
     //}
     parameters {
-        string(defaultValue: 'master', description: 'Default git branch to override', name: 'GIT_BRANCH_NAME', trim: true)
-        string(defaultValue: '44447', description: 'Default cargo rmi port to override', name: 'CARGO_RMI_PORT', trim: true)
         string(defaultValue: '', description: 'Default workspace suffix to override', name: 'WORKSPACE_SUFFIX', trim: true)
-        string(defaultValue: 'http://localhost:9190', description: 'Default URL used by deployment tests', name: 'SERVER_URL', trim: true)
-        string(defaultValue: '/test/#/', description: 'Default context', name: 'SERVER_CONTEXT', trim: true)
-        string(defaultValue: 'LATEST_SUCCESSFULL', description: 'Create a TAG', name: 'TARGET_TAG', trim: true)
         string(defaultValue: 'jenkins', description: 'User', name: 'TARGET_USER', trim: true)
         booleanParam(defaultValue: false, description: 'Dry run', name: 'DRY_RUN')
         booleanParam(defaultValue: false, description: 'Clean before run', name: 'CLEAN_RUN')
         booleanParam(defaultValue: false, description: 'Debug run', name: 'DEBUG_RUN')
-        booleanParam(defaultValue: false, description: 'Debug mvnw', name: 'MVNW_VERBOSE')
         booleanParam(defaultValue: false, name: "RELEASE", description: "Perform release-type build.")
         string(defaultValue: "", name: "RELEASE_BASE", description: "Commit tag or branch that should be checked-out for release", trim: true)
         string(defaultValue: "", name: "RELEASE_VERSION", description: "Release version for artifacts", trim: true)
+        booleanParam(defaultValue: false, description: 'Build only to have package. no test / no docker', name: 'BUILD_ONLY')
+        booleanParam(defaultValue: true, description: 'Run acceptance tests', name: 'BUILD_TEST')
     }
     environment {
         GIT_BRANCH_NAME = "${params.GIT_BRANCH_NAME}".trim()
@@ -119,6 +115,10 @@ pipeline {
     }
     stages {
         stage('Build-Docker') {
+            when {
+                expression { BRANCH_NAME ==~ /release\/.+|master|develop|PR-.*|feature\/.*|bugfix\/.*/ }
+                expression { params.BUILD_ONLY.toBoolean() == false }
+            }
             steps {
                 script {
                     tee("python.log") {
@@ -172,33 +172,37 @@ pipeline {
            } // steps
         } // stage Build-Dcoker
        stage('Build-Scons') {
-            steps {
-                script {
-                    tee("build-scons.log") {
-                        sh "#!/bin/bash \n" +
-                           "cd $WORKSPACE \n" +
-                           "ls -lrta /opt/ansible/ \n" +
-                           ". /opt/ansible/env38/bin/activate \n" +
-                           "python -V \n" +
-                           "python3 -V \n" +
-                           "python3.8 -V \n" +
-                           "pip -V \n" +
-                           "pip list \n" +
-                           "pip3.8 install conan pre-commit cmake \n" +
-                           "which conan \n" +
-                           "conan remove --system-reqs '*' \n" +
-                           "whoami \n" +
-                           "bash ./scripts/cppcheck.sh\n" +
-                           "source ./scripts/run-python.sh\n" +
-                           "rm -Rf /home/jenkins/.conan/\n" +
-                           //"pre-commit run -a || true\n" +
-                           "bash ./build.sh"
-                    } // tee
+           steps {
+               script {
+                   tee("build-scons.log") {
+                       sh "#!/bin/bash \n" +
+                          "cd $WORKSPACE \n" +
+                          "ls -lrta /opt/ansible/ \n" +
+                          ". /opt/ansible/env38/bin/activate \n" +
+                          "python -V \n" +
+                          "python3 -V \n" +
+                          "python3.8 -V \n" +
+                          "pip -V \n" +
+                          "pip list \n" +
+                          "pip3.8 install conan pre-commit cmake \n" +
+                          "which conan \n" +
+                          "conan remove --system-reqs '*' \n" +
+                          "whoami \n" +
+                          "bash ./scripts/cppcheck.sh\n" +
+                          "source ./scripts/run-python.sh\n" +
+                          "rm -Rf /home/jenkins/.conan/\n" +
+                          //"pre-commit run -a || true\n" +
+                          "bash ./build.sh"
+                   } // tee
 
-               } // script
+              } // script
            } // steps
         } // stage Build-CMake
         stage('Build-CMake') {
+            when {
+                expression { BRANCH_NAME ==~ /release\/.+|master|develop|PR-.*|feature\/.*|bugfix\/.*/ }
+                //expression { params.BUILD_TEST.toBoolean() == true && params.BUILD_ONLY.toBoolean() == false }
+            }
             steps {
                 script {
                     tee("build-cmake.log") {
@@ -229,10 +233,66 @@ pipeline {
                             //sh 'ctest -T test --no-compress-output'
                         } // dir
                     } // tee
+
+					publishHTML (target: [
+					  allowMissing: true,
+					  alwaysLinkToLastBuild: false,
+					  keepAll: true,
+					  reportDir: 'sample/build-linux/coverage/',
+					  reportFiles: 'index.html',
+					  reportName: "Coverage Report"
+					])
+					publishHTML (target: [
+					  allowMissing: true,
+					  alwaysLinkToLastBuild: false,
+					  keepAll: true,
+					  reportDir: 'sample/build-linux/check/',
+					  reportFiles: 'index.html',
+					  reportName: "Cppcheck Report"
+					])
+					publishHTML (target: [
+					  allowMissing: true,
+					  alwaysLinkToLastBuild: false,
+					  keepAll: true,
+					  reportDir: 'sample/build-linux/doc/html/',
+					  reportFiles: 'index.html',
+					  reportName: "Doxygen Report"
+					])
+					publishHTML (target: [
+					  allowMissing: true,
+					  alwaysLinkToLastBuild: false,
+					  keepAll: true,
+					  reportDir: 'reports/',
+					  reportFiles: 'flawfinder-result.html',
+					  reportName: "Flawfinder Report"
+					])
+					publishHTML (target: [
+					  allowMissing: true,
+					  alwaysLinkToLastBuild: false,
+					  keepAll: true,
+					  reportDir: 'reports/',
+					  reportFiles: 'rats-result.html',
+					  reportName: "Rats Report"
+					])
+					publishHTML (target: [
+					  allowMissing: true,
+					  alwaysLinkToLastBuild: false,
+					  keepAll: true,
+					  reportDir: 'reports/',
+					  reportFiles: 'gcovr-report.html',
+					  reportName: "GCov Report"
+					])
+
+					dockerHadoLint(dockerFilePath: "./", skipDockerLintFailure: false, dockerFileId: "1")
+
                } // script
            } // steps
         } // stage Build-CMake
         stage('SonarQube analysis') {
+            when {
+                expression { BRANCH_NAME ==~ /release\/.+|master|develop|PR-.*|feature\/.*|bugfix\/.*/ }
+                expression { params.BUILD_ONLY.toBoolean() == false }
+            }
             environment {
                 SONAR_SCANNER_OPTS = "-Xmx1g"
             }
@@ -263,8 +323,8 @@ pipeline {
                   clangTidy(), //**/clang-tidy-result.txt
                   //dockerLint(),
                   hadoLint(),
-                  flawfinder()
-
+                  flawfinder(),
+                  taskScanner()
           ]
 
         archiveArtifacts artifacts: '**/conaninfo.txt, , *.log, sample/build*/CMakeFiles/CMakeOutput.log, sample/build*/CMakeFiles/CMakeError.log, bw-outputs/build-wrapper.log, bw-outputs/build-wrapper-dump.json', excludes: null, fingerprint: false, onlyIfSuccessful: false
@@ -291,57 +351,6 @@ pipeline {
             stopProcessingIfError: true
           )]
         )
-
-		publishHTML (target: [
-		  allowMissing: true,
-		  alwaysLinkToLastBuild: false,
-		  keepAll: true,
-		  reportDir: 'sample/build-linux/coverage/',
-		  reportFiles: 'index.html',
-		  reportName: "Coverage Report"
-		])
-		publishHTML (target: [
-		  allowMissing: true,
-		  alwaysLinkToLastBuild: false,
-		  keepAll: true,
-		  reportDir: 'sample/build-linux/check/',
-		  reportFiles: 'index.html',
-		  reportName: "Cppcheck Report"
-		])
-		publishHTML (target: [
-		  allowMissing: true,
-		  alwaysLinkToLastBuild: false,
-		  keepAll: true,
-		  reportDir: 'sample/build-linux/doc/html/',
-		  reportFiles: 'index.html',
-		  reportName: "Doxygen Report"
-		])
-		publishHTML (target: [
-		  allowMissing: true,
-		  alwaysLinkToLastBuild: false,
-		  keepAll: true,
-		  reportDir: 'reports/',
-		  reportFiles: 'flawfinder-result.html',
-		  reportName: "Flawfinder Report"
-		])
-		publishHTML (target: [
-		  allowMissing: true,
-		  alwaysLinkToLastBuild: false,
-		  keepAll: true,
-		  reportDir: 'reports/',
-		  reportFiles: 'rats-result.html',
-		  reportName: "Rats Report"
-		])
-		publishHTML (target: [
-		  allowMissing: true,
-		  alwaysLinkToLastBuild: false,
-		  keepAll: true,
-		  reportDir: 'reports/',
-		  reportFiles: 'gcovr-report.html',
-		  reportName: "GCov Report"
-		])
-
-        dockerHadoLint(dockerFilePath: "./", skipDockerLintFailure: false, dockerFileId: "1")
 
       } // always
       success {
