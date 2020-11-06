@@ -297,12 +297,7 @@ fi
 
 echo -e "${green} Clang tidy/format ${NC}"
 
-#http://clang.llvm.org/docs/HowToSetupToolingForLLVM.html
-##clang-format -style=llvm -dump-config > .clang-format
-#clang-format -dump-config
-#${MAKE} check-all
-#clang-tidy -dump-config
-clang-tidy $PROJECT_SRC/sample/microsoft/src/main/app/run_app.cpp
+$PROJECT_SRC/scripts/clang-tidy.sh
 
 echo "http://192.168.1.61/cdash/user.php"
 echo "http://maven.nabla.mobi/cpp/microsoft/index.html"

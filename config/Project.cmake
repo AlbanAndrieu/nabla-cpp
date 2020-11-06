@@ -3,7 +3,7 @@
 #
 #
 
-SET(CMAKE_BUILD_TYPE "debug")
+SET(CMAKE_BUILD_TYPE "Debug")
 
 #TODO Clang https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html
 
@@ -20,9 +20,9 @@ SET(CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind")
 
 # Add coverage options for CI
 #IF(COVERAGE)
-#	SET_TARGET_PROPERTIES(main_library run_app run_tests PROPERTIES
-#						  COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
-#						  LINK_FLAGS "-lgcov --coverage")
+#   SET_TARGET_PROPERTIES(main_library run_app run_tests PROPERTIES
+#                         COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
+#                         LINK_FLAGS "-lgcov --coverage")
 #ENDIF(COVERAGE)
 
 #if (WIN32)
@@ -318,22 +318,12 @@ IF(ENABLE_TESTS)
   INCLUDE(${PROJECT_CONFIG_DIR}/FindCppUnit.cmake)
 ENDIF(ENABLE_TESTS )
 
-#IF(CMAKE_COMPILER_IS_GNUCC)
-#  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0 -g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
-#ENDIF(CMAKE_COMPILER_IS_GNUCC)
+
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0 -g -O0 -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings --coverage -fprofile-arcs -ftest-coverage")
-  #SET(CMAKE_SHARED_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
-  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0 -g -O0 -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings --coverage")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 MESSAGE(STATUS "PROJECT_NAME ${PROJECT_NAME} = ${CMAKE_PROJECT_NAME}")
-
-#IF(CMAKE_COMPILER_IS_GNUCXX)
-#  #https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
-#  INCLUDE(${PROJECT_CONFIG_DIR}/CodeCoverage.cmake)
-#  SETUP_TARGET_FOR_COVERAGE_LCOV(${PROJECT_NAME}_coverage test coverage)
-#ENDIF()
 
 #Inclusion
 # See ${PROJ_SOURCE_DIR}/config for special inclusion
@@ -765,10 +755,10 @@ ELSE(ZLIB_FOUND)
 ENDIF(ZLIB_FOUND)
 
 FIND_PACKAGE(
-	Boost
-	1.67.0
+    Boost
+    1.67.0
     COMPONENTS date_time filesystem system
-#	REQUIRED signals
+#   REQUIRED signals
 )
 
 if(WITH_BOOST)
@@ -885,6 +875,13 @@ COMMAND cppcheck-htmlreport --source-dir=${CMAKE_CURRENT_SOURCE_DIR} --report-di
 COMMENT "Running cppcheck to produce code analysis report."
 )
 
+#target clangtidy
+ADD_CUSTOM_TARGET(clangtidy
+#COMMAND clang-tidy --leak-check=full run_tests
+COMMAND clang-tidy --checks='*' --header-filter=*^include* -p . ${CMAKE_CURRENT_SOURCE_DIR}/src/main/**/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/main/**/include/*.h > clang-tidy-report.txt
+)
+
+
 # target etags/tags
 #ADD_CUSTOM_TARGET(tags etags --members --declarations  `find ${CMAKE_CURRENT_SOURCE_DIR} -name *.cxx -or -name *.h`)
 #ADD_CUSTOM_TARGET(etags DEPENDS tags)
@@ -902,8 +899,32 @@ INCLUDE(Dart)
 #CONFIGURE_FILE(${PROJECT_BINARY_DIR}/DartConfiguration.tcl ${CMAKE_BINARY_DIR}/src/DartConfiguration.tcl)
 #CONFIGURE_FILE("${PROJECT_BINARY_DIR}/DartConfiguration.tcl" "${CMAKE_BINARY_DIR}/DartConfiguration.tcl" )
 
+SET(PROCESSOR_COUNT "2")
+
+IF(CMAKE_COMPILER_IS_GNUCXX)
+  #https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
+  INCLUDE(${PROJECT_CONFIG_DIR}/CodeCoverage.cmake)
+  APPEND_COVERAGE_COMPILER_FLAGS()
+  #SETUP_TARGET_FOR_COVERAGE_LCOV(${PROJECT_NAME}_coverage test coverage)
+  SETUP_TARGET_FOR_COVERAGE_GCOVR_XML(
+	NAME coverage
+	EXECUTABLE ctest -j ${PROCESSOR_COUNT}
+	DEPENDENCIES run_app
+	BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
+  #SETUP_TARGET_FOR_COVERAGE_GCOVR_HTML(
+  #    NAME coverage
+  #    EXECUTABLE ctest -j ${PROCESSOR_COUNT}
+  #    DEPENDENCIES run_app
+  #    BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
+ENDIF()
+
+#IF(CMAKE_COMPILER_IS_GNUCC)
+#  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0 -g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
+#ENDIF(CMAKE_COMPILER_IS_GNUCC)
 #IF(CMAKE_COMPILER_IS_GNUCXX AND NOT BUILD_SHARED_LIBS)
-#  SET(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")
+#  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+#  #SET(CMAKE_SHARED_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+#  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
 #ENDIF(CMAKE_COMPILER_IS_GNUCXX AND NOT BUILD_SHARED_LIBS)
 
 INCLUDE(InstallRequiredSystemLibraries)
