@@ -322,7 +322,6 @@ pipeline {
                   //clangAnalyzer(),
                   clangTidy(), //**/clang-tidy-result.txt
                   //dockerLint(),
-                  hadoLint(),
                   flawfinder(),
                   taskScanner()
           ]
