@@ -283,7 +283,7 @@ pipeline {
 					  reportName: "GCov Report"
 					])
 
-					dockerHadoLint(dockerFilePath: "./", skipDockerLintFailure: false, dockerFileId: "1")
+					dockerHadoLint(dockerFilePath: ".", skipDockerLintFailure: true, dockerFileId: "1")
 
                } // script
            } // steps

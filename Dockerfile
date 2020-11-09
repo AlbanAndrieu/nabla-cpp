@@ -9,6 +9,7 @@
 # See https://hub.docker.com/_/python
 FROM python:3 AS builder
 
+# hadolint ignore=DL3008
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive \
   apt-get install -qy --no-install-recommends \
@@ -108,6 +109,7 @@ RUN sh -c 'if [ "$X11" = "yes" ] ; then \
 #FROM ubuntu:bionic
 FROM ubuntu:20.04
 
+# hadolint ignore=DL3008
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive \
   apt-get install -qy --no-install-recommends \
