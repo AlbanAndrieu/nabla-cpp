@@ -241,12 +241,12 @@ pipeline {
                                "export UNIT_TESTS=${BUILD_TEST}\n" +
                                //"export ENABLE_MEMCHECK=true\n" +
                                "bash ./build.sh\n" +
-                               "make cppcheck"
-                               "make clangtidy
-                               //"make sonarqube
-                               //"make valgrind
-                               //"make DoxygenDoc
-                               //"make tests
+                               "make cppcheck\n" +
+                               "make clangtidy\n"
+                               //"make sonarqube\n" +
+                               //"make valgrind\n" +
+                               //"make DoxygenDoc\n" +
+                               //"make tests\n" +
 
                             //sh 'ctest -T test --no-compress-output'
                         } // dir
