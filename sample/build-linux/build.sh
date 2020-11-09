@@ -300,6 +300,14 @@ echo -e "${green} Clang tidy/format ${NC}"
 
 $PROJECT_SRC/scripts/clang-tidy.sh
 
+echo -e "${green} Flawfinder ${NC}"
+
+$PROJECT_SRC/scripts/flawfinder.sh
+
+echo -e "${green} Cppcheck ${NC}"
+
+$PROJECT_SRC/scripts/cppcheck.sh
+
 echo "http://192.168.1.61/cdash/user.php"
 echo "http://maven.nabla.mobi/cpp/microsoft/index.html"
 

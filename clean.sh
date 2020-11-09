@@ -21,6 +21,11 @@ rm -f sample/build-linux/Makefile
 rm -Rf sample/build-linux/_CPack_Packages/
 rm -f sample/build-linux/MICROSOFT*.deb
 rm -f sample/build-linux/conan*
+rm -f sample/build-linux/coverage*
+rm -Rf sample/build-linux/check/
+rm -Rf sample/build-linux/Testing/
+rm -Rf sample/build-linux/doc/
+rm -Rf sample/build-linux/bin/
 #rm -Rf sample/build-linux/nabla_*_amd64.deb
 #Scons
 #rm -Rf buildcache-*

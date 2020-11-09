@@ -195,6 +195,14 @@ pipeline {
                           "bash ./build.sh"
                    } // tee
 
+					publishHTML (target: [
+					  allowMissing: true,
+					  alwaysLinkToLastBuild: false,
+					  keepAll: true,
+					  reportDir: 'reports/',
+					  reportFiles: 'gcovr-report.html',
+					  reportName: "GCov Report"
+					])
               } // script
            } // steps
         } // stage Build-CMake
@@ -273,14 +281,6 @@ pipeline {
 					  reportDir: 'reports/',
 					  reportFiles: 'rats-result.html',
 					  reportName: "Rats Report"
-					])
-					publishHTML (target: [
-					  allowMissing: true,
-					  alwaysLinkToLastBuild: false,
-					  keepAll: true,
-					  reportDir: 'reports/',
-					  reportFiles: 'gcovr-report.html',
-					  reportName: "GCov Report"
 					])
 
 					dockerHadoLint(dockerFilePath: ".", skipDockerLintFailure: true, dockerFileId: "1")
