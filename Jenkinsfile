@@ -314,7 +314,7 @@ pipeline {
           tools: [cppCheck(pattern: 'reports/cppcheck-result.xml'),
                   junitParser(pattern: 'sample/build-linux/Testing/JUnitTestResults.xml'),
                   //sonarQube(pattern: '**/sonar-report.json'),
-                  sonarQube(pattern: '.scannerwork/report-task.txt'),
+                  // NOK sonarQube(pattern: '.scannerwork/report-task.txt'),
                   gcc(),
                   cmake(),
                   doxygen(),
