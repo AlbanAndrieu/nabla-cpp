@@ -189,6 +189,8 @@ pipeline {
                           "conan remove --system-reqs '*' \n" +
                           "whoami \n" +
                           "bash ./scripts/cppcheck.sh\n" +
+                          "bash ./scripts/flawfinder.sh\n" +
+                          "bash ./scripts/clang-tidy.sh\n" +
                           "source ./scripts/run-python.sh\n" +
                           "rm -Rf /home/jenkins/.conan/\n" +
                           //"pre-commit run -a || true\n" +
@@ -236,7 +238,15 @@ pipeline {
                                ". /opt/ansible/env38/bin/activate \n" +
                                "rm -Rf /home/jenkins/.conan/\n" +
                                "export USE_SUDO=false\n" +
-                               "bash ./build.sh"
+                               "export UNIT_TESTS=${BUILD_TEST}\n" +
+                               //"export ENABLE_MEMCHECK=true\n" +
+                               "bash ./build.sh\n" +
+                               "make cppcheck"
+                               "make clangtidy
+                               //"make sonarqube
+                               //"make valgrind
+                               //"make DoxygenDoc
+                               //"make tests
 
                             //sh 'ctest -T test --no-compress-output'
                         } // dir

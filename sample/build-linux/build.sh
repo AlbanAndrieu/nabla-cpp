@@ -296,17 +296,15 @@ if [[ "${CHECK_FORMATTING}" == "true" ]]; then
     find $PROJECT_SRC/sample/microsoft/src -name \*\.h | vera++ --rule F001 --rule L001 --rule L002 --error
 fi
 
-echo -e "${green} Clang tidy/format ${NC}"
+# Below ran by scons
+#echo -e "${green} Clang tidy/format ${NC}"
+#$PROJECT_SRC/scripts/clang-tidy.sh
 
-$PROJECT_SRC/scripts/clang-tidy.sh
+#echo -e "${green} Flawfinder ${NC}"
+#$PROJECT_SRC/scripts/flawfinder.sh
 
-echo -e "${green} Flawfinder ${NC}"
-
-$PROJECT_SRC/scripts/flawfinder.sh
-
-echo -e "${green} Cppcheck ${NC}"
-
-$PROJECT_SRC/scripts/cppcheck.sh
+#echo -e "${green} Cppcheck ${NC}"
+#$PROJECT_SRC/scripts/cppcheck.sh
 
 echo "http://192.168.1.61/cdash/user.php"
 echo "http://maven.nabla.mobi/cpp/microsoft/index.html"
