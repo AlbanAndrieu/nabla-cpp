@@ -362,7 +362,7 @@ def run(args):
     import optparse
     parser = optparse.OptionParser(usage=cmd_line_usage)
     parser.add_option('-o', '--outfile', default='-')
-    parser.add_option('-i', '--infile',  default='-')
+    parser.add_option('-i', '--infile', default='-')
     parser.add_option(
         '--altfile', default='-',
         help='The file to put things not matched as part of the tree, default is stdout.',
@@ -373,7 +373,7 @@ def run(args):
     )
     parser.add_option(
         '--format', default='pdf',
-        help='Format to output when using the --save option, default is pdf. For legal values, see the -T option in dot.', # noqa: ignore=E501
+        help='Format to output when using the --save option, default is pdf. For legal values, see the -T option in dot.',  # noqa: ignore=E501
     )
     parser.add_option(
         '--ignore', default=[], action='append',
@@ -384,11 +384,11 @@ def run(args):
         help='Dot graph option, as a key=value pair.',
     )
     parser.add_option(
-        '--node-opt',  default=[], action='append',
+        '--node-opt', default=[], action='append',
         help='Dot node option, as a key=value pair.',
     )
     parser.add_option(
-        '--edge-opt',  default=[], action='append',
+        '--edge-opt', default=[], action='append',
         help='Dot edge option, as a key=value pair.',
     )
 

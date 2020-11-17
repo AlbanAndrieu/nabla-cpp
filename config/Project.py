@@ -22,13 +22,13 @@ def generate(env, **kw):
     Arch = ProjectMacro.getArch()
 
     # Normalize the VERBOSE Option, and make its value available as a function.
-    if env['VERBOSE'] == "auto":
+    if env['VERBOSE'] == 'auto':
         env['VERBOSE'] = not sys.stdout.isatty()
     else:
         try:
             env['VERBOSE'] = ProjectMacro.to_boolean(env['VERBOSE'])
         except ValueError as e:
-            env.FatalError(f"Error setting VERBOSE variable: {e}")
+            env.FatalError(f'Error setting VERBOSE variable: {e}')
     env.AddMethod(lambda env: env['VERBOSE'], 'Verbose')
 
     #env['ENV']['SCONS_BUILD'] = '1'
@@ -43,7 +43,7 @@ def generate(env, **kw):
             )[:3]
         #env['debug_flags'] = '-g'
         #env['debug_flags'] = '-gdwarf-3'
-        #env['CXXFLAGS'] += [ '-gdwarf-2', '-gstrict-dwarf' ] # Dwarf Error: found dwarf version '4', this reader only handles version 2 information.
+        # env['CXXFLAGS'] += [ '-gdwarf-2', '-gstrict-dwarf' ] # Dwarf Error: found dwarf version '4', this reader only handles version 2 information.
         # Without the '-O0' flag (= do not optimize), we won t be able to print the content of some variables under 'gdb'
         env['debug_flags'] = '-g3'
         env['opt_flags'] = '-O0'
@@ -104,7 +104,7 @@ def generate(env, **kw):
 
     if Arch == 'x86Linux':
         env['CCFLAGS'] = [
-            #'-g',
+            # '-g',
             # '-Werror', #Turns all warnings into errors.
             '-Wall',  # Turn on all warnings
             '-fdiagnostics-show-option',  # sonar cxx
@@ -132,7 +132,7 @@ def generate(env, **kw):
             '-pedantic-errors',
             # '-fstrict-aliasing',
             '-DACE_HAS_EXCEPTIONS',
-            #'-fno-PIC',
+            # '-fno-PIC',
             # '-DuseTao',
             # '-D_TEMPLATES_ENABLE_',
             # '-include','/usr/include/stdio.h',
@@ -142,7 +142,7 @@ def generate(env, **kw):
             # '-include','/usr/include/c++/' + env['gcc_version'] + '/memory',    #for auto_ptr
             # '-include','/usr/include/c++/' + env['gcc_version'] + '/algorithm', #for "sort"
         ]
-        #env.Prepend(CPPDEFINES="ACE_HAS_EXCEPTIONS")
+        # env.Prepend(CPPDEFINES="ACE_HAS_EXCEPTIONS")
 
         if not env['use_xcompil']:
             env['CCFLAGS'] += ['-fPIC']
@@ -151,7 +151,7 @@ def generate(env, **kw):
         env['LINKFLAGS'] = [
             #    '-Wl,--no-as-needed',
             '-Wl,--as-needed',
-            '-Wl,--no-allow-shlib-undefined', # TODO
+            '-Wl,--no-allow-shlib-undefined',  # TODO
         ]
 
         # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
@@ -193,8 +193,8 @@ def generate(env, **kw):
                 env['CCFLAGS'] += ['-target', 'x86_64-pc-windows-gnu ']
                 env['LINKFLAGS'] += ['-target', 'x86_64-pc-windows-gnu ']
 
-            #env['CCFLAGS'] += ['-fgnu-runtime', '-fno-objc-nonfragile-abi']   # for objc
-            #env['LINKFLAGS'] += [''-fgnu-runtime', '-fno-objc-nonfragile-abi']   # for objc
+            # env['CCFLAGS'] += ['-fgnu-runtime', '-fno-objc-nonfragile-abi']   # for objc
+            # env['LINKFLAGS'] += [''-fgnu-runtime', '-fno-objc-nonfragile-abi']   # for objc
 
             # i386-pc-linux-gnu
             # i686-w64-windows-gnu # same as i686-w64-mingw32
@@ -223,7 +223,7 @@ def generate(env, **kw):
             env['LINKFLAGS'] += ['-Wl,--no-undefined']
 
         if env['gcc_version'] >= '5.1':
-           env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=1']
+            env['CCFLAGS'] += ['-D_GLIBCXX_USE_CXX11_ABI=1']
         #    env['CPPDEFINES'] += ['GLIBCXX_USE_CXX11_ABI=1']
         # _GLIBCXX_USE_CXX11_ABI value 0 (old ABI) or 1 (new ABI)
 
@@ -269,24 +269,24 @@ def generate(env, **kw):
 
     elif Arch in ['winnt', 'mingw', 'cygwin']:
         STACKSIZE = 83388608
-        env['LINKFLAGS'] += [ '-Wl,--stack,' +str(STACKSIZE) ]
+        env['LINKFLAGS'] += ['-Wl,--stack,' + str(STACKSIZE)]
 
         if env['use_mingw'] == False:
             #env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
             ##env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
             #env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
-            #mklink /j "C:\VS" "C:\Program Files (x86)\Microsoft Visual Studio"
+            # mklink /j "C:\VS" "C:\Program Files (x86)\Microsoft Visual Studio"
             #env['CC'] = 'C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe'
             ##env['CXX'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe"'
-            #env['LINK'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/link.exe
-            if os.getenv("VCINSTALLDIR"):  # MSVC, manual setup
+            # env['LINK'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/link.exe
+            if os.getenv('VCINSTALLDIR'):  # MSVC, manual setup
                 print('Check VCINSTALLDIR')
-            if sys.platform == 'msys': # and sys.platform != 'win32':
+            if sys.platform == 'msys':  # and sys.platform != 'win32':
                 print('You not force VS there, use command prompt for VS 2019 or build.bat or use_mingw=True')
                 env['CC'] = '"/C/VS/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx86/x86/cl.exe"'
                 env['LINK'] = '"/C/VS/2019/BuildTools/VC/Tools/MSVC/14.27.29110/bin/Hostx86/x86/link.exe"'
                 sys.exit(1)
-            #elif sys.platform == 'win32':
+            # elif sys.platform == 'win32':
             #    env['CC'] = '"C:\\VS\\2019\\BuildTools\\VC\\Tools\\MSVC\\14.27.29110\\bin\\Hostx86\\x86\\cl.exe"'
             #    env['CXX'] = '"C:\\VS\\2019\\BuildTools\\VC\Tools\\MSVC\\14.27.29110\\bin\\Hostx86\\x86\\cl.exe"'
             #    env['LINK'] = '"C:\\VS\\2019\\Professional\\VC\\Tools\\MSVC\\14.27.29110\\bin\\HostX86\\x86\\link.exe"'
@@ -314,41 +314,41 @@ def generate(env, **kw):
         #env['LEX'] = 'c:\\tools\\msys64\\usr\\bin\\flex.exe'
         #env['SPAWN'] = ProjectMacro.myWin32Spawn
         env['CCFLAGS'] += [
-             '/MT',
-             '/EHsc', #BOOST_NO_EXCEPTIONS
-             '/Z7', '/Od' # https://github.com/godotengine/godot/blob/master/platform/windows/detect.py
-        #     '/MDd',
-        #    '/nologo',
-        #    '/W3',
-        #    '/GX',
-        #    '/GR',
-        #    '-DWIN',
-        #    '-DWIN32',
-        #    '-DWINNT',
-        #    '-D_WINDOWS',
+            '/MT',
+            '/EHsc',  # BOOST_NO_EXCEPTIONS
+            '/Z7', '/Od',  # https://github.com/godotengine/godot/blob/master/platform/windows/detect.py
+            #     '/MDd',
+            #    '/nologo',
+            #    '/W3',
+            #    '/GX',
+            #    '/GR',
+            #    '-DWIN',
+            #    '-DWIN32',
+            #    '-DWINNT',
+            #    '-D_WINDOWS',
         ]
         env.AppendUnique(
             CPPDEFINES=[
-                "WINDOWS_ENABLED",
-                "WASAPI_ENABLED",
-                "WINMIDI_ENABLED",
-                "TYPED_METHOD_BIND",
-                "WIN32",
-                "MSVC",
+                'WINDOWS_ENABLED',
+                'WASAPI_ENABLED',
+                'WINMIDI_ENABLED',
+                'TYPED_METHOD_BIND',
+                'WIN32',
+                'MSVC',
                 #"WINVER=%s" % env["target_win_version"],
                 #"_WIN32_WINNT=%s" % env["target_win_version"],
-            ]
+            ],
         )
         env['LINKFLAGS'] += [
-                 '-Wl,--subsystem,console',
-        #        '/nologo', # already there
-        #        '/OPT:REF', # release
-        #        '/nodefaultlib:libcmt.lib',
-        #        '/nodefaultlib:libc.lib',
-        #        '/nodefaultlib:libcd.lib',
-        #        '/nodefaultlib:libcmtd.lib',
+            '-Wl,--subsystem,console',
+            #        '/nologo', # already there
+            #        '/OPT:REF', # release
+            #        '/nodefaultlib:libcmt.lib',
+            #        '/nodefaultlib:libc.lib',
+            #        '/nodefaultlib:libcd.lib',
+            #        '/nodefaultlib:libcmtd.lib',
         ]
-        #In your case one was linked against the CRT DLL (/MD) and the other was linked statically Multi-threaded (/MT)
+        # In your case one was linked against the CRT DLL (/MD) and the other was linked statically Multi-threaded (/MT)
 
     if platform.platform() == 'linux':
         env['RC'] = 'i686-w64-mingw32-windres'
@@ -382,11 +382,11 @@ def generate(env, **kw):
             env['LD'] = 'i686-w64-mingw32-ld'
             env['AR'] = 'i686-w64-mingw32-ar'
             env['AS'] = 'i686-w64-mingw32-as'
-            env['RC'] = 'windres --target=pe-i386' #elf32-i386
+            env['RC'] = 'windres --target=pe-i386'  # elf32-i386
             if platform.platform() == 'linux':
                 env['RC'] = 'i686-w64-mingw32-windres'
-                env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/' # This is pointing to /usr/share/mingw-w64/include
-            #env['RCCOM'] = env['RCCOM'] + ' -DALM_MAJOR=%s -DALM_MIDDLE=%s -DALM_MINOR=%s -DALM_MICRO=%s -DALM_REVISION=%s -DALM_BUILD_YEAR=%s -DALM_BUILD_DATE="%s"' % (
+                env['RCFLAGS'] = '-I/usr/i686-w64-mingw32/include/'  # This is pointing to /usr/share/mingw-w64/include
+            # env['RCCOM'] = env['RCCOM'] + ' -DALM_MAJOR=%s -DALM_MIDDLE=%s -DALM_MINOR=%s -DALM_MICRO=%s -DALM_REVISION=%s -DALM_BUILD_YEAR=%s -DALM_BUILD_DATE="%s"' % (
             #    env['ENV']['AF_BUILD_MAJOR_VERSION'],
             #    env['ENV']['AF_BUILD_MIDDLE_VERSION'],
             #    env['ENV']['AF_BUILD_MINOR_VERSION'],
@@ -418,13 +418,13 @@ def generate(env, **kw):
 
     if 'use_static' in env and env['use_static']:
         if 'target_bits' in env and env['target_bits'] == '32':
-            env.Append(LINKFLAGS = "-static-libgcc")
-            env.Append(LINKFLAGS = "-static-libstdc++")
-        env.Append(LINKFLAGS = "-static")
+            env.Append(LINKFLAGS='-static-libgcc')
+            env.Append(LINKFLAGS='-static-libstdc++')
+        env.Append(LINKFLAGS='-static')
 
     # '-mthreads',
-    #if platform.platform() == 'linux':
-    #if system == 'Linux' or system.startswith('CYGWIN') or system.startswith('MSYS'):
+    # if platform.platform() == 'linux':
+    # if system == 'Linux' or system.startswith('CYGWIN') or system.startswith('MSYS'):
     if 'use_pthread' in env and env['use_pthread'] and sys.platform != 'msys' and sys.platform != 'win32':
         env['CXXFLAGS'] += ['-pthread']
         env['LINKFLAGS'] += ['-pthread']
@@ -458,7 +458,7 @@ def generate(env, **kw):
 
     if not 'CXXVERSION' in env:
         env['CXXVERSION'] = env['gcc_version']
-    #TODO override
+    # TODO override
     env['CXXVERSION'] = env['gcc_version']
 
     if env['color']:

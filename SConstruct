@@ -123,7 +123,7 @@ Command('/opt/ansible/env38/', None, 'virtualenv $TARGET; source $TARGET/bin/act
 print('Xcompil :', env['use_xcompil'])
 print('Mingw :', env['use_mingw'])
 
-if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')) and env['use_conan']: #  and Arch not in ['mingw', 'cygwin', 'winnt'] 
+if not ('help' in COMMAND_LINE_TARGETS or GetOption('help')) and not ('clean' in COMMAND_LINE_TARGETS or GetOption('clean')) and env['use_conan']: #  and Arch not in ['mingw', 'cygwin', 'winnt']
     # Import Conan
     from conans.client.conan_api import ConanAPIV1 as conan_api
     from conans import __version__ as conan_version

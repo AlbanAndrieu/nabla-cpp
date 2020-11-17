@@ -3140,7 +3140,7 @@ def CheckForNonStandardConstructs(
             len(defaulted_args) >= len(
                 constructor_args,
             ) - 1
-            ))
+        ))
         initializer_list_constructor = bool(
             onearg_constructor and
             Search(r'\bstd\s*::\s*initializer_list\b', constructor_args[0]),
@@ -3411,7 +3411,7 @@ def CheckComment(line, filename, linenum, next_line_start, error):
                     (
                     commentpos >= 2 and
                     line[commentpos - 2] not in string.whitespace
-                    ))
+                ))
             ):
                 error(
                     filename, linenum, 'whitespace/comments', 2,
@@ -4150,7 +4150,7 @@ def CheckBraces(filename, clean_lines, linenum, error):
                 not (
                     GetLineWidth(prevline) >
                     _line_length - 2 and '[]' in prevline
-                )
+            )
         ):
             error(
                 filename, linenum, 'whitespace/braces', 4,
@@ -4385,7 +4385,7 @@ def CheckTrailingSemicolon(filename, clean_lines, linenum, error):
             opening_parenthesis[1] > 1 and
                 Search(
                     r'\]\s*$', clean_lines.elided[opening_parenthesis[1] - 1],
-                )
+            )
         ):
             # Multi-line lambda-expression
             match = None
@@ -5446,7 +5446,7 @@ def CheckGlobalStatic(filename, clean_lines, linenum, error):
         not Search(r'\boperator\W', line) and
             not Match(
                 r'\s*(<.*>)?(::[a-zA-Z0-9_]+)*\s*\(([^"]|$)', match.group(4),
-            )
+        )
     ):
         if Search(r'\bconst\b', line):
             error(

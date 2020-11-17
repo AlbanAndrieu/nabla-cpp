@@ -2,16 +2,15 @@
 # -*- coding: utf-8 -*-
 # Helper functions for the scons build
 # inspired from SconsBuilder.py
-import sys
 import fnmatch
 import glob
-import sys
 import os
-import shutil
 import platform
-import string
-import tempfile
 import re
+import shutil
+import string
+import sys
+import tempfile
 import time
 
 import SCons.Scanner.IDL
@@ -249,6 +248,7 @@ def registerBuildFailuresAtExit(env):
 ##############################################################################
 # defined env verbosity
 
+
 def reduceBuildVerbosity(env):
     env['CCCOMSTR'] = 'Compiling $TARGET'
     env['CXXCOMSTR'] = 'Compiling $SOURCE'
@@ -257,6 +257,7 @@ def reduceBuildVerbosity(env):
 
 ##############################################################################
 
+
 def InstallTree(env, dest_dir, src_dir, includes, excludes):
     destnode = env.Dir(dest_dir)
     dirs = []
@@ -264,7 +265,7 @@ def InstallTree(env, dest_dir, src_dir, includes, excludes):
     while len(dirs) > 0:
         currdir = dirs.pop(0)
         currdestdir = os.path.join(dest_dir, currdir[len(src_dir):])
-        print("currdir : " + currdir)
+        print('currdir : ' + currdir)
         if os.path.exists(currdir):
             flist = os.listdir(currdir)
             for currfile in flist:
@@ -282,44 +283,48 @@ def InstallTree(env, dest_dir, src_dir, includes, excludes):
                         if (os.path.isdir(currpath)):
                             dirs.append(currpath)
                         else:
-                            print("Install : " + currpath + " to " + currdestdir)
+                            print('Install : ' + currpath + ' to ' + currdestdir)
                             env.Install(currdestdir, currpath)
         else:
-            print("Directory : " + currdir +" does not exist")
+            print('Directory : ' + currdir + ' does not exist')
     return destnode
 
 ################################################################
 # define the arch
 # https://github.com/SGpp/SGpp/issues/186
 # pip install distro==1.5.0
+
+
 def getDistribution():
-  #try:
-  #  with open("/etc/os-release") as osr:
-  #    osReleaseLines = osr.readlines()
-  #  hasOsRelease = True
-  #except (IOError,OSError):
-  #  osReleaseLines = []
-  #  hasOsRelease = False
-  try:
-    import platform
-    if platform.system() == "Darwin":
-      return ["osx_x86-64", "", ""]
-  except:
-    pass
-  try:
-    import platform, distro
-    # print(sys.version_info)
-    if sys.version_info<(3,5,0):
-        dist = platform.dist() # Deprecated since version 3.5, will be removed in version 3.8
-    else :
-        if sys.platform == 'win32':
-            dist = ["windows", "", ""]
+    # try:
+    #  with open("/etc/os-release") as osr:
+    #    osReleaseLines = osr.readlines()
+    #  hasOsRelease = True
+    # except (IOError,OSError):
+    #  osReleaseLines = []
+    #  hasOsRelease = False
+    try:
+        import platform
+        if platform.system() == 'Darwin':
+            return ['osx_x86-64', '', '']
+    except:
+        pass
+    try:
+        import platform
+        import distro
+        # print(sys.version_info)
+        if sys.version_info < (3, 5, 0):
+            dist = platform.dist()  # Deprecated since version 3.5, will be removed in version 3.8
         else:
-            import distro
-            dist = distro.linux_distribution()
-    return dist
-  except:
-    return ["unknown", "", ""]
+            if sys.platform == 'win32':
+                dist = ['windows', '', '']
+            else:
+                import distro
+                dist = distro.linux_distribution()
+        return dist
+    except:
+        return ['unknown', '', '']
+
 
 def getArch():
     thePlatform = platform.platform()
@@ -340,6 +345,7 @@ def getArch():
             theArch = 'x86sol'
     return theArch
 
+
 def getConfiguration(thePlatform):
 
     env = os.environ
@@ -350,9 +356,9 @@ def getConfiguration(thePlatform):
     machine = platform.machine()
     dist = getDistribution()
 
-    print("System : ", system)
+    print('System : ', system)
     #print("Machine : ", machine)
-    print("Dist-Os : ", dist[0])
+    print('Dist-Os : ', dist[0])
 
 ################################################################
 # See https://github.com/SCons/scons/wiki/LongCmdLinesOnWin32
@@ -360,21 +366,26 @@ def getConfiguration(thePlatform):
 # /c/Python27/Scripts/pip2.7.exe install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org pywin32==227 distro==1.5.0 conan==1.31.0
 # /c/Python38/Scripts/pip3.8.exe install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org pywin32==227 distro==1.5.0 conan==1.31.0
 # pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org distro==1.5.0 conan==1.31.0
+
+
 def ourspawn(sh, escape, cmd, args, env):
     newargs = ' '.join(args[1:])
-    cmdline = cmd + " " + newargs
-    print("spawning - ourspawn : " + SCons.Platform.win32.escape(cmdline))
+    cmdline = cmd + ' ' + newargs
+    print('spawning - ourspawn : ' + SCons.Platform.win32.escape(cmdline))
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE, startupinfo=startupinfo, shell = False, env = env)
+    proc = subprocess.Popen(
+        cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, startupinfo=startupinfo, shell=False, env=env,
+    )
     data, err = proc.communicate()
     rv = proc.wait()
     if rv:
-        print("=====")
+        print('=====')
         print(err)
-        print("=====")
+        print('=====')
     return rv
+
 
 def myWin32Spawn(sh, escape, cmd, args, env):
 
@@ -383,20 +394,21 @@ def myWin32Spawn(sh, escape, cmd, args, env):
     args = fixArguments(args)
     mystring = string.join(args)
 
-    print("spawning - myWin32Spawn : " + SCons.Platform.win32.escape(mystring))
+    print('spawning - myWin32Spawn : ' + SCons.Platform.win32.escape(mystring))
 
     if len(mystring) > 10000:
         filename = tempfile.mktemp()
-        newFile = open(filename, "w")
-        print("spawning - myWin32Spawn to file : " + SCons.Platform.win32.escape(filename))
+        newFile = open(filename, 'w')
+        print('spawning - myWin32Spawn to file : ' + SCons.Platform.win32.escape(filename))
         newFile.write(mystring)
         newFile.close()
 
         return SCons.Platform.win32.exec_spawn([sh, filename], env)
 
-    return SCons.Platform.win32.exec_spawn([sh, "-c", SCons.Platform.win32.escape(mystring)], env)
+    return SCons.Platform.win32.exec_spawn([sh, '-c', SCons.Platform.win32.escape(mystring)], env)
 
-if sys.platform == 'win32': # or sys.platform == 'msys':
+
+if sys.platform == 'win32':  # or sys.platform == 'msys':
     import win32file
     import win32event
     import win32process
@@ -406,11 +418,11 @@ if sys.platform == 'win32': # or sys.platform == 'msys':
         for var in env:
             env[var] = env[var].encode('ascii', 'replace')
 
-        print("spawning cmd : " + SCons.Platform.win32.escape(cmd))
+        print('spawning cmd : ' + SCons.Platform.win32.escape(cmd))
         sAttrs = win32security.SECURITY_ATTRIBUTES()
         StartupInfo = win32process.STARTUPINFO()
         newargs = ' '.join(map(escape, args[1:]))
-        cmdline = cmd + " " + newargs
+        cmdline = cmd + ' ' + newargs
 
         #print("spawning cmdline : " + SCons.Platform.win32.escape(cmdline))
 
@@ -425,19 +437,23 @@ if sys.platform == 'win32': # or sys.platform == 'msys':
                     return ourspawn(sh, escape, cmd, args, env)
                 else:
                     # otherwise execute the command.
-                    hProcess, hThread, dwPid, dwTid = win32process.CreateProcess(None, cmdline, None, None, 1, 0, env, None, StartupInfo)
+                    hProcess, hThread, dwPid, dwTid = win32process.CreateProcess(
+                        None, cmdline, None, None, 1, 0, env, None, StartupInfo,
+                    )
                     win32event.WaitForSingleObject(hProcess, win32event.INFINITE)
                     exit_code = win32process.GetExitCodeProcess(hProcess)
-                    win32file.CloseHandle(hProcess);
-                    win32file.CloseHandle(hThread);
+                    win32file.CloseHandle(hProcess)
+                    win32file.CloseHandle(hThread)
             else:
                 return myWin32Spawn(sh, escape, cmd, args, env)
         return exit_code
 
-def SetupSpawn( env ):
-    print("SetupSpawn : " + sys.platform)
-    if sys.platform == 'win32': # or sys.platform == 'msys':
+
+def SetupSpawn(env):
+    print('SetupSpawn : ' + sys.platform)
+    if sys.platform == 'win32':  # or sys.platform == 'msys':
         env['SPAWN'] = my_spawn
+
 
 def fixArguments(args):
 
@@ -446,7 +462,8 @@ def fixArguments(args):
         newArgs.append(arg.replace('\\', '/'))
     return newArgs
 
-def CheckVars( env ):
+
+def CheckVars(env):
     for var in ['CC', 'CXX']:
         if var not in env:
             continue
@@ -464,14 +481,16 @@ def CheckVars( env ):
         if realpath != path:
             print('{} resolves to {}'.format(path, realpath))
 
+
 def to_boolean(s):
     if isinstance(s, bool):
         return s
-    elif s.lower() in ('1', "on", "true", "yes"):
+    elif s.lower() in ('1', 'on', 'true', 'yes'):
         return True
-    elif s.lower() in ('0', "off", "false", "no"):
+    elif s.lower() in ('0', 'off', 'false', 'no'):
         return False
     raise ValueError('Invalid value {s}, must be a boolean-like string')
+
 
 def createTar(tar, path, artifact):
     print('Create tar ' + artifact)

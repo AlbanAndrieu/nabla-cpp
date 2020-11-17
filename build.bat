@@ -32,7 +32,7 @@ REM call C:\Python27\scons-2.4.1.bat --version
 REM call C:\Python27\Scripts\pip2.7.exe install pywin32==228
 
 call conan install sample\microsoft  --build boost -g scons -if .\sample\build-x86_64
- 
+
 echo "==============="
 echo "BUILD"
 call date /T && ECHO date succeeded!

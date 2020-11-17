@@ -82,4 +82,3 @@ cxx_compiler=g++
 #mingw_installer/1.0@conan/stable
 #msys2/20190524
 ##cygwin_installer/2.9.0@bincrafters/stable
-
