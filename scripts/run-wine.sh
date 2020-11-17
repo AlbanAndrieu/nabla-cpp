@@ -21,7 +21,8 @@ source "${WORKING_DIR}/../step-0-color.sh"
 #WINEPREFIX=newlocation winecfg
 
 /usr/bin/wine notepad
-#wine Almonde.exe
+winepath c:\\
+#wine target/bin/x86Linux/run_app.exe
 
 #find /usr -iname "gdi32.dll.so"
 
@@ -40,5 +41,20 @@ source "${WORKING_DIR}/../step-0-color.sh"
 # to the 'PATH' variable.
 
 WINEDEBUG=-all wine target/bin/x86Linux/run_app.exe
+
+winecfg
+#add a drive W with
+/workspace/users/albandrieu30
+# Test it
+winepath -w target/bin/x86Linux
+#/home/albandrieu/.wine/dosdevices/w:/nabla-cpp/target/bin/x86Linux
+WINEPATH=anything\\it//willNotBeParsed wine cmd
+echo %PATH%
+wine Z:\\workspace\\users\\albandrieu30\\nabla-cpp\\target\\bin\\x86Linux\\run_app
+
+WINEPREFIX=target/bin/x86Linux/ WINEARCH=win32 wine target/bin/x86Linux/run_app.exe
+WINEPREFIX=target/bin/x86Linux/ winecfg
+WINEPREFIX=target/bin/x86Linux/ wine control
+WINEPREFIX=target/bin/x86Linux/ winetricks
 
 exit 0
