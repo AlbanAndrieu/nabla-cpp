@@ -9,6 +9,23 @@ A project that contains cpp code sample
 [![Travis Build Status](https://travis-ci.org/AlbanAndrieu/nabla-cpp.svg?branch=master)](https://travis-ci.org/AlbanAndrieu/nabla-cpp)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=MICROSOFT%3Amaster&metric=alert_status)](https://sonarcloud.io/dashboard/index/MICROSOFT%3Amaster)
 
+## Table of contents
+
+<!-- toc -->
+
+- [How to run it](#how-to-run-it)
+  * [Install tools](#install-tools)
+  * [Install python dependencies](#install-python-dependencies)
+  * [Build it](#build-it)
+  * [Clean it](#clean-it)
+  * [Wine](#wine)
+- [Quality tools](#quality-tools)
+- [Eclipse](#eclipse)
+- [Tools](#tools)
+- [Update README.md Table of Contents](#update-readmemd-table-of-contents)
+
+<!-- tocstop -->
+
 ## How to run it
 
 ### Install tools
@@ -129,3 +146,21 @@ sample/build-linux/
 ## Tools
 
 See [tools](https://linuxfr.org/users/oliver_h/journaux/moi-expert-c-j-abandonne-le-cxx)
+
+Update README.md Table of Contents
+----------------------------------------------
+
+
+  * [github-markdown-toc](https://github.com/jonschlinkert/markdown-toc)
+  * With [github-markdown-toc](https://github.com/Lucas-C/pre-commit-hooks-nodejs)
+
+`
+npm install --save markdown-toc
+`
+
+  * [github-markdown-toc](https://github.com/ekalinin/github-markdown-toc)
+
+`
+brew install github-markdown-toc
+gh-md-toc --insert README.md
+`

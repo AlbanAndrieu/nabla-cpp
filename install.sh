@@ -85,4 +85,6 @@ sudo pip install termcolor
 
 sudo apt-get install vera++ gcovr perl lua5.3 tcl tk
 
+./install-bitcoin.sh
+
 exit 0

@@ -649,8 +649,7 @@ if 'package' in COMMAND_LINE_TARGETS:
                  SUMMARY        = 'Nabla (Backend)',
                  DESCRIPTION    = 'Nabla (Backend)',
                  X_RPM_GROUP    = 'Application/nabla',
-                 SOURCE_URL     = 'https://home.nabla.mobi/nabla-1.2.3.tar.gz'
-                 #SOURCE_URL     = 'https://home.nabla.mobi/nabla-' + env['version'] + '.tar.gz'
+                 SOURCE_URL     = 'https://albandrieu.com/download/nabla-1.2.3.tar.gz'
             )
 
 #See http://google-styleguide.googlecode.com/
