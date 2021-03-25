@@ -168,7 +168,7 @@ python2-pythondialog==3.3.0
 pytz==2018.3
 pywinrm==0.2.2
 pyxdg==0.26
-PyYAML==3.12
+PyYAML==5.4
 radiotray==0.7.3
 reportlab==3.4.0
 requests==2.18.4

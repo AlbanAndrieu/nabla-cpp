@@ -31,7 +31,7 @@ pyflakes==1.6.0
 pygobject==3.20.0
 python-apt==1.1.0b1
 python-systemd==231
-PyYAML==3.11
+PyYAML==5.4
 sessioninstaller==0.0.0
 software-center-aptd-plugins==0.0.0
 system-image==3.1
