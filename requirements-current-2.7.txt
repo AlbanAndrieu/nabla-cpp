@@ -96,7 +96,7 @@ lazy-object-proxy==1.2.1
 letsencrypt==0.4.1
 lockfile==0.12.2
 logilab-common==1.1.0
-lxml==4.2.1
+lxml==4.6.3
 Magic-file-extensions==0.2
 Mako==1.0.7
 MarkupSafe==1.0
