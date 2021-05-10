@@ -19,7 +19,7 @@ if [ ! -e "${WORKING_DIR}/../${reports_directory}" ]; then
 fi
 
 #findbugs --enable=all -textui -high
-echo "findbugs -textui -high -project Nabla -xml -output \"${WORKING_DIR}/${report_filename}.xml\" -auxclasspath ${WORKING_DIR}/../sample/build-linux/lib -sourcepath ${WORKING_DIR}/../sample/microsoft/src/main/java "
+echo -e "${magenta}findbugs -textui -high -project Nabla -xml -output \"${WORKING_DIR}/${report_filename}.xml\" -auxclasspath ${WORKING_DIR}/../sample/build-linux/lib -sourcepath ${WORKING_DIR}/../sample/microsoft/src/main/java ${NC}"
 findbugs -textui -high -projectName Nabla -xml -output "${WORKING_DIR}/../${report_filename}.xml" \
 -auxclasspath $WORKING_DIR/../sample/build-linux/lib \
 -sourcepath $WORKING_DIR/../sample/microsoft/src/main/java \
