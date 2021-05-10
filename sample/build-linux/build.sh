@@ -28,6 +28,8 @@ export MODE_RELEASE=
 export ENABLE_CLANG_SCAN=${ENABLE_CLANG_SCAN:-"false"}
 #export CLANG_SCAN=${ENABLE_CLANG_SCAN:-"scan-build -o ${WORKSPACE}/reports/clangScanBuildReports -v -v --use-cc clang --use-analyzer=/usr/bin/clang"}
 
+export USE_SUDO=${USE_SUDO:-"false"}
+
 if [ -n "${ENABLE_CLANG}" ]; then
     echo -e "${green} ENABLE_CLANG is defined ${happy_smiley} ${NC}"
     #AddressSanitizer to sanitize your code!
@@ -108,8 +110,8 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-echo -e "${magenta} ${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc lcov ${NC}"
-${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc lcov
+echo -e "${magenta} ${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc ${NC}"
+${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
@@ -175,7 +177,7 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
 
     #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheckctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
 
-    #${MAKE} tests
+    #${MAKE} tests lcov
 fi
 
 if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
