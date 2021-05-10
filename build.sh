@@ -145,11 +145,11 @@ pycodestyle --statistics -qq ./config/
 
 echo -e "${green} Quality : Coverage ${NC}"
 
-echo -e "${magenta} find ../.. -name '*.gcda' ${NC}"
-find ../.. -name '*.gcda'
-find ../.. -name '*.gcno'
-find ../.. -name '*.gcov' # for sonar.cfamily.gcov.reportsPath
-find ../.. -name '*.info'
+echo -e "${magenta} find . -name '*.gcda' ${NC}"
+find . -name '*.gcda'
+find . -name '*.gcno'
+find . -name '*.gcov' # for sonar.cfamily.gcov.reportsPath
+find . -name '*.info'
 
 sourcePath="./sample/microsoft"
 coverageSourcePath="$sourcePath/src/main/app/"
@@ -180,7 +180,7 @@ fi
 #echo -e "${magenta} genhtml coverage.info --title \"Nabla during UT\" --output-directory \"Nabla\" ${NC}"
 #genhtml coverage.info --title "Nabla during UT" --output-directory "Nabla"
 
-mkdir "${WORKSPACE}/reports"
+mkdir "${WORKSPACE}/reports" || true
 
 #xml
 echo -e "${magenta} gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml ${NC}"
