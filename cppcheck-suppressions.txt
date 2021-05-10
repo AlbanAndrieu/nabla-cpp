@@ -1,0 +1,6 @@
+// suppress memleak and exceptNew errors in the file src/file1.cpp
+//memleak:sample/microsoft/src/test/cpp/circular_queueThread.cpp
+//exceptNew:sample/microsoft/src/test/cpp/circular_queueThread.cpp
+
+// suppress all uninitvar errors in all files
+//uninitvar

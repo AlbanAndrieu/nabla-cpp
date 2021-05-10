@@ -6,7 +6,7 @@ import platform
 import sys
 
 import ProjectMacro
-import SCons.Tool.MSCommon.vc
+# import SCons.Tool.MSCommon.vc
 
 
 def generate(env, **kw):
@@ -17,7 +17,7 @@ def generate(env, **kw):
 
     system = platform.system()
     machine = platform.machine()
-    #dist = platform.dist()
+    # dist = platform.dist()
 
     Arch = ProjectMacro.getArch()
 
@@ -31,12 +31,12 @@ def generate(env, **kw):
             env.FatalError(f'Error setting VERBOSE variable: {e}')
     env.AddMethod(lambda env: env['VERBOSE'], 'Verbose')
 
-    #env['ENV']['SCONS_BUILD'] = '1'
+    # env['ENV']['SCONS_BUILD'] = '1'
     if env['color']:
         print(colored('Arch :', 'magenta'), colored(Arch, 'cyan'))
 
     if Arch in ['x86Linux']:  # 'cygwin'
-        if not 'gcc_version' in env:
+        if not 'gcc_version' in env: # noqa: E713
             env['gcc_version'] = '8'
             env['gcc_version'] = subprocess.check_output(
                 ['gcc', '-dumpversion'],
@@ -183,7 +183,7 @@ def generate(env, **kw):
         # Warning mingw do not have asan
         if env['use_clang'] and env['use_asan']:
             env['CCFLAGS'] += ['-fsanitize=address']
-            env['LINKFLAGS'] += ['-fsanitize=address', '-lasan']
+            env['LINKFLAGS'] += ['-fsanitize=address', '-fno-omit-frame-pointer', '-lasan']
 
         if env['use_clang'] and env['use_xcompil'] and not env['use_mingw']:
             if 'target_bits' in env and env['target_bits'] == '32':
@@ -272,13 +272,13 @@ def generate(env, **kw):
         env['LINKFLAGS'] += ['-Wl,--stack,' + str(STACKSIZE)]
 
         if env['use_mingw'] == False:
-            #env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
-            ##env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
-            #env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
-            # mklink /j "C:\VS" "C:\Program Files (x86)\Microsoft Visual Studio"
-            #env['CC'] = 'C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe'
-            ##env['CXX'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe"'
-            # env['LINK'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/link.exe
+            # env['CC'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+            # #env['CXX'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\Tools\\MSVC\\14.16.27023\\bin\\Hostx86\\x86\\cl.exe"'
+            # env['LINK'] = '"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.10.24728\\bin\\HostX86\\x86\\link.exe"'
+            #  mklink /j "C:\VS" "C:\Program Files (x86)\Microsoft Visual Studio"
+            # env['CC'] = 'C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe'
+            # #env['CXX'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe"'
+            #  env['LINK'] = '"C:/VS/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/link.exe
             if os.getenv('VCINSTALLDIR'):  # MSVC, manual setup
                 print('Check VCINSTALLDIR')
             if sys.platform == 'msys':  # and sys.platform != 'win32':
@@ -308,11 +308,11 @@ def generate(env, **kw):
         # ]
         env['ENV']['PATH'] = env['ENV']['PATH'] + \
             ';C:\\Program Files\\7-Zip;C:\\tools\\msys64\\mingw64\\bin;C:\\VS\\2019\\BuildTools\\VC\\Tools\\MSVC\\14.27.29110\\bin\\Hostx86\\x86\\;'
-        #';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
+        # ';C:\\Program Files\\7-Zip;C:\\Program Files\\Java\\jre1.8.0_251\\bin;C:\\tools\\msys64\\mingw64\\bin;'
         if Arch not in ['winnt']:
             env['SHELL'] = 'c:/tools/msys64/usr/bin/bash.exe'
-        #env['LEX'] = 'c:\\tools\\msys64\\usr\\bin\\flex.exe'
-        #env['SPAWN'] = ProjectMacro.myWin32Spawn
+        # env['LEX'] = 'c:\\tools\\msys64\\usr\\bin\\flex.exe'
+        # env['SPAWN'] = ProjectMacro.myWin32Spawn
         env['CCFLAGS'] += [
             '/MT',
             '/EHsc',  # BOOST_NO_EXCEPTIONS
@@ -335,8 +335,8 @@ def generate(env, **kw):
                 'TYPED_METHOD_BIND',
                 'WIN32',
                 'MSVC',
-                #"WINVER=%s" % env["target_win_version"],
-                #"_WIN32_WINNT=%s" % env["target_win_version"],
+                # "WINVER=%s" % env["target_win_version"],
+                # "_WIN32_WINNT=%s" % env["target_win_version"],
             ],
         )
         env['LINKFLAGS'] += [
@@ -357,8 +357,8 @@ def generate(env, **kw):
         env['CXXFLAGS'] += ['-D__MINGW32__']
 
     if env['use_xcompil'] or env['use_mingw']:
-        #env['target_bits'] = '32'
-        #print('Ovverride target_bits :' + env['target_bits'])
+        # env['target_bits'] = '32'
+        # print('Ovverride target_bits :' + env['target_bits'])
 
         if env['color']:
             print(
@@ -377,7 +377,7 @@ def generate(env, **kw):
                 env['LINK'] = 'i686-w64-mingw32-g++ -v'
             else:
                 env['LINK'] = 'i686-w64-mingw32-g++'
-            #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
+            # env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
             env['RANLIB'] = 'i686-w64-mingw32-ranlib'
             env['LD'] = 'i686-w64-mingw32-ld'
             env['AR'] = 'i686-w64-mingw32-ar'
@@ -409,12 +409,12 @@ def generate(env, **kw):
             env['AR'] = 'x86_64-w64-mingw32-ar'
             env['AS'] = 'x86_64-w64-mingw32-as'
             env['RC'] = 'x86_64-w64-mingw32-windres'
-            #env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
+            # env['YACC'] = getScriptsPathFromEnv(env) + '/FixedBison.sh'
             if platform.platform() == 'linux':
                 env['RCFLAGS'] = '-I/usr/x86_64-w64-mingw32/include/'
                 env['RC'] = 'x86_64-w64-mingw32-windres'
 
-            #env.Append(LIBPATH = ['/mingw64/lib'])
+            # env.Append(LIBPATH = ['/mingw64/lib'])
 
     if 'use_static' in env and env['use_static']:
         if 'target_bits' in env and env['target_bits'] == '32':
@@ -439,24 +439,24 @@ def generate(env, **kw):
         env['CCFLAGS'] += ['-m32']
         env['LINKFLAGS'] += ['-m32']
         # Compile in 32 bits
-        #localenv.Prepend(CCFLAGS = ['-m32'])
-        #localenv.Prepend(LINKFLAGS = ['-m32'])
+        # localenv.Prepend(CCFLAGS = ['-m32'])
+        # localenv.Prepend(LINKFLAGS = ['-m32'])
     # else:
     #    env['CCFLAGS'] += ['-m64']
 
-    if not 'Suffix64' in env:
+    if not 'Suffix64' in env:  # noqa: E713
         env['Suffix64'] = ''
-    if not 'java_arch' in env:
+    if not 'java_arch' in env:  # noqa: E713
         env['java_arch'] = ''
-    if not 'output_folder' in env:
+    if not 'output_folder' in env:  # noqa: E713
         env['output_folder'] = 'opt'
 
-    if not 'debug_flags' in env:
+    if not 'debug_flags' in env:  # noqa: E713
         env['debug_flags'] = ''
-    if not 'opt_flags' in env:
+    if not 'opt_flags' in env:  # noqa: E713
         env['opt_flags'] = ''
 
-    if not 'CXXVERSION' in env:
+    if not 'CXXVERSION' in env:  # noqa: E713
         env['CXXVERSION'] = env['gcc_version']
     # TODO override
     env['CXXVERSION'] = env['gcc_version']
@@ -471,8 +471,8 @@ def generate(env, **kw):
         )
         print(colored('System : ', 'magenta'), colored(system, 'cyan'))
         print(colored('Machine : ', 'magenta'), colored(machine, 'cyan'))
-        #print(colored('Dist : ', 'magenta'), colored(dist, 'cyan'))
-        #print(colored('Dist-Os : ', 'magenta'), colored(dist[0], 'cyan'))
+        # print(colored('Dist : ', 'magenta'), colored(dist, 'cyan'))
+        # print(colored('Dist-Os : ', 'magenta'), colored(dist[0], 'cyan'))
 
         print(colored('ENV TOOLS : ', 'magenta'), colored(env['TOOLS'], 'cyan'))
         # print "dump whole env :", env.Dump()
