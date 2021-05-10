@@ -91,8 +91,8 @@ fi
 
 dot -Tpng graphviz.dot -o graphviz.png
 
-echo -e "${magenta} ${USE_SUDO} make install ${NC}"
-echo -e "${magenta} make tests ${NC}"
+echo -e "${magenta} NEXT : ${USE_SUDO} make install ${NC}"
+echo -e "${magenta} NEXT : make tests ${NC}"
 
 if [ "${ENABLE_NINJA}" == "true" ]; then
     echo -e "${magenta} Using Ninja ${NC}"
@@ -101,7 +101,7 @@ if [ "${ENABLE_NINJA}" == "true" ]; then
     echo -e "${magenta} ninja ${NC}"
 fi
 
-echo -e "${magenta} objdump -d  /usr/local/bin/run_tests ${NC}"
+echo -e "${magenta} NEXT : objdump -d  /usr/local/bin/run_tests ${NC}"
 
 # See https://vector-of-bool.github.io/docs/vscode-cmake-tools/settings.html#conf-cmake-generator
 # for .vscode/settings.json

@@ -108,8 +108,8 @@ fi
 
 echo -e "${green} Building : CMake ${NC}"
 
-echo -e "${magenta} ${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc ${NC}"
-${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc
+echo -e "${magenta} ${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc lcov ${NC}"
+${SONAR_CMD} ${CLANG_SCAN} ${MAKE} -B clean install DoxygenDoc lcov
 #~/build-wrapper-linux-x86/build-wrapper-linux-${PROCESSOR} --out-dir ${WORKSPACE}/bw-outputs ${MAKE} -B clean install DoxygenDoc
 build_res=$?
 if [[ $build_res -ne 0 ]]; then
@@ -129,6 +129,22 @@ if [ `uname -s` == "Linux" ]; then
 		echo -e "${magenta} iwyu_tool -p . ${NC}"
 		iwyu_tool -p .
 	fi
+fi
+
+if [ `uname -s` == "Linux" ]; then
+    echo -e "${green} Fixing include : IWYU ${NC}"
+
+    #echo -e "${magenta} ${MAKE} clean ${NC}"
+    #${MAKE} clean
+    echo -e "${magenta} ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out ${NC}"
+    ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out
+    echo -e "${magenta} fix_includes.py < ./iwyu.out ${NC}"
+    if [[ ! -f ./fix_includes.py ]]; then
+        wget https://github.com/vancegroup-mirrors/include-what-you-use/blob/master/fix_includes.py && chmod 777 fix_includes.py || true
+    fi
+    if [[ -f ./fix_includes.py ]]; then
+        ./fix_includes.py < ./iwyu.out
+    fi
 fi
 
 echo -e "${green} Testing : CTest ${NC}"
@@ -160,22 +176,6 @@ if [[ "${UNIT_TESTS}" == "true" ]]; then
     #ctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheckctest -j4 -DCTEST_MEMORYCHECK_COMMAND="/usr/bin/valgrind" -DMemoryCheckCommand="/usr/bin/valgrind" --output-on-failure -T memcheck
 
     #${MAKE} tests
-fi
-
-if [ `uname -s` == "Linux" ]; then
-    echo -e "${green} Fixing include : IWYU ${NC}"
-
-    echo -e "${magenta} ${MAKE} clean ${NC}"
-    ${MAKE} clean
-    echo -e "${magenta} ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out ${NC}"
-    ${MAKE} -k CXX=/usr/bin/iwyu  2> ./iwyu.out
-    echo -e "${magenta} fix_includes.py < ./iwyu.out ${NC}"
-    if [[ ! -f ./fix_includes.py ]]; then
-        wget https://github.com/vancegroup-mirrors/include-what-you-use/blob/master/fix_includes.py && chmod 777 fix_includes.py || true
-    fi
-    if [[ -f ./fix_includes.py ]]; then
-        ./fix_includes.py < ./iwyu.out
-    fi
 fi
 
 if [[ "${ENABLE_EXPERIMENTAL}" == "true" ]]; then
@@ -253,14 +253,14 @@ find ../.. -name '*.info'
 
 mkdir ${PROJECT_SRC}/reports || true
 if command -v gcovr >/dev/null 2>&1; then
-    echo -e "${magenta} gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/ ${NC}"
-    gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/
+    echo -e "${magenta} gcovr -v -r ${PROJECT_SRC}/ -f ${PROJECT_SRC}/sample/microsoft/ ${NC}"
+    gcovr -v -r ${PROJECT_SRC}/ -f ${PROJECT_SRC}/sample/microsoft/
     #xml
-    echo -e "${magenta} gcovr --branches --xml-pretty -r ${PROJECT_SRC}/microsoft/ ${NC}"
-    gcovr --branches --xml-pretty -r ${PROJECT_SRC}/sample/microsoft/ > ${PROJECT_SRC}/reports/gcovr-report.xml
+    echo -e "${magenta} gcovr --branches --xml-pretty -r ${PROJECT_SRC}/ ${NC}"
+    gcovr --branches --xml-pretty -r ${PROJECT_SRC}/ > ${PROJECT_SRC}/reports/gcovr-report.xml
     #html
-    echo -e "${magenta} gcovr --branches -r ${PROJECT_SRC}/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html ${NC}"
-    gcovr --branches -r ${PROJECT_SRC}/sample/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
+    echo -e "${magenta} gcovr --branches -r ${PROJECT_SRC}/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html ${NC}"
+    gcovr --branches -r ${PROJECT_SRC}/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
 fi
 
 if command -v perf >/dev/null 2>&1; then
