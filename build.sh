@@ -2,6 +2,8 @@
 #set -xv
 #set -eu
 
+echo -e "${cyan} ${double_arrow} Scons Build ${NC}"
+
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 # shellcheck source=/dev/null
@@ -54,14 +56,12 @@ fi
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
-echo -e "${cyan} ${double_arrow} Python install ${NC}"
-
+#cho -e "${cyan} ${double_arrow} Python install ${NC}"
 #sudo pip3.6 freeze > requirements-current-3.6.txt
 #sudo pip3.6 install -r requirements-current-3.6.txt
 #/opt/ansible/env35/bin/pip install hacking
 
-echo "WORKSPACE ${WORKSPACE}"
-
+echo "WORKSPACE : ${WORKSPACE}"
 pwd
 
 #TODO check https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis
@@ -189,8 +189,8 @@ gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml
 echo -e "${magenta} gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html ${NC}"
 gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
 
-echo -e "${magenta} gcovr -r ../ . --sonarqube --output ${WORKSPACE}/reports/coverage.xml ${NC}"
-gcovr -r ../ . --sonarqube --output ${WORKSPACE}/reports/coverage.xml
+echo -e "${magenta} gcovr -r . . --sonarqube --output ${WORKSPACE}/reports/coverage.xml ${NC}"
+gcovr -r . . --sonarqube --output ${WORKSPACE}/reports/coverage.xml
 
 #gprof exampleapp gmon.out > gprof_output.txt
 

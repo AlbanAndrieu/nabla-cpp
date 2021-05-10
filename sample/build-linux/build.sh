@@ -1,6 +1,8 @@
 #!/bin/bash
-set -e
 #set -xv
+#set -eu
+
+echo -e "${cyan} ${double_arrow} CMake Build ${NC}"
 
 unset SCONS
 
@@ -12,6 +14,7 @@ if [ -z "$WORKSPACE" ]; then
 fi
 
 echo "WORKSPACE : ${WORKSPACE}"
+pwd
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 export ENABLE_MEMCHECK=${ENABLE_MEMCHECK:-"true"}
@@ -66,7 +69,7 @@ ${PROJECT_SRC}/conan.sh
 #${USE_SUDO} dpkg -i cppan-master-Linux-client.deb
 #cppan
 
-cd "${PROJECT_SRC}/sample/build-${ARCH}"
+cd ${PROJECT_SRC}/sample/build-${ARCH}
 
 rm -f CMakeCache.txt
 rm -f compile_commands.json
