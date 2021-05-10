@@ -143,12 +143,13 @@ echo -e "${green} Quality : python pep8/pycodestyle statistics ${NC}"
 echo -e "${magenta} pycodestyle --statistics -qq ./config/ ${NC}"
 pycodestyle --statistics -qq ./config/
 
-echo -e "${green} Quality : shellcheck ${NC}"
-
-echo -e "${magenta} shellcheck *.sh -f checkstyle > checkstyle-result.xml ${NC}"
-shellcheck *.sh -f checkstyle > checkstyle-result.xml || true
-
 echo -e "${green} Quality : Coverage ${NC}"
+
+echo -e "${magenta} find ../.. -name '*.gcda' ${NC}"
+find ../.. -name '*.gcda'
+find ../.. -name '*.gcno'
+find ../.. -name '*.gcov' # for sonar.cfamily.gcov.reportsPath
+find ../.. -name '*.info'
 
 sourcePath="./sample/microsoft"
 coverageSourcePath="$sourcePath/src/main/app/"
@@ -161,34 +162,35 @@ gcdacount=$(find $coverageSourcePath -name "*.gcda" | wc -c )
 
 if [ $gcdacount -eq 0 ]; then
     echo "No new LCOV report to generate. Bye."
-    exit 0
+    exit 1
 fi
 
 # ------------------------------------------------------------------------
 #cd $sourcePath
-#mkdir coverage
-#cd coverage
 
-# Capture
-echo -e "${magenta} lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.info ${NC}"
-lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.info
-
-# Remove useless stuffs
-#lcov --remove coverage.info "/Applications/Xcode.app/*" --output-file coverage.info
-#lcov --remove coverage.info "$coverageSourcePath/*" --output-file coverage.info
-
-# Generate Report
-echo -e "${magenta} genhtml coverage.info --title \"Nabla during UT\" --output-directory \"Nabla\" ${NC}"
-genhtml coverage.info --title "Nabla during UT" --output-directory "Nabla"
+## Capture
+#echo -e "${magenta} lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.info ${NC}"
+#lcov --quiet --capture --directory $coverageSourcePath --output-file coverage.info
+#
+## Remove useless stuffs
+##lcov --remove coverage.info "/Applications/Xcode.app/*" --output-file coverage.info
+##lcov --remove coverage.info "$coverageSourcePath/*" --output-file coverage.info
+#
+## Generate Report
+#echo -e "${magenta} genhtml coverage.info --title \"Nabla during UT\" --output-directory \"Nabla\" ${NC}"
+#genhtml coverage.info --title "Nabla during UT" --output-directory "Nabla"
 
 mkdir "${WORKSPACE}/reports"
 
 #xml
 echo -e "${magenta} gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml ${NC}"
-python3.8 /usr/local/bin/gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml
+gcovr --branches --xml-pretty -r . 2>&1 > ${WORKSPACE}/reports/gcovr-report.xml
 #html
 echo -e "${magenta} gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html ${NC}"
-python3.8 /usr/local/bin/gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
+gcovr --branches -r . --html --html-details -o ${WORKSPACE}/reports/gcovr-report.html
+
+echo -e "${magenta} gcovr -r ../ . --sonarqube --output ${WORKSPACE}/reports/coverage.xml ${NC}"
+gcovr -r ../ . --sonarqube --output ${WORKSPACE}/reports/coverage.xml
 
 #gprof exampleapp gmon.out > gprof_output.txt
 

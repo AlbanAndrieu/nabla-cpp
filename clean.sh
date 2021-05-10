@@ -22,6 +22,7 @@ rm -Rf sample/build-linux/_CPack_Packages/
 rm -f sample/build-linux/MICROSOFT*.deb
 rm -f sample/build-linux/conan*
 rm -f sample/build-linux/coverage*
+rm -f sample/build-linux/lcov*
 rm -Rf sample/build-linux/check/
 rm -Rf sample/build-linux/Testing/
 rm -Rf sample/build-linux/doc/

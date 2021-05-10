@@ -14,5 +14,4 @@ fi
 echo "Create directiory `echo "$REPORTFILEPATH" | sed -r "s/(.*\/).*/\1/"`"
 mkdir -p "`echo "$REPORTFILEPATH" | sed -r "s/(.*\/).*/\1/"`"
 
-
 "$EXECUTABLEPATH" -xunitxml -o "$REPORTFILEPATH"

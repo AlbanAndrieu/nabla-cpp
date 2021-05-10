@@ -11,7 +11,7 @@ if [ -z "$WORKSPACE" ]; then
   export WORKSPACE=${WORKING_DIR}/../..
 fi
 
-echo "WORKSPACE ${WORKSPACE}"
+echo "WORKSPACE : ${WORKSPACE}"
 
 export PROJECT_TARGET_PATH=${WORKSPACE}/target
 export ENABLE_MEMCHECK=${ENABLE_MEMCHECK:-"true"}
@@ -223,7 +223,7 @@ if [ `uname -s` == "Linux" ]; then
 fi
 
 if [ `uname -s` == "Linux" ]; then
-    if ! command -v xsltproc >/dev/null 2>&1; then
+    if command -v xsltproc >/dev/null 2>&1; then
         echo -e "${green} Reporting : Junit ${NC}"
 
         echo -e "${magenta} xsltproc ${PROJECT_SRC}/scripts/CTest2JUnit.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > Testing/JUnitTestResults.xml ${NC}"
@@ -245,10 +245,11 @@ find . -type f \( -iname \*.gcno -or -iname \*.gcda \) -exec cp {} ../../ \;
 echo -e "${magenta} find ../.. -name '*.gcda' ${NC}"
 find ../.. -name '*.gcda'
 find ../.. -name '*.gcno'
-find ../.. -name '*.gcov'
+find ../.. -name '*.gcov' # for sonar.cfamily.gcov.reportsPath
+find ../.. -name '*.info'
 
 mkdir ${PROJECT_SRC}/reports || true
-if ! command -v gcovr >/dev/null 2>&1; then
+if command -v gcovr >/dev/null 2>&1; then
     echo -e "${magenta} gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/ ${NC}"
     gcovr -v -r ${PROJECT_SRC}/sample/microsoft/ -f ${PROJECT_SRC}/sample/microsoft/
     #xml
@@ -259,7 +260,7 @@ if ! command -v gcovr >/dev/null 2>&1; then
     gcovr --branches -r ${PROJECT_SRC}/sample/microsoft/ --html --html-details -o ${PROJECT_SRC}/reports/gcovr-report.html
 fi
 
-if ! command -v perf >/dev/null 2>&1; then
+if command -v perf >/dev/null 2>&1; then
     echo -e "${magenta} ${USE_SUDO} perf record -g -- /usr/bin/git --version ${NC}"
     ${USE_SUDO} perf record -g -- /usr/bin/git --version
     echo -e "${magenta} ${USE_SUDO} perf script | c++filt | gprof2dot -f perf | dot -Tpng -o output.png ${NC}"

@@ -82,6 +82,7 @@ pip install cpplint
 sudo pip install conan
 #sudo pip install conan_package_tools==0.18.2
 sudo pip install termcolor
+sudo pip3 install gcovr fastcov lcov_cobertura
 
 sudo apt-get install vera++ gcovr perl lua5.3 tcl tk
 

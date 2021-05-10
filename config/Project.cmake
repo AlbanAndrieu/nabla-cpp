@@ -849,12 +849,14 @@ ADD_CUSTOM_TARGET(valgrind
 COMMAND valgrind --leak-check=full run_tests
 )
 
+OPTION(CODE_COVERAGE_VERBOSE "Verbose information" TRUE)
+
 #target cov produce report : coverage.html
 ADD_CUSTOM_TARGET(cov
 # Run tests
 COMMAND run_tests
 # Run gcovr
-COMMAND gcovr -r ${CMAKE_CURRENT_SOURCE_DIR} --html -o coverage.html --html-details
+COMMAND gcovr -r ${CMAKE_CURRENT_SOURCE_DIR} --object-directory=${CMAKE_BINARY_DIR} --html --html-details -o ${PROJECT_SOURCE_DIR}/reports/coverage.html
 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 COMMENT "Running gcovr to produce code coverage report."
 )
@@ -889,7 +891,10 @@ COMMAND clang-tidy --checks='*' --header-filter=*^include* -p . ${CMAKE_CURRENT_
 #For test --no-compress-output -T Test
 ENABLE_TESTING(true)
 
-SET(CTEST_BINARY_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
+#SET(CTEST_BINARY_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin")
+SET(CTEST_BINARY_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+MESSAGE("CTEST_BINARY_DIRECTORY is defined to : ${CTEST_BINARY_DIRECTORY}/bin")
+
 #SET(CTEST_SOURCE_DIRECTORY "${CMAKE_SOURCE_DIR}/src/test/cpp")
 ##SET(CTEST_SOURCE_DIRECTORY "${PROJECT_SOURCE_DIR}/src/test/cpp")
 ## valgrind
@@ -906,11 +911,11 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   INCLUDE(${PROJECT_CONFIG_DIR}/CodeCoverage.cmake)
   APPEND_COVERAGE_COMPILER_FLAGS()
   #SETUP_TARGET_FOR_COVERAGE_LCOV(${PROJECT_NAME}_coverage test coverage)
-  #SETUP_TARGET_FOR_COVERAGE_LCOV(
-  # NAME coverage
-  # EXECUTABLE ctest -j ${PROCESSOR_COUNT}
-  # DEPENDENCIES run_app
-  # BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
+  SETUP_TARGET_FOR_COVERAGE_LCOV(
+   NAME lcov
+   EXECUTABLE ctest -j ${PROCESSOR_COUNT}
+   DEPENDENCIES run_app
+   BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
   #SETUP_TARGET_FOR_COVERAGE_GCOVR_XML(
   #  NAME coverage
   #  EXECUTABLE ctest -j ${PROCESSOR_COUNT}
@@ -918,6 +923,11 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   #  BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
   SETUP_TARGET_FOR_COVERAGE_GCOVR_HTML(
       NAME coverage
+      EXECUTABLE ctest -j ${PROCESSOR_COUNT}
+      DEPENDENCIES run_app
+      BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")
+  SETUP_TARGET_FOR_COVERAGE_FASTCOV(
+      NAME fastcov
       EXECUTABLE ctest -j ${PROCESSOR_COUNT}
       DEPENDENCIES run_app
       BASE_DIRECTORY "${CMAKE_SOURCE_DIR}/")

@@ -16,4 +16,6 @@ fi
 
 /opt/ansible/env38/bin/python /opt/ansible/env38/bin/scons --tree=derived,prune target -n | ${WORKING_DIR}/scons2dot.py --save --outfile ${WORKING_DIR}/../${reports_directory}/${report_filename}.pdf
 
+tree -L 2
+
 exit 0
