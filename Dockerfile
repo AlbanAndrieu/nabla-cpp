@@ -14,6 +14,7 @@ RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive \
   apt-get install -qy --no-install-recommends \
   cmake \
+  lcov \
   git \
   g++ \
 #  python3.8 \

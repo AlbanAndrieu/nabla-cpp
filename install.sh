@@ -84,7 +84,7 @@ sudo pip install conan
 sudo pip install termcolor
 sudo pip3 install gcovr fastcov lcov_cobertura
 
-sudo apt-get install vera++ gcovr perl lua5.3 tcl tk
+sudo apt-get install vera++ gcovr lcov perl lua5.3 tcl tk
 
 ./install-bitcoin.sh
 
