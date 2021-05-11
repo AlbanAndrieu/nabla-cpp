@@ -36,11 +36,10 @@ def generate(env, **kw):
         print(colored('Arch :', 'magenta'), colored(Arch, 'cyan'))
 
     if Arch in ['x86Linux']:  # 'cygwin'
-        if not 'gcc_version' in env: # noqa: E713
-            env['gcc_version'] = '8'
-            env['gcc_version'] = subprocess.check_output(
-                ['gcc', '-dumpversion'],
-            )[:3]
+        if not 'gcc_version' in env:  # noqa: E713
+            # env['gcc_version'] = '8'
+            env['gcc_version'] = subprocess.check_output([env['CC'], '-dumpversion'])[:3]
+            # env['gcc_version'] = subprocess.check_output(['gcc', '-dumpversion'],)[:3]
         #env['debug_flags'] = '-g'
         #env['debug_flags'] = '-gdwarf-3'
         # env['CXXFLAGS'] += [ '-gdwarf-2', '-gstrict-dwarf' ] # Dwarf Error: found dwarf version '4', this reader only handles version 2 information.

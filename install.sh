@@ -86,6 +86,11 @@ sudo pip3 install gcovr fastcov lcov_cobertura
 
 sudo apt-get install vera++ gcovr lcov perl lua5.3 tcl tk
 
+
+sudo apt install apt-file
+sudo apt-file update
+apt-file search stropts.h
+
 ./install-bitcoin.sh
 
 exit 0
