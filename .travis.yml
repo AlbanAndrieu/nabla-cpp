@@ -14,7 +14,8 @@ python:
 #  - 3.4
 #  - 3.5
 #  - 3.6
-  - 3.7
+#  - 3.7
+  - 3.8
 
 compiler:
 #  - clang
@@ -216,7 +217,7 @@ install:
   - cmake --version
   # Install conan
   # - pip install --upgrade pip
-  - sudo pip install conan==1.21.1 gcovr fastcov lcov_cobertura
+  - sudo pip3.8 install -r requirements-current-3.8.txt
   #- sudo pip2.7 install -r requirements-current-2.7.txt
   # Automatic detection of your arch, compiler, etc.
   - conan user
