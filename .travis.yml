@@ -216,7 +216,7 @@ install:
   - cmake --version
   # Install conan
   # - pip install --upgrade pip
-  - sudo pip install conan==1.21.1 gcovr fastcov lcov_cobertura
+  - sudo pip install conan==1.21.1 gcovr lcov_cobertura
   #- sudo pip2.7 install -r requirements-current-2.7.txt
   # Automatic detection of your arch, compiler, etc.
   - conan user
