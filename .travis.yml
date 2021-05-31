@@ -17,7 +17,7 @@ python:
 #  - 3.5
 #  - 3.6
 #  - 3.7
-  - 3.8
+  - 3.8-dev
 
 compiler:
 #  - clang
@@ -49,6 +49,7 @@ env:
 #    - SONARQUBE_SKIPPED=true
     - MAKE=make
     - ARCH=linux
+    - DJANGO_VERSION=2.2.6
 
 # See https://docs.travis-ci.com/user/languages/cpp/
 
@@ -214,13 +215,14 @@ before_install:
   - test -n $CC && unset CC
   - test -n $CXX && unset CXX
   - eval "${MATRIX_EVAL}"
+  - python -m pip install --upgrade pip
 
 install:
   - cmake --version
   # Install conan
   # - pip install --upgrade pip
-  - sudo pip -V
-  - sudo pip install -r requirements-current-3.8.txt
+  - pip -V
+  - pip install --user -r requirements-current-3.8.txt --use-feature=2020-resolver
   #- sudo pip2.7 install -r requirements-current-2.7.txt
   # Automatic detection of your arch, compiler, etc.
   - conan user
