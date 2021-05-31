@@ -4,7 +4,8 @@
 # (See accompanying file LICENSE.md)
 
 #language: cpp
-language: generic
+#language: generic
+language: python
 sudo: required
 dist: travis_lts
 #dist: bionic
@@ -218,7 +219,8 @@ install:
   - cmake --version
   # Install conan
   # - pip install --upgrade pip
-  - sudo pip3 install -r requirements-current-3.8.txt
+  - sudo pip -V
+  - sudo pip install -r requirements-current-3.8.txt
   #- sudo pip2.7 install -r requirements-current-2.7.txt
   # Automatic detection of your arch, compiler, etc.
   - conan user
