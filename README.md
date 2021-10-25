@@ -1,4 +1,5 @@
-# nabla-cpp
+## [![Nabla](http://albandrieu.com/nabla/index/assets/nabla/nabla-4.png)](https://github.com/AlbanAndrieu)  nabla-cpp
+
 A project that contains cpp code sample
 
 [![License](http://img.shields.io/:license-apache-blue.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
@@ -19,10 +20,12 @@ A project that contains cpp code sample
   * [Build it](#build-it)
   * [Clean it](#clean-it)
   * [Wine](#wine)
+  * [pre-commit](#pre-commit)
 - [Quality tools](#quality-tools)
 - [Eclipse](#eclipse)
 - [Tools](#tools)
-- [Update README.md Table of Contents](#update-readmemd-table-of-contents)
+  * [npm-groovy-lint groovy formating for Jenkinsfile](#npm-groovy-lint-groovy-formating-for-jenkinsfile)
+- [Update README.md](#update-readmemd)
 
 <!-- tocstop -->
 
@@ -124,6 +127,19 @@ file /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.22
 readelf -a -W target/lib/x86Linux/debug64/shared/libmain_library.so
 ```
 
+### pre-commit
+
+See [pre-commit](http://pre-commit.com/)
+Run `pre-commit install`
+
+First time run `cp hooks/hooks/* .git/hooks/`
+or `git clone git@github.com:AlbanAndrieu/nabla-hooks.git hooks && rm -Rf ./.git/hooks && ln -s ../hooks/hooks ./.git/hooks`
+
+Run `pre-commit run --all-files`
+
+Run `SKIP=ansible-lint git commit -am 'Add key'`
+Run `git commit -am 'Add key' --no-verify`
+
 ## Quality tools
 
 See [pre-commit](http://pre-commit.com/)
@@ -147,20 +163,30 @@ sample/build-linux/
 
 See [tools](https://linuxfr.org/users/oliver_h/journaux/moi-expert-c-j-abandonne-le-cxx)
 
-Update README.md Table of Contents
-----------------------------------------------
+### npm-groovy-lint groovy formating for Jenkinsfile
+
+Tested with nodejs 12 and 16 on ubuntu 20 and 21 (not working with nodejs 11 and 16)
+
+```
+npm install -g npm-groovy-lint@8.2.0
+npm-groovy-lint --format
+ls -lrta .groovylintrc.json
+```
+
+## Update README.md
 
 
   * [github-markdown-toc](https://github.com/jonschlinkert/markdown-toc)
   * With [github-markdown-toc](https://github.com/Lucas-C/pre-commit-hooks-nodejs)
 
-`
+```
 npm install --save markdown-toc
-`
+markdown-toc README.md
+markdown-toc CHANGELOG.md  -i
+```
 
-  * [github-markdown-toc](https://github.com/ekalinin/github-markdown-toc)
-
-`
-brew install github-markdown-toc
-gh-md-toc --insert README.md
-`
+```
+pre-commit install
+git add README.md
+pre-commit run markdown-toc
+```

@@ -345,7 +345,7 @@ pipeline {
           skipped(failureThreshold: '0'),
           failed(failureThreshold: '0')
         ],
-      tools: [CTest(
+        tools: [CTest(
           pattern: 'sample/build-linux/Testing/**/Test.xml',
           deleteOutputFiles: true,
           failIfNotNew: false,
