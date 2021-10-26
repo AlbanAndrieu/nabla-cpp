@@ -1,45 +1,17 @@
 #!/usr/bin/env groovy
 @Library(value='jenkins-pipeline-scripts@master', changelog=false) _
 
-String DOCKER_REGISTRY_HUB=env.DOCKER_REGISTRY_HUB ?: "registry.hub.docker.com".toLowerCase().trim() // registry.hub.docker.com
-String DOCKER_ORGANISATION_HUB="nabla".trim()
-String DOCKER_IMAGE_TAG=env.DOCKER_IMAGE_TAG ?: "latest".trim()
+String DOCKER_REGISTRY_HUB = env.DOCKER_REGISTRY_HUB ?: 'registry.hub.docker.com'.toLowerCase().trim() // registry.hub.docker.com
+String DOCKER_ORGANISATION_HUB = 'nabla'.trim()
+String DOCKER_IMAGE_TAG = env.DOCKER_IMAGE_TAG ?: 'latest'.trim()
 //String DOCKER_USERNAME="nabla"
-String DOCKER_NAME="ansible-jenkins-slave-docker".trim()
+String DOCKER_NAME = 'ansible-jenkins-slave-docker'.trim()
 
-String DOCKER_REGISTRY_HUB_URL=env.DOCKER_REGISTRY_HUB_URL ?: "https://${DOCKER_REGISTRY_HUB}".trim()
-String DOCKER_REGISTRY_HUB_CREDENTIAL=env.DOCKER_REGISTRY_HUB_CREDENTIAL ?: "hub-docker-nabla".trim()
-String DOCKER_IMAGE="${DOCKER_ORGANISATION_HUB}/${DOCKER_NAME}:${DOCKER_IMAGE_TAG}".trim()
+String DOCKER_REGISTRY_HUB_URL = env.DOCKER_REGISTRY_HUB_URL ?: "https://${DOCKER_REGISTRY_HUB}".trim()
+String DOCKER_REGISTRY_HUB_CREDENTIAL = env.DOCKER_REGISTRY_HUB_CREDENTIAL ?: 'hub-docker-nabla'.trim()
+String DOCKER_IMAGE = "${DOCKER_ORGANISATION_HUB}/${DOCKER_NAME}:${DOCKER_IMAGE_TAG}".trim()
 
-String DOCKER_OPTS_BASIC = getDockerOpts()
 String DOCKER_OPTS_COMPOSE = getDockerOpts(isDockerCompose: true, isLocalJenkinsUser: false)
-
-String DOCKER_NAME_BUILD="ansible-jenkins-slave-test".trim()
-String DOCKER_BUILD_TAG=dockerTag().trim()
-String DOCKER_BUILD_IMG="${DOCKER_ORGANISATION_HUB}/${DOCKER_NAME_BUILD}:${DOCKER_BUILD_TAG}".trim()
-String DOCKER_RUNTIME_TAG="latest".trim()
-String DOCKER_RUNTIME_NAME="nabla-servers-bower-sample-test".trim()
-String DOCKER_RUNTIME_IMG="${DOCKER_ORGANISATION_HUB}/${DOCKER_RUNTIME_NAME}:${DOCKER_RUNTIME_TAG}".trim()
-
-String RELEASE_VERSION=""
-//String GIT_COMMIT_REV=""
-
-def NODES_USED = []
-
-String ARTIFACTS = ['*_VERSION.TXT',
-                '**/target/*.log',
-                //'**/target/*.jar',
-                '**/target/dependency/jetty-runner.jar',
-                '**/target/test.war',
-                //'**/target/*.zip',
-                'reports/*',
-                '**/MD5SUMS.md5',
-                'package-lock.json',
-                'yarn.lock',
-                'Jenkinsfile*',
-                'Dockerfile*',
-                '*.tar.gz'
-                ].join(', ')
 
 pipeline {
   //agent none
@@ -72,9 +44,9 @@ pipeline {
     booleanParam(defaultValue: false, description: 'Dry run', name: 'DRY_RUN')
     booleanParam(defaultValue: false, description: 'Clean before run', name: 'CLEAN_RUN')
     booleanParam(defaultValue: false, description: 'Debug run', name: 'DEBUG_RUN')
-    booleanParam(defaultValue: false, name: "RELEASE", description: "Perform release-type build.")
-    string(defaultValue: "", name: "RELEASE_BASE", description: "Commit tag or branch that should be checked-out for release", trim: true)
-    string(defaultValue: "", name: "RELEASE_VERSION", description: "Release version for artifacts", trim: true)
+    booleanParam(defaultValue: false, name: 'RELEASE', description: 'Perform release-type build.')
+    string(defaultValue: '', name: 'RELEASE_BASE', description: 'Commit tag or branch that should be checked-out for release', trim: true)
+    string(defaultValue: '', name: 'RELEASE_VERSION', description: 'Release version for artifacts', trim: true)
     booleanParam(defaultValue: false, description: 'Build only to have package. no test / no docker', name: 'BUILD_ONLY')
     booleanParam(defaultValue: true, description: 'Run acceptance tests', name: 'BUILD_TEST')
   }
@@ -90,12 +62,12 @@ pipeline {
     BUILD_ID = "${env.BUILD_ID}"
     SERVER_URL = "${params.SERVER_URL}"
     SERVER_CONTEXT = "${params.SERVER_CONTEXT}"
-    GIT_PROJECT = "nabla"
+    GIT_PROJECT = 'nabla'
     GIT_BROWSE_URL = "https://github.com/AlbanAndrieu/${GIT_PROJECT}/"
     GIT_URL = "ssh://git@github.com/AlbanAndrieu/${GIT_PROJECT}.git"
     DOCKER_TAG = dockerTag()
-    ARCH = "linux"
-    USE_SUDO = "false"
+    ARCH = 'linux'
+    USE_SUDO = 'false'
   }
   options {
     //skipDefaultCheckout()
@@ -114,28 +86,27 @@ pipeline {
       }
       steps {
         script {
-          tee("python.log") {
-            sh "#!/bin/bash \n" +
+          tee('python.log') {
+            sh '#!/bin/bash \n' +
               "cd $WORKSPACE \n" +
-              "ls -lrta /opt/ansible/ \n" +
-              ". /opt/ansible/env38/bin/activate \n" +
-              "python -V \n" +
-              "python3 -V \n" +
-              "python3.8 -V \n" +
-              "pip -V \n" +
-              "pip list \n" +
-              "pip3.8 install conan pre-commit \n" +
-              "which conan \n" +
+              'ls -lrta /opt/ansible/ \n' +
+              '. /opt/ansible/env38/bin/activate \n' +
+              'python -V \n' +
+              'python3 -V \n' +
+              'python3.8 -V \n' +
+              'pip -V \n' +
+              'pip list \n' +
+              'pip3.8 install conan pre-commit \n' +
+              'which conan \n' +
               "conan remove --system-reqs '*' \n" +
-              "whoami \n" +
-              "bash ./scripts/cppcheck.sh\n" +
-              "source ./scripts/run-python.sh\n" +
-              ". ./scripts/run-python.sh\n" +
-              "pre-commit run -a || true"
+              'whoami \n' +
+              'bash ./scripts/cppcheck.sh\n' +
+              'source ./scripts/run-python.sh\n' +
+              '. ./scripts/run-python.sh\n' +
+              'pre-commit run -a || true'
           } // tee
 
-          tee("build-docker.log") {
-
+          tee('build-docker.log') {
             //sh "#!/bin/bash \n" +
             //   "conan remove --system-reqs '*'"
 
@@ -147,19 +118,18 @@ pipeline {
               ansible.push()  // record this latest (optional)
               //stage 'Test image'
               stage('Test image') {
-               //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
-                 docker.image('nabla/jenkins-slave-ubuntu:latest').withRun {c ->
-                 sh "docker logs ${c.id}"
+                //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
+                docker.image('nabla/jenkins-slave-ubuntu:latest').withRun { c ->
+                  sh "docker logs ${c.id}"
                 }
               }
               // run some tests on it (see below), then if everything looks good:
               //stage 'Approve image'
               ansible.push 'latest'
-              //def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
-              //sh "docker push ${myImg.imageName()}"
-              //} // withCredentials
+            //def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
+            //sh "docker push ${myImg.imageName()}"
+            //} // withCredentials
             } // withRegistry
-
           } // tee
        } // script
       } // steps
@@ -167,27 +137,27 @@ pipeline {
     stage('Build-Scons') {
       steps {
         script {
-          tee("build-scons.log") {
-            sh "#!/bin/bash \n" +
+          tee('build-scons.log') {
+            sh '#!/bin/bash \n' +
               "cd $WORKSPACE \n" +
-              "ls -lrta /opt/ansible/ \n" +
-              ". /opt/ansible/env38/bin/activate \n" +
-              "python -V \n" +
-              "python3 -V \n" +
-              "python3.8 -V \n" +
-              "pip -V \n" +
-              "pip list \n" +
-              "pip3.8 install conan pre-commit cmake \n" +
-              "which conan \n" +
+              'ls -lrta /opt/ansible/ \n' +
+              '. /opt/ansible/env38/bin/activate \n' +
+              'python -V \n' +
+              'python3 -V \n' +
+              'python3.8 -V \n' +
+              'pip -V \n' +
+              'pip list \n' +
+              'pip3.8 install conan pre-commit cmake \n' +
+              'which conan \n' +
               "conan remove --system-reqs '*' \n" +
-              "whoami \n" +
-              "bash ./scripts/cppcheck.sh\n" +
-              "bash ./scripts/flawfinder.sh\n" +
-              "bash ./scripts/clang-tidy.sh\n" +
-              "source ./scripts/run-python.sh\n" +
-              "rm -Rf /home/jenkins/.conan/\n" +
+              'whoami \n' +
+              'bash ./scripts/cppcheck.sh\n' +
+              'bash ./scripts/flawfinder.sh\n' +
+              'bash ./scripts/clang-tidy.sh\n' +
+              'source ./scripts/run-python.sh\n' +
+              'rm -Rf /home/jenkins/.conan/\n' +
               //"pre-commit run -a || true\n" +
-              "bash ./build.sh"
+              'bash ./build.sh'
           } // tee
 
           publishHTML (target: [
@@ -196,7 +166,7 @@ pipeline {
             keepAll: true,
             reportDir: 'reports/',
             reportFiles: 'gcovr-report.html',
-            reportName: "GCov Report"
+            reportName: 'GCov Report'
           ])
         } // script
       } // steps
@@ -204,11 +174,11 @@ pipeline {
     stage('Build-CMake') {
       when {
         expression { BRANCH_NAME ==~ /release\/.+|master|develop|PR-.*|feature\/.*|bugfix\/.*/ }
-        //expression { params.BUILD_TEST.toBoolean() == true && params.BUILD_ONLY.toBoolean() == false }
+      //expression { params.BUILD_TEST.toBoolean() == true && params.BUILD_ONLY.toBoolean() == false }
       }
       steps {
         script {
-          tee("build-cmake.log") {
+          tee('build-cmake.log') {
             //sh "#!/bin/bash \n" +
             //   "cd $WORKSPACE \n" +
             //   "ls -lrta /opt/ansible/ \n" +
@@ -225,23 +195,23 @@ pipeline {
             //   "bash ./scripts/cppcheck.sh\n" +
             //   "source ./scripts/run-python.sh\n"
 
-            dir("sample/build-linux") {
-                sh "#!/bin/bash \n" +
+            dir('sample/build-linux') {
+                sh '#!/bin/bash \n' +
                    //"source ../../scripts/run-python.sh\n" +
-                   ". /opt/ansible/env38/bin/activate \n" +
-                   "rm -Rf /home/jenkins/.conan/\n" +
-                   "export USE_SUDO=false\n" +
+                   '. /opt/ansible/env38/bin/activate \n' +
+                   'rm -Rf /home/jenkins/.conan/\n' +
+                   'export USE_SUDO=false\n' +
                    "export UNIT_TESTS=${BUILD_TEST}\n" +
                    //"export ENABLE_MEMCHECK=true\n" +
-                   "bash ./build.sh\n" +
-                   "make cppcheck\n" +
-                   "make clangtidy\n"
+                   'bash ./build.sh\n' +
+                   'make cppcheck\n' +
+                   'make clangtidy\n'
                    //"make sonarqube\n" +
                    //"make valgrind\n" +
                    //"make DoxygenDoc\n" +
                    //"make tests\n" +
 
-                //sh 'ctest -T test --no-compress-output'
+            //sh 'ctest -T test --no-compress-output'
             } // dir
           } // tee
 
@@ -251,7 +221,7 @@ pipeline {
             keepAll: true,
             reportDir: 'sample/build-linux/coverage/',
             reportFiles: 'index.html',
-            reportName: "Coverage Report"
+            reportName: 'Coverage Report'
           ])
           publishHTML (target: [
             allowMissing: true,
@@ -259,7 +229,7 @@ pipeline {
             keepAll: true,
             reportDir: 'sample/build-linux/check/',
             reportFiles: 'index.html',
-            reportName: "Cppcheck Report"
+            reportName: 'Cppcheck Report'
           ])
           publishHTML (target: [
             allowMissing: true,
@@ -267,7 +237,7 @@ pipeline {
             keepAll: true,
             reportDir: 'sample/build-linux/doc/html/',
             reportFiles: 'index.html',
-            reportName: "Doxygen Report"
+            reportName: 'Doxygen Report'
           ])
           publishHTML (target: [
             allowMissing: true,
@@ -275,7 +245,7 @@ pipeline {
             keepAll: true,
             reportDir: 'reports/',
             reportFiles: 'flawfinder-result.html',
-            reportName: "Flawfinder Report"
+            reportName: 'Flawfinder Report'
           ])
           publishHTML (target: [
             allowMissing: true,
@@ -283,33 +253,32 @@ pipeline {
             keepAll: true,
             reportDir: 'reports/',
             reportFiles: 'rats-result.html',
-            reportName: "Rats Report"
+            reportName: 'Rats Report'
           ])
 
-          dockerHadoLint(dockerFilePath: ".", skipDockerLintFailure: true, dockerFileId: "1")
-
+          dockerHadoLint(dockerFilePath: '.', skipDockerLintFailure: true, dockerFileId: '1')
          } // script
        } // steps
      } // stage Build-CMake
-     stage('SonarQube analysis') {
-       when {
-         expression { BRANCH_NAME ==~ /release\/.+|master|develop|PR-.*|feature\/.*|bugfix\/.*/ }
-         expression { params.BUILD_ONLY.toBoolean() == false }
-       }
-       environment {
-         SONAR_SCANNER_OPTS = "-Xmx1g"
-       }
-       steps {
-         sh "/usr/local/sonar-runner/bin/sonar-scanner -D sonar-project.properties"
-       }
+    stage('SonarQube analysis') {
+      when {
+        expression { BRANCH_NAME ==~ /release\/.+|master|develop|PR-.*|feature\/.*|bugfix\/.*/ }
+        expression { params.BUILD_ONLY.toBoolean() == false }
+      }
+      environment {
+        SONAR_SCANNER_OPTS = '-Xmx1g'
+      }
+      steps {
+        sh '/usr/local/sonar-runner/bin/sonar-scanner -D sonar-project.properties'
+      }
      } // stage SonarQube
-     //stage('Approve image') {
-     // sshagent(['jenkins-ssh']) {
-     ////   def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
-     ////   sh "docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz ${myImg.imageName()}"
-      //    sh returnStdout: true, script: 'sudo docker run -it --net host --pid host --cap-add audit_control -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock -v /usr/lib/systemd:/usr/lib/systemd -v /etc:/etc --label docker_bench_security docker/docker-bench-security'
-      //}
-     //}
+  //stage('Approve image') {
+  // sshagent(['jenkins-ssh']) {
+  ////   def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
+  ////   sh "docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock nate/dockviz ${myImg.imageName()}"
+  //    sh returnStdout: true, script: 'sudo docker run -it --net host --pid host --cap-add audit_control -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock -v /usr/lib/systemd:/usr/lib/systemd -v /etc:/etc --label docker_bench_security docker/docker-bench-security'
+  //}
+  //}
   } // stages
   post {
     always {
@@ -353,7 +322,6 @@ pipeline {
           stopProcessingIfError: true
         )]
       )
-
     } // always
     success {
       archiveArtifacts '**/*.tar.gz, *.log, conaninfo.txt, sample/build-linux/DartConfiguration.tcl, sample/build-linux/install_manifest.txt, sample/build-linux/CMakeCache.txt, sample/build-linux/graphviz.png, sample/build-linux/iwyu.out, sample/build-linux/bin/*, sample/build-linux/lib/*, sample/build-linux/_CPack_Packages/Linux/DEB/*'

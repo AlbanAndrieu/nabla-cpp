@@ -1,0 +1,8 @@
+{
+    "url": "https://10.152.183.194:8686/job/AlbanAndrieu/job/nabla-cpp/",
+    "name": "Jenkins Build",
+    "username": "admin",
+    "password": "microsoft",
+    "strictTls": false,
+    "jenkins.polling": 2
+}

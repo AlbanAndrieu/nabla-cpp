@@ -3,6 +3,10 @@
     "files.autoSave": "off",
     "workbench.sideBar.location": "left",
     "git.confirmSync": false,
+    "sonarlint.connectedMode.project": {
+        "connectionId": "nablaSonar",
+        "projectKey": "MICROSOFT:master"
+    },
     "cmake.configureOnOpen": true,
     "cmake.mingwSearchDirs": [
         "C:\\tools\\msys64\\mingw64"
