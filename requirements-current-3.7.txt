@@ -307,7 +307,7 @@ unattended-upgrades==0.1
 unidiff==0.5.5
 unittest2==1.1.0
 uritemplate==3.0.1
-urllib3==1.25.8
+urllib3==1.26.5
 usb-creator==0.3.7
 ushlex==0.99.1
 virtualenv==16.7.9
