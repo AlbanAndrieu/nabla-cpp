@@ -9,6 +9,8 @@ A project that contains cpp code sample
 
 [![Travis Build Status](https://travis-ci.org/AlbanAndrieu/nabla-cpp.svg?branch=master)](https://travis-ci.org/AlbanAndrieu/nabla-cpp)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=MICROSOFT%3Amaster&metric=alert_status)](https://sonarcloud.io/dashboard/index/MICROSOFT%3Amaster)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/AlbanAndrieu/nabla-cpp.svg)](https://github.com/AlbanAndrieu/nabla-cpp/pulls)
+[![Docker Pulls](https://img.shields.io/docker/pulls/nabla/jenkins-slave-ubuntu)](https://hub.docker.com/r/nabla/jenkins-slave-ubuntu)<br/>
 
 ## Table of contents
 

@@ -188,7 +188,7 @@ piston-mini-client==0.7.5
 pluggy==0.13.1
 pluginbase==0.7
 poyo==0.5.0
-pre-commit==1.21.0
+pre-commit==2.15.0
 pre-commit-hooks==2.4.0
 prettytable==0.7.2
 prompt-toolkit==1.0.15
