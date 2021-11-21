@@ -1,10 +1,25 @@
-#FROM alpine
-#
-#COPY nabla.c /
-#RUN apk add build-base \
-#    && gcc -o nabla nabla.c \
-#    && apk del build-base linux-headers pcre-dev openssl-dev && \
-#    rm -rf /var/cache/apk/*
+FROM gcc AS mybuildstage
+#busybox:glibc
+
+COPY nabla.c .
+RUN gcc -o nabla nabla.c
+CMD ["./nabla"]
+
+FROM ubuntu as ubuntu
+COPY --from=mybuildstage nabla .
+CMD ["./nabla"]
+
+FROM alpine AS static
+
+COPY nabla.c /
+RUN apk add build-base \
+    && gcc -o nabla nabla.c -static \
+    && apk del build-base linux-headers pcre-dev openssl-dev && \
+    rm -rf /var/cache/apk/*
+
+#RUN ldd nabla
+
+CMD ["./nabla"]
 
 # See https://hub.docker.com/_/python
 FROM python:3 AS builder
