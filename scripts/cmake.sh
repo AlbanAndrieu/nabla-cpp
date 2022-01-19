@@ -3,7 +3,7 @@
 
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
-if [ -z "$WORKSPACE" ]; then
+if [ -z "${WORKSPACE}" ]; then
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : WORKSPACE ${NC}"
   export WORKSPACE=${WORKING_DIR}/../..
 fi
@@ -17,12 +17,17 @@ if [ -n "${ENABLE_CLANG}" ]; then
     export ASAN_OPTIONS=alloc_dealloc_mismatch=0,symbolize=1
 fi
 
-if [ -z "$PROJECT_SRC" ]; then
+if [ -z "${PROJECT_SRC}" ]; then
   echo -e "${red} ${double_arrow} Undefined build parameter ${head_skull} : PROJECT_SRC ${NC}"
   export PROJECT_SRC=${WORKSPACE}
 fi
 
+
+# shellcheck source-path=SCRIPTDIR
+# shellcheck disable=SC1090
 source ${PROJECT_SRC}/scripts/step-2-0-0-build-env.sh || exit 1
+
+# shellcheck source=/dev/null
 
 echo -e "${cyan} ${double_arrow} Environment ${NC}"
 
@@ -32,7 +37,7 @@ if [ -n "${MODE_RELEASE}" ]; then
     echo -e "${green} MODE_RELEASE is defined ${happy_smiley} ${NC}"
     export CMAKE_INSTALL_PREFIX=/usr/local
 else
-    export CMAKE_INSTALL_PREFIX=$PROJECT_SRC/install/debug
+    export CMAKE_INSTALL_PREFIX=${PROJECT_SRC}/install/debug
 fi
 
 #-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE
@@ -84,14 +89,15 @@ else
 fi
 
 cmake_res=$?
-if [[ $cmake_res -ne 0 ]]; then
-    echo -e "${red} ---> CMake failed : $cmake_res ${NC}"
+if [[ ${cmake_res} -ne 0 ]]; then
+    echo -e "${red} ---> CMake failed : ${cmake_res} ${NC}"
     exit 1
 fi
 
 dot -Tpng graphviz.dot -o graphviz.png
 
 echo -e "${magenta} NEXT : ${USE_SUDO} make install ${NC}"
+echo -e "${magenta} cd ${PROJECT_SRC}/sample/build-${ARCH} ${NC}"
 echo -e "${magenta} NEXT : make tests ${NC}"
 
 if [ "${ENABLE_NINJA}" == "true" ]; then
