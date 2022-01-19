@@ -1,0 +1,42 @@
+{
+ "graph_lock": {
+  "nodes": {
+   "0": {
+    "options": "boost:fPIC=True\nboost:header_only=False\nboost:magic_autolink=False\nboost:shared=False\nboost:skip_lib_rename=False\nboost:without_atomic=False\nboost:without_chrono=False\nboost:without_container=False\nboost:without_context=False\nboost:without_contract=False\nboost:without_coroutine=False\nboost:without_date_time=False\nboost:without_exception=False\nboost:without_fiber=False\nboost:without_filesystem=False\nboost:without_graph=False\nboost:without_graph_parallel=False\nboost:without_iostreams=False\nboost:without_locale=False\nboost:without_log=False\nboost:without_math=False\nboost:without_mpi=False\nboost:without_program_options=False\nboost:without_python=True\nboost:without_random=False\nboost:without_regex=False\nboost:without_serialization=False\nboost:without_signals=False\nboost:without_stacktrace=False\nboost:without_system=False\nboost:without_test=False\nboost:without_thread=False\nboost:without_timer=False\nboost:without_type_erasure=False\nboost:without_wave=False\nbzip2:build_executable=True\nbzip2:fPIC=True\nbzip2:shared=False\nzlib:fPIC=True\nzlib:minizip=False\nzlib:shared=False",
+    "requires": [
+     "1"
+    ],
+    "path": "sample/microsoft/conanfile.txt",
+    "context": "host"
+   },
+   "1": {
+    "ref": "boost/1.67.0@conan/stable",
+    "options": "fPIC=True\nheader_only=False\nmagic_autolink=False\nshared=False\nskip_lib_rename=False\nwithout_atomic=False\nwithout_chrono=False\nwithout_container=False\nwithout_context=False\nwithout_contract=False\nwithout_coroutine=False\nwithout_date_time=False\nwithout_exception=False\nwithout_fiber=False\nwithout_filesystem=False\nwithout_graph=False\nwithout_graph_parallel=False\nwithout_iostreams=False\nwithout_locale=False\nwithout_log=False\nwithout_math=False\nwithout_mpi=False\nwithout_program_options=False\nwithout_python=True\nwithout_random=False\nwithout_regex=False\nwithout_serialization=False\nwithout_signals=False\nwithout_stacktrace=False\nwithout_system=False\nwithout_test=False\nwithout_thread=False\nwithout_timer=False\nwithout_type_erasure=False\nwithout_wave=False\nbzip2:build_executable=True\nbzip2:fPIC=True\nbzip2:shared=False\nzlib:fPIC=True\nzlib:minizip=False\nzlib:shared=False",
+    "package_id": "5e8eff81f2db7ac8c8c3d41364df2f92d8c53fdb",
+    "prev": "0",
+    "requires": [
+     "2",
+     "3"
+    ],
+    "context": "host"
+   },
+   "2": {
+    "ref": "bzip2/1.0.6@conan/stable",
+    "options": "build_executable=True\nfPIC=True\nshared=False",
+    "package_id": "a5875aed3fc7ae8dd0488f7e5e99acbc480d721d",
+    "prev": "0",
+    "context": "host"
+   },
+   "3": {
+    "ref": "zlib/1.2.11@conan/stable",
+    "options": "fPIC=True\nminizip=False\nshared=False",
+    "package_id": "1d877a3df840030e6a8abb74c5ffb9088d08b47a",
+    "prev": "0",
+    "context": "host"
+   }
+  },
+  "revisions_enabled": false
+ },
+ "version": "0.4",
+ "profile_host": "[settings]\narch=x86_64\narch_build=x86_64\nbuild_type=Release\ncompiler=gcc\ncompiler.libcxx=libstdc++11\ncompiler.version=8\nos=Linux\nos_build=Linux\n[options]\n[build_requires]\n[env]\n"
+}

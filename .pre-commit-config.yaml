@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks.git
-    rev: v3.3.0
+    rev: v4.1.0
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
@@ -32,11 +32,11 @@ repos:
     -   id: requirements-txt-fixer
     -   id: sort-simple-yaml
 -   repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.5.4
+    rev: v1.6.0
     hooks:
     -   id: autopep8
 -   repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4  # Use the sha / tag you want to point at
+    rev: 3.9.2  # Use the sha / tag you want to point at
     hooks:
     -   id: flake8
         args: [--max-line-length=120]
@@ -46,16 +46,16 @@ repos:
                       scripts/scons2dot.py
                   )$
 -   repo: https://github.com/pre-commit/pre-commit.git
-    rev: v2.8.2
+    rev: v2.17.0
     hooks:
     -   id: validate_manifest
 -   repo: https://github.com/asottile/reorder_python_imports.git
-    rev: v2.3.6
+    rev: v2.6.0
     hooks:
     -   id: reorder-python-imports
 #        language_version: python2.7
 -   repo: https://github.com/asottile/add-trailing-comma
-    rev: v2.0.1
+    rev: v2.2.1
     hooks:
     -   id: add-trailing-comma
         exclude: >
