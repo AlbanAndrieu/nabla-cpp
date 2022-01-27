@@ -47,7 +47,9 @@ sudo apt-get install linux-tools-generic linux-cloud-tools-generic
 
 #sudo apt-get install libboost-all-dev
 #sudo apt-get install libboost-filesystem-dev libboost-thread-dev
-sudo apt-get install libboost-filesystem1.67-dev libboost-system1.67-dev libboost-thread1.67-dev # ubuntu 19
+#sudo apt-get install libboost-filesystem1.67-dev libboost-system1.67-dev libboost-thread1.67-dev # ubuntu 19
+#sudo apt-get install libboost-filesystem1.71-dev libboost-system1.71-dev libboost-thread1.71-dev # ubuntu 20
+sudo apt-get install libboost-filesystem-dev libboost-dev libboost-system-dev libboost-thread-dev
 sudo apt-get install libcppunit-dev
 #Below do not work
 #git clone https://github.com/tomtom-international/cpp-dependencies.git

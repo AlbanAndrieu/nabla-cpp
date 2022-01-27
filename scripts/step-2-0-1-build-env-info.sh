@@ -6,8 +6,8 @@ echo -e "========== OS =========="
 echo -e "Operating system name, release, version, node name, hardware name, and processor type"
 uname -a 2>&1
 if [ "$(uname -s)" != "Darwin" ]; then
-echo -e "========== HOSTID =========="
-hostid 2>&1
+  echo -e "========== HOSTID =========="
+  hostid 2>&1
 fi
 echo -e "========== OSTYPE =========="
 echo "OSTYPE : ${OSTYPE}"
@@ -104,7 +104,7 @@ fi
 mvn --version 2>&1 || true
 
 if [ "$(uname -s)" == "Darwin" ]; then
-brew --version 2>&1 || true
+  brew --version 2>&1 || true
 fi
 
 echo "env.MSVC_VERSION=\"${MSVC_VERSION}\"" > ${ENV_FILE}

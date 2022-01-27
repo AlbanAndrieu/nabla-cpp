@@ -65,7 +65,7 @@ COPY . /nabla
 WORKDIR /nabla
 ARG X11=yes
 
-RUN pip install --no-cache-dir -r ./requirements-current-3.8.txt
+RUN pip install --no-cache-dir -r ./requirements-current-3.8.txt -r ./requirements.testing.txt
 
 RUN ./conan.sh
 RUN find ./ -name 'conanbuildinfo.cmake'
