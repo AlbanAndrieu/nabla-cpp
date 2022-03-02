@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 @Library(value='jenkins-pipeline-scripts@master', changelog=false) _
 
-String DOCKER_REGISTRY_HUB = env.DOCKER_REGISTRY_HUB ?: 'registry.hub.docker.com'.toLowerCase().trim() // registry.hub.docker.com
+String DOCKER_REGISTRY_HUB = env.DOCKER_REGISTRY_HUB ?: 'index.docker.io'.toLowerCase().trim() // registry.hub.docker.com
 String DOCKER_ORGANISATION_HUB = 'nabla'.trim()
 String DOCKER_IMAGE_TAG = env.DOCKER_IMAGE_TAG ?: 'latest'.trim()
 //String DOCKER_USERNAME="nabla"
@@ -115,7 +115,7 @@ pipeline {
               //ansible.inside {
               //  sh 'echo test'
               //}
-              ansible.push()  // record this latest (optional)
+              //ansible.push()  // record this latest (optional)
               //stage 'Test image'
               stage('Test image') {
                 //docker run -i -t --entrypoint /bin/bash ${myImg.imageName()}
@@ -125,7 +125,7 @@ pipeline {
               }
               // run some tests on it (see below), then if everything looks good:
               //stage 'Approve image'
-              ansible.push 'latest'
+              //ansible.push 'latest'
             //def myImg = docker.image('nabla/jenkins-slave-ubuntu:latest')
             //sh "docker push ${myImg.imageName()}"
             //} // withCredentials
@@ -303,7 +303,7 @@ pipeline {
       // Archive the CTest xml output
       archiveArtifacts (
         artifacts: 'sample/build-linux/Testing/**/*.xml, sample/build-linux/Testing/Temporary/*',
-        fingerprint: true
+        fingerprint: true, onlyIfSuccessful: false
       )
 
       // Process the CTest xml output with the xUnit plugin
