@@ -19,7 +19,8 @@ conan user
 echo -e "${cyan} conan config install https://github.com/conan-io/conanclientcert.git ${NC}"
 # See deprecated https://docs.conan.io/en/latest/uploading_packages/remotes.html#conancenter
 echo -e "${cyan} conan remote add conan-center https://center.conan.io ${NC}"
-echo -e "${cyan} conan remote add conan-community https://api.bintray.com/conan/conan-community/conan ${NC}"
+ls -lrta ~/.conan/remotes.json
+#echo -e "${cyan} conan remote add conan-community https://api.bintray.com/conan/conan-community/conan ${NC}"
 #conan search Boost* -r=conan-community
 echo -e "${cyan} conan search boost* -r=conan-center ${NC}"
 echo -e "${cyan} conan search \"boost/1.71.0\" -r=all ${NC}"

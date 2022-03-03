@@ -118,6 +118,11 @@ hardening-check target/bin/x86Linux/run_app
 
 #complexity --histogram --score --thresh=3 `ls sample/microsoft/src/main/*/*.c`
 
+echo -e "${magenta} valgrind --tool=memcheck --leak-check=full target/bin/x86Linux/run_app ${NC}"
+valgrind --tool=memcheck --leak-check=full target/bin/x86Linux/run_app
+echo -e "${magenta} valgrind --tool=dhat target/bin/x86Linux/run_app ${NC}"
+valgrind --tool=dhat target/bin/x86Linux/run_app
+
 #See https://blog.sideci.com/about-style-guide-of-python-and-linter-tool-pep8-pyflakes-flake8-haking-pyling-7fdbe163079d
 echo -e "${green} Quality : python style check pep8/pycodestyle ${NC}"
 
@@ -196,5 +201,7 @@ gcovr -r . . --sonarqube --output ${WORKSPACE}/reports/coverage.xml
 
 echo -e "${magenta} X-compile : scons use_mingw=True use_static=True use_xcompil=True use_conan=False ${NC}"
 echo -e "${magenta} X-compile : scripts/run-wine.sh ${NC}"
+
+echo -e "${green} executable target/bin/x86Linux/run_app ${NC}"
 
 exit 0

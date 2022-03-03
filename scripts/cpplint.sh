@@ -1,5 +1,6 @@
 #!/bin/bash
 #set -xv
+
 WORKING_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )"
 
 #cd ${WORKING_DIR}/..
