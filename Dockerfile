@@ -123,7 +123,7 @@ RUN sh -c 'if [ "$X11" = "yes" ] ; then \
   && make install
 
 #FROM ubuntu:bionic
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # hadolint ignore=DL3008
 RUN apt-get update \
