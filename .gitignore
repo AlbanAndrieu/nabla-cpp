@@ -1,3 +1,7 @@
+sample/build-linux/
+sample/build-mingw/
+sample/build-scons/
+reports/
 
 *.pdb
 
