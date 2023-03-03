@@ -122,7 +122,7 @@ RUN sh -c 'if [ "$X11" = "yes" ] ; then \
   && make all \
   && make install
 
-FROM ubuntu:20.04
+FROM ubuntu:23.04
 
 # hadolint ignore=DL3008
 RUN apt-get update \
